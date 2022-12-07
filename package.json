@@ -20,5 +20,10 @@
     "eslint-plugin-typescript": "^0.14.0",
     "husky": "^8.0.2",
     "prettier": "^2.8.0"
+  },
+  "scripts": {
+    "build": "yarn tsc -b",
+    "prettier": "yarn prettier -w src",
+    "start": "node dist/index.js"
   }
 }
