@@ -1,0 +1,24 @@
+{
+  "name": "Draver-greensky",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Greensky-gs/Draver.git",
+  "author": "Greensky <david.hesliere@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "amethystjs": "^1.2.4",
+    "discord.js": "^14.7.1",
+    "mysql": "^2.18.1",
+    "tsc": "^2.0.4",
+    "typescript": "^4.9.3"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.21",
+    "@typescript-eslint/eslint-plugin": "^5.45.1",
+    "eslint": "^8.29.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-typescript": "^0.14.0",
+    "husky": "^8.0.2",
+    "prettier": "^2.8.0"
+  }
+}
