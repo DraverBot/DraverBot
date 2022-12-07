@@ -31,7 +31,7 @@ export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }
         const self = mod_id === guild.client.user.id ? '1' : '0';
         reason = reason.replace(/"/g, '\\"');
     
-        const rs = await query(`INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${guild.id}", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${reason}", "${self}", "0", "0" )`);
+        const rs = await query(`INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${guild.id}", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${reason}", "${proof}", "${self}", "0", "0" )`);
 
         if (!rs) return resolve(false)
         resolve(true)
