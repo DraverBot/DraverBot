@@ -1,11 +1,15 @@
-import { CommandInteraction, EmbedBuilder, InteractionReplyOptions, User } from "discord.js";
+import { ColorResolvable, CommandInteraction, EmbedBuilder, InteractionReplyOptions, User } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
+import { util } from "./functions";
 import query from "./query";
 
-export const basicEmbed = (user: User) => {
-    return new EmbedBuilder()
+export const basicEmbed = (user: User, options?: { defaultColor: boolean }) => {
+    const x = new EmbedBuilder()
         .setTimestamp()
         .setFooter({ text: user.username, iconURL: user.displayAvatarURL({ forceStatic: false }) })
+    if (options?.defaultColor) x.setColor(util<ColorResolvable>('accentColor'));
+    
+    return x
 }
 export const capitalize = (str: string) => {
     if (str.length < 1) return str;

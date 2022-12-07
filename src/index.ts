@@ -5,8 +5,8 @@ import { config } from "dotenv";
 config();
 
 const client = new AmethystClient({
-    intents: ['Guilds', 'GuildMessages', 'GuildMembers'],
-    partials: [Partials.GuildMember]
+    intents: ['Guilds', 'GuildMessages', 'GuildMembers', 'MessageContent'],
+    partials: [Partials.GuildMember, Partials.Message]
 }, {
     token: process.env.token,
     eventsFolder: './dist/events',
@@ -14,7 +14,8 @@ const client = new AmethystClient({
     preconditionsFolder: './dist/preconditions',
     autocompleteListenersFolder: './dist/autocompletes',
     debug: true,
-    defaultCooldownTime: 5
+    defaultCooldownTime: 5,
+    prefix: '!'
 })
 
 client.start({});
