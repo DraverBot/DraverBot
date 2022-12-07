@@ -1,4 +1,4 @@
-import { AmethystClient } from "amethystjs";
+import { AmethystClient, commandOptions } from "amethystjs";
 import { Partials } from "discord.js";
 import { config } from "dotenv";
 
@@ -19,3 +19,12 @@ const client = new AmethystClient({
 })
 
 client.start({});
+
+declare module 'amethystjs' {
+    interface AmethystCommand {
+        module: string
+    }
+    interface commandOptions {
+        module: string
+    }
+}

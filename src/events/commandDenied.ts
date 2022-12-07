@@ -3,6 +3,7 @@ import replies, { replyKey } from "../data/replies";
 import { systemReply } from "../utils/toolbox";
 
 export default new AmethystEvent('commandDenied', (command, reason) => {
+    command.command.options.module
     const integrated: { key: commandDeniedCode, value: replyKey }[] = [
         { key: commandDeniedCode.GuildOnly, value: 'guildOnly' },
         { key: commandDeniedCode.DMOnly, value: 'DMOnly' },
