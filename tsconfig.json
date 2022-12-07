@@ -1,18 +1,20 @@
 {
     "compilerOptions": {
-        "target": "ES2020",
+        "lib": ["ESNext"],
         "module": "commonjs",
-        "declaration": true,
-        "outDir": "./dist",
-        "strict": true,
-        "strictNullChecks": false,
+        "moduleResolution": "node",
+        "target": "ESNext",
+        "outDir": "dist",
+        "sourceMap": false,
         "esModuleInterop": true,
-        "pretty": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
+        "skipDefaultLibCheck": true,
+        "resolveJsonModule": true,
         "importHelpers": true
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src", "environment.d.ts"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
 }
