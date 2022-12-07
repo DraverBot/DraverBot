@@ -1,5 +1,6 @@
 import { CommandInteraction, EmbedBuilder, InteractionReplyOptions, User } from "discord.js";
-import { randomType } from "../typings/functions";
+import { addModLog as addModLogType, randomType } from "../typings/functions";
+import query from "./query";
 
 export const basicEmbed = (user: User) => {
     return new EmbedBuilder()
@@ -23,4 +24,16 @@ export const random = ({ max = 100, min = 0 }: randomType): number => {
 export const systemReply = (interaction: CommandInteraction, content: InteractionReplyOptions) => {
     const fnt = (interaction.replied || interaction.deferred) ? 'editReply' : 'reply';
     return interaction[fnt](content);
+}
+export const dbBool = (str: string) => str !== '0';
+export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
+    return new Promise(async(resolve) => {
+        const self = mod_id === guild.client.user.id ? '1' : '0';
+        reason = reason.replace(/"/g, '\\"');
+    
+        const rs = await query(`INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${guild.id}", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${reason}", "${self}", "0", "0" )`);
+
+        if (!rs) return resolve(false)
+        resolve(true)
+    })
 }
