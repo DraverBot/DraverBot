@@ -57,7 +57,17 @@ export default new AmethystCommand({
         const res = await query(`DELETE FROM coins WHERE guild_id="${interaction.guild.id}"${user ? ` AND user_id="${user.id}"`:''}`).catch(() => {});
 
         if (!res) return interaction.editReply({
-            embeds: [ replies.mysqlError(interaction.user, { guild: interaction.guild }) ]
-        })
+            embeds: [ replies.mysqlError(interaction.user, { guild: interaction.guild }) ],
+            components: []
+        }).catch(() => {});
+
+        interaction.client.coinsManager.start();
+        interaction.editReply({
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Réinitialisation")
+                .setDescription(`Les ${util('coins')} ${user ? `de ${user}` : "du serveur"} ont été réinitialisés`)
+            ],
+            components: []
+        }).catch(() => {})
     }
 })
