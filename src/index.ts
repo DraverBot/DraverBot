@@ -1,4 +1,4 @@
-import { AmethystClient, commandOptions } from 'amethystjs';
+import { AmethystClient } from 'amethystjs';
 import { Partials } from 'discord.js';
 import { config } from 'dotenv';
 
