@@ -67,6 +67,7 @@ export class ModulesManager {
         const dt = this.cache.get(guild_id);
 
         return `REPLACE INTO modules (${Object.keys(dt).join(', ')}) VALUES (${Object.keys(dt)
+            .map(x => dt[x])
             .map((x) => `"${typeof x == 'string' ? x : x === true ? '0' : '1'}"`)
             .join(', ')})`;
     }
