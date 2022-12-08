@@ -2,7 +2,7 @@ import { createConnection } from 'mysql';
 import { config } from 'dotenv';
 config();
 
-const database = createConnection(process.env);
+export const database = createConnection(process.env);
 
 database.connect((error) => {
     if (error) {
