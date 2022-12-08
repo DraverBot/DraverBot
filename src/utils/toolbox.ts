@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, ColorResolvable, CommandInteraction, ComponentType, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ColorResolvable, CommandInteraction, ComponentType, EmbedBuilder, Guild, InteractionReplyOptions, ModalBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, TextInputBuilder, User, UserSelectMenuBuilder } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
 import { util } from "./functions";
 import query from "./query";
@@ -58,4 +58,9 @@ export const buildButton = (data: { label: string; url?: string; style: keyof ty
     if (data.id && !data.url) componentData.custom_id = data.id;
 
     return new ButtonBuilder(componentData)
+}
+export const row = <T extends AnyComponentBuilder = ButtonBuilder>(...components: T[]) => {
+    return new ActionRowBuilder({
+        components
+    }) as ActionRowBuilder<T>
 }
