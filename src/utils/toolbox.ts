@@ -1,4 +1,4 @@
-import { ColorResolvable, CommandInteraction, EmbedBuilder, InteractionReplyOptions, User } from "discord.js";
+import { ColorResolvable, CommandInteraction, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
 import { util } from "./functions";
 import query from "./query";
@@ -40,4 +40,9 @@ export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }
         if (!rs) return resolve(false)
         resolve(true)
     })
+}
+
+export const evokerColor = (guild?: Guild) => {
+    if (!guild || guild.members?.me?.nickname === 'Evoker') return '#0000ff';
+    return '#ff0000'
 }
