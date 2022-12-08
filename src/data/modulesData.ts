@@ -58,7 +58,7 @@ export const modulesData: Record<
         emoji: 'ℹ️'
     },
     utils: {
-        name: 'Utilitaires',
+        name: 'utilitaires',
         editable: true,
         default: true,
         emoji: '🔧'
