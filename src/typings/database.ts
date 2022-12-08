@@ -54,3 +54,15 @@ export type modlogs = {
     case_id: string;
 }
 
+export type moduleType = 'moderation' | 'giveaways' | 'economy' | 'fun' | 'utils' | 'misc' | 'config' | 'administration' | 'interchat' | 'level' | 'information' | 'tickets';
+
+export type modules = {
+    /**
+     * MySQL boolean
+     * 
+     * Use `dbBool()` to decode it
+     */
+    [K in moduleType]: string;
+} & {
+    guild_id: string;
+}
