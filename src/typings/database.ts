@@ -6,7 +6,8 @@ export enum modActionType {
     Kick = 'Expulsion',
     Warn = 'Avertissement',
     Unwarn = "Retrait d'avertissement",
-    EditLog = 'Modification de log'
+    EditLog = 'Modification de log',
+    CoinsReset = "Réinitialisation économique"
 }
 
 export type modlogs = {

@@ -3,9 +3,10 @@ import { ApplicationCommandOptionType, ComponentType, Message } from "discord.js
 import { yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import moduleEnabled from "../preconditions/moduleEnabled";
+import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { basicEmbed } from "../utils/toolbox";
+import { addModLog, basicEmbed } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'admincoins',
@@ -59,6 +60,14 @@ export default new AmethystCommand({
         if (!res) return interaction.editReply({
             embeds: [ replies.mysqlError(interaction.user, { guild: interaction.guild }) ],
             components: []
+        }).catch(() => {});
+
+        addModLog({
+            guild: interaction.guild,
+            mod_id: interaction.user.id,
+            member_id: user?.id ?? 'none',
+            type: modActionType.CoinsReset,
+            reason: "Pas de raison"
         }).catch(() => {});
 
         interaction.client.coinsManager.start();
