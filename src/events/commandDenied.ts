@@ -14,6 +14,8 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
 
     const integration = integrated.find((x) => x.key === reason?.code);
 
+    if (!reason.metadata.guild && command.interaction.guild) reason.metadata.guild = command.interaction.guild;
+
     if (integration) {
         systemReply(command.interaction, {
             embeds: [

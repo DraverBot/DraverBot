@@ -5,19 +5,19 @@ import { getPerm, moduleName } from '../utils/functions';
 import { basicEmbed as basic, evokerColor } from '../utils/toolbox';
 
 const replies = {
-    guildOnly: (user: User) => {
+    guildOnly: (user: User, metadata: { guild?: Guild }) => {
         return basic(user)
             .setTitle(':x: Serveur uniquement')
             .setDescription(`Cette commande n'est disponible que sur un serveur`)
-            .setColor('#ff0000');
+            .setColor(evokerColor(metadata.guild));
     },
-    DMOnly: (user: User) => {
+    DMOnly: (user: User, metadata: { guild?: Guild }) => {
         return basic(user)
             .setTitle(':x: Message privés uniquement')
             .setDescription(`Cette commande n'est disponible qu'en messages privés`)
-            .setColor('#ff0000');
+            .setColor(evokerColor(metadata.guild));
     },
-    clientMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] } }) => {
+    clientMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] }, guild?: Guild }) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
@@ -31,9 +31,9 @@ const replies = {
                               .join(' ')}`
                 }`
             )
-            .setColor('#ff0000');
+            .setColor(evokerColor(metadata.guild));
     },
-    userMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] } }) => {
+    userMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] }, guild?: Guild }) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
@@ -47,9 +47,9 @@ const replies = {
                               .join(' ')}`
                 }`
             )
-            .setColor('#ff0000');
+            .setColor(evokerColor(metadata.guild));
     },
-    underCooldown: (user: User, metadata: { remainingCooldownTime?: number }) => {
+    underCooldown: (user: User, metadata: { remainingCooldownTime?: number, guild?: Guild }) => {
         return basic(user)
             .setTitle(':x: Cooldown')
             .setDescription(
@@ -57,7 +57,7 @@ const replies = {
                     Math.floor(metadata.remainingCooldownTime) / 1000
                 } secondes**`
             )
-            .setColor('#ff0000');
+            .setColor(evokerColor(metadata.guild));
     },
     moduleDisabled: (user: User, { guild, module }: { guild: Guild; module: moduleType }) => {
         return basic(user)
