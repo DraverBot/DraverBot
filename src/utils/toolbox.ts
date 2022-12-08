@@ -11,7 +11,8 @@ import {
     InteractionReplyOptions,
     User
 } from 'discord.js';
-import { addModLog as addModLogType, randomType } from '../typings/functions';
+import replies, { replyKey } from '../data/replies';
+import { addModLog as addModLogType, checkPermsOptions, randomType } from '../typings/functions';
 import { util } from './functions';
 import query from './query';
 
@@ -88,3 +89,22 @@ export const row = <T extends AnyComponentBuilder = ButtonBuilder>(...components
     }) as ActionRowBuilder<T>;
 };
 export const boolEmoji = (b: boolean) => (b ? '✅' : '❌');
+
+export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition = true, checkModPosition = true, checkOwner = true, ownerByPass = false, sendErrorMessage = false, interaction = undefined }: checkPermsOptions) => {
+    const send = (key: replyKey): false => {
+        if (sendErrorMessage === true && interaction) {
+            systemReply(interaction, {
+                embeds: [ (replies[key] as (user: User, metadata: any) => EmbedBuilder)(interaction.user, { member }) ],
+                components: []
+            }).catch(() => {});
+        }
+        return false;
+    }
+
+    if (ownerByPass === true && mod.id === mod.guild.ownerId) return true;
+    if (checkBot && member.user.bot) return send('memberBot');
+    if (checkModPosition && member.roles.highest.position >= mod.roles.highest.position) return send('memberTooHigh');
+    if (checkClientPosition && member.roles.highest.position >= member.guild.members.me.roles.highest.position) return send('memberTooHighClient');
+    if (checkOwner && member.id === member.guild.ownerId) return send('memberOwner');
+    return true;
+}

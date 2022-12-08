@@ -1,4 +1,4 @@
-import { EmbedBuilder, Guild, PermissionsString, User } from 'discord.js';
+import { EmbedBuilder, Guild, GuildMember, PermissionsString, User } from 'discord.js';
 import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
@@ -89,6 +89,30 @@ const replies = {
             .setColor(evokerColor(metadata.guild))
             .setDescription(text)
             .setTitle("Erreur")
+    },
+    memberOwner: (user: User, { member }: { member: GuildMember }) => {
+        return basic(user)
+            .setColor(evokerColor(member.guild))
+            .setTitle("Membre propriétaire")
+            .setDescription(`Vous ne pouvez pas faire ça, car ${member} est le propriétaire du serveur`)
+    },
+    memberBot: (user: User, { member }: { member: GuildMember }) => {
+        return basic(user)
+            .setColor(evokerColor(member.guild))
+            .setTitle("Robot")
+            .setDescription(`${member} est un robot. Je ne peux pas effectuer cette action sur un robot`)
+    },
+    memberTooHigh: (user: User, { member }: { member: GuildMember }) => {
+        return basic(user)
+            .setColor(evokerColor(member.guild))
+            .setTitle("Membre trop haut")
+            .setDescription(`${member} est supérieur ou égal à vous dans la hiéararchie des rôles`)
+    },
+    memberTooHighClient: (user: User, { member }: { member: GuildMember }) => {
+        return basic(user)
+            .setTitle("Membre trop haut")
+            .setDescription(`${member} est supérieur ou égal à moi dans la hiérarchie des rôles`)
+            .setColor(evokerColor(member.guild))
     }
 };
 
