@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "yarn tsc -b",
-    "prettier": "yarn prettier -w src",
+    "prettier": "prettier -w src",
     "start": "node dist/index.js"
   }
 }
