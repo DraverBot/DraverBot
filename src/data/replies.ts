@@ -1,4 +1,4 @@
-import { Guild, GuildMember, PermissionsString, User } from "discord.js"
+import { Guild, PermissionsString, User } from "discord.js";
 import { moduleType } from "../typings/database";
 import { permType } from "../typings/functions";
 import { getPerm, moduleName } from "../utils/functions";

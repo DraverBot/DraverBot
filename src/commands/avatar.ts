@@ -1,5 +1,5 @@
 import { AmethystCommand } from "amethystjs";
-import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder } from "discord.js";
+import { ApplicationCommandOptionType } from "discord.js";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { buildButton, row } from "../utils/toolbox";
 

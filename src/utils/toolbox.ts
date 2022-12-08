@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AnyComponentBuilder, ButtonBuilder, ButtonStyle, ChannelSelectMenuBuilder, ColorResolvable, CommandInteraction, ComponentType, EmbedBuilder, Guild, InteractionReplyOptions, ModalBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, TextInputBuilder, User, UserSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ButtonBuilder, ButtonStyle, ColorResolvable, CommandInteraction, ComponentType, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
 import { util } from "./functions";
 import query from "./query";
