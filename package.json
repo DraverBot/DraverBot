@@ -6,6 +6,7 @@
   "author": "Greensky <david.hesliere@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/string-similarity": "^4.0.0",
     "amethystjs": "^1.2.4",
     "discord.js": "^14.7.1",
     "mysql": "^2.18.1",
