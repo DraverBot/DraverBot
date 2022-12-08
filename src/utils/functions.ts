@@ -9,6 +9,6 @@ export const getPerm = (key: permType) => {
 export const util = <T = any>(key: keyof typeof utils) => {
     return utils[key] as T;
 }
-export const module = (key: keyof typeof commandModules) => {
+export const Module = (key: keyof typeof commandModules) => {
     return commandModules[key];
 }
