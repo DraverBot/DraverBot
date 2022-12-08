@@ -14,7 +14,7 @@ export const util = <T = any>(key: keyof typeof utils) => {
     return utils[key] as T;
 }
 export const Module = (key: keyof typeof commandModules) => {
-    return commandModules[key];
+    return commandModules[key] as moduleType;
 }
 export const checkDatabase = (): Promise<void> => {
     return new Promise(async(resolve) => {
