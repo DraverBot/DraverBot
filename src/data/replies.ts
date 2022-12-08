@@ -1,4 +1,5 @@
 import { EmbedBuilder, Guild, PermissionsString, User } from 'discord.js';
+import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName } from '../utils/functions';
@@ -75,6 +76,19 @@ const replies = {
         return new EmbedBuilder()
             .setTitle('💡 Annulé')
             .setColor('Yellow')
+    },
+    mysqlError: (user: User, metadata: { guild?: Guild }) => {
+        let text = `Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.`
+        if (errors.has(user.id)) {
+            if (errors.get(user.id) > 3) {
+                text += `\nSi l'erreur persiste, contactez mes développeurs`;
+            }
+        }
+        errors.set(user.id, (errors.get(user.id) ?? 0) + 1);
+        return basic(user)
+            .setColor(evokerColor(metadata.guild))
+            .setDescription(text)
+            .setTitle("Erreur")
     }
 };
 
