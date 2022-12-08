@@ -1,4 +1,4 @@
-import { ColorResolvable, CommandInteraction, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
+import { ButtonBuilder, ButtonComponentData, ColorResolvable, CommandInteraction, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
 import { util } from "./functions";
 import query from "./query";
@@ -45,4 +45,7 @@ export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }
 export const evokerColor = (guild?: Guild) => {
     if (!guild || guild.members?.me?.nickname === 'Evoker') return '#0000ff';
     return '#ff0000'
+}
+export const buildButton = (data: ButtonComponentData) => {
+    return new ButtonBuilder(data)
 }
