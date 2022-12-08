@@ -87,3 +87,4 @@ export const row = <T extends AnyComponentBuilder = ButtonBuilder>(...components
         components
     }) as ActionRowBuilder<T>;
 };
+export const boolEmoji = (b: boolean) => (b ? '✅' : '❌');
