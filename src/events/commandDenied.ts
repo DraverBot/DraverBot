@@ -1,4 +1,5 @@
 import { AmethystEvent, commandDeniedCode } from "amethystjs";
+import { EmbedBuilder, User } from "discord.js";
 import replies, { replyKey } from "../data/replies";
 import { systemReply } from "../utils/toolbox";
 
@@ -15,13 +16,13 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
 
     if (integration) {
         systemReply(command.interaction, {
-            embeds: [replies[integration.value](command.interaction?.user, reason.metadata)],
+            embeds: [(replies[integration.value] as (user: User, metadata: any) => EmbedBuilder)(command.interaction?.user, reason.metadata)],
             ephemeral: true
         }).catch(() => {});
         return;
     }
 
-    const reply = replies[reason.metadata?.replyKey](command.interaction?.user);
+    const reply = replies[reason.metadata?.replyKey](command.interaction?.user, reason.metadata ?? {});
     systemReply(command.interaction, {
         embeds: [ reply ],
         ephemeral: true

@@ -1,7 +1,8 @@
-import { PermissionsString, User } from "discord.js"
+import { Guild, GuildMember, PermissionsString, User } from "discord.js"
+import { moduleType } from "../typings/database";
 import { permType } from "../typings/functions";
-import { getPerm } from "../utils/functions";
-import { basicEmbed as basic } from "../utils/toolbox";
+import { getPerm, moduleName } from "../utils/functions";
+import { basicEmbed as basic, evokerColor } from "../utils/toolbox";
 
 const replies = {
     guildOnly: (user: User) => {
@@ -37,6 +38,12 @@ const replies = {
             .setTitle(":x: Cooldown")
             .setDescription(`Vous êtes sous cooldown.\nMerci de patienter encore **${Math.floor(metadata.remainingCooldownTime) / 1000} secondes**`)
             .setColor('#ff0000')
+    },
+    moduleDisabled: (user: User, { guild, module }: { guild: Guild; module: moduleType }) => {
+        return basic(user)
+            .setTitle(":x: Module désactivé")
+            .setDescription(`Le module \`${moduleName(module)}\` est désactivé.`)
+            .setColor(evokerColor(guild))
     }
 }
 
