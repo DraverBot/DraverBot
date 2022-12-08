@@ -58,7 +58,7 @@ export class ModulesManager {
     private makeQuery(guild_id: string) {
         const dt = this.cache.get(guild_id);
 
-        return `REPLACE INTO test (${Object.keys(dt).join(', ')}) VALUES (${Object.keys(dt).map(x => `"${typeof x == 'string' ? x : x ? '0' : '1'}"`).join(', ')})`;
+        return `REPLACE INTO modules (${Object.keys(dt).join(', ')}) VALUES (${Object.keys(dt).map(x => `"${typeof x == 'string' ? x : x === true ? '0' : '1'}"`).join(', ')})`;
     }
     private async fillCache() {
         const datas = await query<modules>(`SELECT * FROM modules`)
