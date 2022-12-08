@@ -1,12 +1,12 @@
 import { AmethystCommand, preconditions, waitForInteraction } from "amethystjs";
-import { ApplicationCommandOptionType, ComponentType, Message } from "discord.js";
+import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from "discord.js";
 import { yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { addModLog, basicEmbed } from "../utils/toolbox";
+import { addModLog, basicEmbed, checkPerms } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'admincoins',
@@ -33,6 +33,16 @@ export default new AmethystCommand({
 
     if (subcommand === 'réinitialiser') {
         const user = options.getUser('utilisateur');
+
+        if (user && !checkPerms({
+            member: options.getMember('utilisateur') as GuildMember,
+            mod: interaction.member as GuildMember,
+            checkBot: true,
+            checkModPosition: true,
+            checkOwner: true,
+            interaction,
+            sendErrorMessage: true
+        })) return;
 
         const confirm = await interaction.reply({
             embeds: [ basicEmbed(interaction.user)
