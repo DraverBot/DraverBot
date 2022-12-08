@@ -26,7 +26,8 @@ export default new AmethystCommand({
                 }
             ]
         }
-    ]
+    ],
+    permissions: ['ManageGuild']
 })
 .setChatInputRun(async({ interaction, options }) => {
     const subcommand = options.getSubcommand();

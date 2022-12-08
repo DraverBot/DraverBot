@@ -43,7 +43,8 @@ export default new AmethystCommand({
             ]
         }
     ],
-    preconditions: [preconditions.GuildOnly]
+    preconditions: [preconditions.GuildOnly],
+    permissions: ['Administrator']
 }).setChatInputRun(async ({ interaction, options }) => {
     const subcommand = options.getSubcommand();
 
