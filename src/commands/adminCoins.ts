@@ -2,6 +2,7 @@ import { AmethystCommand, preconditions, waitForInteraction } from "amethystjs";
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from "discord.js";
 import { yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
+import economyCheck from "../preconditions/economyCheck";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
@@ -11,7 +12,7 @@ import { addModLog, basicEmbed, checkPerms } from "../utils/toolbox";
 export default new AmethystCommand({
     name: 'admincoins',
     description: `Gère les ${util('coins')} sur le serveur`,
-    preconditions: [ preconditions.GuildOnly, moduleEnabled ],
+    preconditions: [ preconditions.GuildOnly, moduleEnabled, economyCheck ],
     options: [
         {
             name: "réinitialiser",
@@ -21,8 +22,28 @@ export default new AmethystCommand({
                 {
                     name: "utilisateur",
                     description: "Utilisateur que vous voulez réinitialiser",
+                    required: false,
+                    type: ApplicationCommandOptionType.User
+                }
+            ]
+        },
+        {
+            name: 'ajouter',
+            description: `Ajoute des ${util('coins')} à un utilisateur`,
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "utilisateur",
+                    description: "Utilisateur dont vous voulez ajouter des " + util('coins'),
                     required: true,
                     type: ApplicationCommandOptionType.User
+                },
+                {
+                    name: 'montant',
+                    description: `Montant ${util('coinsPrefix')} que vous voulez attribuer`,
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true,
+                    minValue: 1
                 }
             ]
         }
@@ -34,16 +55,6 @@ export default new AmethystCommand({
 
     if (subcommand === 'réinitialiser') {
         const user = options.getUser('utilisateur');
-
-        if (user && !checkPerms({
-            member: options.getMember('utilisateur') as GuildMember,
-            mod: interaction.member as GuildMember,
-            checkBot: true,
-            checkModPosition: true,
-            checkOwner: true,
-            interaction,
-            sendErrorMessage: true
-        })) return;
 
         const confirm = await interaction.reply({
             embeds: [ basicEmbed(interaction.user)
@@ -86,6 +97,54 @@ export default new AmethystCommand({
             embeds: [ basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle("Réinitialisation")
                 .setDescription(`Les ${util('coins')} ${user ? `de ${user}` : "du serveur"} ont été réinitialisés`)
+            ],
+            components: []
+        }).catch(() => {})
+    }
+    if (subcommand === 'ajouter') {
+        const user = options.getUser('utilisateur');
+        const amount = options.getInteger('montant');
+
+        const rep = await interaction.reply({
+            fetchReply: true,
+            embeds: [
+                basicEmbed(interaction.user)
+                    .setTitle(`Ajout ${util('coinsPrefix')}`)
+                    .setDescription(`Vous êtes sur le point d'ajouter **${amount.toLocaleString('fr')} ${util('coins')}** à ${user}.\nVoulez-vous continuer ?`)
+                    .setColor('Grey')
+            ],
+            components: [ yesNoRow() ]
+        }) as Message<true>;
+
+        const reply = await waitForInteraction({
+            componentType: ComponentType.Button,
+            user: interaction.user,
+            message: rep
+        });
+
+        if (!reply || reply.customId === 'no') return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        });
+
+        interaction.client.coinsManager.addCoins({
+            guild_id: interaction.guild.id,
+            user_id: user.id,
+            coins: amount
+        });
+
+        addModLog({
+            guild: interaction.guild,
+            reason: "Pas de raison",
+            member_id: user.id,
+            mod_id: interaction.user.id,
+            type: modActionType.CoinsAdd
+        }).catch(() => {});
+
+        interaction.editReply({
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle(`${util('coins')} ajoutés`)
+                .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')} ${amount > 1 ? 'ont été ajoutés' : 'a été ajouté'} à ${user} par ${interaction.user}`)
             ],
             components: []
         }).catch(() => {})
