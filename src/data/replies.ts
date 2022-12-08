@@ -2,7 +2,7 @@ import { EmbedBuilder, Guild, GuildMember, PermissionsString, User } from 'disco
 import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
-import { getPerm, moduleName } from '../utils/functions';
+import { getPerm, moduleName, util } from '../utils/functions';
 import { basicEmbed as basic, evokerColor } from '../utils/toolbox';
 
 const replies = {
@@ -113,6 +113,12 @@ const replies = {
             .setTitle("Membre trop haut")
             .setDescription(`${member} est supérieur ou égal à moi dans la hiérarchie des rôles`)
             .setColor(evokerColor(member.guild))
+    },
+    notEnoughCoins: (user: GuildMember, target = user) => {
+        return basic(user.user)
+            .setTitle(`Pas assez ${util('coinsPrefix')}`)
+            .setDescription(`${target} n'as pas assez ${util('coinsPrefix')} pour faire ça`)
+            .setColor(evokerColor(user.guild))
     }
 };
 
