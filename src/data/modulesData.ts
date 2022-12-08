@@ -1,43 +1,46 @@
-import { moduleType } from "../typings/database";
+import { moduleType } from '../typings/database';
 
-export const modulesData: Record<moduleType, {
-    name: string;
-    editable: boolean;
-    default: boolean;
-    emoji: string;
-}> = {
+export const modulesData: Record<
+    moduleType,
+    {
+        name: string;
+        editable: boolean;
+        default: boolean;
+        emoji: string;
+    }
+> = {
     moderation: {
-        name: "modération",
+        name: 'modération',
         editable: true,
         default: true,
         emoji: '🔨'
     },
     misc: {
-        name: "divers",
+        name: 'divers',
         editable: true,
         default: true,
         emoji: '☁️'
     },
     economy: {
-        name: "économie",
+        name: 'économie',
         editable: true,
         default: false,
         emoji: '🪙'
     },
     administration: {
-        name: "administration",
+        name: 'administration',
         editable: true,
         default: true,
         emoji: '⚒️'
     },
     config: {
-        name: "configuration",
+        name: 'configuration',
         editable: false,
         default: true,
         emoji: '⚙️'
     },
     fun: {
-        name: "amusement",
+        name: 'amusement',
         editable: true,
         default: false,
         emoji: '🥳'
@@ -70,7 +73,7 @@ export const modulesData: Record<moduleType, {
         name: 'tickets',
         editable: true,
         default: false,
-        emoji: "📩"
+        emoji: '📩'
     },
     interchat: {
         name: 'interserveur',
@@ -78,4 +81,4 @@ export const modulesData: Record<moduleType, {
         default: false,
         emoji: '💬'
     }
-}
+};
