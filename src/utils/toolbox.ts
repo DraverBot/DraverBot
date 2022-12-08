@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonComponentData, ColorResolvable, CommandInteraction, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
+import { ButtonBuilder, ButtonStyle, ColorResolvable, CommandInteraction, ComponentType, EmbedBuilder, Guild, InteractionReplyOptions, User } from "discord.js";
 import { addModLog as addModLogType, randomType } from "../typings/functions";
 import { util } from "./functions";
 import query from "./query";
@@ -46,6 +46,16 @@ export const evokerColor = (guild?: Guild) => {
     if (!guild || guild.members?.me?.nickname === 'Evoker') return '#0000ff';
     return '#ff0000'
 }
-export const buildButton = (data: ButtonComponentData) => {
-    return new ButtonBuilder(data)
+export const buildButton = (data: { label: string; url?: string; style: keyof typeof ButtonStyle; id?: string; disabled?: boolean; emoji?: string; }) => {
+    const componentData: any = {
+        label: data.label,
+        style: ButtonStyle[data.style],
+        type: ComponentType.Button
+    }
+
+    if (data.emoji) componentData.emoji = data.emoji;
+    if (data.url && !data.id) componentData.url = data.url;
+    if (data.id && !data.url) componentData.custom_id = data.id;
+
+    return new ButtonBuilder(componentData)
 }
