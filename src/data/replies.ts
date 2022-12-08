@@ -1,4 +1,4 @@
-import { Guild, PermissionsString, User } from 'discord.js';
+import { EmbedBuilder, Guild, PermissionsString, User } from 'discord.js';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName } from '../utils/functions';
@@ -70,6 +70,11 @@ const replies = {
             .setColor(evokerColor(guild))
             .setTitle(`:x: Preuve invalide`)
             .setDescription(`Désolé, les preuves doivent être sous format **image**`)
+    },
+    cancel: () => {
+        return new EmbedBuilder()
+            .setTitle('💡 Annulé')
+            .setColor('Yellow')
     }
 };
 
