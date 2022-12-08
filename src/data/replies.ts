@@ -64,6 +64,12 @@ const replies = {
             .setTitle(':x: Module désactivé')
             .setDescription(`Le module \`${moduleName(module)}\` est désactivé.`)
             .setColor(evokerColor(guild));
+    },
+    invalidProofType: (user: User, { guild }: { guild: Guild }) => {
+        return basic(user)
+            .setColor(evokerColor(guild))
+            .setTitle(`:x: Preuve invalide`)
+            .setDescription(`Désolé, les preuves doivent être sous format **image**`)
     }
 };
 
