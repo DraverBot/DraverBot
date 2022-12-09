@@ -46,6 +46,26 @@ export default new AmethystCommand({
                     minValue: 1
                 }
             ]
+        },
+        {
+            name: 'retirer',
+            description: `Retire des ${util('coins')} à un utilisateur`,
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "utilisateur",
+                    description: "Utilisateur dont vous voulez ajouter des " + util('coins'),
+                    required: true,
+                    type: ApplicationCommandOptionType.User
+                },
+                {
+                    name: 'montant',
+                    description: `Montant ${util('coinsPrefix')} que vous voulez retirer`,
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true,
+                    minValue: 1
+                }
+            ]
         }
     ],
     permissions: ['ManageGuild']
@@ -148,5 +168,57 @@ export default new AmethystCommand({
             ],
             components: []
         }).catch(() => {})
+    }
+    if (subcommand === 'retirer') {
+        const user = options.getUser('utilisateur');
+        const amount = options.getInteger('montant');
+
+        const msg = await interaction.reply({
+            fetchReply: true,
+            components: [ yesNoRow() ],
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle(`Retrait ${util('coinsPrefix')}`)
+                .setDescription(`Vous êtes sur le point de retirer **${amount.toLocaleString('fr')} ${util('coins')}** à ${user}.\nVoulez-vous continuer ?`)
+                .setColor('Grey')
+            ]
+        }).catch(() => {}) as Message<true>;
+
+        const reply = await waitForInteraction({
+            componentType: ComponentType.Button,
+            message: msg,
+            user: interaction.user
+        });
+
+        if (!reply || reply.customId === 'no') return interaction.editReply({
+            embeds: [replies.cancel()],
+            components: []
+        }).catch(() => {});
+
+        const res = interaction.client.coinsManager.removeCoins({
+            guild_id: interaction.guild.id,
+            coins: amount,
+            user_id: user.id
+        });
+
+        if (res === 'not enough coins') return interaction.editReply({
+            embeds: [ replies.notEnoughCoins(interaction.member as GuildMember, options.getMember('utilisateur') as GuildMember) ],
+            components: []
+        }).catch(() => {});
+
+        addModLog({
+            guild: interaction.guild,
+            reason: 'Pas de raison',
+            mod_id: interaction.user.id,
+            member_id: user.id,
+            type: modActionType.CoinsRemove
+        }).catch(() => {});
+
+        interaction.editReply({
+            components: [],
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle(`Retrait ${util('coinsPrefix')}`)
+                .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')}** ${amount > 1 ? 'ont été retirés' : 'a été retiré'} à ${user} par ${interaction.user}`)
+            ]
+        }).catch(() => {});
     }
 })

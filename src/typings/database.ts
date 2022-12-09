@@ -8,7 +8,8 @@ export enum modActionType {
     Unwarn = "Retrait d'avertissement",
     EditLog = 'Modification de log',
     CoinsReset = "Réinitialisation économique",
-    CoinsAdd = "Ajout économique"
+    CoinsAdd = "Ajout économique",
+    CoinsRemove = "Retrait économique"
 }
 
 export type modlogs = {
