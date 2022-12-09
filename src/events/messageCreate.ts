@@ -36,6 +36,10 @@ export default new AmethystEvent('messageCreate', (message) => {
                 splashEmbed.setURL(util('rickroll'));
                 splash = splash.replace('-rr', '');
             }
+            if (splash.includes('-lg')) {
+                splashEmbed.setURL(util('lofiGirl'));
+                splash = splash.replace('-lg', '');
+            }
             const Draver = () => {
                 if (random({ max: 10000 }) === 568) return 'Drevar';
                 return 'Draver';
