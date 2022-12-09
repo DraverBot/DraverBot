@@ -18,6 +18,7 @@ export default new Precondition('economyPermCheck').setChatInputRun(({ interacti
         checkOwner: true,
         checkBot: true,
         sendErrorMessage: true,
+        checkClientPosition: false,
         interaction
     })) return {
         ok: false,
