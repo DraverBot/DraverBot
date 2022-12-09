@@ -44,16 +44,15 @@ export const systemReply = (interaction: CommandInteraction, content: Interactio
     return interaction[fnt](content);
 };
 export const boolDb = (bool: boolean): '0' | '1' => bool ? '0' : '1';
-export const dbBool = (str: string) => str !== '0';
+export const dbBool = (str: string) => str === '0' ? true : false;
 export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
     return new Promise(async (resolve) => {
         const self = mod_id === guild.client.user.id ? '1' : '0';
-        reason = reason.replace(/"/g, '\\"');
-
+        
         const rs = await query(
             `INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${
                 guild.id
-            }", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${reason}", "${proof}", "${self}", "0", "0" )`
+            }", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${sqliseString(reason)}", "${proof}", "${self}", "1", "1" )`
         );
 
         if (!rs) return resolve(false);
@@ -122,3 +121,13 @@ export const paginator = ({ interaction, user, embeds, time = 120000 }: paginato
         time
     });
 }
+export const numerize = (int: number) => int.toLocaleString('fr');
+export const mapEmbedsPaginator = (embeds: EmbedBuilder[]) => {
+    return embeds.map((x, i) => x.setFooter({ text: `Page ${numerize(i + 1)}/${numerize(embeds.length)}`, iconURL: x.data.footer?.icon_url ?? null }))
+}
+export const displayDate = (date: number) => {
+    const x = Math.floor(date / 1000);
+
+    return `<t:${x}:R> ( <t:${x}:F> )`;
+}
+export const sqliseString = (str: string) => str.replace(/"/g, '\\"');
