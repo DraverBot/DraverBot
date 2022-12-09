@@ -1,5 +1,6 @@
 {
     "avatar": "information",
     "module": "config",
-    "portefeuille": "economy"
+    "portefeuille": "economy",
+    "admincoins": "economy"
 }
