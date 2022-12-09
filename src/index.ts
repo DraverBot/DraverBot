@@ -15,6 +15,7 @@ const client = new AmethystClient(
         commandsFolder: './dist/commands',
         preconditionsFolder: './dist/preconditions',
         autocompleteListenersFolder: './dist/autocompletes',
+        buttonsFolder: './dist/events',
         debug: true,
         defaultCooldownTime: 5,
         prefix: '!'
