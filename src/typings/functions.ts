@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, GuildMember } from 'discord.js';
+import { CommandInteraction, EmbedBuilder, Guild, GuildMember, User } from 'discord.js';
 import perms from '../data/perms.json';
 import { modActionType } from './database';
 
@@ -55,4 +55,10 @@ export type checkPermsOptions = {
      * Returns true if the mod is the member
      */
     checkSelf?: boolean;
+}
+export type paginatorOptions = {
+    interaction: CommandInteraction;
+    user: User;
+    embeds: EmbedBuilder[];
+    time?: number;
 }

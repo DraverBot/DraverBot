@@ -12,7 +12,8 @@ import {
     User
 } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
-import { addModLog as addModLogType, checkPermsOptions, randomType } from '../typings/functions';
+import { Paginator } from '../managers/paginator';
+import { addModLog as addModLogType, checkPermsOptions, paginatorOptions, randomType } from '../typings/functions';
 import { util } from './functions';
 import query from './query';
 
@@ -61,11 +62,11 @@ export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }
 };
 
 export const evokerColor = (guild?: Guild) => {
-    if (!guild || guild.members?.me?.nickname === 'Evoker') return '#0000ff';
+    if (guild && guild.members?.me?.nickname === 'Evoker') return '#0000ff';
     return '#ff0000';
 };
-export const buildButton = (data: {
-    label: string;
+export const buildButton = ({ disabled = false, ...data }: {
+    label?: string;
     url?: string;
     style: keyof typeof ButtonStyle;
     id?: string;
@@ -73,11 +74,12 @@ export const buildButton = (data: {
     emoji?: string;
 }) => {
     const componentData: any = {
-        label: data.label,
         style: ButtonStyle[data.style],
-        type: ComponentType.Button
+        type: ComponentType.Button,
+        disabled
     };
 
+    if (data.label) componentData.label = data.label;
     if (data.emoji) componentData.emoji = data.emoji;
     if (data.url && !data.id) componentData.url = data.url;
     if (data.id && !data.url) componentData.custom_id = data.id;
@@ -111,4 +113,12 @@ export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition 
     if (checkClientPosition && member.roles.highest.position >= member.guild.members.me.roles.highest.position) return send('memberTooHighClient');
     if (checkOwner && member.id === member.guild.ownerId && !modOwner) return send('memberOwner');
     return true;
+}
+export const paginator = ({ interaction, user, embeds, time = 120000 }: paginatorOptions): Paginator => {
+    return new Paginator({
+        interaction,
+        user,
+        embeds,
+        time
+    });
 }

@@ -6,5 +6,11 @@
     "proofName": "preuve",
     "coins": "DraveCoins",
     "coinsPrefix": "de DraveCoins",
-    "lofiGirl": "https://top.gg/bot/1037028318404419596/"
+    "lofiGirl": "https://top.gg/bot/1037028318404419596/",
+    "paginatorNext": "paginator.next",
+    "paginatorPrevious": "paginator.previous",
+    "paginatorFirst": "paginator.first",
+    "paginatorLast": "paginator.last",
+    "paginatorClose": "paginator.close",
+    "paginatorSelect": "paginator.select"
 }
