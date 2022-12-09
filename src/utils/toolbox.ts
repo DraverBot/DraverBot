@@ -42,6 +42,7 @@ export const systemReply = (interaction: CommandInteraction, content: Interactio
     const fnt = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
     return interaction[fnt](content);
 };
+export const boolDb = (bool: boolean): '0' | '1' => bool ? '0' : '1';
 export const dbBool = (str: string) => str !== '0';
 export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
     return new Promise(async (resolve) => {
