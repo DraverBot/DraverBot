@@ -108,6 +108,6 @@ export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition 
     if (checkSelf && member.id === mod.id) return send('selfMod');
     if (checkModPosition && !modOwner && member.roles.highest.position >= mod.roles.highest.position) return send('memberTooHigh');
     if (checkClientPosition && member.roles.highest.position >= member.guild.members.me.roles.highest.position) return send('memberTooHighClient');
-    if (checkOwner && member.id === member.guild.ownerId) return send('memberOwner');
+    if (checkOwner && member.id === member.guild.ownerId && !modOwner) return send('memberOwner');
     return true;
 }
