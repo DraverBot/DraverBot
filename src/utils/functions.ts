@@ -5,7 +5,7 @@ import commandModules from '../data/commandsModules.json';
 import query from './query';
 import { modulesData } from '../data/modulesData';
 import { moduleType } from '../typings/database';
-import { capitalize } from './toolbox';
+import { boolDb, capitalize } from './toolbox';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -23,6 +23,7 @@ export const checkDatabase = (): Promise<void> => {
                 .map((n: moduleType) => `${n} TINYINT(1) NOT NULL DEFAULT "${modulesData[n].default ? '0' : '1'}"`)
                 .join(', ')} )`
         );
+        await query(`CREATE TABLE IF NOT EXISTS modlogs ( guild_id VARCHAR(255) NOT NULL, mod_id VARCHAR(255) NOT NULL, member_id VARCHAR(255) NOT NULL DEFAULT "", date VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, reason VARCHAR(1024) NOT NULL DEFAULT "Pas de raison", proof VARCHAR(255) NOT NULL DEFAULT "", autoMod TINYINT(1) NOT NULL DEFAULT "${boolDb(false)}", deleted TINYINT(1) NOT NULL DEFAULT "${boolDb(false)}", edited TINYINT(1) NOT NULL DEFAULT "${boolDb(false)}", lastEditedTimestamp VARCHAR(255) NOT NULL DEFAULT "", case_id INTEGER NOT NULL AUTO_INCREMENT )`)
 
         resolve();
     });
