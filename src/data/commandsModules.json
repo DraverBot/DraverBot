@@ -2,5 +2,6 @@
     "avatar": "information",
     "module": "config",
     "portefeuille": "economy",
-    "admincoins": "economy"
+    "admincoins": "economy",
+    "modlogs": "config"
 }
