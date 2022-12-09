@@ -28,6 +28,25 @@ export default new AmethystCommand({
                     required: true
                 }
             ]
+        },
+        {
+            name: 'modifier',
+            description: "Modifie un log",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'identifiant',
+                    description: "Identifiant du log à modifier",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                },
+                {
+                    name: 'raison',
+                    description: "Nouvelle raison du log",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
@@ -143,5 +162,8 @@ export default new AmethystCommand({
                 id: 'copyLogID'
             })) ]
         })
+    }
+    if (subcommand === 'modifier') {
+        await interaction.deferReply()
     }
 })
