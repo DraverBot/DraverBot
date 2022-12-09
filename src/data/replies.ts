@@ -119,6 +119,12 @@ const replies = {
             .setTitle(`Pas assez ${util('coinsPrefix')}`)
             .setDescription(`${target} n'as pas assez ${util('coinsPrefix')} pour faire ça`)
             .setColor(evokerColor(user.guild))
+    },
+    selfMod: ({ user, guild }: GuildMember, metadata: any) => {
+        return basic(user)
+            .setTitle(`Auto-modération`)
+            .setDescription(`Vous ne pouvez pas faire ça sur vous-même`)
+            .setColor(evokerColor(guild))
     }
 };
 

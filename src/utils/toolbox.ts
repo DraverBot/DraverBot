@@ -90,7 +90,7 @@ export const row = <T extends AnyComponentBuilder = ButtonBuilder>(...components
 };
 export const boolEmoji = (b: boolean) => (b ? '✅' : '❌');
 
-export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition = true, checkModPosition = true, checkOwner = true, ownerByPass = false, sendErrorMessage = false, interaction = undefined }: checkPermsOptions) => {
+export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition = true, checkModPosition = true, checkOwner = true, ownerByPass = false, checkSelf, sendErrorMessage = false, interaction = undefined }: checkPermsOptions) => {
     const send = (key: replyKey): false => {
         if (sendErrorMessage === true && interaction) {
             systemReply(interaction, {
@@ -105,6 +105,7 @@ export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition 
 
     if (ownerByPass === true && modOwner) return true;
     if (checkBot && member.user.bot) return send('memberBot');
+    if (checkSelf && member.id === mod.id) return send('selfMod');
     if (checkModPosition && !modOwner && member.roles.highest.position >= mod.roles.highest.position) return send('memberTooHigh');
     if (checkClientPosition && member.roles.highest.position >= member.guild.members.me.roles.highest.position) return send('memberTooHighClient');
     if (checkOwner && member.id === member.guild.ownerId) return send('memberOwner');

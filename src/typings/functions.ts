@@ -51,4 +51,8 @@ export type checkPermsOptions = {
      * @warning This test is the first
      */
     ownerByPass?: boolean;
+    /**
+     * Returns true if the mod is the member
+     */
+    checkSelf?: boolean;
 }
