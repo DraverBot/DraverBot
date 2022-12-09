@@ -1,9 +1,17 @@
-import { EmbedBuilder, Guild, GuildMember, PermissionsString, User } from 'discord.js';
+import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, User } from 'discord.js';
 import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
 import { basicEmbed as basic, evokerColor } from '../utils/toolbox';
+
+const userMember = (user: User | GuildMember, color: ColorResolvable) => {
+    const embed = basic(user instanceof User ? user : user.user)
+        .setColor(color)
+    if (user instanceof GuildMember) embed.setColor(evokerColor(user.guild));
+
+    return embed;
+}
 
 const replies = {
     guildOnly: (user: User, metadata: { guild?: Guild }) => {
@@ -125,6 +133,16 @@ const replies = {
             .setTitle(`Auto-modération`)
             .setDescription(`Vous ne pouvez pas faire ça sur vous-même`)
             .setColor(evokerColor(guild))
+    },
+    replyNotAllowed: (user: User | GuildMember) => {
+        return userMember(user, '#ff0000')
+            .setTitle("Interaction non-autorisée")
+            .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`)
+    },
+    unexistingLog: (user: User | GuildMember, id: string) => {
+        return userMember(user, '#ff0000')
+            .setTitle("Log inexistant")
+            .setDescription(`Le log d'identifiant \`${id}\` n'existe pas sur ce serveur.`)
     }
 };
 
