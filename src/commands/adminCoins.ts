@@ -144,7 +144,7 @@ export default new AmethystCommand({
         interaction.editReply({
             embeds: [ basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle(`${util('coins')} ajoutés`)
-                .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')} ${amount > 1 ? 'ont été ajoutés' : 'a été ajouté'} à ${user} par ${interaction.user}`)
+                .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')}** ${amount > 1 ? 'ont été ajoutés' : 'a été ajouté'} à ${user} par ${interaction.user}`)
             ],
             components: []
         }).catch(() => {})
