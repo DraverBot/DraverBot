@@ -318,10 +318,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-coins-manager@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/coins-manager/-/coins-manager-1.0.2.tgz#2e59ae3a31ae7361bcacc66ce4c29841080f5a0a"
-  integrity sha512-2sVwX8dPEBnFCrgl69DydkY+MHlsKuJDJVV4rYRxqVNOpsMwAEg5LpuNZV2XmIjmE3eNWaQVhP2+qTids0G+GQ==
+coins-manager@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/coins-manager/-/coins-manager-1.0.4.tgz#ca4d48c007a17c331e7eabe99466686fa0ccae82"
+  integrity sha512-ymQxzs1/qaEsxRC1KwETs1mEaUn9qjL5JVp5w2Bt+nqaIPfcEEaP6ArLq01wXAY7bO7YSL2EYx/fzvfIwgbrzA==
   dependencies:
     "@types/mysql" "^2.15.21"
     mysql "^2.18.1"
