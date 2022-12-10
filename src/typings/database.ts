@@ -82,3 +82,9 @@ export type modules = {
 } & {
     guild_id: string;
 };
+export type moduleDataType = {
+    name: string;
+    editable: boolean;
+    default: boolean;
+    emoji: string;
+}

@@ -1,13 +1,8 @@
-import { moduleType } from '../typings/database';
+import { moduleDataType, moduleType } from '../typings/database';
 
 export const modulesData: Record<
     moduleType,
-    {
-        name: string;
-        editable: boolean;
-        default: boolean;
-        emoji: string;
-    }
+    moduleDataType
 > = {
     moderation: {
         name: 'modération',
