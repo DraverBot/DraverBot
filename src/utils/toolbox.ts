@@ -121,7 +121,7 @@ export const checkPerms = ({ member, mod, checkBot = false, checkClientPosition 
     if (checkOwner && member.id === member.guild.ownerId && !modOwner) return send('memberOwner');
     return true;
 }
-export const paginator = ({ interaction, user, embeds, time = 120000 }: paginatorOptions): Paginator => {
+export const pagination = ({ interaction, user, embeds, time = 120000 }: paginatorOptions): Paginator => {
     return new Paginator({
         interaction,
         user,

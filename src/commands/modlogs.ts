@@ -6,7 +6,7 @@ import validProof from "../preconditions/validProof";
 import { modActionType, modlogs } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { addModLog, basicEmbed, boolDb, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString, updateLog } from "../utils/toolbox";
+import { addModLog, basicEmbed, boolDb, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, pagination, row, sqliseString, updateLog } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'modlogs',
@@ -129,7 +129,7 @@ export default new AmethystCommand({
             mapEmbed(embeds[i % 5], log)
         })
 
-        paginator({
+        pagination({
             interaction,
             embeds: mapEmbedsPaginator(embeds),
             user: interaction.user
