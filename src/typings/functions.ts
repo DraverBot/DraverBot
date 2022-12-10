@@ -1,4 +1,4 @@
-import { CommandInteraction, EmbedBuilder, Guild, GuildMember, User } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, EmbedBuilder, Guild, GuildMember, User } from 'discord.js';
 import perms from '../data/perms.json';
 import { modActionType } from './database';
 import commandModules from '../data/commandsModules.json';
@@ -70,3 +70,4 @@ export type updateLogOptions = {
     proofURL?: string;
 }
 export type commandName = keyof typeof commandModules;
+export type confirmReturn = { value: boolean; interaction: ButtonInteraction } | 'cancel';

@@ -1,8 +1,10 @@
+import { waitForInteraction } from 'amethystjs';
 import {
     ActionRowBuilder,
     AnyComponentBuilder,
     BaseChannel,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     CategoryChannel,
     ChannelType,
@@ -13,11 +15,13 @@ import {
     EmbedBuilder,
     Guild,
     InteractionReplyOptions,
+    Message,
     User
 } from 'discord.js';
+import { yesNoRow } from '../data/buttons';
 import replies, { replyKey } from '../data/replies';
 import { Paginator } from '../managers/paginator';
-import { addModLog as addModLogType, checkPermsOptions, paginatorOptions, randomType, updateLogOptions } from '../typings/functions';
+import { addModLog as addModLogType, checkPermsOptions, confirmReturn, paginatorOptions, randomType, updateLogOptions } from '../typings/functions';
 import { util } from './functions';
 import query from './query';
 
@@ -150,4 +154,40 @@ export const pingChan = (channel: BaseChannel | string) => {
 }
 export const subcmd = (options: CommandInteractionOptionResolver) => {
     return options.getSubcommand();
+}
+export const confirm = ({ interaction, user, embed, time = 120000 }: { interaction: CommandInteraction, user: User, embed: EmbedBuilder, time?: number }): Promise<confirmReturn> => {
+    return new Promise(async(resolve) => {
+        let msg: Message<true>;
+
+        setAsQuestion(embed)
+        if (interaction.replied || interaction.deferred) {
+            interaction.editReply({
+                embeds: [embed],
+                components: [yesNoRow()]
+            }).catch(() => {});
+            msg = await interaction.fetchReply().catch(() => {}) as Message<true>;
+        } else {
+            msg = await interaction.reply({
+                embeds: [ embed ],
+                fetchReply: true,
+                components: [ yesNoRow() ]
+            }).catch(() => {}) as Message<true>;
+        }
+
+        const reply = await waitForInteraction({
+            componentType: ComponentType.Button,
+            user,
+            message: msg,
+            time
+        }).catch(() => {});
+
+        if (!reply) return resolve('cancel');
+        return resolve({
+            value: reply.customId === 'yes',
+            interaction: reply
+        });
+    })
+}
+export const setAsQuestion = (embed: EmbedBuilder) => {
+    return embed.setColor('Grey')
 }

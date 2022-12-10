@@ -4,7 +4,8 @@ import { frequenceBtn, yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import { WordGenerator } from "../managers/Generator";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { basicEmbed, pingChan, random, row, subcmd } from "../utils/toolbox";
+import { confirmReturn } from "../typings/functions";
+import { basicEmbed, confirm, pingChan, random, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'interserver',
@@ -18,6 +19,20 @@ export default new AmethystCommand({
                 {
                     name: 'salon',
                     description: "Salon à configurer",
+                    required: true,
+                    type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [ChannelType.GuildText]
+                }
+            ]
+        },
+        {
+            name: 'supprimer',
+            description: "Supprime un salon d'interchat dans le serveur",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: "Salon à déconfigurer",
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
@@ -106,5 +121,41 @@ export default new AmethystCommand({
             ],
             components: [ row(frequenceBtn()) ]
         })
+    }
+    if (subcommand === 'supprimer') {
+        const channel = options.getChannel('salon') as TextChannel;
+
+        if (!interaction.client.interserver.cache.find(x => x.guild_id === interaction.guild.id && x.channel_id === channel.id)) return interaction.reply({
+            embeds: [ replies.interserverNotChannel(interaction.user, { channel }) ]
+        }).catch(() => {});
+
+        const validated = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle("Suppression d'interchat")
+                .setDescription(`Voulez-vous vraiment supprimer l'interchat du salon ${pingChan(channel)}\n> Le salon ne sera pas supprimé`)
+        }).catch(() => {}) as confirmReturn;
+    
+        if (validated === 'cancel' || !validated?.value) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        }).catch(() => {});
+
+        await interaction.editReply({
+            embeds: [ replies.wait(interaction.user) ],
+            components: []
+        });
+        
+        await interaction.client.interserver.removeInterserver({
+            guild_id: interaction.guild.id,
+            channel
+        }).catch(() => {});
+        interaction.editReply({
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Interchat supprimé")
+                .setDescription(`L'interchat du salon ${pingChan(channel)} a été supprimé`)
+            ]
+        }).catch(() => {});
     }
 })
