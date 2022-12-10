@@ -7,7 +7,7 @@ import moduleEnabled from "../preconditions/moduleEnabled";
 import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { addModLog, basicEmbed } from "../utils/toolbox";
+import { addModLog, basicEmbed, numerize, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'admincoins',
@@ -66,12 +66,25 @@ export default new AmethystCommand({
                     minValue: 1
                 }
             ]
+        },
+        {
+            name: 'voir',
+            description: "Voir les statistiques d'un membre",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'utilisateur',
+                    description: "Utilisateur que vous voulez voir",
+                    type: ApplicationCommandOptionType.User,
+                    required: true
+                }
+            ]
         }
     ],
     permissions: ['ManageGuild']
 })
 .setChatInputRun(async({ interaction, options }) => {
-    const subcommand = options.getSubcommand();
+    const subcommand = subcmd(options);
 
     if (subcommand === 'réinitialiser') {
         const user = options.getUser('utilisateur');
@@ -218,6 +231,33 @@ export default new AmethystCommand({
             embeds: [ basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle(`Retrait ${util('coinsPrefix')}`)
                 .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')}** ${amount > 1 ? 'ont été retirés' : 'a été retiré'} à ${user} par ${interaction.user}`)
+            ]
+        }).catch(() => {});
+    }
+    if (subcommand === 'voir') {
+        const user = options.getUser('utilisateur');
+        const stats = interaction.client.coinsManager.getData({
+            guild_id: interaction.guild.id,
+            user_id: interaction.user.id
+        });
+
+        interaction.reply({
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setDescription(`Voici les statistiques de ${user}`)
+                .setTitle("Statistiques")
+                .setFields({
+                    name: 'En poche',
+                    value: numerize(stats.coins),
+                    inline: true
+                },{
+                    name: 'En banque',
+                    value: numerize(stats.bank),
+                    inline: true
+                },{
+                    name: 'Total',
+                    value: numerize(stats.coins + stats.bank),
+                    inline: true
+                })
             ]
         }).catch(() => {});
     }
