@@ -1,6 +1,7 @@
 import { CommandInteraction, EmbedBuilder, Guild, GuildMember, User } from 'discord.js';
 import perms from '../data/perms.json';
 import { modActionType } from './database';
+import commandModules from '../data/commandsModules.json';
 
 export type randomType = {
     max?: number;
@@ -68,3 +69,4 @@ export type updateLogOptions = {
     reason?: string;
     proofURL?: string;
 }
+export type commandName = keyof typeof commandModules;

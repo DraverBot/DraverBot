@@ -1,5 +1,5 @@
 import perms from '../data/perms.json';
-import { permType } from '../typings/functions';
+import { commandName, permType } from '../typings/functions';
 import utils from '../data/utils.json';
 import commandModules from '../data/commandsModules.json';
 import query from './query';
@@ -13,7 +13,7 @@ export const getPerm = (key: permType) => {
 export const util = <T = any>(key: keyof typeof utils) => {
     return utils[key] as T;
 };
-export const Module = (key: keyof typeof commandModules) => {
+export const Module = (key: commandName) => {
     return commandModules[key] as moduleType;
 };
 export const checkDatabase = (): Promise<void> => {

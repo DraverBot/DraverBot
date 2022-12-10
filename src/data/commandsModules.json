@@ -3,5 +3,6 @@
     "module": "config",
     "portefeuille": "economy",
     "admincoins": "economy",
-    "modlogs": "config"
+    "modlogs": "config",
+    "help": "utils"
 }

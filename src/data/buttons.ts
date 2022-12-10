@@ -69,6 +69,14 @@ export const closePaginator = () => {
         style: 'Danger'
     })
 }
+export const moduleEnabled = (enabled: boolean) => {
+    return buildButton({
+        label: enabled ? 'Activé' : 'Désactivé',
+        id: 'moduleEnabledOrNot',
+        style: 'Primary',
+        disabled: true
+    })
+}
 
 export const yesNoRow = () => {
     return row(yesBtn(), noBtn());
