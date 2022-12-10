@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from "discord
 import replies from "../data/replies";
 import { modlogs } from "../typings/database";
 import query from "../utils/query";
-import { basicEmbed, buildButton, capitalize, dbBool, displayDate, evokerColor, paginator, row, sqliseString } from "../utils/toolbox";
+import { basicEmbed, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'modlogs',
@@ -103,7 +103,7 @@ export default new AmethystCommand({
 
         paginator({
             interaction,
-            embeds,
+            embeds: mapEmbedsPaginator(embeds),
             user: interaction.user
         });
     }
