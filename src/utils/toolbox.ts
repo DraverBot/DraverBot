@@ -44,10 +44,10 @@ export const systemReply = (interaction: CommandInteraction, content: Interactio
     return interaction[fnt](content);
 };
 export const boolDb = (bool: boolean): '0' | '1' => bool ? '0' : '1';
-export const dbBool = (str: string) => str === '0' ? true : false;
+export const dbBool = (str: string | number) => ['0', 0].includes(str);
 export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
     return new Promise(async (resolve) => {
-        const self = mod_id === guild.client.user.id ? '1' : '0';
+        const self = mod_id === guild.client.user.id ? '0' : '1';
         
         const rs = await query(
             `INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${
@@ -131,9 +131,9 @@ export const displayDate = (date: number) => {
     return `<t:${x}:R> ( <t:${x}:F> )`;
 }
 export const sqliseString = (str: string) => str.replace(/"/g, '\\"');
-export const updateLog = ({ guild, case_id }: updateLogOptions): Promise<boolean> => {
+export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Promise<boolean> => {
     return new Promise(async(resolve) => {
-        const res = await query(`REPLACE INTO modlogs (case_id, guild_id, reason, edited, lastEditedTimestamp) VALUES ('${case_id}', '${guild.id}', "${sqliseString(reason)}", '${boolDb(true)}', '${Date.now()}')`).catch(() => {});
+        const res = await query(`UPDATE modlogs SET edited='${boolDb(true)}', lastEditedTimestamp="${Date.now()}"${reason ? `, reason="${sqliseString(reason)}"` : ''}${proofURL ? `, proof="${proofURL}"`:''} WHERE case_id='${case_id}'`).catch(() => {});
 
         return resolve(res ? true : false);
     })
