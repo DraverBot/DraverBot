@@ -23,7 +23,7 @@ export default new AmethystCommand({
         }).catch(() => {})
 
         interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle("Votre portefeuille")
                 .setDescription(`Voici votre portefeuille sur ${interaction.guild.name}`)
                 .setFields(
