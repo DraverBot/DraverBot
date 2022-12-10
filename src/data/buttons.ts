@@ -77,6 +77,13 @@ export const moduleEnabled = (enabled: boolean) => {
         disabled: true
     })
 }
+export const frequenceBtn = () => {
+    return buildButton({
+        label: 'Fréquence',
+        id: 'interchat.see-frequence',
+        style: 'Primary'
+    })
+}
 
 export const yesNoRow = () => {
     return row(yesBtn(), noBtn());

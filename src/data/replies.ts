@@ -186,6 +186,12 @@ const replies = {
         return userMember(user)
             .setTitle("Salon invalide")
             .setDescription(`Le salon ${pingChan(metadata.channel)} n'est pas un salon d'interchat`)
+    },
+    wait: (user: User) => {
+        return basic(user)
+            .setTitle("Patientez...")
+            .setDescription(`Merci de patienter quelques instants`)
+            .setColor('Orange')
     }
 };
 

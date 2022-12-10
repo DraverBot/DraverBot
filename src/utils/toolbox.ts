@@ -8,6 +8,7 @@ import {
     ChannelType,
     ColorResolvable,
     CommandInteraction,
+    CommandInteractionOptionResolver,
     ComponentType,
     EmbedBuilder,
     Guild,
@@ -146,4 +147,7 @@ export const pingChan = (channel: BaseChannel | string) => {
     
     if (channel.type === ChannelType.GuildCategory) return (channel as CategoryChannel).name;
     return `<#${channel.id}>`
+}
+export const subcmd = (options: CommandInteractionOptionResolver) => {
+    return options.getSubcommand();
 }
