@@ -18,7 +18,7 @@ const client = new AmethystClient(
         buttonsFolder: './dist/buttons',
         debug: true,
         defaultCooldownTime: 5,
-        prefix: '!'
+        prefix: '!!',
     }
 );
 
