@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/string-similarity": "^4.0.0",
-    "amethystjs": "^1.2.6",
+    "amethystjs": "^1.2.61",
     "coins-manager": "^1.0.4",
     "discord.js": "^14.7.1",
     "interserver-manager": "^1.0.1",
