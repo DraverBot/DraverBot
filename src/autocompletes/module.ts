@@ -1,7 +1,6 @@
 import { AutocompleteListener } from 'amethystjs';
 import { modulesData } from '../data/modulesData';
 import { moduleType } from '../typings/database';
-import { compareTwoStrings } from 'string-similarity';
 
 export default new AutocompleteListener({
     listenerName: 'module',

@@ -1,5 +1,4 @@
 import { AutocompleteListener } from "amethystjs";
-import { compareTwoStrings } from "string-similarity";
 
 export default new AutocompleteListener({
     listenerName: 'commandName',

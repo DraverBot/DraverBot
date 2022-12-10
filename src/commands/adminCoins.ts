@@ -7,7 +7,7 @@ import moduleEnabled from "../preconditions/moduleEnabled";
 import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { addModLog, basicEmbed, checkPerms } from "../utils/toolbox";
+import { addModLog, basicEmbed } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'admincoins',

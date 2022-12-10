@@ -1,5 +1,4 @@
 import { AmethystEvent } from 'amethystjs';
-import { ColorResolvable } from 'discord.js';
 import splashes from '../data/splash.json';
 import { util } from '../utils/functions';
 import { basicEmbed, random } from '../utils/toolbox';
