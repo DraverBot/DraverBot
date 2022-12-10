@@ -191,3 +191,6 @@ export const confirm = ({ interaction, user, embed, time = 120000 }: { interacti
 export const setAsQuestion = (embed: EmbedBuilder) => {
     return embed.setColor('Grey')
 }
+export const plurial = (num: number, { singular = '', plurial = 's' }: { singular?: string; plurial?: string; }) => {
+    return num > 1 ? plurial : singular;
+}
