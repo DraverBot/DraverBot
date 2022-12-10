@@ -1,9 +1,9 @@
-import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, User } from 'discord.js';
+import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, TextChannel, User } from 'discord.js';
 import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
-import { basicEmbed as basic, evokerColor } from '../utils/toolbox';
+import { basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 
 type anyUser = User | GuildMember;
 
@@ -156,6 +156,36 @@ const replies = {
             .setColor(evokerColor(guild))
             .setTitle("Propriétaire uniquement")
             .setDescription(`Cette commande est réservée au propriétaire du serveur`)
+    },
+    interserverAlreadySet: (user: anyUser, metadata: { channel_id: string }) => {
+        return userMember(user)
+            .setTitle("Salon déjà configuré")
+            .setDescription(`Le salon ${pingChan(metadata.channel_id)} est déjà un salon d'interchat`)
+    },
+    interserverUnexistingFrequence: (user: anyUser, { frequence }: { frequence: string }) => {
+        return userMember(user)
+            .setTitle("Fréquence invalide")
+            .setDescription(`La fréquence \`${frequence}\` n'est utilisée dans aucun autre serveur`)
+    },
+    interserverFrequenceAssigned: (user: anyUser, { frequence }: { frequence: string }) => {
+        return userMember(user)
+            .setTitle("Fréquence déjà utilisée")
+            .setDescription(`Cette fréquence est déjà utilisée dans un autre salon du serveur`)
+    },
+    interserverWebhookFailed: (user: anyUser, metadata: {}) => {
+        return userMember(user)
+            .setTitle("Pas de webhook")
+            .setDescription(`Je n'ai pas pu créer de webhook.\nVérifiez que je possède la permission \`gérer les webhooks\` et réessayez`)
+    },
+    interserverNoFrequence: (user: anyUser, metadata: {}) => {
+        return userMember(user)
+            .setTitle("Pas de fréquence")
+            .setDescription(`Vous n'êtes pas censé voir ce message.\nCette erreur arrive lorsque je n'ai pas réussi à générer une fréquence unique pour votre salon.\nUne des solutions est de réessayer la commande`)
+    },
+    interserverNotChannel: (user: anyUser, metadata: { channel: TextChannel }) => {
+        return userMember(user)
+            .setTitle("Salon invalide")
+            .setDescription(`Le salon ${pingChan(metadata.channel)} n'est pas un salon d'interchat`)
     }
 };
 

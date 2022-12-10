@@ -88,3 +88,9 @@ export type moduleDataType = {
     default: boolean;
     emoji: string;
 }
+export type interserver = {
+    guild_id: string;
+    frequence: string;
+    channel_id: string;
+    webhook: string;
+}

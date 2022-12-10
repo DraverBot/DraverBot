@@ -4,5 +4,6 @@
     "portefeuille": "economy",
     "admincoins": "administration",
     "modlogs": "config",
-    "help": "utils"
+    "help": "utils",
+    "interserver": "interchat"
 }
