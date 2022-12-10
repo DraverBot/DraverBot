@@ -177,6 +177,15 @@ export default new AmethystCommand({
 
         const identifiant = options.getString('identifiant');
         const reason = options.getString('raison');
+        const proof = options.getAttachment(util('proofName'));
+
+        if (!proof && !reason) return interaction.editReply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Pas de modification")
+                .setDescription(`Veuillez préciser une nouvelle raison ou une nouvelle preuve pour modifier un log`)
+                .setColor(evokerColor(interaction.guild))
+            ]
+        }).catch(() => {});
 
         const logs = await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id='${interaction.guild.id}' AND case_id="${sqliseString(identifiant)}"`);
 
@@ -184,18 +193,25 @@ export default new AmethystCommand({
             embeds: [ replies.unexistingLog(interaction.member as GuildMember, identifiant) ]
         }).catch(() => {});
 
+        if (dbBool(logs[0].deleted)) return interaction.editReply({
+            embeds: [ replies.deletedLog(interaction.member as GuildMember, logs[0].case_id) ]
+        }).catch(() => {});
+
         const res = await updateLog({
             guild: interaction.guild,
             reason,
-            case_id: identifiant
+            case_id: identifiant,
+            proofURL: proof?.url
         });
 
+        const result = basicEmbed(interaction.user)
+        .setColor(res ? util('accentColor') : evokerColor(interaction.guild))
+        .setTitle(res ? `Log modifié` : "Erreur de modification")
+        .setDescription(res ? `Le log **${identifiant}** a été modifié.${reason ? `\nNouvelle raison : ${reason}` : ''}${proof ? `\n[Nouvelle preuve](${proof.url})` : ''}` : "Une erreur a eu lieu lors de la modification du log.\n> Essayez avec une raison plus courte");
+
+        if (proof) result.setImage(proof.url);
         interaction.editReply({
-            embeds: [ basicEmbed(interaction.user)
-                .setColor(res ? util('accentColor') : evokerColor(interaction.guild))
-                .setTitle(res ? `Log modifié` : "Erreur de modification")
-                .setDescription(res ? `Le log **${identifiant}** a été modifié.\nNouvelle raison : ${reason}` : "Une erreur a eu lieu lors de la modification du log.\n> Essayez avec une raison plus courte")
-            ]
+            embeds: [ result ]
         }).catch(() => {});
     }
 })

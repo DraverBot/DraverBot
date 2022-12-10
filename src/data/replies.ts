@@ -5,9 +5,11 @@ import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
 import { basicEmbed as basic, evokerColor } from '../utils/toolbox';
 
-const userMember = (user: User | GuildMember, color: ColorResolvable) => {
+type anyUser = User | GuildMember;
+
+const userMember = (user: anyUser, color?: ColorResolvable) => {
     const embed = basic(user instanceof User ? user : user.user)
-        .setColor(color)
+        .setColor(color ?? '#ff0000')
     if (user instanceof GuildMember) embed.setColor(evokerColor(user.guild));
 
     return embed;
@@ -134,15 +136,20 @@ const replies = {
             .setDescription(`Vous ne pouvez pas faire ça sur vous-même`)
             .setColor(evokerColor(guild))
     },
-    replyNotAllowed: (user: User | GuildMember) => {
-        return userMember(user, '#ff0000')
+    replyNotAllowed: (user: anyUser) => {
+        return userMember(user)
             .setTitle("Interaction non-autorisée")
             .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`)
     },
-    unexistingLog: (user: User | GuildMember, id: string) => {
-        return userMember(user, '#ff0000')
+    unexistingLog: (user: anyUser, id: string) => {
+        return userMember(user)
             .setTitle("Log inexistant")
             .setDescription(`Le log d'identifiant \`${id}\` n'existe pas sur ce serveur.`)
+    },
+    deletedLog: (user: anyUser, id: string) => {
+        return userMember(user)
+            .setTitle("Log supprimé")
+            .setDescription(`Le log d'identifiant \`${id}\` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé`)
     }
 };
 
