@@ -6,5 +6,6 @@
     "modlogs": "config",
     "help": "utils",
     "interserver": "interchat",
-    "pay": "economy"
+    "pay": "economy",
+    "banque": "economy"
 }

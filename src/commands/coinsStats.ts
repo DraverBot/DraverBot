@@ -14,7 +14,7 @@ export default new AmethystCommand({
             user_id: interaction.user.id
         })
 
-        if (!coins || !bank) return interaction.reply({
+        if (!coins && !bank) return interaction.reply({
             embeds: [ basicEmbed(interaction.user)
                 .setTitle(":x: Pas de monnaie")
                 .setDescription(random({ max: 100 }) === 95 ? `Vous n'avez pas d'argent sur votre compte.\nRécupérez des pièces et ré-effectuez cette commande, parce que pour l'instant vous êtes à la rue` : `Vous n'avez pas d'argent sur votre compte.\nRécupérérez des pièces et ré-effectuez cette commande.`)
