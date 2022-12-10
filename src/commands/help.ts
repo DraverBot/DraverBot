@@ -54,6 +54,11 @@ export default new AmethystCommand({
                         name: 'Sous-commandes',
                         value: subs.length === 0 ? "Pas de sous-commandes" : subs.map(x => x.name).join(', '),
                         inline: true
+                    },
+                    {
+                        name: 'Module',
+                        value: Module(cmd.options.name as commandName),
+                        inline: true
                     }
                 )
             ]
