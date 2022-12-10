@@ -243,10 +243,10 @@ ajv@^6.10.0, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amethystjs@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.2.4.tgz#8155cd86df80fe31cdedb4744da37b976173b5b4"
-  integrity sha512-EAA2PRdHB2QQ9+CIQiOFICFI/KYHpMGgwVLhTaKGeFj4HJn3Jju/AVO95IE9RkjMGhuViHJ3vQ/i8fbbPrLoIw==
+amethystjs@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.2.5.tgz#e044a17e59b864f04003cc127e1d34fa5250b3b8"
+  integrity sha512-wxl9XHJhFNBjK+v4Gbl0nBe6PU3z5Pmz1ueGqqo9pfWQiPhRlTxHaJwyAAPIg14zQtitNXAuxGVs0bFA41Sn1w==
   dependencies:
     discord.js "^14.6.0"
     fs "^0.0.1-security"

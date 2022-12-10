@@ -4,6 +4,7 @@ import { moduleType } from '../typings/database';
 import { compareTwoStrings } from 'string-similarity';
 
 export default new AutocompleteListener({
+    listenerName: 'module',
     commandName: [{ commandName: 'module' }],
     run: ({ focusedValue }) => {
         const list = Object.keys(modulesData)
