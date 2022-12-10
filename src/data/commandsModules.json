@@ -7,5 +7,6 @@
     "help": "utils",
     "interserver": "interchat",
     "pay": "economy",
-    "banque": "economy"
+    "banque": "economy",
+    "pile-ou-face": "fun"
 }
