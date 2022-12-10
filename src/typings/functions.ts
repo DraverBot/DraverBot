@@ -62,3 +62,9 @@ export type paginatorOptions = {
     embeds: EmbedBuilder[];
     time?: number;
 }
+export type updateLogOptions = {
+    guild: Guild;
+    case_id: string;
+    reason?: string;
+    proofURL?: string;
+}

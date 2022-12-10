@@ -1,14 +1,16 @@
 import { AmethystCommand, preconditions } from "amethystjs";
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from "discord.js";
 import replies from "../data/replies";
+import validProof from "../preconditions/validProof";
 import { modlogs } from "../typings/database";
+import { util } from "../utils/functions";
 import query from "../utils/query";
-import { basicEmbed, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString } from "../utils/toolbox";
+import { basicEmbed, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString, updateLog } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'modlogs',
     description: "Affiche les logs du serveur",
-    preconditions: [preconditions.GuildOnly],
+    preconditions: [preconditions.GuildOnly, validProof],
     permissions: ['ViewAuditLog', 'ManageGuild'],
     options: [
         {
@@ -43,8 +45,14 @@ export default new AmethystCommand({
                 {
                     name: 'raison',
                     description: "Nouvelle raison du log",
-                    required: true,
+                    required: false,
                     type: ApplicationCommandOptionType.String
+                },
+                {
+                    name: util('proofName'),
+                    description: "Nouvelle preuve du log",
+                    required: false,
+                    type: ApplicationCommandOptionType.Attachment
                 }
             ]
         }
@@ -165,6 +173,29 @@ export default new AmethystCommand({
         })
     }
     if (subcommand === 'modifier') {
-        await interaction.deferReply()
+        await interaction.deferReply();
+
+        const identifiant = options.getString('identifiant');
+        const reason = options.getString('raison');
+
+        const logs = await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id='${interaction.guild.id}' AND case_id="${sqliseString(identifiant)}"`);
+
+        if (!logs || logs.length === 0) return interaction.editReply({
+            embeds: [ replies.unexistingLog(interaction.member as GuildMember, identifiant) ]
+        }).catch(() => {});
+
+        const res = await updateLog({
+            guild: interaction.guild,
+            reason,
+            case_id: identifiant
+        });
+
+        interaction.editReply({
+            embeds: [ basicEmbed(interaction.user)
+                .setColor(res ? util('accentColor') : evokerColor(interaction.guild))
+                .setTitle(res ? `Log modifié` : "Erreur de modification")
+                .setDescription(res ? `Le log **${identifiant}** a été modifié.\nNouvelle raison : ${reason}` : "Une erreur a eu lieu lors de la modification du log.\n> Essayez avec une raison plus courte")
+            ]
+        }).catch(() => {});
     }
 })

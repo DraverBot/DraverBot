@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
 import { Paginator } from '../managers/paginator';
-import { addModLog as addModLogType, checkPermsOptions, paginatorOptions, randomType } from '../typings/functions';
+import { addModLog as addModLogType, checkPermsOptions, paginatorOptions, randomType, updateLogOptions } from '../typings/functions';
 import { util } from './functions';
 import query from './query';
 
@@ -131,3 +131,10 @@ export const displayDate = (date: number) => {
     return `<t:${x}:R> ( <t:${x}:F> )`;
 }
 export const sqliseString = (str: string) => str.replace(/"/g, '\\"');
+export const updateLog = ({ guild, case_id }: updateLogOptions): Promise<boolean> => {
+    return new Promise(async(resolve) => {
+        const res = await query(`REPLACE INTO modlogs (case_id, guild_id, reason, edited, lastEditedTimestamp) VALUES ('${case_id}', '${guild.id}', "${sqliseString(reason)}", '${boolDb(true)}', '${Date.now()}')`).catch(() => {});
+
+        return resolve(res ? true : false);
+    })
+}
