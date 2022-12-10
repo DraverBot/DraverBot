@@ -4,8 +4,9 @@ import { frequenceBtn, yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import { WordGenerator } from "../managers/Generator";
 import moduleEnabled from "../preconditions/moduleEnabled";
+import { interserver } from "../typings/database";
 import { confirmReturn } from "../typings/functions";
-import { basicEmbed, confirm, pingChan, random, row, subcmd } from "../utils/toolbox";
+import { basicEmbed, confirm, evokerColor, mapEmbedsPaginator, numerize, pagination, pingChan, plurial, random, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'interserver',
@@ -34,6 +35,20 @@ export default new AmethystCommand({
                     name: 'salon',
                     description: "Salon à déconfigurer",
                     required: true,
+                    type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [ChannelType.GuildText]
+                }
+            ]
+        },
+        {
+            name: "afficher",
+            description: "Affiche la liste des interchats du serveur",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: "Salon spécifique que vous voulez voir",
+                    required: false,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
                 }
@@ -157,5 +172,73 @@ export default new AmethystCommand({
                 .setDescription(`L'interchat du salon ${pingChan(channel)} a été supprimé`)
             ]
         }).catch(() => {});
+    }
+    if (subcommand === 'afficher') {
+        const list = interaction.client.interserver.cache.filter(x => x.guild_id === interaction.guild.id).toJSON();
+        if (list.length === 0) return interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setColor(evokerColor(interaction.guild))
+                .setDescription(`Aucun salon d'interchat n'est configuré sur votre serveur`)
+                .setTitle("Pas d'interchat")
+            ]
+        }).catch(() => {});
+        
+        const channel = options.getChannel('salon', false) as TextChannel;
+        if (channel) {
+            const data = list.find(x => x.channel_id === channel.id) as interserver;
+            if (!data) return interaction.reply({
+                embeds: [ replies.interserverNotChannel(interaction.member as GuildMember, { channel }) ]
+            }).catch(() => {});
+
+            const shared = interaction.client.interserver.cache.filter(x => x.frequence === data.frequence).toJSON() as interserver[];
+
+            return interaction.reply({
+                embeds: [basicEmbed(interaction.user, { defaultColor: true })
+                    .setTitle("Interchat")
+                    .setDescription(`Le salon ${pingChan(channel)} partage sa fréquence avec ${shared.length === 1 ? 'aucun autre salon d\'interchat' : `**${numerize(shared.length - 1)}** autre${shared.length > 2 ? 's salons' : ' salon'} d'interchat`}`)
+                ],
+                components: [ row(frequenceBtn()) ]
+            }).catch(() => {});
+        }
+
+        const map = (embed: EmbedBuilder, data: interserver) => {
+            const index = list.indexOf(data);
+            return embed.addFields({
+                name: `Salon numéro ${numerize(index + 1)}`,
+                value: `${pingChan(data.channel_id)}`,
+                inline: false,
+            })
+        }
+
+        const basic = () => basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Salons d'interchat")
+                .setDescription(`Il y a ${list.length} salon${plurial(list.length, {})} configuré${plurial(list.length, {})} sur le serveur`)
+
+        if (list.length <= 5) {
+            const embed = basic()
+
+            for (const d of list) {
+                map(embed, d);
+            }
+
+            interaction.reply({
+                embeds: [ embed ]
+            }).catch(() => {});
+        } else {
+            const array = [basic()];
+
+            list.forEach((v, i) => {
+                if (i % 5 === 0 && i > 0) array.push(basic());
+
+                map(array[i % 5], v);
+            });
+
+            pagination({
+                interaction,
+                embeds: mapEmbedsPaginator(array),
+                user: interaction.user,
+                time: 180000
+            });
+        }
     }
 })
