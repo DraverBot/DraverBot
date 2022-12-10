@@ -10,6 +10,7 @@
     "amethystjs": "^1.2.5",
     "coins-manager": "^1.0.4",
     "discord.js": "^14.7.1",
+    "interserver-manager": "^1.0.1",
     "mysql": "^2.18.1",
     "string-similarity": "^4.0.4",
     "tsc": "^2.0.4",

@@ -381,7 +381,7 @@ discord-api-types@^0.37.20:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.21.tgz#122d571dfed2dce95be8fac34a0f1985ddc021b4"
   integrity sha512-GB4ThibZEzWXcvgL2QfjKoDX5j1sNLWtgibodiJ9M9PM0u9bdR2t3vZ24oQWLKlksJehSJmZDtRsAibhcr46vw==
 
-discord.js@^14.6.0, discord.js@^14.7.1:
+discord.js@^14.5.0, discord.js@^14.6.0, discord.js@^14.7.1:
   version "14.7.1"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-14.7.1.tgz#26079d0ff4d27daf02480a403c456121f0682bd9"
   integrity sha512-1FECvqJJjjeYcjSm0IGMnPxLqja/pmG1B0W2l3lUY2Gi4KXiyTeQmU1IxWcbXHn2k+ytP587mMWqva2IA87EbA==
@@ -728,6 +728,14 @@ inherits@2, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
+
+interserver-manager@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/interserver-manager/-/interserver-manager-1.0.1.tgz#5732b00786ccc0f90ad98158596db2ff7ccdd2d7"
+  integrity sha512-qbeqn8NvfBYTdjUnDec9TMJltDjdt9M/KFOIDa5K8BCKukpZUmNPtLByX7Hr/d5DUnOLeU3E6kggJVl7+MAtJQ==
+  dependencies:
+    discord.js "^14.5.0"
+    mysql "^2.18.1"
 
 is-extglob@^2.1.1:
   version "2.1.1"
