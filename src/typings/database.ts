@@ -9,7 +9,8 @@ export enum modActionType {
     EditLog = 'Modification de log',
     CoinsReset = "Réinitialisation économique",
     CoinsAdd = "Ajout économique",
-    CoinsRemove = "Retrait économique"
+    CoinsRemove = "Retrait économique",
+    LogDeletion = "Suppression de log"
 }
 
 export type modlogs = {

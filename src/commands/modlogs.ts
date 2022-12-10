@@ -1,11 +1,12 @@
-import { AmethystCommand, preconditions } from "amethystjs";
-import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from "discord.js";
+import { AmethystCommand, preconditions, waitForInteraction } from "amethystjs";
+import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from "discord.js";
+import { yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import validProof from "../preconditions/validProof";
-import { modlogs } from "../typings/database";
+import { modActionType, modlogs } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { basicEmbed, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString, updateLog } from "../utils/toolbox";
+import { addModLog, basicEmbed, boolDb, buildButton, capitalize, dbBool, displayDate, evokerColor, mapEmbedsPaginator, paginator, row, sqliseString, updateLog } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'modlogs',
@@ -55,6 +56,25 @@ export default new AmethystCommand({
                     type: ApplicationCommandOptionType.Attachment
                 }
             ]
+        },
+        {
+            name: "supprimer",
+            description: "Supprime un log du serveur",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'identifiant',
+                    description: "Identifiant du log à supprimer",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                },
+                {
+                    name: 'raison',
+                    description: "Raison de la suppression du log",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
@@ -62,7 +82,7 @@ export default new AmethystCommand({
 
     if (subcommand === 'liste') {
         await interaction.deferReply();
-        const datas = (await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"`));
+        const datas = (await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"`)).sort((a, b) => parseInt(b.date) - parseInt(a.date));
 
         if (datas.length === 0) return interaction.editReply({
             embeds: [ basicEmbed(interaction.user)
@@ -212,6 +232,75 @@ export default new AmethystCommand({
         if (proof) result.setImage(proof.url);
         interaction.editReply({
             embeds: [ result ]
+        }).catch(() => {});
+    }
+    if (subcommand === 'supprimer') {
+        if (interaction.user.id !== interaction.guild.ownerId) return interaction.reply({
+            embeds: [ replies.ownerOnly(interaction.user, interaction) ]
+        }).catch(() => {});
+
+        const msg = await interaction.deferReply({
+            fetchReply: true
+        }) as Message<true>;
+
+        const id = options.getString('identifiant');
+        const reason = options.getString('raison');
+
+        const logs = await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id='${interaction.guild.id}' AND case_id="${sqliseString(id)}"`);
+
+        if (!logs || logs.length === 0) return interaction.editReply({
+            embeds: [ replies.unexistingLog(interaction.member as GuildMember, id) ]
+        }).catch(() => {});
+        const log  = logs[0];
+
+        if (dbBool(log.deleted)) return interaction.editReply({
+            embeds: [basicEmbed(interaction.user)
+                .setColor(evokerColor(interaction.guild))
+                .setTitle("Log déjà supprimé")
+                .setDescription(`Le log **${id}** est déjà supprimé`)
+            ]
+        }).catch(() => {});
+
+        await interaction.editReply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Suppression")
+                .setDescription(`Vous êtes sur le point de supprimer le log **\`${id}\`** pour la raison :\n${reason}\n\nÊtes-vous sûr de vouloir continuer ?`)
+                .setColor('Grey')
+            ],
+            components: [ yesNoRow() ]
+        }).catch(() => {});
+
+        const reply = await waitForInteraction({
+            componentType: ComponentType.Button,
+            message: msg,
+            user: interaction.user
+        }).catch(() => {});
+
+        if (!reply || reply.customId === 'no') return interaction.editReply({
+            components: [],
+            embeds: [ replies.cancel() ]
+        }).catch(() => {});
+
+        const res = await query(`UPDATE modlogs SET deleted='${boolDb(true)}' WHERE case_id='${id}'`).catch(() => {});
+        if (!res) return interaction.editReply({
+            components: [],
+            embeds: [ replies.mysqlError(interaction.user, interaction) ]
+        }).catch(() => {});
+
+        interaction.editReply({
+            components: [],
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Log supprimé")
+                .setDescription(`Le log **\`${id}\`** a été supprimé`)
+            ]
+        }).catch(() => {});
+
+        addModLog({
+            guild: interaction.guild,
+            reason,
+            mod_id: interaction.user.id,
+            type: modActionType.LogDeletion,
+            member_id: 'none'
         }).catch(() => {});
     }
 })

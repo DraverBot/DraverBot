@@ -150,6 +150,12 @@ const replies = {
         return userMember(user)
             .setTitle("Log supprimé")
             .setDescription(`Le log d'identifiant \`${id}\` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé`)
+    },
+    ownerOnly: (user: User, { guild }: { guild: Guild }) => {
+        return basic(user)
+            .setColor(evokerColor(guild))
+            .setTitle("Propriétaire uniquement")
+            .setDescription(`Cette commande est réservée au propriétaire du serveur`)
     }
 };
 
