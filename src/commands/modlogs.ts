@@ -140,7 +140,8 @@ export default new AmethystCommand({
                     inline: false
                 }
             )
-        } else if (dbBool(edited)) {
+        }
+        if (dbBool(edited)) {
             embed.addFields(
                 {
                     name: "Modification",
