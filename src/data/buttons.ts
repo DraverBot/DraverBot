@@ -84,6 +84,20 @@ export const frequenceBtn = () => {
         style: 'Primary'
     })
 }
+export const inPocket = () => {
+    return buildButton({
+        label: 'En poche',
+        id: 'coins.pocket',
+        style: 'Primary'
+    })
+}
+export const inBank = () => {
+    return buildButton({
+        label: 'En banque',
+        id: 'coins.bank',
+        style: 'Primary'
+    })
+}
 
 export const yesNoRow = () => {
     return row(yesBtn(), noBtn());

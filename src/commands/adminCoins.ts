@@ -1,13 +1,13 @@
 import { AmethystCommand, preconditions, waitForInteraction } from "amethystjs";
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from "discord.js";
-import { yesNoRow } from "../data/buttons";
+import { inBank, inPocket, yesNoRow } from "../data/buttons";
 import replies from "../data/replies";
 import economyCheck from "../preconditions/economyCheck";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { modActionType } from "../typings/database";
 import { util } from "../utils/functions";
 import query from "../utils/query";
-import { addModLog, basicEmbed, numerize, subcmd } from "../utils/toolbox";
+import { addModLog, basicEmbed, confirm, numerize, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'admincoins',
@@ -138,33 +138,55 @@ export default new AmethystCommand({
         const user = options.getUser('utilisateur');
         const amount = options.getInteger('montant');
 
-        const rep = await interaction.reply({
-            fetchReply: true,
-            embeds: [
-                basicEmbed(interaction.user)
-                    .setTitle(`Ajout ${util('coinsPrefix')}`)
-                    .setDescription(`Vous êtes sur le point d'ajouter **${amount.toLocaleString('fr')} ${util('coins')}** à ${user}.\nVoulez-vous continuer ?`)
-                    .setColor('Grey')
+        const place = await interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Endroit")
+                .setDescription(`Dans quelle partie voulez-vous ajouter des ${util('coins')} ?`)
+                .setColor('Grey')
             ],
-            components: [ yesNoRow() ]
+            fetchReply: true,
+            components: [ row(inPocket(), inBank()) ]
         }) as Message<true>;
 
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
             user: interaction.user,
-            message: rep
+            message: place
         });
 
-        if (!reply || reply.customId === 'no') return interaction.editReply({
+        if (!reply) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        }).catch(() => {});
+
+        const endroit = reply.customId === 'coins.pocket' ? 'sa poche' : "sa banque";
+
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+            .setTitle(`Ajout ${util('coinsPrefix')}`)
+            .setDescription(`Vous êtes sur le point d'ajouter **${amount.toLocaleString('fr')} ${util('coins')}** à ${user} dans ${endroit}.\nVoulez-vous continuer ?`)
+        });
+
+        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
             embeds: [ replies.cancel() ],
             components: []
         });
 
-        interaction.client.coinsManager.addCoins({
-            guild_id: interaction.guild.id,
-            user_id: user.id,
-            coins: amount
-        });
+        if (reply.customId === 'coins.pocket') {
+            interaction.client.coinsManager.addCoins({
+                guild_id: interaction.guild.id,
+                user_id: user.id,
+                coins: amount
+            });
+        } else {
+            interaction.client.coinsManager.addBank({
+                guild_id: interaction.guild.id,
+                user_id: user.id,
+                bank: amount
+            });
+        }
 
         addModLog({
             guild: interaction.guild,
@@ -183,56 +205,85 @@ export default new AmethystCommand({
         }).catch(() => {})
     }
     if (subcommand === 'retirer') {
+        //TODO tester ça (toute la commande)
         const user = options.getUser('utilisateur');
         const amount = options.getInteger('montant');
 
-        const msg = await interaction.reply({
-            fetchReply: true,
-            components: [ yesNoRow() ],
+        const place = await interaction.reply({
             embeds: [ basicEmbed(interaction.user)
-                .setTitle(`Retrait ${util('coinsPrefix')}`)
-                .setDescription(`Vous êtes sur le point de retirer **${amount.toLocaleString('fr')} ${util('coins')}** à ${user}.\nVoulez-vous continuer ?`)
+                .setTitle("Endroit")
+                .setDescription(`Dans quelle partie voulez-vous retirer des ${util('coins')} ?`)
                 .setColor('Grey')
-            ]
-        }).catch(() => {}) as Message<true>;
+            ],
+            fetchReply: true,
+            components: [ row(inPocket(), inBank()) ]
+        }) as Message<true>;
 
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
-            message: msg,
-            user: interaction.user
+            user: interaction.user,
+            message: place
         });
 
-        if (!reply || reply.customId === 'no') return interaction.editReply({
-            embeds: [replies.cancel()],
+        if (!reply) return interaction.editReply({
+            embeds: [ replies.cancel() ],
             components: []
         }).catch(() => {});
 
-        const res = interaction.client.coinsManager.removeCoins({
-            guild_id: interaction.guild.id,
-            coins: amount,
-            user_id: user.id
+        const endroit = reply.customId === 'coins.pocket' ? 'sa poche' : "sa banque";
+
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+            .setTitle(`Ajout ${util('coinsPrefix')}`)
+            .setDescription(`Vous êtes sur le point de retirer **${amount.toLocaleString('fr')} ${util('coins')}** à ${user} de ${endroit}.\nVoulez-vous continuer ?`)
         });
 
-        if (res === 'not enough coins') return interaction.editReply({
+        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        });
+
+        const selected = interaction.client.coinsManager.getData({
+            guild_id: interaction.guild.id,
+            user_id: interaction.user.id
+        })[reply.customId === 'coins.pocket' ? 'coins':'bank'];
+
+        if (selected < amount) return interaction.editReply({
             embeds: [ replies.notEnoughCoins(interaction.member as GuildMember, options.getMember('utilisateur') as GuildMember) ],
             components: []
         }).catch(() => {});
 
+        if (reply.customId === 'coins.pocket') {
+            interaction.client.coinsManager.removeCoins({
+                guild_id: interaction.guild.id,
+                user_id: user.id,
+                coins: amount
+            });
+        } else {
+            interaction.client.coinsManager.removeBank({
+                guild_id: interaction.guild.id,
+                user_id: user.id,
+                bank: amount
+            });
+        }
+
         addModLog({
             guild: interaction.guild,
-            reason: 'Pas de raison',
-            mod_id: interaction.user.id,
+            reason: "Pas de raison",
             member_id: user.id,
+            mod_id: interaction.user.id,
             type: modActionType.CoinsRemove
         }).catch(() => {});
 
         interaction.editReply({
-            components: [],
             embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle(`Retrait ${util('coinsPrefix')}`)
+                .setTitle(`${util('coins')} retirés`)
                 .setDescription(`**${amount.toLocaleString('fr')} ${util('coins')}** ${amount > 1 ? 'ont été retirés' : 'a été retiré'} à ${user} par ${interaction.user}`)
-            ]
-        }).catch(() => {});
+            ],
+            components: []
+        }).catch(() => {})
     }
     if (subcommand === 'voir') {
         const user = options.getUser('utilisateur');
