@@ -2,7 +2,7 @@
     "avatar": "information",
     "module": "config",
     "portefeuille": "economy",
-    "admincoins": "economy",
+    "admincoins": "administration",
     "modlogs": "config",
     "help": "utils"
 }

@@ -6,7 +6,7 @@ C'est le code source de Draver fait par Greensky
 
 ## TO DO
 
-- [ ] Move [Admincoins](./src/commands/adminCoins.ts) to administration module
+- [x] Move [Admincoins](./src/commands/adminCoins.ts) to administration module
 
 ## License
 
