@@ -10,7 +10,7 @@ export default new AutocompleteListener({
         const list = Object.keys(modulesData)
             .map((key: moduleType) => modulesData[key])
             .filter((x) => x.editable === true);
-        let filtered = list.filter((x) => compareTwoStrings(x.name, focusedValue)) as typeof list;
+        let filtered = list.filter((x) => x.name.includes(focusedValue.toLowerCase()) || focusedValue.toLowerCase().includes(x.name)) as typeof list;
 
         if (filtered.length === 0) filtered = list;
 
