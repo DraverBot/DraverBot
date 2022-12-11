@@ -180,6 +180,7 @@ export default new AmethystCommand({
         }).catch(() => {});
     };
     if (subcommand === 'liste') {
+        //TODO terminer et tester
         const parameter = configsData[options.getString('paramètre')] as configType;
 
         if (parameter) {
