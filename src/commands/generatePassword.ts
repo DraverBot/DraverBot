@@ -1,6 +1,7 @@
 import { AmethystCommand } from "amethystjs";
 import { ApplicationCommandOptionType } from "discord.js";
 import { WordGenerator } from "../managers/Generator";
+import moduleEnabled from "../preconditions/moduleEnabled";
 
 export default new AmethystCommand({
     name: 'generatepassword',
@@ -38,7 +39,8 @@ export default new AmethystCommand({
             required: false,
             description: "Des caractères additionels que vous voulez ajouter dans le mot de passe"
         }
-    ]
+    ],
+    preconditions: [moduleEnabled]
 }).setChatInputRun(async({ interaction, options }) => {
     const size = options.getInteger('longueur') ?? 16;
     const majuscules = options.getBoolean('majuscules') ?? true;
