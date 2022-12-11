@@ -244,7 +244,6 @@ export default new AmethystCommand({
             .catch(() => {});
     }
     if (subcommand === 'retirer') {
-        //TODO tester ça (toute la commande)
         const user = options.getUser('utilisateur');
         const amount = options.getInteger('montant');
 
