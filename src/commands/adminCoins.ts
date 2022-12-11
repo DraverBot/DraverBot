@@ -83,6 +83,11 @@ export default new AmethystCommand({
     ],
     permissions: ['ManageGuild']
 }).setChatInputRun(async ({ interaction, options }) => {
+    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'economy')) return interaction.reply({
+        ephemeral: true,
+        embeds: [ replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' }) ]
+    }).catch(() => {});
+
     const subcommand = subcmd(options);
 
     if (subcommand === 'réinitialiser') {
@@ -182,6 +187,7 @@ export default new AmethystCommand({
 
         const endroit = reply.customId === 'coins.pocket' ? 'sa poche' : 'sa banque';
 
+        reply.deferUpdate();
         const confirmation = await confirm({
             interaction,
             user: interaction.user,
@@ -267,6 +273,7 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
+        await reply.deferUpdate();
         const endroit = reply.customId === 'coins.pocket' ? 'sa poche' : 'sa banque';
 
         const confirmation = await confirm({
