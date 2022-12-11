@@ -16,7 +16,7 @@ import { frequenceBtn, yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
 import { WordGenerator } from '../managers/Generator';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { interserver } from '../typings/database';
+import { interserver } from "../typings/managers";
 import { confirmReturn } from '../typings/functions';
 import {
     basicEmbed,

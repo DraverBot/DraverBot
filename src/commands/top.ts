@@ -2,7 +2,8 @@ import { AmethystCommand, preconditions } from "amethystjs";
 import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
 import replies from "../data/replies";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { levels, moduleType } from "../typings/database";
+import { moduleType } from "../typings/database";
+import { levels } from "../typings/managers";
 import { util } from "../utils/functions";
 import { basicEmbed, evokerColor, numerize, pagination, subcmd } from "../utils/toolbox";
 

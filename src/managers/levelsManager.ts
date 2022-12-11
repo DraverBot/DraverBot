@@ -1,5 +1,5 @@
 import { Client, Collection, GuildMember, TextChannel } from "discord.js";
-import { levels } from "../typings/database";
+import { levels } from "../typings/managers";
 import query from "../utils/query";
 
 export class LevelsManager {
