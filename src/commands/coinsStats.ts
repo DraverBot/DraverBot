@@ -1,7 +1,7 @@
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { util } from '../utils/functions';
-import { basicEmbed, evokerColor, random } from '../utils/toolbox';
+import { basicEmbed, evokerColor, numerize, random } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'portefeuille',
@@ -38,17 +38,17 @@ export default new AmethystCommand({
                     .setFields(
                         {
                             name: 'Sur vous',
-                            value: `${coins} ${util('coins')}`,
+                            value: `${numerize(coins)} ${util('coins')}`,
                             inline: true
                         },
                         {
                             name: 'En banque',
-                            value: `${bank} ${util('coins')}`,
+                            value: `${numerize(bank)} ${util('coins')}`,
                             inline: true
                         },
                         {
                             name: 'Total',
-                            value: `${bank + coins} ${util('coins')}`,
+                            value: `${numerize(bank + coins)} ${util('coins')}`,
                             inline: true
                         }
                     )
