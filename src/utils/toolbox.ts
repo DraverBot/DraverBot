@@ -266,3 +266,8 @@ export const inviteLink = (client: Client) => {
 }
 export const pingUser = (user: anyUser) => `<@${user.id}>`;
 export const notNull = (variable: any) => ![undefined, null].includes(variable);
+export const resizeString = ({ str, length = 200 }: { str: string; length?: number }) => {
+    if (str.length <= length) return str;
+
+    return str.substring(0, length - 3) + '...'
+}
