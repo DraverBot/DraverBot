@@ -13,8 +13,8 @@ import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
 import { commandName, permType } from '../typings/functions';
-import { getPerm, Module } from '../utils/functions';
-import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, row } from '../utils/toolbox';
+import { getPerm, Module, util } from '../utils/functions';
+import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
 export default new AmethystCommand({
@@ -267,6 +267,18 @@ export default new AmethystCommand({
                     )
                     .setTitle("Page d'aide")
                     .setThumbnail(interaction.client.user.displayAvatarURL({ forceStatic: true }))
+                    .setFields(
+                        {
+                            name: "Liens",
+                            value: `[Invitation](${inviteLink(interaction.client)})\n[Serveur de support](${util('support')})`,
+                            inline: true
+                        },
+                        {
+                            name: 'Projets associés',
+                            value: `[Lofi Girl](${util('lofiGirl')})`,
+                            inline: true
+                        }
+                    )
             ]
         })
         .catch(() => {})) as Message<true>;
