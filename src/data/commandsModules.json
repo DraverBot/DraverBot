@@ -9,5 +9,6 @@
     "pay": "economy",
     "banque": "economy",
     "pile-ou-face": "fun",
-    "generatepassword": "misc"
+    "generatepassword": "misc",
+    "démineur": "fun"
 }
