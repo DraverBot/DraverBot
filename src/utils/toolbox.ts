@@ -11,13 +11,10 @@ import {
     Client,
     ColorResolvable,
     CommandInteraction,
-    CommandInteractionOptionResolver,
-    ComponentType,
+    CommandInteractionOptionResolver, ComponentType,
     EmbedBuilder,
     Guild,
-    GuildMember,
-    Interaction,
-    InteractionReplyOptions,
+    GuildMember, InteractionReplyOptions,
     Message,
     User
 } from 'discord.js';
@@ -171,7 +168,10 @@ export const displayDate = (date: number) => {
 
     return `<t:${x}:R> ( <t:${x}:F> )`;
 };
-export const sqliseString = (str: string) => str.replace(/"/g, '\\"');
+export const sqliseString = (str: string) => {
+    if (typeof str !== 'string') return str;
+    return str.replace(/"/g, '\\"')
+};
 export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Promise<boolean> => {
     return new Promise(async (resolve) => {
         const res = await query(
@@ -196,12 +196,14 @@ export const confirm = ({
     interaction,
     user,
     embed,
-    time = 120000
+    time = 120000,
+    components = [ yesNoRow() ]
 }: {
     interaction: CommandInteraction;
     user: User;
     embed: EmbedBuilder;
     time?: number;
+    components?: ActionRowBuilder<ButtonBuilder>[]
 }): Promise<confirmReturn> => {
     return new Promise(async (resolve) => {
         let msg: Message<true>;
@@ -211,7 +213,7 @@ export const confirm = ({
             interaction
                 .editReply({
                     embeds: [embed],
-                    components: [yesNoRow()]
+                    components: components as (ActionRowBuilder<ButtonBuilder>)[]
                 })
                 .catch(() => {});
             msg = (await interaction.fetchReply().catch(() => {})) as Message<true>;
@@ -220,7 +222,7 @@ export const confirm = ({
                 .reply({
                     embeds: [embed],
                     fetchReply: true,
-                    components: [yesNoRow()]
+                    components: components as ActionRowBuilder<ButtonBuilder>[]
                 })
                 .catch(() => {})) as Message<true>;
         }
@@ -263,3 +265,4 @@ export const inviteLink = (client: Client) => {
     return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`
 }
 export const pingUser = (user: anyUser) => `<@${user.id}>`;
+export const notNull = (variable: any) => ![undefined, null].includes(variable);
