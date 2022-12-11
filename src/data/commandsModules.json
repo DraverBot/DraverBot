@@ -11,5 +11,6 @@
     "pile-ou-face": "fun",
     "generatepassword": "misc",
     "démineur": "fun",
-    "classement": "information"
+    "classement": "information",
+    "configurer": "config"
 }

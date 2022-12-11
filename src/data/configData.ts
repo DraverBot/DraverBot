@@ -5,7 +5,7 @@ export type configKeys = {
     level_channel: string;
     level_msg: string;
 }
-type configType = {
+export type configType = {
     description: string;
     name: string;
     type: configOptionType;

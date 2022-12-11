@@ -202,6 +202,11 @@ const replies = {
             .setTitle('Patientez...')
             .setDescription(`Merci de patienter quelques instants`)
             .setColor('Orange');
+    },
+    invalidNumber: (user: anyUser) => {
+        return userMember(user)
+            .setTitle("Nombre invalide")
+            .setDescription(`Merci de saisir un nombre valide, supérieur à 0`)
     }
 };
 
