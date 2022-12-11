@@ -193,6 +193,13 @@ export default new AmethystCommand({
                 components: components(group ? data.name : undefined)
             }).catch(() => {});
         })
+
+        collector.on('end', () => {
+            interaction.editReply({
+                embeds: [ replies.cancel() ],
+                components: []
+            })
+        })
         return;
     }
     const selector = new StringSelectMenuBuilder()
