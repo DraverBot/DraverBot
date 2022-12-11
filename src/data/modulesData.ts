@@ -1,9 +1,6 @@
 import { moduleDataType, moduleType } from '../typings/database';
 
-export const modulesData: Record<
-    moduleType,
-    moduleDataType
-> = {
+export const modulesData: Record<moduleType, moduleDataType> = {
     moderation: {
         name: 'modération',
         editable: true,

@@ -1,1 +1,1 @@
-export default new Map<string, number>;
+export default new Map<string, number>();

@@ -1,21 +1,21 @@
-import { AmethystCommand } from "amethystjs";
-import { ApplicationCommandOptionType } from "discord.js";
-import moduleEnabled from "../preconditions/moduleEnabled";
-import { random } from "../utils/toolbox";
+import { AmethystCommand } from 'amethystjs';
+import { ApplicationCommandOptionType } from 'discord.js';
+import moduleEnabled from '../preconditions/moduleEnabled';
+import { random } from '../utils/toolbox';
 
 enum Pof {
-    Pile = "pile",
+    Pile = 'pile',
     Face = 'face',
-    Middle = "la tranche"
+    Middle = 'la tranche'
 }
 
 export default new AmethystCommand({
     name: 'pile-ou-face',
-    description: "Joue à pile ou face",
+    description: 'Joue à pile ou face',
     options: [
         {
             name: 'pari',
-            description: "Votre pronostic sur le lancer de la pièce",
+            description: 'Votre pronostic sur le lancer de la pièce',
             required: false,
             type: ApplicationCommandOptionType.String,
             choices: [
@@ -34,11 +34,15 @@ export default new AmethystCommand({
 }).setChatInputRun(({ interaction, options }) => {
     const choice = options.getString('pari');
 
-    const poss = [Pof.Face, Pof.Pile]
+    const poss = [Pof.Face, Pof.Pile];
     if (random({ max: 10000 }) === 5691) poss.push(Pof.Middle);
 
     const fall = poss[random({ max: poss.length })];
     const win = fall === choice;
 
-    interaction.reply(`La pièce est tombée sur **${fall}**${choice ? `\nVous avez ${win ? 'gagné' : 'perdu'} votre pari`:''}`).catch(() => {});
-})
+    interaction
+        .reply(
+            `La pièce est tombée sur **${fall}**${choice ? `\nVous avez ${win ? 'gagné' : 'perdu'} votre pari` : ''}`
+        )
+        .catch(() => {});
+});

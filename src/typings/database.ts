@@ -7,10 +7,10 @@ export enum modActionType {
     Warn = 'Avertissement',
     Unwarn = "Retrait d'avertissement",
     EditLog = 'Modification de log',
-    CoinsReset = "Réinitialisation économique",
-    CoinsAdd = "Ajout économique",
-    CoinsRemove = "Retrait économique",
-    LogDeletion = "Suppression de log"
+    CoinsReset = 'Réinitialisation économique',
+    CoinsAdd = 'Ajout économique',
+    CoinsRemove = 'Retrait économique',
+    LogDeletion = 'Suppression de log'
 }
 
 export type modlogs = {
@@ -87,10 +87,10 @@ export type moduleDataType = {
     editable: boolean;
     default: boolean;
     emoji: string;
-}
+};
 export type interserver = {
     guild_id: string;
     frequence: string;
     channel_id: string;
     webhook: string;
-}
+};

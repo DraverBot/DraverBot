@@ -1,4 +1,4 @@
-import { Precondition } from "amethystjs";
+import { Precondition } from 'amethystjs';
 
 export default new Precondition('secret').setMessageRun(({ message }) => {
     if (message.deletable) message.delete().catch(() => {});
@@ -6,5 +6,5 @@ export default new Precondition('secret').setMessageRun(({ message }) => {
         ok: true,
         isChatInput: false,
         channelMessage: message
-    }
-})
+    };
+});

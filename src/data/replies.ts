@@ -8,12 +8,11 @@ import { basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 type anyUser = User | GuildMember;
 
 const userMember = (user: anyUser, color?: ColorResolvable) => {
-    const embed = basic(user instanceof User ? user : user.user)
-        .setColor(color ?? '#ff0000')
+    const embed = basic(user instanceof User ? user : user.user).setColor(color ?? '#ff0000');
     if (user instanceof GuildMember) embed.setColor(evokerColor(user.guild));
 
     return embed;
-}
+};
 
 const replies = {
     guildOnly: (user: User, metadata: { guild?: Guild }) => {
@@ -28,7 +27,10 @@ const replies = {
             .setDescription(`Cette commande n'est disponible qu'en messages privés`)
             .setColor(evokerColor(metadata.guild));
     },
-    clientMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] }, guild?: Guild }) => {
+    clientMissingPermissions: (
+        user: User,
+        metadata: { permissions?: { missing: PermissionsString[] }; guild?: Guild }
+    ) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
@@ -44,7 +46,10 @@ const replies = {
             )
             .setColor(evokerColor(metadata.guild));
     },
-    userMissingPermissions: (user: User, metadata: { permissions?: { missing: PermissionsString[] }, guild?: Guild }) => {
+    userMissingPermissions: (
+        user: User,
+        metadata: { permissions?: { missing: PermissionsString[] }; guild?: Guild }
+    ) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
@@ -60,7 +65,7 @@ const replies = {
             )
             .setColor(evokerColor(metadata.guild));
     },
-    underCooldown: (user: User, metadata: { remainingCooldownTime?: number, guild?: Guild }) => {
+    underCooldown: (user: User, metadata: { remainingCooldownTime?: number; guild?: Guild }) => {
         return basic(user)
             .setTitle(':x: Cooldown')
             .setDescription(
@@ -80,118 +85,123 @@ const replies = {
         return basic(user)
             .setColor(evokerColor(guild))
             .setTitle(`:x: Preuve invalide`)
-            .setDescription(`Désolé, les preuves doivent être sous format **image**`)
+            .setDescription(`Désolé, les preuves doivent être sous format **image**`);
     },
     cancel: () => {
-        return new EmbedBuilder()
-            .setTitle('💡 Annulé')
-            .setColor('Yellow')
+        return new EmbedBuilder().setTitle('💡 Annulé').setColor('Yellow');
     },
     mysqlError: (user: User, metadata: { guild?: Guild }) => {
-        let text = `Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.`
+        let text = `Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.`;
         if (errors.has(user.id)) {
             if (errors.get(user.id) > 3) {
                 text += `\nSi l'erreur persiste, contactez mes développeurs`;
             }
         }
         errors.set(user.id, (errors.get(user.id) ?? 0) + 1);
-        return basic(user)
-            .setColor(evokerColor(metadata.guild))
-            .setDescription(text)
-            .setTitle("Erreur")
+        return basic(user).setColor(evokerColor(metadata.guild)).setDescription(text).setTitle('Erreur');
     },
     memberOwner: (user: User, { member }: { member: GuildMember }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle("Membre propriétaire")
-            .setDescription(`Vous ne pouvez pas faire ça, car ${member} est le propriétaire du serveur`)
+            .setTitle('Membre propriétaire')
+            .setDescription(`Vous ne pouvez pas faire ça, car ${member} est le propriétaire du serveur`);
     },
     memberBot: (user: User, { member }: { member: GuildMember }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle("Robot")
-            .setDescription(`${member} est un robot. Je ne peux pas effectuer cette action sur un robot`)
+            .setTitle('Robot')
+            .setDescription(`${member} est un robot. Je ne peux pas effectuer cette action sur un robot`);
     },
     memberTooHigh: (user: User, { member }: { member: GuildMember }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle("Membre trop haut")
-            .setDescription(`${member} est supérieur ou égal à vous dans la hiéararchie des rôles`)
+            .setTitle('Membre trop haut')
+            .setDescription(`${member} est supérieur ou égal à vous dans la hiéararchie des rôles`);
     },
     memberTooHighClient: (user: User, { member }: { member: GuildMember }) => {
         return basic(user)
-            .setTitle("Membre trop haut")
+            .setTitle('Membre trop haut')
             .setDescription(`${member} est supérieur ou égal à moi dans la hiérarchie des rôles`)
-            .setColor(evokerColor(member.guild))
+            .setColor(evokerColor(member.guild));
     },
     notEnoughCoins: (user: GuildMember, target = user) => {
         return basic(user.user)
             .setTitle(`Pas assez ${util('coinsPrefix')}`)
-            .setDescription(`${target.id === user.id ? "Vous n'avez" : `${target} n'a`} pas assez ${util('coinsPrefix')} pour faire ça`)
-            .setColor(evokerColor(user.guild))
+            .setDescription(
+                `${target.id === user.id ? "Vous n'avez" : `${target} n'a`} pas assez ${util(
+                    'coinsPrefix'
+                )} pour faire ça`
+            )
+            .setColor(evokerColor(user.guild));
     },
     selfMod: ({ user, guild }: GuildMember, metadata: any) => {
         return basic(user)
             .setTitle(`Auto-modération`)
             .setDescription(`Vous ne pouvez pas faire ça sur vous-même`)
-            .setColor(evokerColor(guild))
+            .setColor(evokerColor(guild));
     },
     replyNotAllowed: (user: anyUser) => {
         return userMember(user)
-            .setTitle("Interaction non-autorisée")
-            .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`)
+            .setTitle('Interaction non-autorisée')
+            .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`);
     },
     unexistingLog: (user: anyUser, id: string) => {
         return userMember(user)
-            .setTitle("Log inexistant")
-            .setDescription(`Le log d'identifiant \`${id}\` n'existe pas sur ce serveur.`)
+            .setTitle('Log inexistant')
+            .setDescription(`Le log d'identifiant \`${id}\` n'existe pas sur ce serveur.`);
     },
     deletedLog: (user: anyUser, id: string) => {
         return userMember(user)
-            .setTitle("Log supprimé")
-            .setDescription(`Le log d'identifiant \`${id}\` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé`)
+            .setTitle('Log supprimé')
+            .setDescription(
+                `Le log d'identifiant \`${id}\` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé`
+            );
     },
     ownerOnly: (user: User, { guild }: { guild: Guild }) => {
         return basic(user)
             .setColor(evokerColor(guild))
-            .setTitle("Propriétaire uniquement")
-            .setDescription(`Cette commande est réservée au propriétaire du serveur`)
+            .setTitle('Propriétaire uniquement')
+            .setDescription(`Cette commande est réservée au propriétaire du serveur`);
     },
     interserverAlreadySet: (user: anyUser, metadata: { channel_id: string }) => {
         return userMember(user)
-            .setTitle("Salon déjà configuré")
-            .setDescription(`Le salon ${pingChan(metadata.channel_id)} est déjà un salon d'interchat`)
+            .setTitle('Salon déjà configuré')
+            .setDescription(`Le salon ${pingChan(metadata.channel_id)} est déjà un salon d'interchat`);
     },
     interserverUnexistingFrequence: (user: anyUser, { frequence }: { frequence: string }) => {
         return userMember(user)
-            .setTitle("Fréquence invalide")
-            .setDescription(`La fréquence \`${frequence}\` n'est utilisée dans aucun autre serveur`)
+            .setTitle('Fréquence invalide')
+            .setDescription(`La fréquence \`${frequence}\` n'est utilisée dans aucun autre serveur`);
     },
     interserverFrequenceAssigned: (user: anyUser, { frequence }: { frequence: string }) => {
         return userMember(user)
-            .setTitle("Fréquence déjà utilisée")
-            .setDescription(`Cette fréquence est déjà utilisée dans un autre salon du serveur`)
+            .setTitle('Fréquence déjà utilisée')
+            .setDescription(`Cette fréquence est déjà utilisée dans un autre salon du serveur`);
     },
     interserverWebhookFailed: (user: anyUser, metadata: {}) => {
         return userMember(user)
-            .setTitle("Pas de webhook")
-            .setDescription(`Je n'ai pas pu créer de webhook.\nVérifiez que je possède la permission \`gérer les webhooks\` et réessayez`)
+            .setTitle('Pas de webhook')
+            .setDescription(
+                `Je n'ai pas pu créer de webhook.\nVérifiez que je possède la permission \`gérer les webhooks\` et réessayez`
+            );
     },
     interserverNoFrequence: (user: anyUser, metadata: {}) => {
         return userMember(user)
-            .setTitle("Pas de fréquence")
-            .setDescription(`Vous n'êtes pas censé voir ce message.\nCette erreur arrive lorsque je n'ai pas réussi à générer une fréquence unique pour votre salon.\nUne des solutions est de réessayer la commande`)
+            .setTitle('Pas de fréquence')
+            .setDescription(
+                `Vous n'êtes pas censé voir ce message.\nCette erreur arrive lorsque je n'ai pas réussi à générer une fréquence unique pour votre salon.\nUne des solutions est de réessayer la commande`
+            );
     },
     interserverNotChannel: (user: anyUser, metadata: { channel: TextChannel }) => {
         return userMember(user)
-            .setTitle("Salon invalide")
-            .setDescription(`Le salon ${pingChan(metadata.channel)} n'est pas un salon d'interchat`)
+            .setTitle('Salon invalide')
+            .setDescription(`Le salon ${pingChan(metadata.channel)} n'est pas un salon d'interchat`);
     },
     wait: (user: User) => {
         return basic(user)
-            .setTitle("Patientez...")
+            .setTitle('Patientez...')
             .setDescription(`Merci de patienter quelques instants`)
-            .setColor('Orange')
+            .setColor('Orange');
     }
 };
 

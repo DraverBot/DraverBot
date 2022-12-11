@@ -12,7 +12,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.modulesManager = new ModulesManager();
     client.coinsManager = new CoinsManager(database, {
         type: 'multiguild'
-    })
+    });
     client.interserver = new InterserverManager(client);
 
     // Start managers

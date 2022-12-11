@@ -5,7 +5,7 @@ import { systemReply } from '../utils/toolbox';
 
 export default new AmethystEvent('commandDenied', (command, reason) => {
     if (reason.metadata?.silent === true) return;
-    
+
     const integrated: { key: commandDeniedCode; value: replyKey }[] = [
         { key: commandDeniedCode.GuildOnly, value: 'guildOnly' },
         { key: commandDeniedCode.DMOnly, value: 'DMOnly' },

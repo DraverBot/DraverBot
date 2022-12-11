@@ -43,7 +43,7 @@ export type checkPermsOptions = {
     interaction?: CommandInteraction;
     /**
      * Send an error message if a check fails
-     * 
+     *
      * You need to specify `interaction`
      */
     sendErrorMessage?: boolean;
@@ -56,18 +56,18 @@ export type checkPermsOptions = {
      * Returns true if the mod is the member
      */
     checkSelf?: boolean;
-}
+};
 export type paginatorOptions = {
     interaction: CommandInteraction;
     user: User;
     embeds: EmbedBuilder[];
     time?: number;
-}
+};
 export type updateLogOptions = {
     guild: Guild;
     case_id: string;
     reason?: string;
     proofURL?: string;
-}
+};
 export type commandName = keyof typeof commandModules;
 export type confirmReturn = { value: boolean; interaction: ButtonInteraction } | 'cancel';
