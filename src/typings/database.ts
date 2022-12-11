@@ -94,10 +94,10 @@ export type interserver = {
     channel_id: string;
     webhook: string;
 };
-export type levels = {
+export type levels<DataType = string> = {
     guild_id: string;
     user_id: string;
-    messages: string;
-    level: string;
-    required: string;
+    messages: DataType;
+    level: DataType;
+    required: DataType;
 }

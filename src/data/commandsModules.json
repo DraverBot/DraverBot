@@ -10,5 +10,6 @@
     "banque": "economy",
     "pile-ou-face": "fun",
     "generatepassword": "misc",
-    "démineur": "fun"
+    "démineur": "fun",
+    "classement": "information"
 }
