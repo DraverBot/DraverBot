@@ -11,3 +11,4 @@ export type levels<DataType = string> = {
     level: DataType;
     required: DataType;
 };
+

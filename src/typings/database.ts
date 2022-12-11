@@ -1,3 +1,5 @@
+import { configKeys } from "../data/configData";
+
 export enum modActionType {
     Mute = 'Réduction au silence',
     Unmute = 'Retrait de réduction au silence',
@@ -88,4 +90,8 @@ export type moduleDataType = {
     default: boolean;
     emoji: string;
 };
-
+export type configs = {
+    [K in keyof configKeys]: string;
+} & {
+    guild_id: string;
+}
