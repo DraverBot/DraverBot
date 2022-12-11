@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel } from "discord.js";
 import { levels } from "../typings/managers";
-import { pingChan, pingUser } from "./toolbox";
+import { numerize, pingChan, pingUser } from "./toolbox";
 
 export const replaceLevelVariables = ({ msg, member, level, channel }: { msg: string; member: GuildMember; level: levels<number>; channel: TextChannel; }) => {
     let content = msg;
@@ -13,8 +13,8 @@ export const replaceLevelVariables = ({ msg, member, level, channel }: { msg: st
         { x: 'channel.id', y: channel.id },
         { x: 'channel.mention', y: pingChan(channel) },
         { x: 'guild.name', y: member.guild.name },
-        { x: 'user.level', y: level.level },
-        { x: 'user.requiredMessages', y: level.required }
+        { x: 'user.level', y: numerize(level.level) },
+        { x: 'user.requiredMessages', y: numerize(level.required) }
     ].forEach(({ x, y }) => {
         content = content.replace(new RegExp(`{${x}}`, 'g'), y.toString());
     });
