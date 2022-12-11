@@ -48,7 +48,7 @@ export default new AmethystEvent('messageCreate', (message) => {
                 .setImage('attachment://banner.png')
                 .setAuthor({ name: Draver() })
                 .setDescription(
-                    `Bonjour, je suis Draver, un bot Discord francophone :flag_fr:\nSi tu as besoin de moi, utilise mes slash commandes (disponibles en tapant \`/\` dans le chat)\n\nSi vous avez besoin d'aide, mon serveur de support se fera un plaisir de vous aider`
+                    `Bonjour, je suis Draver, un bot Discord francophone :flag_fr:\nSi tu as besoin de moi, utilise mes slash commandes (disponibles en tapant \`/\` dans le chat)\n\nSi vous avez besoin d'aide, [mon serveur de support](${util('support')}) se fera un plaisir de vous aider`
                 );
 
             message.channel.send({
