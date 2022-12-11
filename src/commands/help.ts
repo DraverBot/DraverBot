@@ -39,6 +39,11 @@ export default new AmethystCommand({
     if (command) {
         const cmd = commands.find((x) => x.options.name === command) as AmethystCommand & { module: moduleType };
 
+        const cmdOptions = () => {
+            if (cmd.options.options.length === 0) return "Pas d'option";
+
+            return cmd.options.options.filter(x => !['Subcommand', 'SubcommandGroup'].map(x => ApplicationCommandOptionType[x]).includes(x.type)).map((opt) => `${opt.name} - **${(opt as {required?: boolean})?.required ? 'requis' : 'optionnel'}**`).join('\n')
+        }
         const buildSubcommandsSelector = (subcommandGroup?: string) => {
             const subcommands = cmd.options.options?.filter((x) => x.type === ApplicationCommandOptionType.Subcommand);
 
@@ -127,6 +132,11 @@ export default new AmethystCommand({
                         {
                             name: 'Module',
                             value: Module(cmd.options.name as commandName),
+                            inline: true
+                        },
+                        {
+                            name: "Options",
+                            value: cmdOptions(),
                             inline: true
                         }
                     )
