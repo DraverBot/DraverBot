@@ -29,6 +29,6 @@
     "build": "yarn tsc -b",
     "prettier": "prettier -w src",
     "start": "node dist/index.js",
-    "launch": "yarn build && yarn start"
+    "launch": "yarn install && yarn build && yarn start"
   }
 }
