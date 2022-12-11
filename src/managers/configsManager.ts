@@ -2,7 +2,7 @@ import { Collection } from "discord.js";
 import { configKeys, configsData } from "../data/configData";
 import { configs } from "../typings/database";
 import query from "../utils/query";
-import { boolDb, sqliseString } from "../utils/toolbox";
+import { boolDb, notNull, sqliseString } from "../utils/toolbox";
 
 export class ConfigsManager {
     private _cache: Collection<string, configs> = new Collection();
@@ -37,7 +37,7 @@ export class ConfigsManager {
     private buildQuery(guild_id: string) {
         const datas = this._cache.get(guild_id);
 
-        return `REPLACE INTO configs (${Object.keys(datas).join(', ')}) VALUES (${Object.keys(datas).map(x => `"${typeof x === 'boolean' ? boolDb(x) : `${sqliseString(x)}`}"`).join(', ')})`;
+        return `REPLACE INTO configs (${Object.keys(datas).filter(x => notNull(datas[x])).join(', ')}) VALUES (${Object.keys(datas).map(x => datas[x]).filter(x => notNull(x)).map(x => `"${typeof x === 'boolean' ? boolDb(x) : `${sqliseString(x)}`}"`).join(', ')})`;
     }
     private async start() {
         await this.queryDatabase();
