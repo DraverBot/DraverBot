@@ -8,5 +8,6 @@
     "interserver": "interchat",
     "pay": "economy",
     "banque": "economy",
-    "pile-ou-face": "fun"
+    "pile-ou-face": "fun",
+    "generatepassword": "misc"
 }
