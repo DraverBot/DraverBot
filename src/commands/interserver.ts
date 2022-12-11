@@ -350,7 +350,7 @@ export default new AmethystCommand({
             list.forEach((v, i) => {
                 if (i % 5 === 0 && i > 0) array.push(basic());
 
-                map(array[i % 5], v);
+                map(array[array.length - 1], v);
             });
 
             pagination({

@@ -158,7 +158,7 @@ export default new AmethystCommand({
         datas.forEach((log, i) => {
             if (i % 5 === 0 && i > 0) embeds.push(basic());
 
-            mapEmbed(embeds[i % 5], log);
+            mapEmbed(embeds[embeds.length - 1], log);
         });
 
         pagination({
