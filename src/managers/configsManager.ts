@@ -10,10 +10,10 @@ export class ConfigsManager {
     constructor() {
         this.start();
     }
-    public getValue(guild_id: string, config: keyof configs) {
-        if (!this._cache.has(guild_id)) return config === 'guild_id' ? guild_id : configsData[config]?.default;
+    public getValue<T extends string | number | boolean = string | number | boolean>(guild_id: string, config: keyof configs): T {
+        if (!this._cache.has(guild_id)) return (config === 'guild_id' ? guild_id : configsData[config]?.default) as T;
 
-        return this._cache.get(guild_id)[config];
+        return this._cache.get(guild_id)[config] as T;
     }
     public async setValue<T extends keyof configKeys>(guild_id: string, config: T, value: configKeys[T]): Promise<configs> {
         const data = this._cache.get(guild_id) ?? this.getDefaultValue(guild_id);
@@ -58,7 +58,7 @@ export class ConfigsManager {
     }
     private queryDatabase(): Promise<boolean> {
         return new Promise(async(resolve) => {
-            await query(`CREATE TABLE IF NOT EXISTS ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, level_channel VARCHAR(255) NOT NULL DEFAULT '', level_msg VARCHAR(255) NOT NULL DEFAULT "Bien joué {user.mention} ! Tu passes niveau {user.level}", logs_channel VARCHAR(255) NOT NULL DEFAULT '', logs_enable TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}' )`);
+            await query(`CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, level_channel VARCHAR(255) NOT NULL DEFAULT '', level_msg VARCHAR(255) NOT NULL DEFAULT "Bien joué {user.mention} ! Tu passes niveau {user.level}", logs_channel VARCHAR(255) NOT NULL DEFAULT '', logs_enable TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}' )`);
             resolve(true);
         })
     }

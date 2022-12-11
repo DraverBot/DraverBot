@@ -5,7 +5,7 @@ import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
 import { basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 
-type anyUser = User | GuildMember;
+export type anyUser = User | GuildMember;
 
 const userMember = (user: anyUser, color?: ColorResolvable) => {
     const embed = basic(user instanceof User ? user : user.user).setColor(color ?? '#ff0000');

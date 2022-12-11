@@ -22,7 +22,7 @@ import {
     User
 } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
-import replies, { replyKey } from '../data/replies';
+import replies, { anyUser, replyKey } from '../data/replies';
 import { Paginator } from '../managers/paginator';
 import {
     addModLog as addModLogType,
@@ -262,3 +262,4 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
 export const inviteLink = (client: Client) => {
     return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`
 }
+export const pingUser = (user: anyUser) => `<@${user.id}>`;

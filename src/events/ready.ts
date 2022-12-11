@@ -1,5 +1,6 @@
 import { AmethystEvent } from 'amethystjs';
 import { CoinsManager } from 'coins-manager';
+import { ConfigsManager } from '../managers/configsManager';
 import { InterserverManager } from '../managers/interserverManager';
 import { LevelsManager } from '../managers/levelsManager';
 import { ModulesManager } from '../managers/modulesManager';
@@ -16,6 +17,7 @@ export default new AmethystEvent('ready', async (client) => {
     });
     client.levelsManager = new LevelsManager(client);
     client.interserver = new InterserverManager(client);
+    client.configsManager = new ConfigsManager();
 
     // Start managers
     client.coinsManager.start();
@@ -27,5 +29,6 @@ declare module 'discord.js' {
         coinsManager: CoinsManager<'multiguild'>;
         interserver: InterserverManager;
         levelsManager: LevelsManager;
+        configsManager: ConfigsManager;
     }
 }
