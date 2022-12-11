@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, BaseChannel, ChannelType, GuildMember, Me
 import { configKeys, configsData, configType } from "../data/configData";
 import replies from "../data/replies";
 import { confirmReturn } from "../typings/functions";
-import { basicEmbed, buildButton, confirm, evokerColor, pingChan, row, subcmd } from "../utils/toolbox";
+import { basicEmbed, buildButton, capitalize, confirm, evokerColor, pingChan, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'configurer',
@@ -22,6 +22,20 @@ export default new AmethystCommand({
                     required: true,
                     description: "Paramètre à configurer",
                     autocomplete: true
+                }
+            ]
+        },
+        {
+            name: 'liste',
+            description: "Affiche la liste des paramètres",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'paramètre',
+                    description: "Paramètre que vous voulez voir",
+                    required: false,
+                    autocomplete: true,
+                    type: ApplicationCommandOptionType.String
                 }
             ]
         }
@@ -164,5 +178,23 @@ export default new AmethystCommand({
             ],
             components: []
         }).catch(() => {});
+    };
+    if (subcommand === 'liste') {
+        const parameter = configsData[options.getString('paramètre')] as configType;
+
+        if (parameter) {
+            const value = interaction.client.configsManager.getValue(interaction.guild.id, parameter.value);
+            return interaction.reply({
+                embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                    .setTitle(`Paramètre ${parameter.name}`)
+                    .setDescription(parameter.description)
+                    .setFields({
+                        name: 'État',
+                        value: parameter.type === 'boolean' ? capitalize(value ? 'activé' : 'désactivé') : parameter.type === 'channel' ? pingChan(value as string) : `\`\`\`${value}\`\`\``,
+                        inline: false
+                    })
+                ]
+            })
+        }
     }
 })
