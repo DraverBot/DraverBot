@@ -95,14 +95,14 @@ export class InterserverManager {
             if (this._cache.find((x) => x.guild_id === guild_id && x.frequence === frequence))
                 return resolve('interserverFrequenceAssigned');
 
-            this._cache.set(data.guild_id, {
+            this._cache.set(data.channel_id, {
                 ...data,
                 frequence
             });
             await query(
                 `UPDATE interserver SET frequence='${frequence}' WHERE guild_id='${guild_id}' AND channel_id='${channel_id}'`
             ).catch(() => {});
-            return resolve(data);
+            return resolve(this._cache.get(channel_id));
         });
     }
 
