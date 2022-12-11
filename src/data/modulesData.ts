@@ -34,7 +34,7 @@ export const modulesData: Record<moduleType, moduleDataType> = {
     fun: {
         name: 'amusement',
         editable: true,
-        default: false,
+        default: true,
         emoji: '🥳'
     },
     giveaways: {
