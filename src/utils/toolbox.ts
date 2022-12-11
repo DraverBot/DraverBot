@@ -247,12 +247,14 @@ export const plurial = (num: number, { singular = '', plurial = 's' }: { singula
 export const checkCtx = (interaction: BaseInteraction, user: User) => {
     if (interaction.user.id !== user.id) {
         if (interaction.isRepliable()) {
-            interaction.reply({
-                ephemeral: true,
-                embeds: [ replies.replyNotAllowed(interaction?.member as GuildMember ?? interaction.user) ]
-            }).catch(() => {});
+            interaction
+                .reply({
+                    ephemeral: true,
+                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user)]
+                })
+                .catch(() => {});
         }
         return false;
     }
     return true;
-}
+};

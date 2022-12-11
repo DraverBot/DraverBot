@@ -83,10 +83,13 @@ export default new AmethystCommand({
     ],
     permissions: ['ManageGuild']
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'economy')) return interaction.reply({
-        ephemeral: true,
-        embeds: [ replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' }) ]
-    }).catch(() => {});
+    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'economy'))
+        return interaction
+            .reply({
+                ephemeral: true,
+                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' })]
+            })
+            .catch(() => {});
 
     const subcommand = subcmd(options);
 

@@ -65,40 +65,43 @@ export default new AmethystCommand({
             return selector;
         };
         const buildSubcommandGroupsSelector = () => {
-            const subs = cmd.options.options.filter(x => x.type === ApplicationCommandOptionType.SubcommandGroup);
+            const subs = cmd.options.options.filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup);
 
             return new StringSelectMenuBuilder()
                 .setCustomId('helpSubGrpCmds')
                 .setPlaceholder('Choisissez un groupe de sous-commandes')
                 .setOptions(
-                    subs.map(x => ({
+                    subs.map((x) => ({
                         label: capitalize(x.name),
                         description: `Groupe de sous commandes ${x.name}`,
                         value: x.name
                     }))
-                )
-        }
+                );
+        };
         let onMenu = true;
         const components = (subcommandGroup?: string) => {
             if (cmd.options.options.length === 0) return [];
             if (buildSubcommandsSelector(subcommandGroup).options.length === 0) return [];
             const selects: StringSelectMenuBuilder[] = [];
-            if (cmd.options.options.filter(x => x.type === ApplicationCommandOptionType.SubcommandGroup).length > 0) selects.push(buildSubcommandGroupsSelector())
+            if (cmd.options.options.filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup).length > 0)
+                selects.push(buildSubcommandGroupsSelector());
 
             selects.push(buildSubcommandsSelector(subcommandGroup));
 
             return [
                 row<StringSelectMenuBuilder>(...selects),
-                row(buildButton({
-                    label: 'Menu',
-                    style: 'Secondary',
-                    id: 'home',
-                    disabled: onMenu
-                }))
-            ]
-        }
+                row(
+                    buildButton({
+                        label: 'Menu',
+                        style: 'Secondary',
+                        id: 'home',
+                        disabled: onMenu
+                    })
+                )
+            ];
+        };
 
-        const reply = await interaction.reply({
+        const reply = (await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user, { defaultColor: true })
                     .setTitle(`Commande ${cmd.options.name}`)
@@ -130,7 +133,7 @@ export default new AmethystCommand({
             ],
             components: components(),
             fetchReply: true
-        }) as Message<true>;
+        })) as Message<true>;
 
         const collector = reply.createMessageComponentCollector({
             time: 180000,
@@ -153,7 +156,9 @@ export default new AmethystCommand({
                         .setFields(
                             {
                                 name: 'Cooldown',
-                                value: `${cmd.options.cooldown ?? interaction.client.configs.defaultCooldownTime} secondes`,
+                                value: `${
+                                    cmd.options.cooldown ?? interaction.client.configs.defaultCooldownTime
+                                } secondes`,
                                 inline: true
                             },
                             {
@@ -176,34 +181,50 @@ export default new AmethystCommand({
                         )
                 ],
                 components: components()
-            })
-        })
+            });
+        });
 
-        collector.on('collect', async(ctx) => {
+        collector.on('collect', async (ctx) => {
             if (!checkCtx(ctx, interaction.user)) return;
 
-            onMenu = false
+            onMenu = false;
             ctx.deferUpdate();
 
             const value = ctx.values[0];
-            const data = cmd.options.options.find(x => x.name === value) || cmd.options.options.filter(x => x.type === ApplicationCommandOptionType.SubcommandGroup).map((x: APIApplicationCommandSubcommandGroupOption) => x).map(x => x.options).flat().find(x => x.name === value);
+            const data =
+                cmd.options.options.find((x) => x.name === value) ||
+                cmd.options.options
+                    .filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup)
+                    .map((x: APIApplicationCommandSubcommandGroupOption) => x)
+                    .map((x) => x.options)
+                    .flat()
+                    .find((x) => x.name === value);
             const group = data.type === ApplicationCommandOptionType.SubcommandGroup;
 
-            interaction.editReply({
-                embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                    .setTitle(`${group ? 'Sous-commande':'Commande'} ${data.name}`)
-                    .setDescription(`${data.description}\n\nOptions :\n${(data as ApplicationCommandSubCommandData)?.options?.map((x) => `${x.name} - **${x.required ? 'requis' : 'optionnel'}**`)?.join('\n') ?? "Pas d'options"}`)
-                ],
-                components: components(group ? data.name : undefined)
-            }).catch(() => {});
-        })
+            interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user, { defaultColor: true })
+                            .setTitle(`${group ? 'Sous-commande' : 'Commande'} ${data.name}`)
+                            .setDescription(
+                                `${data.description}\n\nOptions :\n${
+                                    (data as ApplicationCommandSubCommandData)?.options
+                                        ?.map((x) => `${x.name} - **${x.required ? 'requis' : 'optionnel'}**`)
+                                        ?.join('\n') ?? "Pas d'options"
+                                }`
+                            )
+                    ],
+                    components: components(group ? data.name : undefined)
+                })
+                .catch(() => {});
+        });
 
         collector.on('end', () => {
             interaction.editReply({
-                embeds: [ replies.cancel() ],
+                embeds: [replies.cancel()],
                 components: []
-            })
-        })
+            });
+        });
         return;
     }
     const selector = new StringSelectMenuBuilder()
