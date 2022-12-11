@@ -78,6 +78,7 @@ export default new AmethystCommand({
                     }))
                 )
         }
+        let onMenu = true;
         const components = (subcommandGroup?: string) => {
             if (cmd.options.options.length === 0) return [];
             if (buildSubcommandsSelector(subcommandGroup).options.length === 0) return [];
@@ -91,7 +92,8 @@ export default new AmethystCommand({
                 row(buildButton({
                     label: 'Menu',
                     style: 'Secondary',
-                    id: 'home'
+                    id: 'home',
+                    disabled: onMenu
                 }))
             ]
         }
@@ -142,6 +144,7 @@ export default new AmethystCommand({
             if (!checkCtx(ctx, interaction.user)) return;
             ctx.deferUpdate();
 
+            onMenu = true;
             interaction.editReply({
                 embeds: [
                     basicEmbed(interaction.user, { defaultColor: true })
@@ -179,6 +182,7 @@ export default new AmethystCommand({
         collector.on('collect', async(ctx) => {
             if (!checkCtx(ctx, interaction.user)) return;
 
+            onMenu = false
             ctx.deferUpdate();
 
             const value = ctx.values[0];
