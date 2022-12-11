@@ -3,6 +3,7 @@ import {
     ActionRowBuilder,
     AnyComponentBuilder,
     BaseChannel,
+    BaseInteraction,
     ButtonBuilder,
     ButtonStyle,
     CategoryChannel,
@@ -13,6 +14,8 @@ import {
     ComponentType,
     EmbedBuilder,
     Guild,
+    GuildMember,
+    Interaction,
     InteractionReplyOptions,
     Message,
     User
@@ -241,3 +244,15 @@ export const setAsQuestion = (embed: EmbedBuilder) => {
 export const plurial = (num: number, { singular = '', plurial = 's' }: { singular?: string; plurial?: string }) => {
     return num > 1 ? plurial : singular;
 };
+export const checkCtx = (interaction: BaseInteraction, user: User) => {
+    if (interaction.user.id !== user.id) {
+        if (interaction.isRepliable()) {
+            interaction.reply({
+                ephemeral: true,
+                embeds: [ replies.replyNotAllowed(interaction?.member as GuildMember ?? interaction.user) ]
+            }).catch(() => {});
+        }
+        return false;
+    }
+    return true;
+}

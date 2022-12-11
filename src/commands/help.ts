@@ -2,6 +2,7 @@ import { AmethystCommand, preconditions } from 'amethystjs';
 import {
     APIApplicationCommandSubcommandGroupOption,
     ApplicationCommandOptionType,
+    ApplicationCommandSubCommandData,
     ComponentType,
     GuildMember,
     Message,
@@ -13,7 +14,7 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
 import { commandName, permType } from '../typings/functions';
 import { getPerm, Module } from '../utils/functions';
-import { basicEmbed, boolEmoji, buildButton, capitalize, row } from '../utils/toolbox';
+import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
 export default new AmethystCommand({
@@ -39,7 +40,7 @@ export default new AmethystCommand({
         const cmd = commands.find((x) => x.options.name === command) as AmethystCommand & { module: moduleType };
 
         const buildSubcommandsSelector = (subcommandGroup?: string) => {
-            const subcommands = cmd.options.options.filter((x) => x.type === ApplicationCommandOptionType.Subcommand);
+            const subcommands = cmd.options.options?.filter((x) => x.type === ApplicationCommandOptionType.Subcommand);
 
             if (subcommandGroup) {
                 subcommands.splice(0);
@@ -78,6 +79,7 @@ export default new AmethystCommand({
                 )
         }
         const components = (subcommandGroup?: string) => {
+            if (cmd.options.options.length === 0) return [];
             if (buildSubcommandsSelector(subcommandGroup).options.length === 0) return [];
             const selects: StringSelectMenuBuilder[] = [];
             if (cmd.options.options.filter(x => x.type === ApplicationCommandOptionType.SubcommandGroup).length > 0) selects.push(buildSubcommandGroupsSelector())
@@ -94,7 +96,7 @@ export default new AmethystCommand({
             ]
         }
 
-        interaction.reply({
+        const reply = await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user, { defaultColor: true })
                     .setTitle(`Commande ${cmd.options.name}`)
@@ -124,8 +126,73 @@ export default new AmethystCommand({
                         }
                     )
             ],
-            components: components()
+            components: components(),
+            fetchReply: true
+        }) as Message<true>;
+
+        const collector = reply.createMessageComponentCollector({
+            time: 180000,
+            componentType: ComponentType.StringSelect
         });
+        const btnCollector = reply.createMessageComponentCollector({
+            time: 180000,
+            componentType: ComponentType.Button
+        });
+        btnCollector.on('collect', (ctx) => {
+            if (!checkCtx(ctx, interaction.user)) return;
+            ctx.deferUpdate();
+
+            interaction.editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle(`Commande ${cmd.options.name}`)
+                        .setDescription(`${cmd.options.description}`)
+                        .setFields(
+                            {
+                                name: 'Cooldown',
+                                value: `${cmd.options.cooldown ?? interaction.client.configs.defaultCooldownTime} secondes`,
+                                inline: true
+                            },
+                            {
+                                name: 'Utilisable en messages privés',
+                                value: boolEmoji(!cmd.options.preconditions.includes(preconditions.GuildOnly)),
+                                inline: true
+                            },
+                            {
+                                name: 'Permissions',
+                                value:
+                                    cmd.options.permissions?.map((perm) => getPerm(perm as permType)).join(' ') ??
+                                    'Pas de permissions',
+                                inline: false
+                            },
+                            {
+                                name: 'Module',
+                                value: Module(cmd.options.name as commandName),
+                                inline: true
+                            }
+                        )
+                ],
+                components: components()
+            })
+        })
+
+        collector.on('collect', async(ctx) => {
+            if (!checkCtx(ctx, interaction.user)) return;
+
+            ctx.deferUpdate();
+
+            const value = ctx.values[0];
+            const data = cmd.options.options.find(x => x.name === value) || cmd.options.options.filter(x => x.type === ApplicationCommandOptionType.SubcommandGroup).map((x: APIApplicationCommandSubcommandGroupOption) => x).map(x => x.options).flat().find(x => x.name === value);
+            const group = data.type === ApplicationCommandOptionType.SubcommandGroup;
+
+            interaction.editReply({
+                embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                    .setTitle(`${group ? 'Sous-commande':'Commande'} ${data.name}`)
+                    .setDescription(`${data.description}\n\nOptions :\n${(data as ApplicationCommandSubCommandData)?.options?.map((x) => `${x.name} - **${x.required ? 'requis' : 'optionnel'}**`)?.join('\n') ?? "Pas d'options"}`)
+                ],
+                components: components(group ? data.name : undefined)
+            }).catch(() => {});
+        })
         return;
     }
     const selector = new StringSelectMenuBuilder()
