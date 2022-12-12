@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, BaseChannel, ChannelType, GuildMember, Me
 import { configKeys, configOptionType, configsData, configType } from "../data/configData";
 import replies from "../data/replies";
 import { confirmReturn } from "../typings/functions";
-import { basicEmbed, buildButton, capitalize, confirm, evokerColor, numerize, pingChan, row, subcmd } from "../utils/toolbox";
+import { basicEmbed, buildButton, capitalize, confirm, evokerColor, notNull, numerize, pingChan, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'configurer',
@@ -180,7 +180,6 @@ export default new AmethystCommand({
         }).catch(() => {});
     };
     if (subcommand === 'liste') {
-        //TODO terminer et tester
         const parameter = configsData[options.getString('paramètre')] as configType;
 
         if (parameter) {
@@ -217,11 +216,11 @@ export default new AmethystCommand({
             embed.addFields([
                 {
                     name: capitalize(parameter.name),
-                    value: parameter.type === 'number' ? numerize(parseInt(value as string)) : parameter.type === 'boolean' ? (value ? 'activé' : 'désactivé') : parameter.type === 'channel' ? pingChan(value as string) : `\`\`\`${value}\`\`\``,
+                    value: (notNull(value) && value !== '') ? parameter.type === 'number' ? numerize(parseInt(value as string)) : parameter.type === 'boolean' ? (value ? 'activé' : 'désactivé') : parameter.type === 'channel' ? pingChan(value as string) : `\`\`\`${value}\`\`\`` : 'N/A',
                     inline: parameter.type === 'string' ? false : true
                 }
             ]);
-            if (i % 3 === 0 && parameter.type !== 'string') {
+            if (i % 4 === 0 && i > 0 && parameter.type !== 'string') {
                 embed.addFields({
                     name:  '\u200b',
                     value: '\u200b',
