@@ -1,9 +1,9 @@
 import { AmethystCommand, preconditions, waitForMessage } from "amethystjs";
 import { ApplicationCommandOptionType, BaseChannel, ChannelType, GuildMember, Message, ModalBuilder, ModalSubmitInteraction, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
-import { configKeys, configsData, configType } from "../data/configData";
+import { configKeys, configOptionType, configsData, configType } from "../data/configData";
 import replies from "../data/replies";
 import { confirmReturn } from "../typings/functions";
-import { basicEmbed, buildButton, capitalize, confirm, evokerColor, pingChan, row, subcmd } from "../utils/toolbox";
+import { basicEmbed, buildButton, capitalize, confirm, evokerColor, numerize, pingChan, row, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'configurer',
@@ -197,5 +197,41 @@ export default new AmethystCommand({
                 ]
             })
         }
+        const embed = basicEmbed(interaction.user, { defaultColor: true })
+            .setTitle("Configurations")
+            .setDescription(`Voici les configurations effectuées`)
+
+        Object.keys(configsData).sort((a: keyof configKeys, b: keyof configKeys) => {
+            const mapping: Record<configOptionType, number> = {
+                boolean: 0,
+                channel: 1,
+                number: 2,
+                string: -1
+            };
+
+            return mapping[a] - mapping[b];
+        }).forEach((key: keyof configKeys, i) => {
+            const parameter = configsData[key] as configType;
+            const value = interaction.client.configsManager.getValue(interaction.guild.id, key);
+
+            embed.addFields([
+                {
+                    name: capitalize(parameter.name),
+                    value: parameter.type === 'number' ? numerize(parseInt(value as string)) : parameter.type === 'boolean' ? (value ? 'activé' : 'désactivé') : parameter.type === 'channel' ? pingChan(value as string) : `\`\`\`${value}\`\`\``,
+                    inline: parameter.type === 'string' ? false : true
+                }
+            ]);
+            if (i % 3 === 0 && parameter.type !== 'string') {
+                embed.addFields({
+                    name:  '\u200b',
+                    value: '\u200b',
+                    inline: false
+                })
+            }
+        })
+
+        interaction.reply({
+            embeds: [ embed ]
+        }).catch(() => {});
     }
 })
