@@ -73,7 +73,7 @@ export default new AmethystCommand({
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'utilisateur',
+                    name: 'personne',
                     description: 'Utilisateur que vous voulez voir',
                     type: ApplicationCommandOptionType.User,
                     required: true
