@@ -12,7 +12,8 @@ export enum modActionType {
     CoinsReset = 'Réinitialisation économique',
     CoinsAdd = 'Ajout économique',
     CoinsRemove = 'Retrait économique',
-    LogDeletion = 'Suppression de log'
+    LogDeletion = 'Suppression de log',
+    LevelReset = 'Réinitialisation de niveaux'
 }
 
 export type modlogs = {

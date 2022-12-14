@@ -12,5 +12,6 @@
     "generatepassword": "misc",
     "démineur": "fun",
     "classement": "information",
-    "configurer": "config"
+    "configurer": "config",
+    "adminlevel": "administration"
 }

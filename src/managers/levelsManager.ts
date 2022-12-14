@@ -28,6 +28,25 @@ export class LevelsManager {
         })
     }
 
+    public async reset(guild_id: string, user_id?: string) {
+        if (user_id) {
+            this.cache.delete(this.getCode({
+                guild_id, user_id
+            }));
+
+            await query(`DELETE FROM levels WHERE guild_id='${guild_id}' AND user_id='${user_id}'`).catch(() => {});
+        } else {
+            this.cache.filter(x => x.guild_id === guild_id).forEach((value) => {
+                this.cache.delete(this.getCode({
+                    guild_id,
+                    user_id: value.user_id
+                }))
+            })
+
+            await query(`DELETE FROM levels WHERE guild_id='${guild_id}'`).catch(() => {});
+        }
+        return true;
+    }
     private event() {
         this.client.on('messageCreate', (message) => {
             if (message.author.bot || message.webhookId || !message.guild || !this.client.modulesManager.enabled(message.guild.id, 'level')) return;
