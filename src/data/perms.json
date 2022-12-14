@@ -11,7 +11,7 @@
     "Stream": "Faire des streams",
     "ViewChannel": "Voir les salons",
     "SendMessages": "Envoyer des messages",
-    "SendTtsMessages": "Envoyer des TTS",
+    "SendTTSMessages": "Envoyer des TTS",
     "ManageMessages": "Gérer les messages",
     "EmbedLinks": "envoyer des liens",
     "AttachFiles": "Envoyer des fichiers",
@@ -24,7 +24,7 @@
     "MuteMembers": "Rendre des membres muets",
     "DeafenMembers": "Déconnecter des membres",
     "MoveMembers": "Changer les membres de salons",
-    "UseVad": "je ne connais pas cette permission",
+    "UseVAD": "Utiliser la détection de la voix",
     "ChangeNickname": "Changer le pseudo",
     "ManageNicknames": "Gérer les pseudos",
     "ManageRoles": "Gérer les rôles",
@@ -38,6 +38,7 @@
     "CreatePrivateThreads": "Créer des fils privés",
     "UseExternalStickers": "Utiliser des stickers externes",
     "SendMessagesInThreads": "Envoyer des messages dans les fils",
-    "StartEmbeddedActivities": "Démarrer des activités",
-    "ModerateMembers": "Exclure temporairement les membres"
+    "ModerateMembers": "Exclure temporairement les membres",
+    "UseEmbeddedActivities": "Utiliser des activités intégrées",
+    "CreatePublicThreads": "Créer des fils publics"
 }
