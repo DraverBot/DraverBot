@@ -1,4 +1,5 @@
 import { AmethystEvent } from 'amethystjs';
+import BlaguesAPI from 'blagues-api';
 import { CoinsManager } from 'coins-manager';
 import { ConfigsManager } from '../managers/configsManager';
 import { InterserverManager } from '../managers/interserverManager';
@@ -18,6 +19,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.levelsManager = new LevelsManager(client);
     client.interserver = new InterserverManager(client);
     client.configsManager = new ConfigsManager();
+    client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
 
     // Start managers
     client.coinsManager.start();
@@ -30,5 +32,6 @@ declare module 'discord.js' {
         interserver: InterserverManager;
         levelsManager: LevelsManager;
         configsManager: ConfigsManager;
+        blagues: BlaguesAPI;
     }
 }
