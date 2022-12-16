@@ -14,7 +14,7 @@ export const replaceLevelVariables = ({ msg, member, level, channel }: { msg: st
         { x: 'channel.mention', y: pingChan(channel) },
         { x: 'guild.name', y: member.guild.name },
         { x: 'user.level', y: numerize(level.level) },
-        { x: 'user.requiredMessages', y: numerize(level.required) }
+        { x: 'user.required', y: numerize(level.required) }
     ].forEach(({ x, y }) => {
         content = content.replace(new RegExp(`{${x}}`, 'g'), y.toString());
     });
