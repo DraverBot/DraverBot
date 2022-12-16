@@ -274,3 +274,11 @@ export const resizeString = ({ str, length = 200 }: { str: string; length?: numb
 export const arrayfy = (obj: object) => {
     return Object.keys(obj).map(x => obj[x]);
 }
+export const sqlToObj = (obj: object) => {
+    const data = obj;
+    Object.keys(data).filter(k => typeof data[k] !== 'boolean' && data[k].length === 1).forEach((k) => {
+        data[k] = dbBool(k);
+    });
+
+    return data;
+}

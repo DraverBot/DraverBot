@@ -4,7 +4,7 @@ import utils from '../data/utils.json';
 import commandModules from '../data/commandsModules.json';
 import query from './query';
 import { modulesData } from '../data/modulesData';
-import { moduleType } from '../typings/database';
+import { defaultJokesTypes, jokes, moduleType } from '../typings/database';
 import { boolDb, capitalize, dbBool } from './toolbox';
 
 export const getPerm = (key: permType) => {
@@ -40,3 +40,10 @@ export const moduleName = (module: moduleType, capitalise?: boolean) => {
     if (capitalise === true) return capitalize(name);
     return name;
 };
+export const getDefaultJokeConfigs = (guild_id: string): jokes => {
+    const datas = { guild_id };
+    Object.keys(defaultJokesTypes).forEach((k) => {
+        datas[k] = boolDb(defaultJokesTypes[k])
+    });
+    return datas as jokes;
+}
