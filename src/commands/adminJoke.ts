@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType } from "discord.js";
 import { jokeNames } from "../data/jokesName";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { defaultJokesTypes, jokes } from "../typings/database";
+import { getDefaultJokeConfigs } from "../utils/functions";
 import query from "../utils/query";
 import { arrayfy, basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from "../utils/toolbox";
 
@@ -45,10 +46,7 @@ export default new AmethystCommand({
         await interaction.deferReply();
         let datas = (await query<jokes>(`SELECT * FROM jokes WHERE guild_id='${interaction.guild.id}'`))[0];
         if (!datas) {
-            datas = {} as jokes;
-            Object.keys(defaultJokesTypes).forEach((k) => {
-                datas[k] = boolDb(defaultJokesTypes[k])
-            });
+            datas = getDefaultJokeConfigs(interaction.guild.id)
         }
 
         Object.keys(datas).filter(x => !x.includes('_')).forEach((k) => {
