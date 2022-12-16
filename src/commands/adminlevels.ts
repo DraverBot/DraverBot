@@ -6,7 +6,7 @@ import moduleEnabled from "../preconditions/moduleEnabled";
 import { AdminLevelAddType } from "../typings/commands";
 import { modActionType } from "../typings/database";
 import { confirmReturn } from "../typings/functions";
-import { addModLog, basicEmbed, confirm, numerize, plurial, random, subcmd } from "../utils/toolbox";
+import { addModLog, basicEmbed, confirm, evokerColor, numerize, plurial, random, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'adminlevel',
@@ -124,7 +124,7 @@ export default new AmethystCommand({
             user: interaction.user,
             embed: basicEmbed(interaction.user)
                 .setTitle("Ajout de niveaux")
-                .setDescription(`Vous êtes sur le point de rajouter **${numerize(amount)} ${strType}${plurial(amount, { plurial: plurialSuffix })}** à ${user}.\nÊtes-vous sûr ?`)
+                .setDescription(`Vous êtes sur le point de rajouter **${numerize(amount)} ${strType}${plurial(amount, { plurial: plurialSuffix })}** à ${user}.\nÊtes-vous sûr ?\nVous ne pourrez pas les retirer.`)
         }).catch(() => {}) as confirmReturn;
 
         if (validation === 'cancel' || !validation?.value) return interaction.editReply({
