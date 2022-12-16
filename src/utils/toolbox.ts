@@ -271,3 +271,6 @@ export const resizeString = ({ str, length = 200 }: { str: string; length?: numb
 
     return str.substring(0, length - 3) + '...'
 }
+export const arrayfy = (obj: object) => {
+    return Object.keys(obj).map(x => obj[x]);
+}

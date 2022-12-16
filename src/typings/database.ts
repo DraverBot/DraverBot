@@ -96,3 +96,20 @@ export type configs = {
 } & {
     guild_id: string;
 }
+export type jokes = {
+    guild_id: string;
+    global: number;
+    dev: number;
+    dark: number;
+    limit: number;
+    blondes: number;
+    beauf: number
+}
+export const defaultJokesTypes = {
+    global: true,
+    dev: true,
+    blondes: true,
+    beauf: true,
+    dark: false,
+    limit: false,
+} as Record<Exclude<keyof jokes, 'guild_id'>, boolean>;

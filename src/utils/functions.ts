@@ -5,7 +5,7 @@ import commandModules from '../data/commandsModules.json';
 import query from './query';
 import { modulesData } from '../data/modulesData';
 import { moduleType } from '../typings/database';
-import { boolDb, capitalize } from './toolbox';
+import { boolDb, capitalize, dbBool } from './toolbox';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -31,6 +31,7 @@ export const checkDatabase = (): Promise<void> => {
             )}", lastEditedTimestamp VARCHAR(255) NOT NULL DEFAULT "", case_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY )`
         );
 
+        await query(`CREATE TABLE IF NOT EXISTS jokes ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, global TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', dev TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', dark TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}', \`limit\` TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}', beauf TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', blondes TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}')`)
         resolve();
     });
 };
