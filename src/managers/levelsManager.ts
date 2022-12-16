@@ -1,6 +1,7 @@
 import { Client, Collection, GuildMember, TextChannel } from "discord.js";
 import { levels } from "../typings/managers";
 import query from "../utils/query";
+import { notNull } from "../utils/toolbox";
 
 export class LevelsManager {
     private client: Client;
@@ -26,6 +27,39 @@ export class LevelsManager {
                 return b.messages - a.messages
             }
         })
+    }
+
+    public async addXp({ amount, type, ...code }: { guild_id: string, user_id: string, amount: number; type: 'level' | 'messages' }) {
+        const has = this.cache.has(this.getCode(code));
+        const data: levels<number> = this.cache.get(this.getCode(code)) ?? {
+            ...code,
+            level: 0,
+            messages: 0,
+            required: 255
+        };
+
+        if (type === 'messages') {
+            for (let i = 0; i < amount; i++) {
+                data.messages += 1;
+
+                if (data.messages === data.required) {
+                    data.messages = 0;
+                    data.level+=1
+                    data.required+= Math.floor(data.required * (1/3))
+                }
+            }
+        } else {
+            data.messages = 0;
+            data.level+= amount;
+
+            for (let i = 0; i < amount; i++) {
+                data.required = data.required + Math.floor(data.required * (1/3))
+            }
+        }
+
+        this.cache.set(this.getCode(code), data);
+        const res = await query(this.buildSQL(this.getCode(code), has));
+        return notNull(res);
     }
 
     public async reset(guild_id: string, user_id?: string) {

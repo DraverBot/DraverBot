@@ -3,9 +3,10 @@ import { ApplicationCommandOptionType } from "discord.js";
 import replies from "../data/replies";
 import economyCheck from "../preconditions/economyCheck";
 import moduleEnabled from "../preconditions/moduleEnabled";
+import { AdminLevelAddType } from "../typings/commands";
 import { modActionType } from "../typings/database";
 import { confirmReturn } from "../typings/functions";
-import { addModLog, basicEmbed, confirm, random, subcmd } from "../utils/toolbox";
+import { addModLog, basicEmbed, confirm, numerize, plurial, random, subcmd } from "../utils/toolbox";
 
 export default new AmethystCommand({
     name: 'adminlevel',
@@ -23,6 +24,42 @@ export default new AmethystCommand({
                     description: "Membre que vous voulez réinitialiser",
                     type: ApplicationCommandOptionType.User,
                     required: false
+                }
+            ]
+        },
+        {
+            name: 'ajouter',
+            description: "Ajoute des niveaux ou des messages à un utilisateur",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'membre',
+                    description: "Membre dont vous voulez ajouter des niveaux",
+                    type: ApplicationCommandOptionType.User,
+                    required: true
+                },
+                {
+                    name: 'type',
+                    description: "Type de l'ajout que vous voulez faire",
+                    required: true,
+                    type: ApplicationCommandOptionType.String,
+                    choices: [
+                        {
+                            name: 'Messages',
+                            value: AdminLevelAddType.Messages
+                        },
+                        {
+                            name: 'Niveaux',
+                            value: AdminLevelAddType.Level
+                        }
+                    ]
+                },
+                {
+                    name: 'montant',
+                    description: "Montant de niveaux/messages que vous voulez ajouter",
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true,
+                    minValue: 1
                 }
             ]
         }
@@ -74,5 +111,47 @@ export default new AmethystCommand({
                 ]
             }).catch(() => {});
         }, random({ max: 6, min: 3 }) * 1000);
+    }
+    if (cmd === 'ajouter') {
+        const user = options.getUser('membre');
+        const amount = options.getInteger('montant');
+        const type = options.getString('type') as AdminLevelAddType;
+        const strType = type === AdminLevelAddType.Level ? 'niveau' : 'message'
+        const plurialSuffix = type === AdminLevelAddType.Level ? 'x' : 's';
+
+        const validation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle("Ajout de niveaux")
+                .setDescription(`Vous êtes sur le point de rajouter **${numerize(amount)} ${strType}${plurial(amount, { plurial: plurialSuffix })}** à ${user}.\nÊtes-vous sûr ?`)
+        }).catch(() => {}) as confirmReturn;
+
+        if (validation === 'cancel' || !validation?.value) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        }).catch(() => {});
+
+        await interaction.editReply({
+            embeds: [ replies.wait(interaction.user) ],
+            components: []
+        }).catch(() => {});
+
+        await interaction.client.levelsManager.addXp({
+            amount,
+            user_id: user.id,
+            type,
+            guild_id: interaction.guild.id
+        });
+
+        setTimeout(() => {
+            interaction.editReply({
+                embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                    .setTitle("Ajout de niveaux")
+                    .setDescription(`${numerize(amount)} ${strType}${plurial(amount, { singular: ' a été ajouté' , plurial: plurialSuffix + ' ont été ajoutés' })} à ${user}`)
+                ],
+                components: []
+            }).catch(() => {});
+        }, random({ max: 5, min: 2 }) * 1000);
     }
 })
