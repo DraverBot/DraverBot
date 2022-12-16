@@ -12,6 +12,10 @@ export class LevelsManager {
         this.start();
     }
 
+    public userData(opts: {user_id: string, guild_id: string}) {
+        return this.cache.get(this.getCode(opts));
+    }
+
     private async start() {
         await query(`CREATE TABLE IF NOT EXISTS levels ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, level INTEGER(255) NOT NULL DEFAULT '0', messages INTEGER(255) NOT NULL DEFAULT '0', required INTEGER(255) NOT NULL DEFAULT '255' )`);
         await this.fillCache();

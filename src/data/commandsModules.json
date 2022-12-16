@@ -15,5 +15,6 @@
     "configurer": "config",
     "adminlevel": "administration",
     "adminblague": "administration",
-    "blague": "fun"
+    "blague": "fun",
+    "rank": "level"
 }
