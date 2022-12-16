@@ -8,6 +8,7 @@
   "dependencies": {
     "@types/string-similarity": "^4.0.0",
     "amethystjs": "^1.2.61",
+    "blagues-api": "^2.1.0",
     "coins-manager": "^1.0.6",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
