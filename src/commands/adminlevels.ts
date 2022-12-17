@@ -6,7 +6,7 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import { AdminLevelAddType } from '../typings/commands';
 import { modActionType } from '../typings/database';
 import { confirmReturn } from '../typings/functions';
-import { addModLog, basicEmbed, confirm, evokerColor, numerize, plurial, random, subcmd } from '../utils/toolbox';
+import { addModLog, basicEmbed, confirm, numerize, plurial, random, subcmd } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'adminlevel',

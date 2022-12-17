@@ -5,7 +5,7 @@ import commandModules from '../data/commandsModules.json';
 import query from './query';
 import { modulesData } from '../data/modulesData';
 import { defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
-import { boolDb, capitalize, dbBool } from './toolbox';
+import { boolDb, capitalize } from './toolbox';
 import { ColorResolvable } from 'discord.js';
 
 export const getPerm = (key: permType) => {

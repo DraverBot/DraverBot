@@ -2,10 +2,10 @@ import { AmethystCommand, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { jokeNames } from '../data/jokesName';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { defaultJokesTypes, jokes } from '../typings/database';
+import { jokes } from '../typings/database';
 import { getDefaultJokeConfigs } from '../utils/functions';
 import query from '../utils/query';
-import { arrayfy, basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from '../utils/toolbox';
+import { basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'adminblague',
