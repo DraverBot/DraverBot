@@ -96,7 +96,8 @@ export default new AmethystCommand({
         const choice = await waitForInteraction({
             componentType: ComponentType.Button,
             user: interaction.user,
-            message: choiceMsg
+            message: choiceMsg,
+            replies: waitForReplies(interaction.client)
         }).catch(() => {});
 
         if (!choice)
@@ -151,12 +152,7 @@ export default new AmethystCommand({
             componentType: ComponentType.Button,
             message: msg,
             user: user,
-            replies: {
-                everyone: {
-                    embeds: [replies.replyNotAllowed(interaction.user)],
-                    ephemeral: true
-                }
-            }
+            replies: waitForReplies(interaction.client)
         }).catch(() => {});
 
         if (!yesNoRep)

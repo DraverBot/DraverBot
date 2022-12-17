@@ -7,7 +7,7 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import { modActionType } from '../typings/database';
 import { util } from '../utils/functions';
 import query from '../utils/query';
-import { addModLog, basicEmbed, confirm, numerize, row, subcmd } from '../utils/toolbox';
+import { addModLog, basicEmbed, confirm, numerize, row, subcmd, waitForReplies } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'admincoins',
@@ -114,7 +114,8 @@ export default new AmethystCommand({
         const rep = await waitForInteraction({
             componentType: ComponentType.Button,
             message: confirm,
-            user: interaction.user
+            user: interaction.user,
+            replies: waitForReplies(interaction.client)
         });
 
         if (!rep || rep.customId === 'no')
@@ -177,7 +178,8 @@ export default new AmethystCommand({
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
             user: interaction.user,
-            message: place
+            message: place,
+            replies: waitForReplies(interaction.client)
         });
 
         if (!reply)
@@ -264,7 +266,8 @@ export default new AmethystCommand({
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
             user: interaction.user,
-            message: place
+            message: place,
+            replies: waitForReplies(interaction.client)
         });
 
         if (!reply)

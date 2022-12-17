@@ -19,7 +19,8 @@ import {
     pagination,
     row,
     sqliseString,
-    updateLog
+    updateLog,
+    waitForReplies
 } from '../utils/toolbox';
 
 export default new AmethystCommand({
@@ -358,7 +359,8 @@ export default new AmethystCommand({
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
             message: msg,
-            user: interaction.user
+            user: interaction.user,
+            replies: waitForReplies(interaction.client)
         }).catch(() => {});
 
         if (!reply || reply.customId === 'no')

@@ -29,7 +29,8 @@ import {
     plurial,
     random,
     row,
-    subcmd
+    subcmd,
+    waitForReplies
 } from '../utils/toolbox';
 
 export default new AmethystCommand({
@@ -127,7 +128,8 @@ export default new AmethystCommand({
         const reply = await waitForInteraction({
             componentType: ComponentType.Button,
             user: interaction.user,
-            message: msg
+            message: msg,
+            replies: waitForReplies(interaction.client)
         }).catch(() => {});
 
         if (!reply)

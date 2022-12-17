@@ -265,7 +265,8 @@ export const confirm = ({
             componentType: ComponentType.Button,
             user,
             message: msg,
-            time
+            time,
+            replies: waitForReplies(interaction.client)
         }).catch(() => {});
 
         if (!reply) return resolve('cancel');

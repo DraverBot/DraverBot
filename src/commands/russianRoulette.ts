@@ -2,7 +2,7 @@ import { AmethystCommand, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
-import { basicEmbed, evokerColor, random, systemReply } from '../utils/toolbox';
+import { basicEmbed, evokerColor, random, systemReply, waitForReplies } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'roulette-russse',
@@ -49,7 +49,8 @@ export default new AmethystCommand({
             componentType: ComponentType.Button,
             message: msg,
             user: interaction.user,
-            whoCanReact: 'useronly'
+            whoCanReact: 'useronly',
+            replies: waitForReplies(interaction.client)
         });
         if (!reply || reply.customId === 'no')
             return interaction
