@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/string-similarity": "^4.0.0",
-    "amethystjs": "^1.2.61",
+    "amethystjs": "^1.2.71",
     "blagues-api": "^2.1.0",
     "coins-manager": "^1.0.6",
     "discord.js": "^14.7.1",
