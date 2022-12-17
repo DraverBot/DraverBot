@@ -67,7 +67,7 @@ export default new AmethystCommand({
     }
     if (subcommand === 'afficher') {
         const moduleName = options.getString('module') as moduleType | undefined;
-        const modules = interaction.client.modulesManager.getServerDatas(interaction.guild.id);
+        const modules = interaction.client.modulesManager.getServerDatas(interaction.guild.id) ?? interaction.client.modulesManager.defaultObject;
         const em = basicEmbed(interaction.user)
             .setColor(interaction.guild.members.me.displayHexColor)
             .setTitle('Modules');
