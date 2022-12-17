@@ -205,8 +205,8 @@ const replies = {
     },
     invalidNumber: (user: anyUser) => {
         return userMember(user)
-            .setTitle("Nombre invalide")
-            .setDescription(`Merci de saisir un nombre valide, supérieur à 0`)
+            .setTitle('Nombre invalide')
+            .setDescription(`Merci de saisir un nombre valide, supérieur à 0`);
     }
 };
 

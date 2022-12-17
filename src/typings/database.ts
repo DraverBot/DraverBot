@@ -1,4 +1,4 @@
-import { configKeys } from "../data/configData";
+import { configKeys } from '../data/configData';
 
 export enum modActionType {
     Mute = 'Réduction au silence',
@@ -95,7 +95,7 @@ export type configs = {
     [K in keyof configKeys]: string;
 } & {
     guild_id: string;
-}
+};
 export type jokes = {
     guild_id: string;
     global: number;
@@ -103,13 +103,13 @@ export type jokes = {
     dark: number;
     limit: number;
     blondes: number;
-    beauf: number
-}
+    beauf: number;
+};
 export const defaultJokesTypes = {
     global: true,
     dev: true,
     blondes: true,
     beauf: true,
     dark: false,
-    limit: false,
+    limit: false
 } as Record<Exclude<keyof jokes, 'guild_id'>, boolean>;

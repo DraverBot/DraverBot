@@ -16,7 +16,7 @@ import { frequenceBtn, yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
 import { WordGenerator } from '../managers/Generator';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { interserver } from "../typings/managers";
+import { interserver } from '../typings/managers';
 import { confirmReturn } from '../typings/functions';
 import {
     basicEmbed,
@@ -79,20 +79,20 @@ export default new AmethystCommand({
             ]
         },
         {
-            name: "modifier",
+            name: 'modifier',
             description: "Modifie la fréquence d'un salon d'interchat",
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: "salon",
-                    description: "Salon à re-configurer",
+                    name: 'salon',
+                    description: 'Salon à re-configurer',
                     channelTypes: [ChannelType.GuildText],
                     required: true,
                     type: ApplicationCommandOptionType.Channel
                 },
                 {
                     name: 'fréquence',
-                    description: "Fréquence surlaquelle vous voulez changer",
+                    description: 'Fréquence surlaquelle vous voulez changer',
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     maxLength: 20,
@@ -363,34 +363,49 @@ export default new AmethystCommand({
     }
     if (subcommand === 'modifier') {
         const channel = options.getChannel('salon') as TextChannel;
-        const frequence = options.getString('fréquence') ?? new WordGenerator({
-            letters: true,
-            capitals: true,
-            numbers: true,
-            special: true,
-            length: 18
-        }).generate();
+        const frequence =
+            options.getString('fréquence') ??
+            new WordGenerator({
+                letters: true,
+                capitals: true,
+                numbers: true,
+                special: true,
+                length: 18
+            }).generate();
 
-        if (!interaction.client.interserver.cache.find(x => x.channel_id === channel.id && x.guild_id === interaction.guild.id)) return interaction.reply({
-            embeds: [ replies.interserverNotChannel(interaction.member as GuildMember, { channel }) ]
-        }).catch(() => {});
+        if (
+            !interaction.client.interserver.cache.find(
+                (x) => x.channel_id === channel.id && x.guild_id === interaction.guild.id
+            )
+        )
+            return interaction
+                .reply({
+                    embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel })]
+                })
+                .catch(() => {});
 
         await interaction.deferReply();
-        const res = await interaction.client.interserver.editFrequence({
-            guild_id: interaction.guild.id,
-            channel_id: channel.id,
-            frequence
-        }).catch(() => {});
-        if (res === 'interserverFrequenceAssigned') return interaction.editReply({
-            embeds: [ replies.interserverFrequenceAssigned(interaction.member as GuildMember, { frequence }) ]
-        });
+        const res = await interaction.client.interserver
+            .editFrequence({
+                guild_id: interaction.guild.id,
+                channel_id: channel.id,
+                frequence
+            })
+            .catch(() => {});
+        if (res === 'interserverFrequenceAssigned')
+            return interaction.editReply({
+                embeds: [replies.interserverFrequenceAssigned(interaction.member as GuildMember, { frequence })]
+            });
 
-        interaction.editReply({
-            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Interchat modifié")
-                .setDescription(`La fréquence du salon d'interchat ${pingChan(channel)} a été modifiée`)
-            ],
-            components: [ row(frequenceBtn()) ]
-        }).catch(() => {})
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle('Interchat modifié')
+                        .setDescription(`La fréquence du salon d'interchat ${pingChan(channel)} a été modifiée`)
+                ],
+                components: [row(frequenceBtn())]
+            })
+            .catch(() => {});
     }
 });

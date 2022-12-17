@@ -8,11 +8,10 @@ import { ModulesManager } from '../managers/modulesManager';
 import { checkDatabase } from '../utils/functions';
 import { database } from '../utils/query';
 
-export default new AmethystEvent('ready', async (client) => {
-    await checkDatabase();
-
-    // Init managers
+export default new AmethystEvent('ready', (client) => {
+    checkDatabase();
     client.modulesManager = new ModulesManager();
+
     client.coinsManager = new CoinsManager(database, {
         type: 'multiguild'
     });
@@ -24,14 +23,3 @@ export default new AmethystEvent('ready', async (client) => {
     // Start managers
     client.coinsManager.start();
 });
-
-declare module 'discord.js' {
-    interface Client {
-        modulesManager: ModulesManager;
-        coinsManager: CoinsManager<'multiguild'>;
-        interserver: InterserverManager;
-        levelsManager: LevelsManager;
-        configsManager: ConfigsManager;
-        blagues: BlaguesAPI;
-    }
-}

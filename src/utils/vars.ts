@@ -1,8 +1,18 @@
-import { GuildMember, TextChannel } from "discord.js";
-import { levels } from "../typings/managers";
-import { numerize, pingChan, pingUser } from "./toolbox";
+import { GuildMember, TextChannel } from 'discord.js';
+import { levels } from '../typings/managers';
+import { numerize, pingChan, pingUser } from './toolbox';
 
-export const replaceLevelVariables = ({ msg, member, level, channel }: { msg: string; member: GuildMember; level: levels<number>; channel: TextChannel; }) => {
+export const replaceLevelVariables = ({
+    msg,
+    member,
+    level,
+    channel
+}: {
+    msg: string;
+    member: GuildMember;
+    level: levels<number>;
+    channel: TextChannel;
+}) => {
     let content = msg;
     [
         { x: 'user.mention', y: pingUser(member) },
@@ -20,4 +30,4 @@ export const replaceLevelVariables = ({ msg, member, level, channel }: { msg: st
     });
 
     return content;
-}
+};

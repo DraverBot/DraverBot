@@ -1,6 +1,14 @@
 import { AmethystClient } from 'amethystjs';
+import BlaguesAPI from 'blagues-api';
+import { CoinsManager } from 'coins-manager';
 import { Partials } from 'discord.js';
 import { config } from 'dotenv';
+import { ConfigsManager } from './managers/configsManager';
+import { InterserverManager } from './managers/interserverManager';
+import { LevelsManager } from './managers/levelsManager';
+import { ModulesManager } from './managers/modulesManager';
+import { checkDatabase } from './utils/functions';
+import { database } from './utils/query';
 
 config();
 
@@ -30,5 +38,15 @@ declare module 'amethystjs' {
     }
     interface commandOptions {
         module: string;
+    }
+}
+declare module 'discord.js' {
+    interface Client {
+        modulesManager: ModulesManager;
+        coinsManager: CoinsManager<'multiguild'>;
+        interserver: InterserverManager;
+        levelsManager: LevelsManager;
+        configsManager: ConfigsManager;
+        blagues: BlaguesAPI;
     }
 }

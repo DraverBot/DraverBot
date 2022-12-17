@@ -1,24 +1,24 @@
-import { AmethystCommand } from "amethystjs";
-import { ApplicationCommandOptionType } from "discord.js";
-import moduleEnabled from "../preconditions/moduleEnabled";
-import { random } from "../utils/toolbox";
+import { AmethystCommand } from 'amethystjs';
+import { ApplicationCommandOptionType } from 'discord.js';
+import moduleEnabled from '../preconditions/moduleEnabled';
+import { random } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'démineur',
-    description: "Joue au démineur sur Discord",
+    description: 'Joue au démineur sur Discord',
     preconditions: [moduleEnabled],
     options: [
         {
-            name: "bombes",
-            description: "Nombre de bombes dans le jeu",
+            name: 'bombes',
+            description: 'Nombre de bombes dans le jeu',
             minValue: 1,
             maxValue: 25,
             type: ApplicationCommandOptionType.Integer,
             required: false
         },
         {
-            name: "maximum",
-            description: "Nombre maximum de bombes dans le jeu",
+            name: 'maximum',
+            description: 'Nombre maximum de bombes dans le jeu',
             minValue: 1,
             maxValue: 25,
             type: ApplicationCommandOptionType.Integer,
@@ -26,7 +26,7 @@ export default new AmethystCommand({
         },
         {
             name: 'minimum',
-            description: "Nombre minimum de bombes dans le jeu",
+            description: 'Nombre minimum de bombes dans le jeu',
             required: false,
             type: ApplicationCommandOptionType.Integer,
             minValue: 1,
@@ -49,8 +49,8 @@ export default new AmethystCommand({
                 mined: false,
                 value: 0
             };
-        };
-    };
+        }
+    }
 
     let numberOfMines = fixed ?? random({ max, min });
     for (let i = 0; i < numberOfMines; i++) {
@@ -58,7 +58,7 @@ export default new AmethystCommand({
         const y = random({ max: 9 });
 
         cases[x][y].mined = true;
-    };
+    }
 
     const getNumberOfMines = (xx: string, yy: string) => {
         const x = parseInt(xx);
@@ -67,12 +67,12 @@ export default new AmethystCommand({
         if (cases[x][y].mined) {
             return false;
         }
-        
+
         let counter = 0;
         const hasLeft = y > 0;
-        const hasRight = y < (9 - 1);
+        const hasRight = y < 9 - 1;
         const hasTop = x > 0;
-        const hasBottom = x < (9 - 1);
+        const hasBottom = x < 9 - 1;
 
         counter += +(hasTop && hasLeft && cases[x - 1][y - 1].mined);
         counter += +(hasTop && cases[x - 1][y].mined);
@@ -93,21 +93,21 @@ export default new AmethystCommand({
             const selected = cases[x][y];
             if (!selected.mined) {
                 cases[x][y].value = getNumberOfMines(x, y);
-            };
+            }
         });
     });
 
     let content = '';
     for (let x = 0; x < 10; x++) {
-        for (let y = 0; y < 10; y++) {       
+        for (let y = 0; y < 10; y++) {
             const emojis = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣'];
             const selected = cases[x][y];
-            if (selected.mined) content+='||:bomb:||'
-            else content+=`||${emojis[selected.value]}||`;
-        };
+            if (selected.mined) content += '||:bomb:||';
+            else content += `||${emojis[selected.value]}||`;
+        }
 
-        content+= '\n'
-    };
+        content += '\n';
+    }
 
     interaction.reply(content).catch(() => {});
-})
+});

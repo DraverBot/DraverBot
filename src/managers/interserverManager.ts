@@ -1,6 +1,6 @@
 import { Client, Collection, TextChannel, WebhookClient } from 'discord.js';
 import { replyKey } from '../data/replies';
-import { interserver } from "../typings/managers";
+import { interserver } from '../typings/managers';
 import query from '../utils/query';
 import { WordGenerator } from './Generator';
 

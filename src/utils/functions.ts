@@ -31,7 +31,15 @@ export const checkDatabase = (): Promise<void> => {
             )}", lastEditedTimestamp VARCHAR(255) NOT NULL DEFAULT "", case_id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY )`
         );
 
-        await query(`CREATE TABLE IF NOT EXISTS jokes ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, global TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', dev TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', dark TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}', \`limit\` TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}', beauf TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', blondes TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}')`)
+        await query(
+            `CREATE TABLE IF NOT EXISTS jokes ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, global TINYINT(1) NOT NULL DEFAULT '${boolDb(
+                true
+            )}', dev TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}', dark TINYINT(1) NOT NULL DEFAULT '${boolDb(
+                false
+            )}', \`limit\` TINYINT(1) NOT NULL DEFAULT '${boolDb(false)}', beauf TINYINT(1) NOT NULL DEFAULT '${boolDb(
+                true
+            )}', blondes TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}')`
+        );
         resolve();
     });
 };
@@ -43,7 +51,25 @@ export const moduleName = (module: moduleType, capitalise?: boolean) => {
 export const getDefaultJokeConfigs = (guild_id: string): jokes => {
     const datas = { guild_id };
     Object.keys(defaultJokesTypes).forEach((k) => {
-        datas[k] = boolDb(defaultJokesTypes[k])
+        datas[k] = boolDb(defaultJokesTypes[k]);
     });
     return datas as jokes;
-}
+};
+// export const checks = () => {
+//     (async() => {
+//         await checkDatabase();
+
+//         // Init managers
+//         client.modulesManager = new ModulesManager();
+//         client.coinsManager = new CoinsManager(database, {
+//             type: 'multiguild'
+//         });
+//         client.levelsManager = new LevelsManager(client);
+//         client.interserver = new InterserverManager(client);
+//         client.configsManager = new ConfigsManager();
+//         client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
+
+//         // Start managers
+//         client.coinsManager.start();
+//     })();
+// }

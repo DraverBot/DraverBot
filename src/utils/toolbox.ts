@@ -11,10 +11,12 @@ import {
     Client,
     ColorResolvable,
     CommandInteraction,
-    CommandInteractionOptionResolver, ComponentType,
+    CommandInteractionOptionResolver,
+    ComponentType,
     EmbedBuilder,
     Guild,
-    GuildMember, InteractionReplyOptions,
+    GuildMember,
+    InteractionReplyOptions,
     Message,
     User
 } from 'discord.js';
@@ -170,7 +172,7 @@ export const displayDate = (date: number) => {
 };
 export const sqliseString = (str: string) => {
     if (typeof str !== 'string') return str;
-    return str.replace(/"/g, '\\"')
+    return str.replace(/"/g, '\\"');
 };
 export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Promise<boolean> => {
     return new Promise(async (resolve) => {
@@ -197,13 +199,13 @@ export const confirm = ({
     user,
     embed,
     time = 120000,
-    components = [ yesNoRow() ]
+    components = [yesNoRow()]
 }: {
     interaction: CommandInteraction;
     user: User;
     embed: EmbedBuilder;
     time?: number;
-    components?: ActionRowBuilder<ButtonBuilder>[]
+    components?: ActionRowBuilder<ButtonBuilder>[];
 }): Promise<confirmReturn> => {
     return new Promise(async (resolve) => {
         let msg: Message<true>;
@@ -213,7 +215,7 @@ export const confirm = ({
             interaction
                 .editReply({
                     embeds: [embed],
-                    components: components as (ActionRowBuilder<ButtonBuilder>)[]
+                    components: components as ActionRowBuilder<ButtonBuilder>[]
                 })
                 .catch(() => {});
             msg = (await interaction.fetchReply().catch(() => {})) as Message<true>;
@@ -262,38 +264,41 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
     return true;
 };
 export const inviteLink = (client: Client) => {
-    return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`
-}
+    return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`;
+};
 export const pingUser = (user: anyUser) => `<@${user.id}>`;
 export const notNull = (variable: any) => ![undefined, null].includes(variable);
 export const resizeString = ({ str, length = 200 }: { str: string; length?: number }) => {
     if (str.length <= length) return str;
 
-    return str.substring(0, length - 3) + '...'
-}
+    return str.substring(0, length - 3) + '...';
+};
 export const arrayfy = (obj: object) => {
-    return Object.keys(obj).map(x => obj[x]);
-}
+    return Object.keys(obj).map((x) => obj[x]);
+};
 export const sqlToObj = (obj: object) => {
     const data = obj;
-    Object.keys(data).filter(k => typeof data[k] !== 'boolean' && data[k].length === 1).forEach((k) => {
-        data[k] = dbBool(k);
-    });
+    Object.keys(data)
+        .filter((k) => typeof data[k] !== 'boolean' && data[k].length === 1)
+        .forEach((k) => {
+            data[k] = dbBool(k);
+        });
 
     return data;
-}
+};
 export const nickname = (user: anyUser): string => {
     if (user instanceof User) return user.username;
     return user?.nickname ?? user.user.username;
-}
+};
 export const waitForReplies = (client: Client) => {
-    return {everyone: {
-        embeds: [ replies.replyNotAllowed(client.user) ],
-        ephemeral: true
-    },
-    user:
-        {
-            embeds: [ replies.replyNotAllowed(client.user) ],
+    return {
+        everyone: {
+            embeds: [replies.replyNotAllowed(client.user)],
             ephemeral: true
-    }};
-}
+        },
+        user: {
+            embeds: [replies.replyNotAllowed(client.user)],
+            ephemeral: true
+        }
+    };
+};

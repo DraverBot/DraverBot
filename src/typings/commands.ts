@@ -5,12 +5,12 @@ export enum AdminLevelAddType {
 export enum ShifumiSigns {
     Rock = 'pierre',
     Paper = 'feuille',
-    Scisors = "ciseaux"
+    Scisors = 'ciseaux'
 }
-export type shifumiSign<T extends ShifumiSigns = ShifumiSigns> = { emoji: string; key: T, name: string }
-type shifumiSignsType<T extends ShifumiSigns = ShifumiSigns> = Record<T, shifumiSign<T>>
+export type shifumiSign<T extends ShifumiSigns = ShifumiSigns> = { emoji: string; key: T; name: string };
+type shifumiSignsType<T extends ShifumiSigns = ShifumiSigns> = Record<T, shifumiSign<T>>;
 
-export const shifumiSigns: shifumiSignsType  = {
+export const shifumiSigns: shifumiSignsType = {
     feuille: {
         emoji: '✋',
         key: ShifumiSigns.Paper,
@@ -26,4 +26,4 @@ export const shifumiSigns: shifumiSignsType  = {
         key: ShifumiSigns.Scisors,
         name: 'ciseaux'
     }
-}
+};

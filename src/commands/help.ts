@@ -42,8 +42,14 @@ export default new AmethystCommand({
         const cmdOptions = () => {
             if (cmd.options.options.length === 0) return "Pas d'option";
 
-            return cmd.options.options.filter(x => !['Subcommand', 'SubcommandGroup'].map(x => ApplicationCommandOptionType[x]).includes(x.type)).map((opt) => `${opt.name} - **${(opt as {required?: boolean})?.required ? 'requis' : 'optionnel'}**`).join('\n')
-        }
+            return cmd.options.options
+                .filter(
+                    (x) =>
+                        !['Subcommand', 'SubcommandGroup'].map((x) => ApplicationCommandOptionType[x]).includes(x.type)
+                )
+                .map((opt) => `${opt.name} - **${(opt as { required?: boolean })?.required ? 'requis' : 'optionnel'}**`)
+                .join('\n');
+        };
         const buildSubcommandsSelector = (subcommandGroup?: string) => {
             const subcommands = cmd.options.options?.filter((x) => x.type === ApplicationCommandOptionType.Subcommand);
 
@@ -135,7 +141,7 @@ export default new AmethystCommand({
                             inline: true
                         },
                         {
-                            name: "Options",
+                            name: 'Options',
                             value: cmdOptions(),
                             inline: true
                         }
@@ -269,8 +275,10 @@ export default new AmethystCommand({
                     .setThumbnail(interaction.client.user.displayAvatarURL({ forceStatic: true }))
                     .setFields(
                         {
-                            name: "Liens",
-                            value: `[Invitation](${inviteLink(interaction.client)})\n[Serveur de support](${util('support')})`,
+                            name: 'Liens',
+                            value: `[Invitation](${inviteLink(interaction.client)})\n[Serveur de support](${util(
+                                'support'
+                            )})`,
                             inline: true
                         },
                         {
