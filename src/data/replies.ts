@@ -4,6 +4,7 @@ import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
 import { basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
+import modules from '../maps/modules';
 
 export type anyUser = User | GuildMember;
 
@@ -76,10 +77,17 @@ const replies = {
             .setColor(evokerColor(metadata.guild));
     },
     moduleDisabled: (user: User, { guild, module }: { guild: Guild; module: moduleType }) => {
-        return basic(user)
+        const embed = basic(user)
             .setTitle(':x: Module désactivé')
             .setDescription(`Le module \`${moduleName(module)}\` est désactivé.`)
             .setColor(evokerColor(guild));
+
+        const times = modules.get(user.id) ?? 0;
+        if (times >= 5) {
+            embed.setDescription(`${embed.data.description}\n\n:bulb:\n> Pour activer un module, utilisez la commande \`/module configurer\``)
+        }
+        modules.set(user.id, times+1);
+        return embed;
     },
     invalidProofType: (user: User, { guild }: { guild: Guild }) => {
         return basic(user)
