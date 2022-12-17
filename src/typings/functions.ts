@@ -78,4 +78,4 @@ export type sendLogOpts = {
     mod_id: string;
     member_id: string;
     reason: string;
-}
+};

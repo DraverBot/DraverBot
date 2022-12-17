@@ -84,9 +84,11 @@ const replies = {
 
         const times = modules.get(user.id) ?? 0;
         if (times >= 5) {
-            embed.setDescription(`${embed.data.description}\n\n:bulb:\n> Pour activer un module, utilisez la commande \`/module configurer\``)
+            embed.setDescription(
+                `${embed.data.description}\n\n:bulb:\n> Pour activer un module, utilisez la commande \`/module configurer\``
+            );
         }
-        modules.set(user.id, times+1);
+        modules.set(user.id, times + 1);
         return embed;
     },
     invalidProofType: (user: User, { guild }: { guild: Guild }) => {

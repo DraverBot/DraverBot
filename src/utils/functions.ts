@@ -61,18 +61,18 @@ export const getModEmbedColor = (action: modActionType): ColorResolvable => {
     switch (action) {
         case modActionType.Ban:
         case modActionType.Unban:
-            case modActionType.Warn:
-                case modActionType.Unmute:
-                    case modActionType.Unwarn:
+        case modActionType.Warn:
+        case modActionType.Unmute:
+        case modActionType.Unwarn:
         case modActionType.Kick:
         case modActionType.Mute:
             color = '#ff0000';
-        break;
+            break;
         case modActionType.CoinsAdd:
-            case modActionType.CoinsRemove:
-                case modActionType.CoinsReset:
-                    color = 'Yellow'
-        break;
+        case modActionType.CoinsRemove:
+        case modActionType.CoinsReset:
+            color = 'Yellow';
+            break;
     }
     return color;
-}
+};

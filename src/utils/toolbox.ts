@@ -64,34 +64,47 @@ export const systemReply = (interaction: CommandInteraction, content: Interactio
 };
 export const boolDb = (bool: boolean): '0' | '1' => (bool ? '0' : '1');
 export const dbBool = (str: string | number) => ['0', 0].includes(str);
-export const sendLog = async({ guild, mod_id, member_id, reason, action, proof = undefined }: sendLogOpts) => {
+export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof = undefined }: sendLogOpts) => {
     const activated = dbBool(guild.client.configsManager.getValue(guild.id, 'logs_enable')) as boolean;
     if (!activated) return false;
 
     const embed = new EmbedBuilder()
         .setTitle(capitalize(action))
-        .setDescription(`Par <@${mod_id}> ( \`${mod_id}\` )${member_id ? (member_id?.length > 0 && member_id !== 'none') ? ` sur <@${member_id}> ( \`${member_id}\` )` : '' : ''}\n> ${displayDate(Date.now())}`)
-        .setFields(
-            {
-                name: 'Raison',
-                value: reason ?? 'Pas de raison',
-                inline: false
-            }
+        .setDescription(
+            `Par <@${mod_id}> ( \`${mod_id}\` )${
+                member_id
+                    ? member_id?.length > 0 && member_id !== 'none'
+                        ? ` sur <@${member_id}> ( \`${member_id}\` )`
+                        : ''
+                    : ''
+            }\n> ${displayDate(Date.now())}`
         )
+        .setFields({
+            name: 'Raison',
+            value: reason ?? 'Pas de raison',
+            inline: false
+        })
         .setColor(getModEmbedColor(action))
-        .setFooter({ text: guild.name, iconURL: guild.iconURL({ forceStatic: false }) ?? guild.client.user.displayAvatarURL() })
+        .setFooter({
+            text: guild.name,
+            iconURL: guild.iconURL({ forceStatic: false }) ?? guild.client.user.displayAvatarURL()
+        });
     if (proof) embed.setImage(proof);
-    
-    const channel = guild.channels.cache.get(guild.client.configsManager.getValue(guild.id, 'logs_channel')) as TextChannel;
+
+    const channel = guild.channels.cache.get(
+        guild.client.configsManager.getValue(guild.id, 'logs_channel')
+    ) as TextChannel;
     if (!channel) return false;
 
-    const res = await channel.send({
-        embeds: [ embed ]
-    }).catch(() => {});
+    const res = await channel
+        .send({
+            embeds: [embed]
+        })
+        .catch(() => {});
 
     if (!res) return false;
     return true;
-}
+};
 export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
     return new Promise(async (resolve) => {
         const self = mod_id === guild.client.user.id ? '0' : '1';
