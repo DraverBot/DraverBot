@@ -7,6 +7,7 @@ import { ConfigsManager } from './managers/configsManager';
 import { InterserverManager } from './managers/interserverManager';
 import { LevelsManager } from './managers/levelsManager';
 import { ModulesManager } from './managers/modulesManager';
+import { GiveawayManager } from 'discordjs-giveaways';
 
 config();
 
@@ -46,5 +47,6 @@ declare module 'discord.js' {
         levelsManager: LevelsManager;
         configsManager: ConfigsManager;
         blagues: BlaguesAPI;
+        giveaways: GiveawayManager;
     }
 }
