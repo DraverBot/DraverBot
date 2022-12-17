@@ -4,8 +4,9 @@ import utils from '../data/utils.json';
 import commandModules from '../data/commandsModules.json';
 import query from './query';
 import { modulesData } from '../data/modulesData';
-import { defaultJokesTypes, jokes, moduleType } from '../typings/database';
+import { defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
 import { boolDb, capitalize, dbBool } from './toolbox';
+import { ColorResolvable } from 'discord.js';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -55,21 +56,23 @@ export const getDefaultJokeConfigs = (guild_id: string): jokes => {
     });
     return datas as jokes;
 };
-// export const checks = () => {
-//     (async() => {
-//         await checkDatabase();
-
-//         // Init managers
-//         client.modulesManager = new ModulesManager();
-//         client.coinsManager = new CoinsManager(database, {
-//             type: 'multiguild'
-//         });
-//         client.levelsManager = new LevelsManager(client);
-//         client.interserver = new InterserverManager(client);
-//         client.configsManager = new ConfigsManager();
-//         client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
-
-//         // Start managers
-//         client.coinsManager.start();
-//     })();
-// }
+export const getModEmbedColor = (action: modActionType): ColorResolvable => {
+    let color = util('accentColor');
+    switch (action) {
+        case modActionType.Ban:
+        case modActionType.Unban:
+            case modActionType.Warn:
+                case modActionType.Unmute:
+                    case modActionType.Unwarn:
+        case modActionType.Kick:
+        case modActionType.Mute:
+            color = '#ff0000';
+        break;
+        case modActionType.CoinsAdd:
+            case modActionType.CoinsRemove:
+                case modActionType.CoinsReset:
+                    color = 'Yellow'
+        break;
+    }
+    return color;
+}

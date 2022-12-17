@@ -71,3 +71,11 @@ export type updateLogOptions = {
 };
 export type commandName = keyof typeof commandModules;
 export type confirmReturn = { value: boolean; interaction: ButtonInteraction } | 'cancel';
+export type sendLogOpts = {
+    guild: Guild;
+    action: modActionType;
+    proof?: string;
+    mod_id: string;
+    member_id: string;
+    reason: string;
+}
