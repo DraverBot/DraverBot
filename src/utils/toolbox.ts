@@ -282,3 +282,18 @@ export const sqlToObj = (obj: object) => {
 
     return data;
 }
+export const nickname = (user: anyUser): string => {
+    if (user instanceof User) return user.username;
+    return user?.nickname ?? user.user.username;
+}
+export const waitForReplies = (client: Client) => {
+    return {everyone: {
+        embeds: [ replies.replyNotAllowed(client.user) ],
+        ephemeral: true
+    },
+    user:
+        {
+            embeds: [ replies.replyNotAllowed(client.user) ],
+            ephemeral: true
+    }};
+}
