@@ -7,8 +7,6 @@ import { ConfigsManager } from './managers/configsManager';
 import { InterserverManager } from './managers/interserverManager';
 import { LevelsManager } from './managers/levelsManager';
 import { ModulesManager } from './managers/modulesManager';
-import { checkDatabase } from './utils/functions';
-import { database } from './utils/query';
 
 config();
 
