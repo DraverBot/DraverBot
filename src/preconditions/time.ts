@@ -4,6 +4,11 @@ import { addTimeDoc, basicEmbed, evokerColor } from "../utils/toolbox";
 
 export default new Precondition('validTime').setChatInputRun(({ interaction, options }) => {
     const time = options.getString('temps') || options.getString('durée');
+    if (!time) return {
+        ok: true,
+        isChatInput: true,
+        interaction
+    }
     if (!ms(time)) {
         interaction.reply({
             embeds: [ basicEmbed(interaction.user)
