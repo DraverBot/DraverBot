@@ -8,6 +8,7 @@ import { ModulesManager } from '../managers/modulesManager';
 import { checkDatabase } from '../utils/functions';
 import { database } from '../utils/query';
 import { GiveawayManager } from 'discordjs-giveaways';
+import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 
 export default new AmethystEvent('ready', (client) => {
     checkDatabase();
@@ -21,7 +22,9 @@ export default new AmethystEvent('ready', (client) => {
     client.configsManager = new ConfigsManager();
     client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
     client.giveaways = new GiveawayManager(client, database, {
-        sendMessages: false
+        sendMessages: false,
+        embeds: giveawayEmbeds,
+        buttons: giveawayButtons
     });
 
     // Start managers
