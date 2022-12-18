@@ -20,7 +20,9 @@ export default new AmethystEvent('ready', (client) => {
     client.interserver = new InterserverManager(client);
     client.configsManager = new ConfigsManager();
     client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
-    client.giveaways = new GiveawayManager(client, database);
+    client.giveaways = new GiveawayManager(client, database, {
+        sendMessages: false
+    });
 
     // Start managers
     client.coinsManager.start();
