@@ -71,9 +71,11 @@ export default new AmethystCommand({
         const channel = (options.getChannel('salon') ?? interaction.channel) as TextChannel;
         const reward = options.getString('récompense');
         const time = ms(options.getString('temps'));
-        const bonuses = (options.getString('bonus') ?? '').split(/ +/g);
-        const required = (options.getString('requis') ?? '').split(/ +/g);
-        const denied = (options.getString('interdits') ?? '').split(/ +/g);
+        
+        const roleFilter = (s: string) => s.length > 0;
+        const bonuses = (options.getString('bonus') ?? '').split(/ +/g).filter(roleFilter);
+        const required = (options.getString('requis') ?? '').split(/ +/g).filter(roleFilter);
+        const denied = (options.getString('interdits') ?? '').split(/ +/g).filter(roleFilter);
         const winnerCount = options.getInteger('gagnants');
 
         await interaction.deferReply();

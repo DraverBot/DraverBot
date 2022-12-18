@@ -8,7 +8,7 @@ const thisGw = (url: string) => `[**ce giveaway**](${url})`;
 export const giveawayEmbeds: embedsInputData = {
     giveaway: (data) => {
         data.participants = data.participants ?? [];
-        
+
         const embed = new EmbedBuilder()
             .setTitle("🎉 Giveaway 🎉")
             .setDescription(`<@${data.hoster_id}> offre un giveaway !\nIl y a ${numerize(data.participants.length)} participant${plurial(data.participants.length, {})} pour ${numerize(data.winnerCount)} gagnant${plurial(data.winnerCount, {})}\n\nAppuyez sur le bouton pour tenter de gagner : __${data.reward}__\nLe giveaway prendra fin ${displayDate(data.time + Date.now())}`)
@@ -111,14 +111,16 @@ export const giveawayButtons: buttonsInputData = {
         return buildButton({
             label: 'Participer',
             emoji: '🎉',
-            style: 'Success'
+            style: 'Success',
+            id: 'gw-participate'
         })
     },
     cancelParticipation: () => {
         return buildButton({
             label: 'Annuler',
             emoji: '🎉',
-            style: 'Danger'
+            style: 'Danger',
+            id: 'gw-unparticipate'
         })
     }
 }
