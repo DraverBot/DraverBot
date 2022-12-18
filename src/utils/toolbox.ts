@@ -357,3 +357,6 @@ export const pingRole = (role: Role | string) => {
     if (role instanceof Role) return `<@&${role.id}>`;
     return `<@&${role}>`;
 }
+export const getMsgUrl = ({ guild_id, channel_id, message_id }: { guild_id: string; channel_id: string; message_id: string }) => {
+    return `https://discord.com/channels/${guild_id}/${channel_id}/${message_id}`;
+}
