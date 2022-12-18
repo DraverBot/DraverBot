@@ -1,8 +1,8 @@
 import { AmethystCommand, waitForMessage } from "amethystjs";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { ApplicationCommandOptionType, ChannelType, ComponentType, InteractionReplyOptions, Message, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, InteractionReplyOptions, Message, Role, TextChannel } from "discord.js";
 import timePrecondition from "../preconditions/time";
-import { basicEmbed, buildButton, checkCtx, displayDate, evokerColor, notNull, numerize, pingChan, pingRole, plurial, row, subcmd } from "../utils/toolbox";
+import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, displayDate, evokerColor, notNull, numerize, pingChan, pingRole, plurial, row, subcmd } from "../utils/toolbox";
 import ms from "ms";
 import { Giveaway, giveawayInput } from "discordjs-giveaways";
 import moment from "moment";
@@ -128,7 +128,10 @@ export default new AmethystCommand({
             guild_id: interaction.guild.id,
             channel: interaction.channel as TextChannel,
         };
-        const basic = (currentAction: boolean, fetch?: boolean): InteractionReplyOptions => {
+        
+        let hasCurrentAction = false;
+        const basic = (fetch?: boolean): InteractionReplyOptions => {
+            const currentAction = hasCurrentAction;
             const components = [
                 row(
                     buildButton({
@@ -232,7 +235,7 @@ export default new AmethystCommand({
             }
         }
 
-        const msg = await interaction.reply(basic(false, true)).catch(() => { }) as unknown as Message<true>;
+        const msg = await interaction.reply(basic()).catch(() => { }) as unknown as Message<true>;
         if (!msg) return;
 
         const collector = msg.createMessageComponentCollector({
@@ -241,10 +244,10 @@ export default new AmethystCommand({
         });
 
         const reedit = () => {
-            interaction.editReply(basic(false)).catch(() => {});
+            interaction.editReply(basic()).catch(() => {});
         }
 
-        let hasCurrentAction = false;
+        hasCurrentAction = false;
         collector.on('collect', async(ctx) => {
             if (!checkCtx(ctx, interaction.user)) return;
 
@@ -286,9 +289,9 @@ export default new AmethystCommand({
                 }, 10000);
             }
 
-            hasCurrentAction = true;
-            interaction.editReply(basic(true)).catch(() => {});
+            interaction.editReply(basic()).catch(() => {});
 
+            hasCurrentAction = true;
             if (ctx.customId === 'channel') {
                 const rep = await ctx.reply({
                     embeds: [ basicEmbed(interaction.user)
@@ -306,6 +309,7 @@ export default new AmethystCommand({
                     time: 120000
                 }).catch(() => {}) as Message<true>;
 
+                hasCurrentAction = false;
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({ embeds: [ replies.cancel() ] }).catch(() => {});
                     setDeleteTmst();
@@ -330,7 +334,184 @@ export default new AmethystCommand({
                 ctx.deleteReply(rep).catch(() => {});
                 data.channel = channel;
                 reedit();
+            }
+            if (ctx.customId.includes('roles')) {
+                const type = ctx.customId === 'roles_required' ? 'rôles requis' : ctx.customId === 'denied_roles' ? 'rôles interdits' : 'rôles bonus';
+                const rep = await ctx.reply({
+                    fetchReply: true,
+                    embeds: [ basicEmbed(interaction.user)
+                        .setTitle(capitalize(type))
+                        .setDescription(`Quels sont les rôles que vous voulez ajouter ?\nUtilisez un nom, un identifiant ou une mention.\n${util('cancelMsg')}\n> Répondez par \`vide\` pour vider les rôles`)
+                        .setColor('Grey')
+                    ]
+                }).catch(() => {}) as Message<true>;
+                if (!rep) return;
+
+                const reply = await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {}) as Message<true>;
+
+                if (reply.deletable) reply.delete().catch(() => {});
+
                 hasCurrentAction = false;
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({
+                        embeds: [ replies.cancel() ]
+                    }).catch(() => {});
+                    setDeleteTmst();
+
+                    reedit();
+                    return;
+                }
+                if (reply.content.toLowerCase() === 'vide') {
+                    data[ctx.customId] = [];
+                    reedit();
+                    ctx.deleteReply(rep).catch(() => {});
+                    return;
+                }
+                const names = reply.content.split(/ +/g);
+                const roles: Role[] = reply.mentions.roles.toJSON();
+
+                for (const name of names) {
+                    const role = interaction.guild.roles.cache.get(name) || interaction.guild.roles.cache.find(x => x.name === name);
+                    if (role && !roles.includes(role)) roles.push(role);
+                }
+                
+                if (roles.length === 0) {
+                    setDeleteTmst();
+                    ctx.editReply({
+                        embeds: [ basicEmbed(interaction.user)
+                            .setTitle("Aucun rôle")
+                            .setDescription(`Je n'ai trouvé aucun rôle correspondant à votre recherche.\nIl se peut que ce ou ces rôles soient déjà dans la liste`)
+                            .setColor('Grey')
+                        ]
+                    }).catch(() => {});
+                    reedit();
+                    return;
+                }
+
+                const checkRoles = (roles: string[]) => {
+                    const isInBothArrays = (arr1: string[], arr2: string[]) => arr1.some(item => arr2.includes(item));
+                  
+                    switch (ctx.customId) {
+                      case 'denied_roles':
+                        if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.required_roles)) return false;
+                        break;
+                      case 'required_roles':
+                        if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.denied_roles)) return false;
+                        break;
+                      case 'bonus_roles':
+                        if (isInBothArrays(roles, data.denied_roles) || isInBothArrays(roles, data.required_roles)) return false;
+                        break;
+                    }
+                  
+                    return true;
+                };
+                  
+                let valid = checkRoles(roles.map(x => x.id));
+                
+                if (!valid) {
+                    setDeleteTmst();
+                    reedit();
+                    ctx.editReply({
+                        embeds: [ basicEmbed(interaction.user)
+                            .setTitle("Rôles invalide")
+                            .setDescription(`Un des rôles que vous avez saisi existe déjà dans un autre champs de rôles (rôles requis, rôles bonus ou rôles interdits)`)
+                            .setColor(evokerColor(interaction.guild))
+                        ]
+                    })
+                    return;
+                }
+                ctx.deleteReply(rep).catch(() => {});
+                data[ctx.customId] = roles.map(x => x.id);
+                reedit();
+            }
+            if (ctx.customId === 'winnerCount') {
+                const rep = await ctx.reply({
+                    embeds: [ basicEmbed(interaction.user)
+                        .setTitle("Nombre de gagnants")
+                        .setDescription(`Vous allez configurer le nombre de gagnants\nSaisissez un nombre entre 1 et 100 dans le chat.\n${util('cancelMsg')}`)
+                        .setColor('Grey')
+                    ],
+                    fetchReply: true
+                }).catch(() => {}) as Message<true>;
+                const reply = await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {}) as Message<true>;
+                hasCurrentAction = false;
+
+                if (reply.deletable) reply.delete().catch(() => {});
+                if (!reply || reply.content === 'cancel') {
+                    interaction.editReply({
+                        embeds: [ replies.cancel() ]
+                    }).catch(() => {});
+                    reedit();
+                    setDeleteTmst();
+                    return;
+                }
+                const int = parseInt(reply.content);
+                if (!int || isNaN(int) || int < 1 || int > 100) {
+                    reedit();
+                    setDeleteTmst();
+                    interaction.editReply({
+                        embeds: [ replies.invalidNumber(interaction.member as GuildMember) ]
+                    }).catch(() => {});
+                    return;
+                }
+                data.winnerCount = int;
+                reedit();
+                ctx.deleteReply(rep).catch(() => {});
+            }
+            if (ctx.customId === 'time') {
+                const rep = await ctx.reply({
+                    embeds: [ basicEmbed(interaction.user)
+                        .setTitle("Durée du giveaway")
+                        .setDescription(`Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(interaction.user.id)}\n${util('cancelMsg')}`)
+                        .setColor('Grey')
+                    ],
+                    fetchReply: true
+                }).catch(() => {}) as Message<true>;
+
+                const reply = await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {}) as Message<true>;
+
+                hasCurrentAction = false;
+                if (reply.deletable) reply.delete().catch(() => {});
+
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({
+                        embeds: [ replies.cancel() ]
+                    }).catch(() => {});
+                    reedit();
+                    setDeleteTmst();
+                    return;
+                }
+
+                const time = ms(reply.content)
+                if (!time || isNaN(time)) {
+                    ctx.editReply({
+                        embeds: [ replies.invalidTime(interaction?.member as GuildMember ?? interaction.user) ]
+                    }).catch(() => {});
+                    setDeleteTmst();
+                    reedit();
+                    return;
+                }
+
+                data.time = time;
+                ctx.deleteReply(rep).catch(() => {});
+                reedit();
+            }
+        });
+        collector.on('end', (_ctx, reason) => {
+            if (!['validate', 'canceled'].includes(reason)) {
+                interaction.editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                }).catch(() => {});
             }
         })
     }

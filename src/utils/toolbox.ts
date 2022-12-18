@@ -233,10 +233,12 @@ export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Prom
     });
 };
 export const pingChan = (channel: BaseChannel | string) => {
-    if (typeof channel === 'string') return `<#${channel}>`;
-
-    if (channel.type === ChannelType.GuildCategory) return (channel as CategoryChannel).name;
-    return `<#${channel.id}>`;
+    if (channel instanceof BaseChannel) {
+        if (channel.type === ChannelType.GuildCategory) return (channel as CategoryChannel).name;
+        return `<#${channel.id}>`;
+    } else {
+        return `<#${channel}>`;
+    }
 };
 export const subcmd = (options: CommandInteractionOptionResolver) => {
     return options.getSubcommand();

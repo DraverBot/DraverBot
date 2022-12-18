@@ -3,7 +3,7 @@ import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
-import { basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
+import { addTimeDoc, basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 import modules from '../maps/modules';
 
 export type anyUser = User | GuildMember;
@@ -217,6 +217,12 @@ const replies = {
         return userMember(user)
             .setTitle('Nombre invalide')
             .setDescription(`Merci de saisir un nombre valide, supérieur à 0`);
+    },
+    invalidTime: (user: anyUser) => {
+        return userMember(user)
+            .setTitle("Temps invalide")
+            .setDescription(`Vous n'avez pas saisi une durée valide${addTimeDoc(user.id)}`)
+            
     }
 };
 
