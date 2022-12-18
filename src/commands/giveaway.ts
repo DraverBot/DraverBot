@@ -96,7 +96,7 @@ export default new AmethystCommand({
             embeds: [ basicEmbed(interaction.user)
                 .setColor(evokerColor(interaction.guild))
                 .setTitle("Erreur")
-                .setDescription(`Une erreur a eu lieu lors de l'interaction avec la base de données.`)
+                .setDescription(`Une erreur a eu lieu lors de la création du giveaway.\nÇa peut être lié au fait que je n'ai pas les permissions d'envoyer des messages dans ${pingChan(channel)}`)
             ],
         }).catch(() => {});
 
