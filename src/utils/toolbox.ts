@@ -293,7 +293,8 @@ export const confirm = ({
 export const setAsQuestion = (embed: EmbedBuilder) => {
     return embed.setColor('Grey');
 };
-export const plurial = (num: number, { singular = '', plurial = 's' }: { singular?: string; plurial?: string }) => {
+export const plurial = (num: number, opts?: { singular?: string; plurial?: string }) => {
+    const { plurial = 's', singular = '' } = opts;
     return num > 1 ? plurial : singular;
 };
 export const checkCtx = (interaction: BaseInteraction, user: User) => {
