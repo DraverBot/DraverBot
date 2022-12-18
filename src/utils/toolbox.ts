@@ -295,7 +295,9 @@ export const setAsQuestion = (embed: EmbedBuilder) => {
     return embed.setColor('Grey');
 };
 export const plurial = (num: number, opts?: { singular?: string; plurial?: string }) => {
-    const { plurial = 's', singular = '' } = opts;
+    const singular = opts?.singular ?? '';
+    const plurial = opts?.plurial ?? 's';
+
     return num > 1 ? plurial : singular;
 };
 export const checkCtx = (interaction: BaseInteraction, user: User) => {
