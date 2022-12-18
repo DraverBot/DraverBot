@@ -1,10 +1,14 @@
-import { AmethystCommand } from "amethystjs";
+import { AmethystCommand, waitForMessage } from "amethystjs";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { ApplicationCommandOptionType, ChannelType, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, ComponentType, InteractionReplyOptions, Message, TextChannel } from "discord.js";
 import timePrecondition from "../preconditions/time";
-import { basicEmbed, displayDate, evokerColor, numerize, pingChan, plurial, subcmd } from "../utils/toolbox";
+import { basicEmbed, buildButton, checkCtx, displayDate, evokerColor, notNull, numerize, pingChan, pingRole, plurial, row, subcmd } from "../utils/toolbox";
 import ms from "ms";
-import { Giveaway } from "discordjs-giveaways";
+import { Giveaway, giveawayInput } from "discordjs-giveaways";
+import moment from "moment";
+import { cancelButton } from "../data/buttons";
+import replies from "../data/replies";
+import { getPerm, util } from "../utils/functions";
 
 export default new AmethystCommand({
     name: 'giveaway',
@@ -13,8 +17,8 @@ export default new AmethystCommand({
     preconditions: [moduleEnabled, timePrecondition],
     options: [
         {
-            name: "créer",
-            description: "Crée un giveaway",
+            name: "démarrer",
+            description: "Démarre un giveaway",
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
@@ -62,12 +66,17 @@ export default new AmethystCommand({
                     type: ApplicationCommandOptionType.String
                 }
             ]
+        },
+        {
+            name: "créer",
+            description: "Crée un giveaway dans le salon",
+            type: ApplicationCommandOptionType.Subcommand
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
     const cmd = subcmd(options);
 
-    if (cmd === 'créer') {
+    if (cmd === 'démarrer') {
         const channel = (options.getChannel('salon') ?? interaction.channel) as TextChannel;
         const reward = options.getString('récompense');
         const time = ms(options.getString('temps'));
@@ -106,5 +115,223 @@ export default new AmethystCommand({
                 .setDescription(`Le giveaway avec la récompense **${reward}** a été crée dans ${pingChan(channel)}.\nIl se finit ${displayDate(time + Date.now())} avec ${numerize(winnerCount)} gagnant${plurial(winnerCount)}`)
             ]
         }).catch(() => {});
+    }
+    if (cmd === 'créer') {
+        const data: giveawayInput = {
+            reward: `Un splendide T-Shirt Draver`,
+            required_roles: [],
+            denied_roles: [],
+            bonus_roles: [],
+            winnerCount: 1,
+            time: 3600000,
+            hoster_id: interaction.user.id,
+            guild_id: interaction.guild.id,
+            channel: interaction.channel as TextChannel,
+        };
+        const basic = (currentAction: boolean, fetch?: boolean): InteractionReplyOptions => {
+            const components = [
+                row(
+                    buildButton({
+                        label: 'Récompense',
+                        id: 'reward',
+                        style: 'Primary',
+                        disabled: currentAction
+                    }),
+                    buildButton({
+                        label: 'Gagnants',
+                        id: 'winnerCount',
+                        style: 'Secondary',
+                        disabled: currentAction
+                    }),
+                    buildButton({
+                        label: 'Temps',
+                        id: 'time',
+                        style: 'Secondary',
+                        disabled: currentAction
+                    })
+                ),
+                row(
+                    buildButton({
+                        label: 'Salon',
+                        id: 'channel',
+                        style: 'Primary',
+                        disabled: currentAction
+                    }),
+                    buildButton({
+                        label: 'Bonus',
+                        id: 'bonus_roles',
+                        style: 'Secondary',
+                        disabled: currentAction
+                    }),
+                    buildButton({
+                        label: 'Requis',
+                        id: 'required_roles',
+                        style: 'Secondary',
+                        disabled: currentAction
+                    }),
+                    buildButton({
+                        label: 'Interdits',
+                        id: 'denied_roles',
+                        style: 'Secondary',
+                        disabled: currentAction
+                    })
+                ),
+                row(buildButton({
+                    label: 'Valider',
+                    id: 'validate',
+                    style: 'Success',
+                    disabled: currentAction
+                }), cancelButton().setDisabled(currentAction))
+            ]
+            return {
+                embeds: [
+                    basicEmbed(interaction.user)
+                        .setColor('Grey')
+                        .setTitle("Création de giveaway")
+                        .setDescription(`Appuyez sur les boutons ci-dessous pour configurer votre giveaway`)
+                        .setFields(
+                            {
+                                name: 'Récompense',
+                                value: data.reward,
+                                inline: true
+                            },
+                            {
+                                name: 'Gagnants',
+                                value: numerize(data.winnerCount),
+                                inline: true
+                            },
+                            {
+                                name: "Prendra fin",
+                                value: displayDate(Date.now() + data.time),
+                                inline: true
+                            },
+                            {
+                                name: "Salon",
+                                value: pingChan(data.channel),
+                                inline: false
+                            },
+                            {
+                                name: "Rôles bonus",
+                                value: data.bonus_roles?.length > 0 ? data.bonus_roles.map(pingRole).join(' ') : 'Pas de rôles bonus',
+                                inline: true
+                            },
+                            {
+                                name: "Rôles requis",
+                                value: data.required_roles?.length > 0 ? data.required_roles.map(pingRole).join(' ') : 'Pas de rôles requis',
+                                inline: true
+                            },
+                            {
+                                name: "Rôles interdits",
+                                value: data.denied_roles?.length > 0 ? data.denied_roles?.map(pingRole).join(' ') : 'Pas de rôles intedits',
+                                inline: true
+                            }
+                        )
+                ],
+                components: components,
+                fetchReply: notNull(fetch) ? fetch : false
+            }
+        }
+
+        const msg = await interaction.reply(basic(false, true)).catch(() => { }) as unknown as Message<true>;
+        if (!msg) return;
+
+        const collector = msg.createMessageComponentCollector({
+            time: 600000,
+            componentType: ComponentType.Button
+        });
+
+        const reedit = () => {
+            interaction.editReply(basic(false)).catch(() => {});
+        }
+
+        let hasCurrentAction = false;
+        collector.on('collect', async(ctx) => {
+            if (!checkCtx(ctx, interaction.user)) return;
+
+            if (ctx.customId === 'cancel') {
+                interaction.editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                }).catch(() => {});
+                return collector.stop('canceled');
+            }
+            if (ctx.customId === 'validate') {
+                interaction.editReply({
+                    embeds: [ replies.wait(interaction.user) ],
+                    components: []
+                }).catch(() => {});
+
+                const gw = await interaction.client.giveaways.createGiveaway(data).catch(() => {}) as Giveaway;
+                if (!gw) {
+                    interaction.editReply({
+                        embeds: [ basicEmbed(interaction.user)
+                            .setTitle("Erreur")
+                            .setDescription(`Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getPerm('SendMessages')}** et **${getPerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`)
+                            .setColor(evokerColor(interaction.guild))
+                        ]
+                    }).catch(() => {});
+                }
+                interaction.editReply({
+                    embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle("Giveaway crée")
+                        .setDescription(`Un giveaway a été crée dans ${pingChan(data.channel)}`)
+                    ]
+                }).catch(() => {});
+                return collector.stop('sent');
+            }
+
+            const setDeleteTmst = () => {
+                setTimeout(() => {
+                    ctx.deleteReply().catch(() => {});
+                }, 10000);
+            }
+
+            hasCurrentAction = true;
+            interaction.editReply(basic(true)).catch(() => {});
+
+            if (ctx.customId === 'channel') {
+                const rep = await ctx.reply({
+                    embeds: [ basicEmbed(interaction.user)
+                        .setTitle("Salon")
+                        .setColor('Grey')
+                        .setDescription(`Dans quel salon voulez-vous lancer le giveaway ?\nRépondez par un nom, un identifiant ou une mention dans le chat.\n${util('cancelMsg')}`)
+                    ],
+                    fetchReply: true
+                }).catch(() => {}) as Message<true>;
+                if (!rep) return;
+
+                const reply = await waitForMessage({
+                    channel: rep.channel as TextChannel,
+                    user: interaction.user,
+                    time: 120000
+                }).catch(() => {}) as Message<true>;
+
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({ embeds: [ replies.cancel() ] }).catch(() => {});
+                    setDeleteTmst();
+                    reedit();
+                    return;
+                }
+                if (reply?.deletable) reply.delete().catch(() => {});
+                const channel = interaction.guild.channels.cache.find(x => x.name === reply.content || x.id === reply.content) || interaction.guild.channels.cache.get(reply.content) || reply.mentions.channels.first();
+                
+                if (!channel || channel.type !== ChannelType.GuildText) {
+                    ctx.editReply({
+                        embeds: [basicEmbed(interaction.user)
+                            .setTitle("Salon invalide")
+                            .setDescription(`Je n'ai pas trouvé de salon, ou alors ce n'est pas un salon textuel.`)
+                            .setColor(evokerColor(interaction.guild))
+                        ]
+                    }).catch(() => {});
+                    setDeleteTmst();
+                    return reedit();
+                }
+
+                ctx.deleteReply(rep).catch(() => {});
+                data.channel = channel;
+                reedit();
+                hasCurrentAction = false;
+            }
+        })
     }
 });

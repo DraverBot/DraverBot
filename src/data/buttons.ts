@@ -98,6 +98,13 @@ export const inBank = () => {
         style: 'Primary'
     });
 };
+export const cancelButton = () => {
+    return buildButton({
+        label: 'Annuler',
+        id: 'cancel',
+        style: 'Danger'
+    })
+}
 
 export const yesNoRow = () => {
     return row(yesBtn(), noBtn());
