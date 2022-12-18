@@ -36,6 +36,7 @@ import {
 } from '../typings/functions';
 import { getModEmbedColor, util } from './functions';
 import query from './query';
+import time from '../maps/time';
 
 export const basicEmbed = (user: User, options?: { defaultColor: boolean }) => {
     const x = new EmbedBuilder()
@@ -359,4 +360,11 @@ export const pingRole = (role: Role | string) => {
 }
 export const getMsgUrl = ({ guild_id, channel_id, message_id }: { guild_id: string; channel_id: string; message_id: string }) => {
     return `https://discord.com/channels/${guild_id}/${channel_id}/${message_id}`;
+}
+export const addTimeDoc = (userId: string) => {
+    const value = time.get(userId) ?? 0;
+    time.set(userId, value + 1);
+
+    if (value >= 3) return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
+    return '';
 }
