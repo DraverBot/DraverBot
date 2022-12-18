@@ -314,7 +314,10 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
 export const inviteLink = (client: Client) => {
     return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`;
 };
-export const pingUser = (user: anyUser) => `<@${user.id}>`;
+export const pingUser = (user: anyUser | string) => {
+    if (user instanceof User || user instanceof GuildMember) return `<@${user.id}>`
+    return `<@${user}>`;
+};
 export const notNull = (variable: any) => ![undefined, null].includes(variable);
 export const resizeString = ({ str, length = 200 }: { str: string; length?: number }) => {
     if (str.length <= length) return str;
