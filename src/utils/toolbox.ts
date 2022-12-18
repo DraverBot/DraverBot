@@ -18,6 +18,7 @@ import {
     GuildMember,
     InteractionReplyOptions,
     Message,
+    Role,
     TextChannel,
     User
 } from 'discord.js';
@@ -348,3 +349,7 @@ export const waitForReplies = (client: Client) => {
         }
     };
 };
+export const pingRole = (role: Role | string) => {
+    if (role instanceof Role) return `<@&${role.id}>`;
+    return `<@&${role}>`;
+}
