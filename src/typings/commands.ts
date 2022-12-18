@@ -27,3 +27,8 @@ export const shifumiSigns: shifumiSignsType = {
         name: 'ciseaux'
     }
 };
+export enum GWListType {
+    All = 'tous',
+    Ended = 'terminés',
+    Current = 'en cours'
+}

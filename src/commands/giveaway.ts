@@ -1,14 +1,15 @@
 import { AmethystCommand, waitForMessage } from "amethystjs";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, InteractionReplyOptions, Message, Role, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, ComponentType, EmbedBuilder, GuildMember, InteractionReplyOptions, Message, Role, TextChannel } from "discord.js";
 import timePrecondition from "../preconditions/time";
-import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, displayDate, evokerColor, notNull, numerize, pingChan, pingRole, plurial, row, subcmd } from "../utils/toolbox";
+import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, displayDate, evokerColor, notNull, numerize, pagination, pingChan, pingRole, pingUser, plurial, row, subcmd } from "../utils/toolbox";
 import ms from "ms";
 import { Giveaway, giveawayInput } from "discordjs-giveaways";
 import moment from "moment";
 import { cancelButton } from "../data/buttons";
 import replies from "../data/replies";
 import { getPerm, util } from "../utils/functions";
+import { GWListType } from "../typings/commands";
 
 export default new AmethystCommand({
     name: 'giveaway',
@@ -71,6 +72,33 @@ export default new AmethystCommand({
             name: "créer",
             description: "Crée un giveaway dans le salon",
             type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: 'liste',
+            description: "Affiche la liste des giveaways",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'giveaways',
+                    description: "Type de giveaways que vous voulez afficher",
+                    required: false,
+                    type: ApplicationCommandOptionType.String,
+                    choices: [
+                        {
+                            name: 'Tous',
+                            value: GWListType.All
+                        },
+                        {
+                            name: 'En cours',
+                            value: GWListType.Current
+                        },
+                        {
+                            name: 'Terminés',
+                            value: GWListType.Ended
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
@@ -514,5 +542,63 @@ export default new AmethystCommand({
                 }).catch(() => {});
             }
         })
+    }
+    if (cmd === 'liste') {
+        const type = options.getString('giveaways') as GWListType ?? GWListType.Current;
+        const list = interaction.client.giveaways.list.ended.concat(interaction.client.giveaways.list.giveaways);
+
+        console.log(type);
+        const gws = list.filter(x => x.guild_id === interaction.guild.id).filter(x => {
+            if (type === GWListType.All) return x.guild_id === interaction.guild.id;
+            if (type === GWListType.Current) return x.guild_id === interaction.guild.id && x.ended === false;
+            if (type === GWListType.Ended) return x.guild_id === interaction.guild.id && x.ended === true;
+            return true
+        });
+
+        const typeStr = type === GWListType.All ? '' : type === GWListType.Current ? ' en cours' : ' terminé'
+        if (gws.length === 0) return interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Pas de giveaways")
+                .setDescription(`Il n'y a aucun giveaway${typeStr} sur ce serveur`)
+                .setColor(evokerColor(interaction.guild))
+            ]
+        }).catch(() => {});
+
+        const basic = () => {
+            return basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Giveaways")
+                .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`)
+        }
+        const mapField = (embed: EmbedBuilder, gw: Giveaway) => {
+            return embed.addFields({
+                name: gw.reward,
+                value: `Par ${pingUser(gw.hoster_id)} ( \`${gw.hoster_id}\` ) dans ${pingChan(gw.channel_id)}\n> Finit ${displayDate(gw.endsAt)}\n> ${numerize(gw.winnerCount)} gagnant${plurial(gw.winnerCount)} - **${gw.ended ? 'terminé' : 'en cours'}**`,
+                inline: false
+            })
+        }
+
+        if (gws.length <= 5) {
+            const embed = basic();
+            for (const gw of gws) {
+                mapField(embed, gw);
+            }
+
+            interaction.reply({
+                embeds: [embed]
+            }).catch(() => {});
+        } else {
+            const embeds: EmbedBuilder[] = [basic()];
+            gws.forEach((log, i) => {
+                if (i % 5 === 0 && i > 0) embeds.push(basic());
+
+                mapField(embeds[embeds.length - 1], log);
+            });
+
+            pagination({
+                interaction,
+                user: interaction.user,
+                embeds
+            });
+        }
     }
 });
