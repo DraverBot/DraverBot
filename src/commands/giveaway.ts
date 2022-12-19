@@ -139,6 +139,19 @@ export default new AmethystCommand({
                     type: ApplicationCommandOptionType.String
                 }
             ]
+        },
+        {
+            name: 'supprimer',
+            description: "Supprime un giveaway",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'identifiant',
+                    required: false,
+                    type: ApplicationCommandOptionType.String,
+                    description: "Identifiant du message du giveaway"
+                }
+            ]
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
@@ -858,6 +871,55 @@ export default new AmethystCommand({
             embeds: [ basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle("Giveaway terminé")
                 .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été terminé`)
+            ]
+        }).catch(() => {});
+    }
+    if (cmd === 'supprimer') {
+        const id = options.getString('identifiant') ?? interaction.channel.id;
+        const gw = interaction.client.giveaways.fetchGiveaway(id, true);
+
+        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Pas de giveaway")
+                .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                .setColor(evokerColor(interaction.guild))
+            ],
+            ephemeral: true
+        }).catch(() => {});
+
+        await interaction.deferReply({
+            ephemeral: true
+        }).catch(() => {});
+
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setDescription(`Vous allez supprimer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`)
+                .setTitle("Confirmation")
+        }).catch(() => {}) as confirmReturn;
+
+        if (!confirmation || confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        }).catch(() => {});
+        await interaction.editReply({
+            embeds: [replies.wait(interaction.user)],
+            components: []
+        }).catch(() => {});
+
+        const result = await interaction.client.giveaways.deleteGiveaway(gw.message_id);
+        if (!result || typeof result === 'string') return interaction.editReply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Terminaison échouée")
+                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être supprimé`)
+                .setColor(evokerColor(interaction.guild))
+            ]
+        }).catch(() => {});
+        interaction.editReply({
+            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Giveaway terminé")
+                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été supprimé`)
             ]
         }).catch(() => {});
     }
