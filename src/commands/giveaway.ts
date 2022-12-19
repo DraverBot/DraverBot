@@ -546,6 +546,36 @@ export default new AmethystCommand({
                 ctx.deleteReply(rep).catch(() => {});
                 reedit();
             }
+            if (ctx.customId === 'reward') {
+                const rep = await ctx.reply({
+                    embeds: [ basicEmbed(interaction.user)
+                        .setTitle("Récompense")
+                        .setDescription(`Quelle est la récompense du giveaway ?\nRépondez dans le chat\n${util('cancelMsg')}`)
+                        .setColor('Grey')
+                    ],
+                    fetchReply: true
+                }).catch(() => {}) as Message<true>;
+
+                const reply = await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {}) as Message<true>
+                hasCurrentAction = false;
+
+                if (reply.deletable) reply.delete().catch(() => {});
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({
+                        embeds: [replies.cancel()]
+                    }).catch(() => {});
+                    reedit();
+                    setDeleteTmst();
+                    return;
+                }
+
+                data.reward = reply.content;
+                ctx.deleteReply(rep).catch(() => {});
+                reedit();
+            }
         });
         collector.on('end', (_ctx, reason) => {
             if (!['validate', 'canceled'].includes(reason)) {
