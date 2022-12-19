@@ -2,7 +2,7 @@ import { AmethystCommand, waitForMessage } from "amethystjs";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { ApplicationCommandOptionType, ChannelType, ComponentType, EmbedBuilder, GuildMember, InteractionReplyOptions, Message, Role, TextChannel } from "discord.js";
 import timePrecondition from "../preconditions/time";
-import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, displayDate, evokerColor, notNull, numerize, pagination, pingChan, pingRole, pingUser, plurial, row, subcmd } from "../utils/toolbox";
+import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, confirm, displayDate, evokerColor, getMsgUrl, notNull, numerize, pagination, pingChan, pingRole, pingUser, plurial, row, subcmd } from "../utils/toolbox";
 import ms from "ms";
 import { Giveaway, giveawayInput } from "discordjs-giveaways";
 import moment from "moment";
@@ -10,6 +10,7 @@ import { cancelButton } from "../data/buttons";
 import replies from "../data/replies";
 import { getPerm, util } from "../utils/functions";
 import { GWListType } from "../typings/commands";
+import { confirmReturn } from "../typings/functions";
 
 export default new AmethystCommand({
     name: 'giveaway',
@@ -109,6 +110,19 @@ export default new AmethystCommand({
                     name: 'identifiant',
                     description: "Identifiant du message du giveaway",
                     required: true,
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
+        },
+        {
+            name: 'reroll',
+            description: "Reroll un giveaway terminé",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'identifiant',
+                    description: "Identifiant du message du giveaway",
+                    required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
@@ -720,6 +734,60 @@ export default new AmethystCommand({
 
         interaction.reply({
             embeds: [embed]
+        }).catch(() => {});
+    }
+    if (cmd === 'reroll') {
+        const id = options.getString('identifiant') ?? interaction.channel.id;
+        const gw = interaction.client.giveaways.fetchGiveaway(id, true) as Giveaway;
+
+        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Pas de giveaway")
+                .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                .setColor(evokerColor(interaction.guild))
+            ],
+            ephemeral: true
+        }).catch(() => {});
+        if (!gw.ended) return interaction.reply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Giveaway non-terminé")
+                .setDescription(`Le giveaway n'est pas terminé`)
+                .setColor(evokerColor(interaction.guild))
+            ]
+        }).catch(() => {});
+        await interaction.deferReply({
+            ephemeral: true
+        })
+
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle("Reroll")
+                .setDescription(`Vous allez reroll [le giveaway](${getMsgUrl(gw)}) d'identifiant \`${gw.message_id}\` dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`)
+        }).catch(() => {}) as confirmReturn;
+
+        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
+            embeds: [ replies.cancel() ],
+            components: []
+        }).catch(() => {});
+
+        const result = await interaction.client.giveaways.reroll(gw.message_id);
+        if (!result || typeof result === 'string') return interaction.editReply({
+            embeds: [ basicEmbed(interaction.user)
+                .setTitle("Reroll échoué")
+                .setDescription(`Le reroll de [ce giveaway](${getMsgUrl(gw)}) a échoué`)
+                .setColor(evokerColor(interaction.guild))
+            ],
+            components: []
+        }).catch(() => {});
+
+        interaction.editReply({
+            embeds: [basicEmbed(interaction.user, { defaultColor: true })
+                .setTitle("Giveaway rerollé")
+                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été reroll`)
+            ],
+            components: []
         }).catch(() => {});
     }
 });
