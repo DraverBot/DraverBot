@@ -4,6 +4,12 @@ export type configKeys = {
     logs_channel: string;
     level_channel: string;
     level_msg: string;
+    join_active: boolean;
+    leave_active: boolean;
+    join_channel: string;
+    leave_channel: string;
+    join_message: string;
+    leave_message: string;
 };
 export type configType = {
     description: string;
@@ -48,7 +54,7 @@ export const configsData: Record<keyof configKeys, configType> = {
     },
     level_channel: {
         name: 'salon des niveaux',
-        value: 'logs_channel',
+        value: 'level_channel',
         type: 'channel',
         description: "Salon de l'envoi des messages de niveau",
         default: null
@@ -59,5 +65,47 @@ export const configsData: Record<keyof configKeys, configType> = {
         type: 'string',
         description: 'Message de niveau',
         default: 'Bien joué {user.mention} ! Tu passes au niveau {user.level}'
+    },
+    join_active: {
+        name: "messages d'arrivée",
+        value: 'join_active',
+        type: 'boolean',
+        description: "Activation de message d'arrivée",
+        default: false
+    },
+    leave_active: {
+        name: 'messages de départ',
+        value: 'leave_active',
+        type: 'boolean',
+        description: "Activation des messages de départ",
+        default: false
+    },
+    join_channel: {
+        name: "salon d'arrivée",
+        value: 'join_channel',
+        type: 'channel',
+        description: "Salon des messages d'arrivée",
+        default: null
+    },
+    leave_channel: {
+        name: "salon de départ",
+        value: 'leave_channel',
+        type: 'channel',
+        description: "Salon des messages de départ",
+        default: null
+    },
+    join_message: {
+        name: "message de d'arrivée",
+        value: 'join_message',
+        description: "Message d'arrivée",
+        default: `{user.mention} vient d'arriver`,
+        type: 'string'
+    },
+    leave_message: {
+        name: "message de départ",
+        value: 'leave_message',
+        default: `{user.name} vient de partir`,
+        type: 'string',
+        description: "Message de départ"
     }
 };

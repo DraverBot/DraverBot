@@ -69,12 +69,18 @@ export class ConfigsManager {
             resolve(true);
         });
     }
+    private buildColomn(key: keyof configKeys) {
+        const data = configsData[key]
+
+        if (data.type === 'channel') return `${data.value} VARCHAR(255) NOT NULL DEFAULT ''`;
+        if (data.type === 'boolean') return `${data.value} TINYINT(1) NOT NULL DEFAULT '${boolDb(data.default as boolean)}'`;
+        if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;
+        if (data.type === 'string') return `${data.value} VARCHAR(255) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
+    }
     private queryDatabase(): Promise<boolean> {
         return new Promise(async (resolve) => {
             await query(
-                `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, level_channel VARCHAR(255) NOT NULL DEFAULT '', level_msg VARCHAR(255) NOT NULL DEFAULT "Bien joué {user.mention} ! Tu passes niveau {user.level}", logs_channel VARCHAR(255) NOT NULL DEFAULT '', logs_enable TINYINT(1) NOT NULL DEFAULT '${boolDb(
-                    false
-                )}' )`
+                `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(configsData).map((key: keyof configKeys) => this.buildColomn(key)).join(', ')} )`
             );
             resolve(true);
         });

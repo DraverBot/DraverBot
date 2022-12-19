@@ -1,4 +1,4 @@
-import { GuildMember, TextChannel } from 'discord.js';
+import { Guild, GuildMember, TextChannel } from 'discord.js';
 import { levels } from '../typings/managers';
 import { numerize, pingChan, pingUser } from './toolbox';
 
@@ -31,3 +31,19 @@ export const replaceLevelVariables = ({
 
     return content;
 };
+export const replaceFluxVariables = ({ member, guild, msg }: { member: GuildMember; guild: Guild; msg: string; }) => {
+    let content = msg;
+    [
+        { x: 'user.mention', y: pingUser(member) },
+        { x: 'user.name', y: member.user.username },
+        { x: 'user.tag', y: member.user.discriminator },
+        { x: 'user.id', y: member.id },
+        { x: 'guild.name', y: guild.name },
+        { x: 'guild.id', y: guild.id },
+        { x: 'guild.count', y: numerize(guild.memberCount) }
+    ].forEach(({ x, y }) => {
+        content = content.replace(new RegExp(`{${x}}`, 'g'), y);
+    });
+
+    return content;
+}
