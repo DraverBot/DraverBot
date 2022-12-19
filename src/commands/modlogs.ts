@@ -32,7 +32,16 @@ export default new AmethystCommand({
         {
             name: 'liste',
             description: 'Affiche la liste des logs',
-            type: ApplicationCommandOptionType.Subcommand
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "type",
+                    description: "Type de logs que vous voulez voir",
+                    required: false,
+                    type: ApplicationCommandOptionType.String,
+                    autocomplete: true
+                }
+            ]
         },
         {
             name: 'analyser',
@@ -97,7 +106,10 @@ export default new AmethystCommand({
 
     if (subcommand === 'liste') {
         await interaction.deferReply();
-        const datas = (await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"`)).sort(
+        const type = options.getString('type') as modActionType;
+
+        console.log(type);
+        const datas = (await query<modlogs>(`SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"${type ? ` AND type='${modActionType[type]}'`:''}`)).sort(
             (a, b) => parseInt(b.date) - parseInt(a.date)
         );
 
