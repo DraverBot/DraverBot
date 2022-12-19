@@ -1,3 +1,4 @@
+import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
 
 export enum modActionType {
@@ -113,3 +114,35 @@ export const defaultJokesTypes = {
     dark: false,
     limit: false
 } as Record<Exclude<keyof jokes, 'guild_id'>, boolean>;
+export type ticketPanels = {
+    guild_id: string;
+    channel_id: string;
+    message_id: string;
+    image: string | null;
+    subject: string;
+    description: string;
+    /**
+     * Primary key
+     */
+    reference: number;
+}
+export type ticketState = 'open' | 'closed';
+export type ticketChannels = {
+    guild_id: string;
+    channel_id: string;
+    message_id: string;
+    /**
+     * Référence à une reference de ticketPanels
+     */
+    panel_reference: number;
+    user_id: string;
+    state: ticketState;
+    channelName: string;
+}
+export type ticketModRoles<T extends boolean = false> = {
+    /**
+     * Primary key
+     */
+    guild_id: string;
+    roles: If<T, string[], string>;
+}

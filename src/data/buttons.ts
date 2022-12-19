@@ -1,5 +1,6 @@
+import { createTicketIds } from '../typings/managers';
 import { util } from '../utils/functions';
-import { buildButton, row } from '../utils/toolbox';
+import { buildButton, notNull, row } from '../utils/toolbox';
 
 export const yesBtn = () => {
     return buildButton({
@@ -104,6 +105,43 @@ export const cancelButton = () => {
         id: 'cancel',
         style: 'Danger'
     })
+}
+export const ticketsCreateButtons = (mentionEveryone?: boolean) => {
+    return [
+        buildButton({
+            label: 'Fermer',
+            id: createTicketIds.Close,
+            style: 'Secondary',
+            emoji: '🔐'
+        }),
+        mentionEveryone === true ? buildButton({
+            label: 'Mentionner everyone',
+            id: createTicketIds.Mention,
+            style: 'Danger'
+        }) : null
+    ].filter(notNull);
+}
+export const ticketsClosedButtons = () => {
+    return [
+        buildButton({
+            label: 'Réouvrir',
+            id: createTicketIds.Reopen,
+            emoji: '🔓',
+            style: 'Primary'
+        }),
+        buildButton({
+            label: 'Sauvegarder',
+            id: createTicketIds.Save,
+            emoji: '📑',
+            style: 'Secondary'
+        }),
+        buildButton({
+            label: "Supprimer",
+            id: createTicketIds.Delete,
+            emoji: '⛔',
+            style: 'Danger'
+        })
+    ]
 }
 
 export const yesNoRow = () => {

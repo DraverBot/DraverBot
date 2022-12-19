@@ -212,8 +212,8 @@ export const mapEmbedsPaginator = (embeds: EmbedBuilder[]) => {
         })
     );
 };
-export const displayDate = (date: number) => {
-    const x = Math.floor(date / 1000);
+export const displayDate = (date?: number) => {
+    const x = Math.floor((date ?? Date.now()) / 1000);
 
     return `<t:${x}:R> ( <t:${x}:F> )`;
 };
@@ -372,3 +372,4 @@ export const addTimeDoc = (userId: string) => {
     if (value >= 3) return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
     return '';
 }
+export const hint = (text: string) => `\n:bulb:\n> ${text}`
