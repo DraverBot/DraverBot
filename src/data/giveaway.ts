@@ -53,7 +53,7 @@ export const giveawayEmbeds: embedsInputData = {
     ended: (data, winners) => {
         return new EmbedBuilder()
             .setTitle("Giveaway terminé")
-            .setDescription(`${data.reward}\n\nLe giveaway est terminé.\n${winners.length > 0 ? `Le${plurial(winners.length)} gagnant${plurial(winners.length, { singular: ' est', plurial: 's sont' })}${winners.map(x => pingUser(x)).join(' ')}`:`Il n'y a aucun gagnant.`}\n\n:tada: *${numerize(data.participants?.length)} participant${plurial(data.participants.length)}*`)
+            .setDescription(`${data.reward}\n\nLe giveaway est terminé.\n${winners.length > 0 ? `Le${plurial(winners.length)} gagnant${plurial(winners.length, { singular: ' est', plurial: 's sont' })} ${winners.map(x => pingUser(x)).join(' ')}`:`Il n'y a aucun gagnant.`}\n\n:tada: *${numerize(data.participants?.length)} participant${plurial(data.participants.length)}*`)
             .setColor('#ff0000')
     },
     entryAllowed: (url) => {
