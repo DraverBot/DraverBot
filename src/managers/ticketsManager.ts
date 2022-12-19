@@ -1,10 +1,12 @@
-import { ChannelType, Client, Collection, EmbedBuilder, Message, OverwriteResolvable, TextChannel } from "discord.js";
+import { ChannelType, Client, Collection, EmbedBuilder, Guild, Message, OverwriteResolvable, TextChannel, User } from "discord.js";
 import { ticketChannels, ticketModRoles, ticketPanels, ticketState } from "../typings/database";
 import query from "../utils/query";
-import { closeTicketOptions, createTicketOptions, ticketsTable } from "../typings/managers";
+import { closeTicketOptions, createTicketOptions, reopenTicketOptions, ticketsTable } from "../typings/managers";
 import { basicEmbed, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
 import { getPerm, util } from "../utils/functions";
 import { ticketsClosedButtons, ticketsCreateButtons } from "../data/buttons";
+import htmlSave from "../utils/htmlSave";
+import { rmSync } from "fs";
 
 export class TicketsManager {
     public readonly client: Client;
@@ -131,17 +133,11 @@ export class TicketsManager {
 
             const channel = guild.channels.cache.get(ticket.channel_id) as TextChannel;
             if (!channel) return resolve({
-                embed: basicEmbed(user)
-                    .setTitle("Erreur de fermeture")
-                    .setDescription(`Je n'ai pas pu trouver le salon du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageChannels')}**`)}`)
-                    .setColor(evokerColor(guild))
+                embed: this.invalidChannel(user, guild)
             })
             const message = channel.messages.cache.get(message_id);
             if (!message) return resolve({
-                embed: basicEmbed(user)
-                    .setTitle("Erreur de fermeture")
-                    .setDescription(`Je n'ai pas pu trouver le message du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageMessages')}**`)}`)
-                    .setColor(evokerColor(guild))
+                embed: this.invalidMessage(user, guild)
             })
 
             await Promise.all([
@@ -153,12 +149,9 @@ export class TicketsManager {
                     components: [ row(...ticketsClosedButtons()) ]
                 }).catch(() => {})
             ]).catch(() => {});
-
-            this.tickets.set(ticket.message_id, {
-                ...ticket,
-                state: 'closed'
-            });
+            
             ticket.state = 'closed';
+            this.tickets.set(ticket.message_id, ticket);
 
             await query(`REPLACE INTO ${ticketsTable.Tickets} ( state ) VALUES ( 'closed' ) WHERE message_id='${ticket.message_id}'`);
             return resolve({
@@ -170,6 +163,150 @@ export class TicketsManager {
         })
     }
 
+    public reopenTicket({ guild, message_id, user }: reopenTicketOptions): Promise<{ embed: EmbedBuilder, ticket?: ticketChannels }> {
+        return new Promise(async(resolve) => {
+            const ticket = this.tickets.get(message_id);
+            if (ticket.state === 'open') return resolve({
+                embed: basicEmbed(user)
+                    .setTitle("Ticket ouvert")
+                    .setDescription(`Le ticket est ouvert`)
+                    .setColor(evokerColor(guild))
+            });
+
+            const channel = this.fetchChannel(message_id, guild);
+            if (!channel) return resolve({
+                embed: this.invalidChannel(user, guild)
+            });
+            const message =  this.fetchMessage(message_id, channel);
+            if (!message) return resolve({
+                embed: this.invalidMessage(user, guild)
+            });
+            
+            await Promise.all([
+                channel.permissionOverwrites.edit(ticket.user_id, {
+                    ViewChannel: true
+                }),
+                channel.setName(ticket.channelName),
+                message.edit({
+                    components: [ this.createComponentsNoMention ]
+                })
+            ])
+
+            ticket.state = 'open';
+            this.tickets.set(message_id, ticket)
+            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state ) VALUES ('open') WHERE message_id='${message.id}'`);
+            resolve({
+                ticket,
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Ticket réouvert")
+                    .setDescription(`Le ticket de ${pingUser(user)} a été réouvert`)
+            });
+        })
+    }
+    public renameChannel({ channel_id, name, guild, user }: { channel_id: string; name: string; guild: Guild; user: User }): Promise<{ embed: EmbedBuilder, ticket?: ticketChannels }> {
+        return new Promise(async(resolve) => {
+            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const channel = this.fetchChannel(ticket.message_id, guild);
+
+            await channel.setName(name + (ticket.state === 'closed' ? '-closed':'')).catch(() => {});
+
+            ticket.channelName = name;
+            this.tickets.set(ticket.message_id, ticket);
+            await query(`REPLACE INTO ${ticketsTable.Tickets} ( channelName ) VALUES ("${sqliseString(name)}")`);
+
+            return resolve({
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Nom changé")
+                    .setDescription(`Le nom du ticket a été changé`),
+                ticket
+            });
+        });
+    }
+    public addOrRemoveUser({ channel_id, user, action, guild }: { channel_id: string; user: User; action: 'add' | 'remove'; guild: Guild }): Promise<{ ticket?: ticketChannels; embed: EmbedBuilder }> {
+        return new Promise(async(resolve) => {
+            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const channel = this.fetchChannel(ticket.message_id, guild);
+
+            if (user.id === ticket.user_id) return resolve({
+                embed: basicEmbed(user)
+                    .setColor(evokerColor(guild))
+                    .setTitle("Modification impossible")
+                    .setDescription(`Vous ne pouvez pas ${action === 'add' ? 'ajouter' : 'retirer'} ${pingUser(user)} car il est le propriétaire du ticket`)
+            });
+            if (action === 'add') {
+                await channel.permissionOverwrites.edit(user, {
+                    ViewChannel: true,
+                    EmbedLinks: true,
+                    SendMessages: true,
+                    SendTTSMessages: true,
+                    UseApplicationCommands: true
+                }).catch(() => {});
+            } else {
+                await channel.permissionOverwrites.edit(user, {
+                    ViewChannel: false
+                }).catch(() => {});
+            };
+
+            return resolve({
+                ticket,
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Utilisateur " + ( action === 'add' ? 'ajouté' : 'retiré' ))
+                    .setDescription(`${pingUser(user)} a été ${action === 'add' ? 'ajouté' : 'retiré'} du ticket`)
+            });
+        })
+    }
+    public saveTicket({ channel_id, user, guild }: { channel_id: string; user: User; guild: Guild }): Promise<{ ok: boolean; ticket?: ticketChannels; embed: EmbedBuilder, id?: string }> {
+        return new Promise(async(resolve) => {
+            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const channel = this.fetchChannel(ticket.message_id, guild);
+            if (!channel) return resolve({ embed: this.invalidChannel(user, guild), ok: false });
+
+            const messages  = await channel.messages.fetch({
+            }).catch(() => {});
+            if (!messages || messages.size === 0) return resolve({
+                embed: basicEmbed(user)
+                    .setTitle("Aucun message")
+                    .setDescription(`Il n'y a aucun message à sauvegarder`)
+                    .setColor(evokerColor(guild)),
+                ok: false
+            });
+
+            const id = `${ticket.channelName}-${channel_id}`;
+            htmlSave(messages, id);
+            setTimeout(() => {
+                rmSync(`./dist/saves/${id}`);
+            }, 20000);
+
+            return resolve({
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Sauvegarde")
+                    .setDescription(`La conversation a été sauvegardée`),
+                ok: true,
+                ticket,
+                id
+            });
+        })
+    }
+    public async mentionEveryone(channel_id: string, guild: Guild) {
+        const ticket = this.tickets.find(x => x.channel_id === channel_id);
+        const channel = this.fetchChannel(ticket.channel_id, guild);
+
+        if (!channel) return;
+        const msg = this.fetchMessage(ticket.message_id, channel);
+        if (!msg) return;
+
+        await msg.edit({
+            components: [ this.createComponentsNoMention ]
+        }).catch(() => {});
+
+        channel.send({
+            content: `@everyone. Cette mention a eu lieu lorsque quelqu'un a appuyé sur le bouton "mentionner everyone" dans le ticket.`,
+            reply: {
+                messageReference: ticket.message_id
+            }
+        }).catch(() => {});
+    }
+
     // Private methods to get components
 
     private get createComponents() {
@@ -178,6 +315,24 @@ export class TicketsManager {
     private get createComponentsNoMention() {
         return row(...ticketsCreateButtons(false));
     }
+    private invalidChannel(user: User, guild: Guild) {
+        return basicEmbed(user)
+            .setTitle("Erreur de fermeture")
+            .setDescription(`Je n'ai pas pu trouver le salon du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageChannels')}**`)}`)
+            .setColor(evokerColor(guild))
+    }
+    private invalidMessage(user: User, guild: Guild) {
+        return basicEmbed(user)
+            .setTitle("Erreur de fermeture")
+            .setDescription(`Je n'ai pas pu trouver le message du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageMessages')}**`)}`)
+            .setColor(evokerColor(guild))
+    }
+
+    // Public util methods
+
+    public isTicket(message_id: string) {
+        return this.tickets.has(message_id);
+    }
 
     // Private util methods
 
@@ -185,6 +340,18 @@ export class TicketsManager {
         return this.panels.find(x => x.guild_id === guild && x.reference === panel_reference);
     }
 
+    private fetchChannel(message_id: string, guild: Guild): TextChannel {
+        const ticket = this.tickets.get(message_id);
+        const channel = guild.channels.cache.get(ticket.channel_id);
+
+        return channel as TextChannel;
+    }
+    private fetchMessage(message_id: string, channel: TextChannel): Message<true> {
+        const ticket = this.tickets.get(message_id);
+        
+        return channel.messages.cache.get(ticket.message_id);
+    }
+ 
     private generateTicketName(guild: string) {
         const tickets = this.tickets.filter(x => x.guild_id === guild);
         const id = tickets.size + 1;

@@ -9,9 +9,12 @@ import { checkDatabase } from '../utils/functions';
 import { database } from '../utils/query';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
+import { existsSync, mkdirSync } from 'fs';
 
-export default new AmethystEvent('ready', (client) => {
-    checkDatabase();
+export default new AmethystEvent('ready', async(client) => {
+    if (!existsSync('./saves/')) mkdirSync('./saves');
+    await checkDatabase();
+
     client.modulesManager = new ModulesManager();
 
     client.coinsManager = new CoinsManager(database, {

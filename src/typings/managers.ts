@@ -28,6 +28,11 @@ export type closeTicketOptions = {
     user: User;
     message_id: string;
 }
+export type reopenTicketOptions = {
+    guild: Guild;
+    user: User;
+    message_id: string;
+}
 export enum createTicketIds {
     Close = 'ticket.close',
     Open = 'ticket.open',
