@@ -1,4 +1,4 @@
-import { Guild, User } from "discord.js";
+import { Guild, TextChannel, User } from "discord.js";
 
 export type interserver = {
     guild_id: string;
@@ -33,11 +33,20 @@ export type reopenTicketOptions = {
     user: User;
     message_id: string;
 }
-export enum createTicketIds {
+export type createPanelOptions = {
+    guild: Guild;
+    image?: string;
+    description?: string;
+    subject: string;
+    channel: TextChannel;
+    user: User;
+}
+export enum ticketButtonIds {
     Close = 'ticket.close',
     Open = 'ticket.open',
     Mention = 'ticket.mention',
     Reopen = 'ticket.reopen',
     Save = 'ticket.save',
-    Delete = 'ticket.delete'
+    Delete = 'ticket.delete',
+    Panel = 'ticket.panel'
 }

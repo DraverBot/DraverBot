@@ -1,8 +1,8 @@
 import { ChannelType, Client, Collection, EmbedBuilder, Guild, Message, OverwriteResolvable, TextChannel, User } from "discord.js";
 import { ticketChannels, ticketModRoles, ticketPanels, ticketState } from "../typings/database";
 import query from "../utils/query";
-import { closeTicketOptions, createTicketOptions, reopenTicketOptions, ticketsTable } from "../typings/managers";
-import { basicEmbed, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
+import { closeTicketOptions, createPanelOptions, ticketButtonIds, createTicketOptions, reopenTicketOptions, ticketsTable } from "../typings/managers";
+import { arrayfy, basicEmbed, buildButton, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
 import { getPerm, util } from "../utils/functions";
 import { ticketsClosedButtons, ticketsCreateButtons } from "../data/buttons";
 import htmlSave from "../utils/htmlSave";
@@ -28,6 +28,7 @@ export class TicketsManager {
 
     // Public methods
 
+    /* Tickets part */
     public createTicket({ guild, panel_id, user }: createTicketOptions): Promise<{ ticket?: ticketChannels, embed: EmbedBuilder }> {
         return new Promise(async(resolve) => {
             const userTicket = this.tickets.find(x => x.guild_id === guild.id && x.user_id === user.id);
@@ -40,7 +41,7 @@ export class TicketsManager {
                     .setColor(evokerColor(guild))
             });
 
-            const roles = (this.modRoles.get(guild.id) ?? {} as ticketModRoles<true>).roles;
+            const roles = this.getServerModroles(guild.id).roles;
             const permissions = [
                 {
                     id: guild.id,
@@ -307,6 +308,59 @@ export class TicketsManager {
         }).catch(() => {});
     }
 
+    /* End tickets part */
+    /* Modroles part */
+
+    public getServerModroles(guild_id: string) {
+        return this.modRoles.get(guild_id) ?? { guild_id, roles: [] };
+    }
+    public async addModRole({ guild_id, role_id }: { guild_id: string; role_id: string }) {
+        const roles = this.getServerModroles(guild_id).roles;
+        if (!roles.includes(role_id)) roles.push(role_id);
+
+        this.modRoles.set(guild_id, { guild_id, roles });
+        await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" ) WHERE guild_id='${guild_id}'`)
+
+        return true;
+    }
+    public async removeModRole({ guild_id, role_id }: { guild_id: string; role_id: string }) {
+        const roles = this.getServerModroles(guild_id).roles.filter(x => x !== role_id);
+
+        this.modRoles.set(guild_id, { roles, guild_id });
+        await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" )`);
+
+        return true;
+    }
+
+    /*  End modroles part */
+    /* Panels part */
+
+    public async createPanel({ guild, channel, subject, description, image, user }: createPanelOptions): Promise<{ embed: EmbedBuilder; panel?: ticketPanels }> {
+        return new Promise(async(resolve) => {
+            const embed = basicEmbed(guild.client.user)
+                .setColor(guild.members.me.displayHexColor ?? util('accentColor'))
+                .setTitle(subject)
+                .setDescription(`Créez un ticket en appuyant sur le bouton ci-dessous${description ? `\n\n${description}` : ''}`);
+
+            if (image) embed.setThumbnail(image);
+            const msg = await channel.send({
+                embeds: [embed],
+                components: [ row(buildButton({
+                    label: "Ouvrir un ticket",
+                    emoji: '📥',
+                    id: ticketButtonIds.Panel,
+                    style: 'Primary'
+                })) ]
+            }).catch(() => {}) as Message<true>;
+
+            if (!msg) return resolve({
+                embed: basicEmbed(user)
+                    .setTitle("Panel introuvable")
+            })
+        })
+    }
+
+    /* End panels part */
     // Private methods to get components
 
     private get createComponents() {
@@ -326,6 +380,12 @@ export class TicketsManager {
             .setTitle("Erreur de fermeture")
             .setDescription(`Je n'ai pas pu trouver le message du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageMessages')}**`)}`)
             .setColor(evokerColor(guild))
+    }
+    private panelNotFound(user: User, guild: Guild) {
+        return basicEmbed(user)
+            .setColor(evokerColor(guild))
+            .setTitle("Panel introuvable")
+            .setDescription(`Je ne trouve pas le panel.\nVous ne devriez pas voir ce message d'erreur si vous avez correctement configuré les permissions de Draver\n${hint(`J'ai besoin de la permission **${getPerm('ManageMessages')}**`)}`)
     }
 
     // Public util methods
