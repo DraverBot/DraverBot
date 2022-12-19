@@ -99,6 +99,19 @@ export default new AmethystCommand({
                     ]
                 }
             ]
+        },
+        {
+            name: 'analyser',
+            description: "Analyse un giveaway",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'identifiant',
+                    description: "Identifiant du message du giveaway",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
         }
     ]
 }).setChatInputRun(async({ interaction, options }) => {
@@ -600,5 +613,83 @@ export default new AmethystCommand({
                 embeds
             });
         }
+    }
+    if (cmd === 'analyser') {
+        const id = options.getString('identifiant');
+        const gw = interaction.client.giveaways.fetchGiveaway(id, true);
+
+        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
+            embeds: [basicEmbed(interaction.user)
+                .setTitle("Pas de giveaway")
+                .setDescription(`Il n'y a pas de giveaway avec l'identifiant \`${id}\``)
+                .setColor(evokerColor(interaction.guild))
+            ]
+        }).catch(() => {});
+
+        const embed = basicEmbed(interaction.user, { defaultColor: true })
+            .setTitle(`Giveaway`)
+            .setDescription(`Voici les informations pour le giveaway d'identifiant \`${gw.message_id}\`\n> Giveaway ${gw.ended ? 'terminé' : 'en cours'}`)
+        
+        if (!gw.ended) {
+            embed.addFields({
+                name: "Date de fin",
+                value: displayDate(gw.endsAt),
+                inline: true
+            })
+        }
+        embed.addFields(
+            {
+                name: "Offant",
+                value: pingUser(gw.hoster_id) + ` ( \`${gw.hoster_id}\` )`,
+                inline: true
+            },
+            {
+                name: "Salon",
+                value: pingChan(gw.channel_id) + ` ( \`${gw.channel_id}\` ) `,
+                inline: true
+            },
+            {
+                name: "Récompense",
+                value: gw.reward,
+                inline: false
+            },
+            {
+                name: "Nombre de gagnants",
+                value: numerize(gw.winnerCount),
+                inline: true
+            },
+            {
+                name: "Participants",
+                value: numerize(gw.participants.length),
+                inline: true
+            }
+        )
+        if (gw.ended) {
+            embed.addFields(
+                {
+                    name: "Gagnants",
+                    value: gw.winners.length > 0 ? `${numerize(gw.winners.length)} gagnant${plurial(gw.winners.length)} ( sur ${numerize(gw.participants.length)} participant${plurial(gw.participants.length)}, soit ${Math.floor(gw.winners.length * 100 / gw.participants.length)}% des participants ) : ${gw.winners.map(pingUser).join(' ')}` : 'Aucun gagnants',
+                    inline: false
+                }
+            )
+        }
+        const names = {
+            bonus_roles: 'Rôles bonus',
+            denied_roles: 'Rôles interdits',
+            required_roles: 'Rôles requis'
+        }
+        for (const roleList of ['bonus_roles', 'required_roles', 'denied_roles']) {
+            if (gw[roleList].length > 0) {
+                embed.addFields({
+                    name: names[roleList],
+                    value: gw[roleList].map(pingRole).join(' '),
+                    inline: true
+                })
+            }
+        }
+
+        interaction.reply({
+            embeds: [embed]
+        }).catch(() => {});
     }
 });
