@@ -118,7 +118,6 @@ export const giveawayButtons: buttonsInputData = {
     cancelParticipation: () => {
         return buildButton({
             label: 'Annuler',
-            emoji: '🎉',
             style: 'Danger',
             id: 'gw-unparticipate'
         })
