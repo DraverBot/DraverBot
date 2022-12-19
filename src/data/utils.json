@@ -15,5 +15,6 @@
     "paginatorSelect": "paginator.select",
     "farsight": "https://tenor.com/view/commander-farsight-warhammer40k-tau-empire-tau-gif-16294167",
     "support": "https://discord.gg/Qt9Ns3uvYe",
-    "cancelMsg": "\n:bulb:\n> Répondez par `cancel` pour annuler"
+    "cancelMsg": "\n:bulb:\n> Répondez par `cancel` pour annuler",
+    "dev": "386479065307152384"
 }
