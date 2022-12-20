@@ -10,6 +10,7 @@ import { database } from '../utils/query';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync } from 'fs';
+import { TicketsManager } from '../managers/ticketsManager';
 
 export default new AmethystEvent('ready', async(client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -23,6 +24,7 @@ export default new AmethystEvent('ready', async(client) => {
     client.levelsManager = new LevelsManager(client);
     client.interserver = new InterserverManager(client);
     client.configsManager = new ConfigsManager();
+    client.ticketsManager = new TicketsManager(client);
     client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
     client.giveaways = new GiveawayManager(client, database, {
         sendMessages: false,

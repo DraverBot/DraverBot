@@ -1,19 +1,21 @@
-import { ChannelType, Client, Collection, EmbedBuilder, Guild, Message, OverwriteResolvable, TextChannel, User } from "discord.js";
+import { AttachmentBuilder, ChannelType, Client, Collection, EmbedBuilder, Guild, Message, OverwriteResolvable, TextChannel, User } from "discord.js";
 import { ticketChannels, ticketModRoles, ticketPanels, ticketState } from "../typings/database";
 import query from "../utils/query";
-import { closeTicketOptions, createPanelOptions, ticketButtonIds, createTicketOptions, reopenTicketOptions, ticketsTable } from "../typings/managers";
-import { arrayfy, basicEmbed, buildButton, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
+import { closeTicketOptions, createPanelOptions, ticketButtonIds, createTicketOptions, reopenTicketOptions, ticketsTable, deletePanelOptions } from "../typings/managers";
+import { arrayfy, basicEmbed, buildButton, confirm, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
 import { getPerm, util } from "../utils/functions";
 import { ticketsClosedButtons, ticketsCreateButtons } from "../data/buttons";
 import htmlSave from "../utils/htmlSave";
 import { rmSync } from "fs";
+import { confirmReturn } from "../typings/functions";
+import replies from "../data/replies";
 
 export class TicketsManager {
     public readonly client: Client;
 
-    private tickets: Collection<string, ticketChannels> = new Collection();
-    private panels: Collection<string, ticketPanels> = new Collection();
-    private modRoles: Collection<string, ticketModRoles<true>> = new Collection();
+    private _tickets: Collection<string, ticketChannels> = new Collection();
+    private _panels: Collection<string, ticketPanels> = new Collection();
+    private _modRoles: Collection<string, ticketModRoles<true>> = new Collection();
 
     constructor(client: Client) {
         this.client = client;
@@ -24,14 +26,16 @@ export class TicketsManager {
     private async start() {
         await this.checkDb();
         await this.fillCache();
+
+        this.setEvent();
     }
 
     // Public methods
 
     /* Tickets part */
-    public createTicket({ guild, panel_id, user }: createTicketOptions): Promise<{ ticket?: ticketChannels, embed: EmbedBuilder }> {
+    public createTicket({ guild, user, ...opts }: createTicketOptions<boolean>): Promise<{ ticket?: ticketChannels, embed: EmbedBuilder }> {
         return new Promise(async(resolve) => {
-            const userTicket = this.tickets.find(x => x.guild_id === guild.id && x.user_id === user.id);
+            const userTicket = this._tickets.find(x => x.guild_id === guild.id && x.user_id === user.id);
             const hasRole = notNull(userTicket);
 
             if (hasRole) return resolve({
@@ -60,11 +64,28 @@ export class TicketsManager {
                 });
             }
 
+            let data = {
+                subject: '',
+                description: null,
+                image: undefined
+            }
+            if (opts?.panel_id) {
+                const panel = this.findPanel({ panel_reference: opts.panel_id, guild: guild.id });
+
+                data.subject = panel.subject;
+                data.description = panel.description.length > 0 ? panel.description : null;
+                data.image = panel.image.length > 0 ? panel.image : undefined;
+            } else {
+                data.subject = opts.subject;
+                data.description = opts.description ?? null;
+            }
+
+
             const ticket = await guild.channels.create({
                 name: this.generateTicketName(guild.id),
                 topic: `Ticket de ${pingUser(user)}`,
                 permissionOverwrites: permissions as OverwriteResolvable[],
-                reason: `Ticket ouvert par ${user.id}`,
+                reason: `Ticket ouvert par ${user.id}\n> Au sujet de ${data.subject}`,
                 type: ChannelType.GuildText
             }).catch(() => {}) as TextChannel;
 
@@ -75,14 +96,12 @@ export class TicketsManager {
                     .setColor(evokerColor(guild))
             }
 
-            const panel = this.findPanel({ panel_reference: panel_id, guild: guild.id });
-
             const embed = basicEmbed(user)
                 .setColor(guild.members.me.displayHexColor ?? util('accentColor'))
-                .setTitle(panel.subject)
-                .setDescription(`Ticket ouvert par ${pingUser(user)} ${displayDate()}${panel.description ? '\n' + panel.description : ''}`)
+                .setTitle(data.subject)
+                .setDescription(`Ticket ouvert par ${pingUser(user)} ${displayDate()}${data.description ? '\n' + data.description : ''}`)
             
-            if (panel.image?.length > 0) embed.setThumbnail(panel.image);
+            if (data.image?.length > 0) embed.setThumbnail(data.image);
 
             const msg = await ticket.send({
                 embeds: [embed],
@@ -104,12 +123,12 @@ export class TicketsManager {
                 guild_id: guild.id,
                 user_id: user.id,
                 state: 'open' as ticketState,
-                panel_reference: panel_id,
+                panel_reference: 0,
                 message_id: msg.id,
                 channelName: ticket.name
             };
-            this.tickets.set(msg.id, ticketDatas);
-            await query(`INSERT INTO ${ticketsTable.Tickets} ( guild_id, channel_id, user_id, message_id, user_id, panel_reference, state, channelName ) VALUES ( '${guild.id}', '${ticket.id}', '${user.id}',  '${msg.id}', '${user.id}', '${panel_id}', 'open', "${sqliseString(ticket.name)}" )`);
+            this._tickets.set(msg.id, ticketDatas);
+            await query(`INSERT INTO ${ticketsTable.Tickets} ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${guild.id}', '${ticket.id}', '${user.id}',  '${msg.id}', '${ticketDatas.panel_reference}', 'open', "${sqliseString(ticket.name)}" )`);
 
             return resolve({
                 ticket: ticketDatas,
@@ -121,7 +140,7 @@ export class TicketsManager {
     }
 
     public closeTicket({ guild, user, message_id }: closeTicketOptions): Promise<{ embed: EmbedBuilder; ticket?: ticketChannels }> {
-        const ticket = this.tickets.get(message_id);
+        const ticket = this._tickets.get(message_id);
         const panel = this.findPanel({ panel_reference: ticket.panel_reference, guild: guild.id });
 
         return new Promise(async(resolve) => {
@@ -152,9 +171,9 @@ export class TicketsManager {
             ]).catch(() => {});
             
             ticket.state = 'closed';
-            this.tickets.set(ticket.message_id, ticket);
+            this._tickets.set(ticket.message_id, ticket);
 
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state ) VALUES ( 'closed' ) WHERE message_id='${ticket.message_id}'`);
+            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state, message_id ) VALUES ( 'closed', '${message.id}' )`);
             return resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -166,7 +185,7 @@ export class TicketsManager {
 
     public reopenTicket({ guild, message_id, user }: reopenTicketOptions): Promise<{ embed: EmbedBuilder, ticket?: ticketChannels }> {
         return new Promise(async(resolve) => {
-            const ticket = this.tickets.get(message_id);
+            const ticket = this._tickets.get(message_id);
             if (ticket.state === 'open') return resolve({
                 embed: basicEmbed(user)
                     .setTitle("Ticket ouvert")
@@ -194,8 +213,8 @@ export class TicketsManager {
             ])
 
             ticket.state = 'open';
-            this.tickets.set(message_id, ticket)
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state ) VALUES ('open') WHERE message_id='${message.id}'`);
+            this._tickets.set(message_id, ticket)
+            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state, message_id ) VALUES ('open', '${ticket.message_id}')`);
             resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -206,14 +225,14 @@ export class TicketsManager {
     }
     public renameChannel({ channel_id, name, guild, user }: { channel_id: string; name: string; guild: Guild; user: User }): Promise<{ embed: EmbedBuilder, ticket?: ticketChannels }> {
         return new Promise(async(resolve) => {
-            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const ticket = this._tickets.find(x => x.channel_id === channel_id);
             const channel = this.fetchChannel(ticket.message_id, guild);
 
             await channel.setName(name + (ticket.state === 'closed' ? '-closed':'')).catch(() => {});
 
             ticket.channelName = name;
-            this.tickets.set(ticket.message_id, ticket);
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( channelName ) VALUES ("${sqliseString(name)}")`);
+            this._tickets.set(ticket.message_id, ticket);
+            await query(`REPLACE INTO ${ticketsTable.Tickets} ( channelName, message_id ) VALUES ("${sqliseString(name)}", '${ticket.message_id}')`);
 
             return resolve({
                 embed: basicEmbed(user, { defaultColor: true })
@@ -225,7 +244,7 @@ export class TicketsManager {
     }
     public addOrRemoveUser({ channel_id, user, action, guild }: { channel_id: string; user: User; action: 'add' | 'remove'; guild: Guild }): Promise<{ ticket?: ticketChannels; embed: EmbedBuilder }> {
         return new Promise(async(resolve) => {
-            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const ticket = this._tickets.find(x => x.channel_id === channel_id);
             const channel = this.fetchChannel(ticket.message_id, guild);
 
             if (user.id === ticket.user_id) return resolve({
@@ -258,7 +277,7 @@ export class TicketsManager {
     }
     public saveTicket({ channel_id, user, guild }: { channel_id: string; user: User; guild: Guild }): Promise<{ ok: boolean; ticket?: ticketChannels; embed: EmbedBuilder, id?: string }> {
         return new Promise(async(resolve) => {
-            const ticket = this.tickets.find(x => x.channel_id === channel_id);
+            const ticket = this._tickets.find(x => x.channel_id === channel_id);
             const channel = this.fetchChannel(ticket.message_id, guild);
             if (!channel) return resolve({ embed: this.invalidChannel(user, guild), ok: false });
 
@@ -289,7 +308,7 @@ export class TicketsManager {
         })
     }
     public async mentionEveryone(channel_id: string, guild: Guild) {
-        const ticket = this.tickets.find(x => x.channel_id === channel_id);
+        const ticket = this._tickets.find(x => x.channel_id === channel_id);
         const channel = this.fetchChannel(ticket.channel_id, guild);
 
         if (!channel) return;
@@ -307,18 +326,46 @@ export class TicketsManager {
             }
         }).catch(() => {});
     }
+    public deleteTicket({ message_id, user, guild }: { message_id: string; user: User; guild: Guild }): Promise<{ ticket?: ticketChannels; embed: EmbedBuilder }> {
+        return new Promise(async(resolve) => {
+            const ticket = this._tickets.get(message_id);
+
+            const channel = this.fetchChannel(message_id, guild);
+            if (!channel) return resolve({
+                embed: this.invalidChannel(user, guild)
+            });
+            const message =  this.fetchMessage(message_id, channel);
+            if (!message) return resolve({
+                embed: this.invalidMessage(user, guild)
+            });
+            
+            channel.delete().catch(() => {});
+
+            this._tickets.delete(message_id);
+            await query(`DELETE FROM ${ticketsTable.Tickets} WHERE message_id='${message.id}'`);
+            resolve({
+                ticket,
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Ticket fermé")
+                    .setDescription(`Le ticket de ${pingUser(user)} a été fermé`)
+            });
+        })
+    }
+    public getTicketsList(guild_id: string) {
+        return this._tickets.filter(x => x.guild_id === guild_id);
+    }
 
     /* End tickets part */
     /* Modroles part */
 
     public getServerModroles(guild_id: string) {
-        return this.modRoles.get(guild_id) ?? { guild_id, roles: [] };
+        return this._modRoles.get(guild_id) ?? { guild_id, roles: [] };
     }
     public async addModRole({ guild_id, role_id }: { guild_id: string; role_id: string }) {
         const roles = this.getServerModroles(guild_id).roles;
         if (!roles.includes(role_id)) roles.push(role_id);
 
-        this.modRoles.set(guild_id, { guild_id, roles });
+        this._modRoles.set(guild_id, { guild_id, roles });
         await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" ) WHERE guild_id='${guild_id}'`)
 
         return true;
@@ -326,7 +373,7 @@ export class TicketsManager {
     public async removeModRole({ guild_id, role_id }: { guild_id: string; role_id: string }) {
         const roles = this.getServerModroles(guild_id).roles.filter(x => x !== role_id);
 
-        this.modRoles.set(guild_id, { roles, guild_id });
+        this._modRoles.set(guild_id, { roles, guild_id });
         await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" )`);
 
         return true;
@@ -354,10 +401,63 @@ export class TicketsManager {
             }).catch(() => {}) as Message<true>;
 
             if (!msg) return resolve({
+                embed: this.panelNotFound(user, guild)
+            });
+            const data: ticketPanels<false> = {
+                message_id: msg.id,
+                image: image ?? '',
+                description: description ?? '',
+                subject,
+                channel_id: channel.id,
+                guild_id: guild.id
+            }
+
+            const res = await query(`INSERT INTO ${ticketsTable.Panels} ( guild_id, channel_id, message_id, image, description, subject ) VALUES ( '${guild.id}', '${channel.id}', '${msg.id}', "${sqliseString(data.image)}", "${sqliseString(data.description)}", "${data.subject}" )`);
+
+            const id = res.insertId;
+            this._panels.set(msg.id, {
+                ...data,
+                reference: id
+            });
+
+            return resolve({
+                panel: this._panels.get(msg.id),
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Panel crée")
+                    .setDescription(`Le panel a été crée dans le salon ${pingChan(channel)}`)
+            });
+        })
+    }
+    public deletePanel({ guild, user, message_id }: deletePanelOptions): Promise<{ panel?: ticketPanels; embed: EmbedBuilder }> {
+        return new Promise(async(resolve) => {
+            const panel = this._panels.get(message_id);
+            const channel = this.fetchPanelChannel({ guild, message_id });
+    
+            if (!channel) return resolve({
                 embed: basicEmbed(user)
-                    .setTitle("Panel introuvable")
+                    .setColor(evokerColor(guild))
+                    .setTitle("Salon invalide")
+                    .setDescription(`Je ne trouve pas le salon du panel.\nRéessayez dans quelques minutes.\n${hint(`Si l'erreur persiste, vérifiez que j'ai la permissions **${getPerm('ManageChannels')}**`)}`)
+            })
+            const message = this.fetchPanelMessage({ channel, message_id });
+            if (!message) return resolve({
+                embed: this.panelNotFound(user, guild)
+            });
+
+            if (message.deletable) message.delete().catch(() => {});
+            await query(`DELETE FROM ${ticketsTable.Panels} WHERE reference='${panel.reference}'`);
+            this._panels.delete(message_id);
+
+            return resolve({
+                panel,
+                embed: basicEmbed(user, { defaultColor: true })
+                    .setTitle("Panel supprimé")
+                    .setDescription(`Le panel dans le salon ${pingChan(panel.channel_id)} a été supprimé`)
             })
         })
+    }
+    public getPanelsList(guild_id: string) {
+        return this._panels.filter(x => x.guild_id === guild_id);
     }
 
     /* End panels part */
@@ -391,43 +491,52 @@ export class TicketsManager {
     // Public util methods
 
     public isTicket(message_id: string) {
-        return this.tickets.has(message_id);
+        return this._tickets.has(message_id);
     }
 
     // Private util methods
 
     private findPanel({ panel_reference, guild }: { panel_reference: number, guild: string }) {
-        return this.panels.find(x => x.guild_id === guild && x.reference === panel_reference);
+        return this._panels.find(x => x.guild_id === guild && x.reference === panel_reference);
     }
 
     private fetchChannel(message_id: string, guild: Guild): TextChannel {
-        const ticket = this.tickets.get(message_id);
+        const ticket = this._tickets.get(message_id);
         const channel = guild.channels.cache.get(ticket.channel_id);
 
         return channel as TextChannel;
     }
     private fetchMessage(message_id: string, channel: TextChannel): Message<true> {
-        const ticket = this.tickets.get(message_id);
+        const ticket = this._tickets.get(message_id);
         
         return channel.messages.cache.get(ticket.message_id);
     }
  
     private generateTicketName(guild: string) {
-        const tickets = this.tickets.filter(x => x.guild_id === guild);
+        const tickets = this._tickets.filter(x => x.guild_id === guild);
         const id = tickets.size + 1;
 
         const numberOfZeros = 4 - id.toString().length;
         return `ticket-${numberOfZeros > 1 ? new Array(numberOfZeros).fill('0').join('') : ''}${id}`;
+    }
+    private fetchPanelChannel({ guild, message_id }: { guild: Guild; message_id: string }): TextChannel {
+        const panel = this._panels.get(message_id);
+        const channel = guild.channels.cache.get(panel.channel_id);
+
+        return channel as TextChannel;
+    }
+    private fetchPanelMessage({ message_id, channel }: { message_id: string; channel: TextChannel }) {
+        return channel.messages.cache.get(message_id);
     }
 
     // Private loading methods
     private fillTickets() {
         return new Promise(async(resolve) => {
             const datas = await query<ticketChannels>(`SELECT * FROM ${ticketsTable.Tickets}`);
-            this.tickets.clear();
+            this._tickets.clear();
 
             for (const data of datas) {
-                this.tickets.set(data.message_id, data);
+                this._tickets.set(data.message_id, data);
             }
             resolve(true);
         })
@@ -435,10 +544,10 @@ export class TicketsManager {
     private fillPanels() {
         return new Promise(async(resolve) => {
             const datas = await query<ticketPanels>(`SELECT * FROM ${ticketsTable.Panels}`);
-            this.panels.clear();
+            this._panels.clear();
 
             for (const data of datas) {
-                this.panels.set(data.message_id, data);
+                this._panels.set(data.message_id, data);
             }
             resolve(true);
         })
@@ -446,10 +555,10 @@ export class TicketsManager {
     private fillModRoles() {
         return new Promise(async(resolve) => {
             const datas = await query<ticketModRoles<false>>(`SELECT * FROM ${ticketsTable.ModRoles}`);
-            this.modRoles.clear();
+            this._modRoles.clear();
 
             for (const data of datas) {
-                this.modRoles.set(data.guild_id, {
+                this._modRoles.set(data.guild_id, {
                     ...data,
                     roles: JSON.parse(data.roles)
                 });
@@ -463,10 +572,173 @@ export class TicketsManager {
     }
     private async checkDb() {
         await Promise.all([
-            query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL, user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open' )`),
+            query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL DEFAULT '-1', user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open', channelName VARCHAR(255) NOT NULL )`),
             query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet' )`),
             query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles JSON NOT NULL DEFAULT '[]' )`)
         ]);
         return false;
+    }
+    // Getter functions
+    public get tickets() {
+        return this._tickets;
+    }
+    public get panels() {
+        return this._panels;
+    }
+    public get modRoles() {
+        return this._modRoles;
+    }
+
+    // Event block
+    private setEvent() {
+        this.client.on('buttonInteraction', async(button) => {
+            if (arrayfy(ticketButtonIds).includes(button.customId)) {
+                if (!button.client.modulesManager.enabled(button.guild.id, 'tickets')) {
+                    button.reply({
+                        embeds: [ replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets' }) ],
+                        ephemeral: true
+                    }).catch(() => {});
+                    return;
+                };
+                switch (button.customId) {
+                    case ticketButtonIds.Mention:
+                        this.mentionEveryone(button.channel.id, button.guild);
+                    break;
+                    case ticketButtonIds.Close: {
+                        const confirmation = await confirm({
+                            interaction: button,
+                            user: button.user,
+                            embed: basicEmbed(button.user)
+                                .setTitle("Fermeture")
+                                .setDescription(`Voulez-vous fermer le ticket ?`),
+                            ephemeral: true
+                        }).catch(() => {}) as confirmReturn;
+
+                        if (confirmation === 'cancel' || !confirmation?.value) {
+                            button.editReply({ embeds: [ replies.cancel() ], components: [] }).catch(() => {});
+                            return;
+                        }
+
+                        const rep = await this.closeTicket({ guild: button.guild, user: button.user, message_id: button.message.id });
+                        const ephemeral = !notNull(rep.ticket);
+
+                        if (ephemeral) {
+                            button.channel.send({
+                                embeds: [ rep.embed ]
+                            });
+                            button.deleteReply().catch(() => {});
+                        } else {
+                            button.editReply({
+                                embeds: [ rep.embed ],
+                                components: []
+                            }).catch(() => {});
+                        }
+                    }
+                    break;
+                    case ticketButtonIds.Delete: {
+                        const confirmation = await confirm({
+                            interaction: button,
+                            user: button.user,
+                            embed: basicEmbed(button.user)
+                                .setTitle("Suppression")
+                                .setDescription(`Voulez-vous supprimer le ticket ?`),
+                            ephemeral: true
+                        }).catch(() => {}) as confirmReturn;
+
+                        if (confirmation === 'cancel' || !confirmation?.value) {
+                            button.editReply({ embeds: [ replies.cancel() ], components: [] }).catch(() => {});
+                            return;
+                        }
+
+                        const rep = await this.deleteTicket({ guild: button.guild, user: button.user, message_id: button.message.id });
+                        const ephemeral = !notNull(rep.ticket);
+
+                        if (ephemeral) {
+                            button.channel.send({
+                                embeds: [ rep.embed ]
+                            });
+                            button.deleteReply().catch(() => {});
+                        } else {
+                            button.editReply({
+                                embeds: [ rep.embed ],
+                                components: []
+                            }).catch(() => {});
+                        }
+                    };
+                    break;
+                    case ticketButtonIds.Panel:
+                    case ticketButtonIds.Open: {
+                        const panel = this._panels.get(button.message.id);
+                        const rep = await this.createTicket({
+                            guild: button.guild,
+                            panel_id: panel.reference,
+                            user: button.user,
+                            description: panel.description,
+                            subject: panel.subject
+                        });
+
+                        button.reply({
+                            embeds: [ rep.embed ],
+                            ephemeral: true
+                        }).catch(() => {});
+                    };
+                    break;
+                    case ticketButtonIds.Reopen: {
+                        const confirmation = await confirm({
+                            interaction: button,
+                            user: button.user,
+                            embed: basicEmbed(button.user)
+                                .setTitle("Réouverture")
+                                .setDescription(`Voulez-vous réouvrir le ticket ?`),
+                            ephemeral: true
+                        }).catch(() => {}) as confirmReturn;
+
+                        if (confirmation === 'cancel' || !confirmation?.value) {
+                            button.editReply({ embeds: [ replies.cancel() ], components: [] }).catch(() => {});
+                            return;
+                        }
+
+                        const rep = await this.reopenTicket({ guild: button.guild, user: button.user, message_id: button.message.id });
+                        const ephemeral = !notNull(rep.ticket);
+
+                        if (ephemeral) {
+                            button.channel.send({
+                                embeds: [ rep.embed ]
+                            });
+                            button.deleteReply().catch(() => {});
+                        } else {
+                            button.editReply({
+                                embeds: [ rep.embed ],
+                                components: []
+                            })
+                        }
+                    };
+                    break;
+                    case ticketButtonIds.Save: {
+                        await button.deferReply().catch(() => {});
+                        const res = await this.saveTicket({
+                            channel_id: button.channel.id,
+                            guild: button.guild,
+                            user: button.user
+                        });
+
+                        if (!res.id) {
+                            button.editReply({
+                                embeds: [ res.embed ]
+                            }).catch(() => {})
+                            return;
+                        }
+                        
+                        const at = new AttachmentBuilder(`./dist/saves/${res.id}`)
+                            .setName(`${button.channel.name}.html`)
+                            .setDescription(`Sauvegarde générée le ${new Date().toLocaleDateString('fr')} à ${new Date().getHours()}:${new Date().getMinutes()}`)
+                        button.editReply({
+                            embeds: [ res.embed ],
+                            files: [ at ]
+                        }).catch(() => {});
+                    }
+                }
+            }
+        })
     }
 }

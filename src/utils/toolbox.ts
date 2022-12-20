@@ -5,6 +5,7 @@ import {
     BaseChannel,
     BaseInteraction,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     CategoryChannel,
     ChannelType,
@@ -248,13 +249,15 @@ export const confirm = ({
     user,
     embed,
     time = 120000,
-    components = [yesNoRow()]
+    components = [yesNoRow()],
+    ephemeral = false
 }: {
-    interaction: CommandInteraction;
+    interaction: CommandInteraction | ButtonInteraction;
     user: User;
     embed: EmbedBuilder;
     time?: number;
     components?: ActionRowBuilder<ButtonBuilder>[];
+    ephemeral?: boolean;
 }): Promise<confirmReturn> => {
     return new Promise(async (resolve) => {
         let msg: Message<true>;
@@ -273,7 +276,8 @@ export const confirm = ({
                 .reply({
                     embeds: [embed],
                     fetchReply: true,
-                    components: components as ActionRowBuilder<ButtonBuilder>[]
+                    components: components as ActionRowBuilder<ButtonBuilder>[],
+                    ephemeral
                 })
                 .catch(() => {})) as Message<true>;
         }
