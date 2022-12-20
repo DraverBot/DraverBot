@@ -1,5 +1,6 @@
 import { createConnection } from 'mysql';
 import { config } from 'dotenv';
+import { DefaultQueryResult, QueryResult } from '../typings/database';
 config();
 
 export const database = createConnection(process.env);
@@ -10,7 +11,7 @@ database.connect((error) => {
     }
 });
 
-export default function <T = any>(query: string): Promise<T[]> {
+export default function <T = DefaultQueryResult>(query: string): Promise<QueryResult<T>> {
     return new Promise((resolve, reject) => {
         database.query(query, (error, request) => {
             if (error) return reject(error);

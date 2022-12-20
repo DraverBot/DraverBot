@@ -1,6 +1,18 @@
 import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
 
+export type DefaultQueryResult = {
+    fieldCount: number,
+    affectedRows: number,
+    insertId: number,
+    serverStatus: number,
+    warningCount: number,
+    message: string,
+    protocol41: boolean,
+    changedRows: number
+};
+export type QueryResult<T extends any> = T extends DefaultQueryResult ? DefaultQueryResult : T[];
+
 export enum modActionType {
     Mute = 'Réduction au silence',
     Unmute = 'Retrait de réduction au silence',
@@ -114,18 +126,19 @@ export const defaultJokesTypes = {
     dark: false,
     limit: false
 } as Record<Exclude<keyof jokes, 'guild_id'>, boolean>;
-export type ticketPanels = {
+export type ticketPanels<HasReference extends boolean = true> = {
     guild_id: string;
     channel_id: string;
     message_id: string;
     image: string | null;
     subject: string;
     description: string;
+} & (HasReference extends true ? {
     /**
      * Primary key
      */
     reference: number;
-}
+} : {})
 export type ticketState = 'open' | 'closed';
 export type ticketChannels = {
     guild_id: string;
