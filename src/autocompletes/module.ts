@@ -1,6 +1,7 @@
 import { AutocompleteListener } from 'amethystjs';
 import { modulesData } from '../data/modulesData';
 import { moduleType } from '../typings/database';
+import { capitalize } from '../utils/toolbox';
 
 export default new AutocompleteListener({
     listenerName: 'module',
@@ -16,7 +17,7 @@ export default new AutocompleteListener({
         if (filtered.length === 0) filtered = list;
 
         return filtered.map((x) => ({
-            name: x.name,
+            name: capitalize(x.name),
             value: Object.keys(modulesData).find((y: moduleType) => modulesData[y].name === x.name)
         }));
     }
