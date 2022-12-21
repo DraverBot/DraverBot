@@ -41,8 +41,12 @@ export const checkDatabase = (): Promise<void> => {
                 true
             )}', blondes TINYINT(1) NOT NULL DEFAULT '${boolDb(true)}')`
         );
-        await query(`CREATE TABLE IF NOT EXISTS giveaways ( guild_id TEXT(255) NOT NULL, channel_id TEXT(255) NOT NULL, message_id TEXT(255) NOT NULL, hoster_id TEXT(255) NOT NULL, reward TEXT(255) NOT NULL, winnerCount INTEGER(255) NOT NULL DEFAULT "1", endsAt VARCHAR(1024) NOT NULL, participants LONGTEXT NOT NULL DEFAULT '[]', required_roles LONGTEXT NOT NULL DEFAULT '[]', denied_roles LONGTEXT NOT NULL DEFAULT '[]', bonus_roles LONGTEXT NOT NULL DEFAULT '[]', winners LONGTEXT NOT NULL DEFAULT '[]', ended TINYINT(1) NOT NULL DEFAULT "0" );`);
-        await query(`CREATE TABLE IF NOT EXISTS ${DatabaseTables.Coupons} ( guild_id VARCHAR(255) NOT NULL, coupon VARCHAR(255) NOT NULL PRIMARY KEY, amount INTEGER(255) NOT NULL DEFAULT '100' )`);
+        await query(
+            `CREATE TABLE IF NOT EXISTS giveaways ( guild_id TEXT(255) NOT NULL, channel_id TEXT(255) NOT NULL, message_id TEXT(255) NOT NULL, hoster_id TEXT(255) NOT NULL, reward TEXT(255) NOT NULL, winnerCount INTEGER(255) NOT NULL DEFAULT "1", endsAt VARCHAR(1024) NOT NULL, participants LONGTEXT NOT NULL DEFAULT '[]', required_roles LONGTEXT NOT NULL DEFAULT '[]', denied_roles LONGTEXT NOT NULL DEFAULT '[]', bonus_roles LONGTEXT NOT NULL DEFAULT '[]', winners LONGTEXT NOT NULL DEFAULT '[]', ended TINYINT(1) NOT NULL DEFAULT "0" );`
+        );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Coupons} ( guild_id VARCHAR(255) NOT NULL, coupon VARCHAR(255) NOT NULL PRIMARY KEY, amount INTEGER(255) NOT NULL DEFAULT '100' )`
+        );
         resolve();
     });
 };

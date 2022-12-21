@@ -31,7 +31,7 @@ export const replaceLevelVariables = ({
 
     return content;
 };
-export const replaceFluxVariables = ({ member, guild, msg }: { member: GuildMember; guild: Guild; msg: string; }) => {
+export const replaceFluxVariables = ({ member, guild, msg }: { member: GuildMember; guild: Guild; msg: string }) => {
     let content = msg;
     [
         { x: 'user.mention', y: pingUser(member) },
@@ -46,4 +46,4 @@ export const replaceFluxVariables = ({ member, guild, msg }: { member: GuildMemb
     });
 
     return content;
-}
+};

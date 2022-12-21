@@ -104,8 +104,8 @@ export const cancelButton = () => {
         label: 'Annuler',
         id: 'cancel',
         style: 'Danger'
-    })
-}
+    });
+};
 export const ticketsCreateButtons = (mentionEveryone?: boolean) => {
     return [
         buildButton({
@@ -114,13 +114,15 @@ export const ticketsCreateButtons = (mentionEveryone?: boolean) => {
             style: 'Secondary',
             emoji: '🔐'
         }),
-        mentionEveryone === true ? buildButton({
-            label: 'Mentionner everyone',
-            id: ticketButtonIds.Mention,
-            style: 'Danger'
-        }) : null
+        mentionEveryone === true
+            ? buildButton({
+                  label: 'Mentionner everyone',
+                  id: ticketButtonIds.Mention,
+                  style: 'Danger'
+              })
+            : null
     ].filter(notNull);
-}
+};
 export const ticketsClosedButtons = () => {
     return [
         buildButton({
@@ -136,13 +138,13 @@ export const ticketsClosedButtons = () => {
             style: 'Secondary'
         }),
         buildButton({
-            label: "Supprimer",
+            label: 'Supprimer',
             id: ticketButtonIds.Delete,
             emoji: '⛔',
             style: 'Danger'
         })
-    ]
-}
+    ];
+};
 
 export const yesNoRow = () => {
     return row(yesBtn(), noBtn());

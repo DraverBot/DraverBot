@@ -1,6 +1,10 @@
-import { Guild, If, TextChannel, User } from "discord.js";
+import { Guild, If, TextChannel, User } from 'discord.js';
 
-export type IfNot<Condition extends boolean, A extends any, B extends any = null> = Condition extends false ? A : Condition extends true ? B : A;
+export type IfNot<Condition extends boolean, A extends any, B extends any = null> = Condition extends false
+    ? A
+    : Condition extends true
+    ? B
+    : A;
 
 export type interserver = {
     guild_id: string;
@@ -20,19 +24,19 @@ export type createTicketOptions<IsPanel extends boolean> = {
     user: User;
     panel_id: If<IsPanel, number, null>;
     subject: IfNot<IsPanel, string>;
-    description?: IfNot<IsPanel, string>
+    description?: IfNot<IsPanel, string>;
 };
 
 export type closeTicketOptions = {
     guild: Guild;
     user: User;
     message_id: string;
-}
+};
 export type reopenTicketOptions = {
     guild: Guild;
     user: User;
     message_id: string;
-}
+};
 export type createPanelOptions = {
     guild: Guild;
     image?: string;
@@ -40,7 +44,7 @@ export type createPanelOptions = {
     subject: string;
     channel: TextChannel;
     user: User;
-}
+};
 export enum ticketButtonIds {
     Close = 'ticket.close',
     Open = 'ticket.open',
@@ -54,4 +58,4 @@ export type deletePanelOptions = {
     guild: Guild;
     user: User;
     message_id: string;
-}
+};

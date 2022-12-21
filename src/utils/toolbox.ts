@@ -325,7 +325,7 @@ export const inviteLink = (client: Client) => {
     return `https://discord.com/api/oauth2/authorize?client_id=${client.application.id}&permissions=1633107176695&scope=bot%20applications.commands`;
 };
 export const pingUser = (user: anyUser | string) => {
-    if (user instanceof User || user instanceof GuildMember) return `<@${user.id}>`
+    if (user instanceof User || user instanceof GuildMember) return `<@${user.id}>`;
     return `<@${user}>`;
 };
 export const notNull = (variable: any) => ![undefined, null].includes(variable);
@@ -366,16 +366,26 @@ export const waitForReplies = (client: Client) => {
 export const pingRole = (role: Role | string) => {
     if (role instanceof Role) return `<@&${role.id}>`;
     return `<@&${role}>`;
-}
-export const getMsgUrl = ({ guild_id, channel_id, message_id }: { guild_id: string; channel_id: string; message_id: string }) => {
+};
+export const getMsgUrl = ({
+    guild_id,
+    channel_id,
+    message_id
+}: {
+    guild_id: string;
+    channel_id: string;
+    message_id: string;
+}) => {
     return `https://discord.com/channels/${guild_id}/${channel_id}/${message_id}`;
-}
+};
 export const addTimeDoc = (userId: string) => {
     const value = time.get(userId) ?? 0;
     time.set(userId, value + 1);
 
-    if (value >= 3) return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
+    if (value >= 3)
+        return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
     return '';
-}
-export const hint = (text: string) => `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`
+};
+export const hint = (text: string) =>
+    `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`;
 export const codeBox = (text: string, type = 'txt') => `\`\`\`${type}\n${text}\`\`\``;

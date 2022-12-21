@@ -77,7 +77,7 @@ export const configsData: Record<keyof configKeys, configType> = {
         name: 'messages de départ',
         value: 'leave_active',
         type: 'boolean',
-        description: "Activation des messages de départ",
+        description: 'Activation des messages de départ',
         default: false
     },
     join_channel: {
@@ -88,10 +88,10 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: null
     },
     leave_channel: {
-        name: "salon de départ",
+        name: 'salon de départ',
         value: 'leave_channel',
         type: 'channel',
-        description: "Salon des messages de départ",
+        description: 'Salon des messages de départ',
         default: null
     },
     join_message: {
@@ -102,10 +102,10 @@ export const configsData: Record<keyof configKeys, configType> = {
         type: 'string'
     },
     leave_message: {
-        name: "message de départ",
+        name: 'message de départ',
         value: 'leave_message',
         default: `{user.name} vient de partir`,
         type: 'string',
-        description: "Message de départ"
+        description: 'Message de départ'
     }
 };

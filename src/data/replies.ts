@@ -220,9 +220,8 @@ const replies = {
     },
     invalidTime: (user: anyUser) => {
         return userMember(user)
-            .setTitle("Temps invalide")
-            .setDescription(`Vous n'avez pas saisi une durée valide${addTimeDoc(user.id)}`)
-            
+            .setTitle('Temps invalide')
+            .setDescription(`Vous n'avez pas saisi une durée valide${addTimeDoc(user.id)}`);
     }
 };
 

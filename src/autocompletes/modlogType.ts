@@ -1,11 +1,11 @@
-import { AutocompleteListener } from "amethystjs";
-import { modActionType } from "../typings/database";
-import { capitalize } from "../utils/toolbox";
+import { AutocompleteListener } from 'amethystjs';
+import { modActionType } from '../typings/database';
+import { capitalize } from '../utils/toolbox';
 
 export default new AutocompleteListener({
     commandName: [{ commandName: 'modlogs' }],
     listenerName: 'modlogstype',
-    run: (async({ focused, focusedValue }) => {
+    run: async ({ focused, focusedValue }) => {
         const types = modActionType;
         const typesArray = [];
 
@@ -16,6 +16,12 @@ export default new AutocompleteListener({
             });
         });
 
-        return typesArray.filter(x => focusedValue.toLowerCase().includes(x.name) || x.name.toLowerCase().includes(focusedValue.toLowerCase())).splice(0, 24);
-    })
-})
+        return typesArray
+            .filter(
+                (x) =>
+                    focusedValue.toLowerCase().includes(x.name) ||
+                    x.name.toLowerCase().includes(focusedValue.toLowerCase())
+            )
+            .splice(0, 24);
+    }
+});

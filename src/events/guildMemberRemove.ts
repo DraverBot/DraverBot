@@ -1,7 +1,7 @@
-import { AmethystEvent } from "amethystjs";
-import { replaceFluxVariables } from "../utils/vars";
-import { GuildMember, TextChannel } from "discord.js";
-import { boolDb } from "../utils/toolbox";
+import { AmethystEvent } from 'amethystjs';
+import { replaceFluxVariables } from '../utils/vars';
+import { GuildMember, TextChannel } from 'discord.js';
+import { boolDb } from '../utils/toolbox';
 
 export default new AmethystEvent('guildMemberRemove', (member) => {
     const guild = member.guild;
@@ -10,7 +10,7 @@ export default new AmethystEvent('guildMemberRemove', (member) => {
         msg: guild.client.configsManager.getValue(guild.id, 'leave_message'),
         enabled: boolDb(guild.client.configsManager.getValue(guild.id, 'leave_active')),
         channel: guild.client.configsManager.getValue(guild.id, 'leave_channel')
-    }
+    };
 
     if (!configs.enabled) return;
     const channel = guild.channels.cache.get(configs.channel as string);
@@ -24,4 +24,4 @@ export default new AmethystEvent('guildMemberRemove', (member) => {
     });
 
     (channel as TextChannel).send(msg).catch(() => {});
-})
+});

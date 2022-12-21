@@ -12,7 +12,7 @@ import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
 
-export default new AmethystEvent('ready', async(client) => {
+export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
     await checkDatabase();
 

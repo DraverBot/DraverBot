@@ -1,87 +1,116 @@
-import { AmethystCommand, waitForMessage } from "amethystjs";
-import moduleEnabled from "../preconditions/moduleEnabled";
-import { ApplicationCommandOptionType, ChannelType, ComponentType, EmbedBuilder, GuildMember, InteractionReplyOptions, Message, Role, TextChannel } from "discord.js";
-import timePrecondition from "../preconditions/time";
-import { addTimeDoc, basicEmbed, buildButton, capitalize, checkCtx, confirm, displayDate, evokerColor, getMsgUrl, notNull, numerize, pagination, pingChan, pingRole, pingUser, plurial, row, subcmd } from "../utils/toolbox";
-import ms from "ms";
-import { Giveaway, giveawayInput } from "discordjs-giveaways";
-import moment from "moment";
-import { cancelButton } from "../data/buttons";
-import replies from "../data/replies";
-import { getPerm, util } from "../utils/functions";
-import { GWListType } from "../typings/commands";
-import { confirmReturn } from "../typings/functions";
+import { AmethystCommand, waitForMessage } from 'amethystjs';
+import moduleEnabled from '../preconditions/moduleEnabled';
+import {
+    ApplicationCommandOptionType,
+    ChannelType,
+    ComponentType,
+    EmbedBuilder,
+    GuildMember,
+    InteractionReplyOptions,
+    Message,
+    Role,
+    TextChannel
+} from 'discord.js';
+import timePrecondition from '../preconditions/time';
+import {
+    addTimeDoc,
+    basicEmbed,
+    buildButton,
+    capitalize,
+    checkCtx,
+    confirm,
+    displayDate,
+    evokerColor,
+    getMsgUrl,
+    notNull,
+    numerize,
+    pagination,
+    pingChan,
+    pingRole,
+    pingUser,
+    plurial,
+    row,
+    subcmd
+} from '../utils/toolbox';
+import ms from 'ms';
+import { Giveaway, giveawayInput } from 'discordjs-giveaways';
+import moment from 'moment';
+import { cancelButton } from '../data/buttons';
+import replies from '../data/replies';
+import { getPerm, util } from '../utils/functions';
+import { GWListType } from '../typings/commands';
+import { confirmReturn } from '../typings/functions';
 
 export default new AmethystCommand({
     name: 'giveaway',
-    description: "Gère les giveaways sur le serveur",
+    description: 'Gère les giveaways sur le serveur',
     permissions: ['ManageChannels', 'ManageGuild'],
     preconditions: [moduleEnabled, timePrecondition],
     options: [
         {
-            name: "démarrer",
-            description: "Démarre un giveaway",
+            name: 'démarrer',
+            description: 'Démarre un giveaway',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'récompense',
-                    description: "Récompense du giveaway",
+                    description: 'Récompense du giveaway',
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
                     name: 'gagnants',
-                    description: "Nombre de gagnants du giveaway",
+                    description: 'Nombre de gagnants du giveaway',
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
                 },
                 {
                     name: 'temps',
-                    description: "Temps du giveaway",
+                    description: 'Temps du giveaway',
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
                     name: 'salon',
-                    description: "Salon du giveaway",
+                    description: 'Salon du giveaway',
                     type: ApplicationCommandOptionType.Channel,
                     required: false,
                     channelTypes: [ChannelType.GuildText]
                 },
                 {
                     name: 'bonus',
-                    description: "Identifiants des rôles bonus (séparés par des espaces)",
+                    description: 'Identifiants des rôles bonus (séparés par des espaces)',
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
                     name: 'requis',
-                    description: "Identifiants des rôles requis (séparés par des espaces)",
+                    description: 'Identifiants des rôles requis (séparés par des espaces)',
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
                     name: 'interdits',
-                    description: "Identifiants des rôles interdits (séparés par des espaces)",
+                    description: 'Identifiants des rôles interdits (séparés par des espaces)',
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: "créer",
-            description: "Crée un giveaway dans le salon",
+            name: 'créer',
+            description: 'Crée un giveaway dans le salon',
             type: ApplicationCommandOptionType.Subcommand
         },
         {
             name: 'liste',
-            description: "Affiche la liste des giveaways",
+            description: 'Affiche la liste des giveaways',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'giveaways',
-                    description: "Type de giveaways que vous voulez afficher",
+                    description: 'Type de giveaways que vous voulez afficher',
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     choices: [
@@ -103,12 +132,12 @@ export default new AmethystCommand({
         },
         {
             name: 'analyser',
-            description: "Analyse un giveaway",
+            description: 'Analyse un giveaway',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'identifiant',
-                    description: "Identifiant du message du giveaway",
+                    description: 'Identifiant du message du giveaway',
                     required: true,
                     type: ApplicationCommandOptionType.String
                 }
@@ -116,12 +145,12 @@ export default new AmethystCommand({
         },
         {
             name: 'reroll',
-            description: "Reroll un giveaway terminé",
+            description: 'Reroll un giveaway terminé',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'identifiant',
-                    description: "Identifiant du message du giveaway",
+                    description: 'Identifiant du message du giveaway',
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
@@ -129,12 +158,12 @@ export default new AmethystCommand({
         },
         {
             name: 'terminer',
-            description: "Termine un giveaway",
+            description: 'Termine un giveaway',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'identifiant',
-                    description: "Identifiant du giveaway",
+                    description: 'Identifiant du giveaway',
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
@@ -142,26 +171,26 @@ export default new AmethystCommand({
         },
         {
             name: 'supprimer',
-            description: "Supprime un giveaway",
+            description: 'Supprime un giveaway',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'identifiant',
                     required: false,
                     type: ApplicationCommandOptionType.String,
-                    description: "Identifiant du message du giveaway"
+                    description: 'Identifiant du message du giveaway'
                 }
             ]
         }
     ]
-}).setChatInputRun(async({ interaction, options }) => {
+}).setChatInputRun(async ({ interaction, options }) => {
     const cmd = subcmd(options);
 
     if (cmd === 'démarrer') {
         const channel = (options.getChannel('salon') ?? interaction.channel) as TextChannel;
         const reward = options.getString('récompense');
         const time = ms(options.getString('temps'));
-        
+
         const roleFilter = (s: string) => s.length > 0;
         const bonuses = (options.getString('bonus') ?? '').split(/ +/g).filter(roleFilter);
         const required = (options.getString('requis') ?? '').split(/ +/g).filter(roleFilter);
@@ -170,32 +199,51 @@ export default new AmethystCommand({
 
         await interaction.deferReply();
 
-        const gw = await interaction.client.giveaways.createGiveaway({
-            guild_id: interaction.guild.id,
-            channel,
-            winnerCount,
-            bonus_roles: bonuses.length > 0 ? bonuses : [],
-            reward,
-            required_roles: required.length > 0 ? required : [],
-            denied_roles: denied.length > 0 ? denied : [],
-            hoster_id: interaction.guild.id,
-            time: time
-        }).catch(console.log) as Giveaway;
+        const gw = (await interaction.client.giveaways
+            .createGiveaway({
+                guild_id: interaction.guild.id,
+                channel,
+                winnerCount,
+                bonus_roles: bonuses.length > 0 ? bonuses : [],
+                reward,
+                required_roles: required.length > 0 ? required : [],
+                denied_roles: denied.length > 0 ? denied : [],
+                hoster_id: interaction.guild.id,
+                time: time
+            })
+            .catch(console.log)) as Giveaway;
 
-        if (!gw) return interaction.editReply({
-            embeds: [ basicEmbed(interaction.user)
-                .setColor(evokerColor(interaction.guild))
-                .setTitle("Erreur")
-                .setDescription(`Une erreur a eu lieu lors de la création du giveaway.\nÇa peut être lié au fait que je n'ai pas les permissions d'envoyer des messages dans ${pingChan(channel)}`)
-            ],
-        }).catch(() => {});
+        if (!gw)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setColor(evokerColor(interaction.guild))
+                            .setTitle('Erreur')
+                            .setDescription(
+                                `Une erreur a eu lieu lors de la création du giveaway.\nÇa peut être lié au fait que je n'ai pas les permissions d'envoyer des messages dans ${pingChan(
+                                    channel
+                                )}`
+                            )
+                    ]
+                })
+                .catch(() => {});
 
-        interaction.editReply({
-            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Giveaway crée")
-                .setDescription(`Le giveaway avec la récompense **${reward}** a été crée dans ${pingChan(channel)}.\nIl se finit ${displayDate(time + Date.now())} avec ${numerize(winnerCount)} gagnant${plurial(winnerCount)}`)
-            ]
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle('Giveaway crée')
+                        .setDescription(
+                            `Le giveaway avec la récompense **${reward}** a été crée dans ${pingChan(
+                                channel
+                            )}.\nIl se finit ${displayDate(time + Date.now())} avec ${numerize(
+                                winnerCount
+                            )} gagnant${plurial(winnerCount)}`
+                        )
+                ]
+            })
+            .catch(() => {});
     }
     if (cmd === 'créer') {
         const data: giveawayInput = {
@@ -207,9 +255,9 @@ export default new AmethystCommand({
             time: 3600000,
             hoster_id: interaction.user.id,
             guild_id: interaction.guild.id,
-            channel: interaction.channel as TextChannel,
+            channel: interaction.channel as TextChannel
         };
-        
+
         let hasCurrentAction = false;
         const basic = (fetch?: boolean): InteractionReplyOptions => {
             const currentAction = hasCurrentAction;
@@ -260,18 +308,21 @@ export default new AmethystCommand({
                         disabled: currentAction
                     })
                 ),
-                row(buildButton({
-                    label: 'Valider',
-                    id: 'validate',
-                    style: 'Success',
-                    disabled: currentAction
-                }), cancelButton().setDisabled(currentAction))
-            ]
+                row(
+                    buildButton({
+                        label: 'Valider',
+                        id: 'validate',
+                        style: 'Success',
+                        disabled: currentAction
+                    }),
+                    cancelButton().setDisabled(currentAction)
+                )
+            ];
             return {
                 embeds: [
                     basicEmbed(interaction.user)
                         .setColor('Grey')
-                        .setTitle("Création de giveaway")
+                        .setTitle('Création de giveaway')
                         .setDescription(`Appuyez sur les boutons ci-dessous pour configurer votre giveaway`)
                         .setFields(
                             {
@@ -285,38 +336,47 @@ export default new AmethystCommand({
                                 inline: true
                             },
                             {
-                                name: "Prendra fin",
+                                name: 'Prendra fin',
                                 value: displayDate(Date.now() + data.time),
                                 inline: true
                             },
                             {
-                                name: "Salon",
+                                name: 'Salon',
                                 value: pingChan(data.channel),
                                 inline: false
                             },
                             {
-                                name: "Rôles bonus",
-                                value: data.bonus_roles?.length > 0 ? data.bonus_roles.map(pingRole).join(' ') : 'Pas de rôles bonus',
+                                name: 'Rôles bonus',
+                                value:
+                                    data.bonus_roles?.length > 0
+                                        ? data.bonus_roles.map(pingRole).join(' ')
+                                        : 'Pas de rôles bonus',
                                 inline: true
                             },
                             {
-                                name: "Rôles requis",
-                                value: data.required_roles?.length > 0 ? data.required_roles.map(pingRole).join(' ') : 'Pas de rôles requis',
+                                name: 'Rôles requis',
+                                value:
+                                    data.required_roles?.length > 0
+                                        ? data.required_roles.map(pingRole).join(' ')
+                                        : 'Pas de rôles requis',
                                 inline: true
                             },
                             {
-                                name: "Rôles interdits",
-                                value: data.denied_roles?.length > 0 ? data.denied_roles?.map(pingRole).join(' ') : 'Pas de rôles intedits',
+                                name: 'Rôles interdits',
+                                value:
+                                    data.denied_roles?.length > 0
+                                        ? data.denied_roles?.map(pingRole).join(' ')
+                                        : 'Pas de rôles intedits',
                                 inline: true
                             }
                         )
                 ],
                 components: components,
                 fetchReply: notNull(fetch) ? fetch : false
-            }
-        }
+            };
+        };
 
-        const msg = await interaction.reply(basic()).catch(() => { }) as unknown as Message<true>;
+        const msg = (await interaction.reply(basic()).catch(() => {})) as unknown as Message<true>;
         if (!msg) return;
 
         const collector = msg.createMessageComponentCollector({
@@ -326,41 +386,55 @@ export default new AmethystCommand({
 
         const reedit = () => {
             interaction.editReply(basic()).catch(() => {});
-        }
+        };
 
         hasCurrentAction = false;
-        collector.on('collect', async(ctx) => {
+        collector.on('collect', async (ctx) => {
             if (!checkCtx(ctx, interaction.user)) return;
 
             if (ctx.customId === 'cancel') {
-                interaction.editReply({
-                    embeds: [replies.cancel()],
-                    components: []
-                }).catch(() => {});
+                interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(() => {});
                 return collector.stop('canceled');
             }
             if (ctx.customId === 'validate') {
-                interaction.editReply({
-                    embeds: [ replies.wait(interaction.user) ],
-                    components: []
-                }).catch(() => {});
+                interaction
+                    .editReply({
+                        embeds: [replies.wait(interaction.user)],
+                        components: []
+                    })
+                    .catch(() => {});
 
-                const gw = await interaction.client.giveaways.createGiveaway(data).catch(() => {}) as Giveaway;
+                const gw = (await interaction.client.giveaways.createGiveaway(data).catch(() => {})) as Giveaway;
                 if (!gw) {
-                    interaction.editReply({
-                        embeds: [ basicEmbed(interaction.user)
-                            .setTitle("Erreur")
-                            .setDescription(`Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getPerm('SendMessages')}** et **${getPerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`)
-                            .setColor(evokerColor(interaction.guild))
-                        ]
-                    }).catch(() => {});
+                    interaction
+                        .editReply({
+                            embeds: [
+                                basicEmbed(interaction.user)
+                                    .setTitle('Erreur')
+                                    .setDescription(
+                                        `Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getPerm(
+                                            'SendMessages'
+                                        )}** et **${getPerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`
+                                    )
+                                    .setColor(evokerColor(interaction.guild))
+                            ]
+                        })
+                        .catch(() => {});
                 }
-                interaction.editReply({
-                    embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                        .setTitle("Giveaway crée")
-                        .setDescription(`Un giveaway a été crée dans ${pingChan(data.channel)}`)
-                    ]
-                }).catch(() => {});
+                interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user, { defaultColor: true })
+                                .setTitle('Giveaway crée')
+                                .setDescription(`Un giveaway a été crée dans ${pingChan(data.channel)}`)
+                        ]
+                    })
+                    .catch(() => {});
                 return collector.stop('sent');
             }
 
@@ -368,44 +442,55 @@ export default new AmethystCommand({
                 setTimeout(() => {
                     ctx.deleteReply().catch(() => {});
                 }, 10000);
-            }
+            };
 
             interaction.editReply(basic()).catch(() => {});
 
             hasCurrentAction = true;
             if (ctx.customId === 'channel') {
-                const rep = await ctx.reply({
-                    embeds: [ basicEmbed(interaction.user)
-                        .setTitle("Salon")
-                        .setColor('Grey')
-                        .setDescription(`Dans quel salon voulez-vous lancer le giveaway ?\nRépondez par un nom, un identifiant ou une mention dans le chat.\n${util('cancelMsg')}`)
-                    ],
-                    fetchReply: true
-                }).catch(() => {}) as Message<true>;
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Salon')
+                                .setColor('Grey')
+                                .setDescription(
+                                    `Dans quel salon voulez-vous lancer le giveaway ?\nRépondez par un nom, un identifiant ou une mention dans le chat.\n${util(
+                                        'cancelMsg'
+                                    )}`
+                                )
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
                 if (!rep) return;
 
-                const reply = await waitForMessage({
+                const reply = (await waitForMessage({
                     channel: rep.channel as TextChannel,
                     user: interaction.user,
                     time: 120000
-                }).catch(() => {}) as Message<true>;
+                }).catch(() => {})) as Message<true>;
 
                 hasCurrentAction = false;
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
-                    ctx.editReply({ embeds: [ replies.cancel() ] }).catch(() => {});
+                    ctx.editReply({ embeds: [replies.cancel()] }).catch(() => {});
                     setDeleteTmst();
                     reedit();
                     return;
                 }
                 if (reply?.deletable) reply.delete().catch(() => {});
-                const channel = interaction.guild.channels.cache.find(x => x.name === reply.content || x.id === reply.content) || interaction.guild.channels.cache.get(reply.content) || reply.mentions.channels.first();
-                
+                const channel =
+                    interaction.guild.channels.cache.find((x) => x.name === reply.content || x.id === reply.content) ||
+                    interaction.guild.channels.cache.get(reply.content) ||
+                    reply.mentions.channels.first();
+
                 if (!channel || channel.type !== ChannelType.GuildText) {
                     ctx.editReply({
-                        embeds: [basicEmbed(interaction.user)
-                            .setTitle("Salon invalide")
-                            .setDescription(`Je n'ai pas trouvé de salon, ou alors ce n'est pas un salon textuel.`)
-                            .setColor(evokerColor(interaction.guild))
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Salon invalide')
+                                .setDescription(`Je n'ai pas trouvé de salon, ou alors ce n'est pas un salon textuel.`)
+                                .setColor(evokerColor(interaction.guild))
                         ]
                     }).catch(() => {});
                     setDeleteTmst();
@@ -417,28 +502,40 @@ export default new AmethystCommand({
                 reedit();
             }
             if (ctx.customId.includes('roles')) {
-                const type = ctx.customId === 'roles_required' ? 'rôles requis' : ctx.customId === 'denied_roles' ? 'rôles interdits' : 'rôles bonus';
-                const rep = await ctx.reply({
-                    fetchReply: true,
-                    embeds: [ basicEmbed(interaction.user)
-                        .setTitle(capitalize(type))
-                        .setDescription(`Quels sont les rôles que vous voulez ajouter ?\nUtilisez un nom, un identifiant ou une mention.\n${util('cancelMsg')}\n> Répondez par \`vide\` pour vider les rôles`)
-                        .setColor('Grey')
-                    ]
-                }).catch(() => {}) as Message<true>;
+                const type =
+                    ctx.customId === 'roles_required'
+                        ? 'rôles requis'
+                        : ctx.customId === 'denied_roles'
+                        ? 'rôles interdits'
+                        : 'rôles bonus';
+                const rep = (await ctx
+                    .reply({
+                        fetchReply: true,
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle(capitalize(type))
+                                .setDescription(
+                                    `Quels sont les rôles que vous voulez ajouter ?\nUtilisez un nom, un identifiant ou une mention.\n${util(
+                                        'cancelMsg'
+                                    )}\n> Répondez par \`vide\` pour vider les rôles`
+                                )
+                                .setColor('Grey')
+                        ]
+                    })
+                    .catch(() => {})) as Message<true>;
                 if (!rep) return;
 
-                const reply = await waitForMessage({
+                const reply = (await waitForMessage({
                     channel: interaction.channel as TextChannel,
                     user: interaction.user
-                }).catch(() => {}) as Message<true>;
+                }).catch(() => {})) as Message<true>;
 
                 if (reply.deletable) reply.delete().catch(() => {});
 
                 hasCurrentAction = false;
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [ replies.cancel() ]
+                        embeds: [replies.cancel()]
                     }).catch(() => {});
                     setDeleteTmst();
 
@@ -455,17 +552,22 @@ export default new AmethystCommand({
                 const roles: Role[] = reply.mentions.roles.toJSON();
 
                 for (const name of names) {
-                    const role = interaction.guild.roles.cache.get(name) || interaction.guild.roles.cache.find(x => x.name === name);
+                    const role =
+                        interaction.guild.roles.cache.get(name) ||
+                        interaction.guild.roles.cache.find((x) => x.name === name);
                     if (role && !roles.includes(role)) roles.push(role);
                 }
-                
+
                 if (roles.length === 0) {
                     setDeleteTmst();
                     ctx.editReply({
-                        embeds: [ basicEmbed(interaction.user)
-                            .setTitle("Aucun rôle")
-                            .setDescription(`Je n'ai trouvé aucun rôle correspondant à votre recherche.\nIl se peut que ce ou ces rôles soient déjà dans la liste`)
-                            .setColor('Grey')
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Aucun rôle')
+                                .setDescription(
+                                    `Je n'ai trouvé aucun rôle correspondant à votre recherche.\nIl se peut que ce ou ces rôles soient déjà dans la liste`
+                                )
+                                .setColor('Grey')
                         ]
                     }).catch(() => {});
                     reedit();
@@ -473,61 +575,76 @@ export default new AmethystCommand({
                 }
 
                 const checkRoles = (roles: string[]) => {
-                    const isInBothArrays = (arr1: string[], arr2: string[]) => arr1.some(item => arr2.includes(item));
-                  
+                    const isInBothArrays = (arr1: string[], arr2: string[]) => arr1.some((item) => arr2.includes(item));
+
                     switch (ctx.customId) {
-                      case 'denied_roles':
-                        if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.required_roles)) return false;
-                        break;
-                      case 'required_roles':
-                        if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.denied_roles)) return false;
-                        break;
-                      case 'bonus_roles':
-                        if (isInBothArrays(roles, data.denied_roles) || isInBothArrays(roles, data.required_roles)) return false;
-                        break;
+                        case 'denied_roles':
+                            if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.required_roles))
+                                return false;
+                            break;
+                        case 'required_roles':
+                            if (isInBothArrays(roles, data.bonus_roles) || isInBothArrays(roles, data.denied_roles))
+                                return false;
+                            break;
+                        case 'bonus_roles':
+                            if (isInBothArrays(roles, data.denied_roles) || isInBothArrays(roles, data.required_roles))
+                                return false;
+                            break;
                     }
-                  
+
                     return true;
                 };
-                  
-                let valid = checkRoles(roles.map(x => x.id));
-                
+
+                let valid = checkRoles(roles.map((x) => x.id));
+
                 if (!valid) {
                     setDeleteTmst();
                     reedit();
                     ctx.editReply({
-                        embeds: [ basicEmbed(interaction.user)
-                            .setTitle("Rôles invalide")
-                            .setDescription(`Un des rôles que vous avez saisi existe déjà dans un autre champs de rôles (rôles requis, rôles bonus ou rôles interdits)`)
-                            .setColor(evokerColor(interaction.guild))
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Rôles invalide')
+                                .setDescription(
+                                    `Un des rôles que vous avez saisi existe déjà dans un autre champs de rôles (rôles requis, rôles bonus ou rôles interdits)`
+                                )
+                                .setColor(evokerColor(interaction.guild))
                         ]
-                    })
+                    });
                     return;
                 }
                 ctx.deleteReply(rep).catch(() => {});
-                data[ctx.customId] = roles.map(x => x.id);
+                data[ctx.customId] = roles.map((x) => x.id);
                 reedit();
             }
             if (ctx.customId === 'winnerCount') {
-                const rep = await ctx.reply({
-                    embeds: [ basicEmbed(interaction.user)
-                        .setTitle("Nombre de gagnants")
-                        .setDescription(`Vous allez configurer le nombre de gagnants\nSaisissez un nombre entre 1 et 100 dans le chat.\n${util('cancelMsg')}`)
-                        .setColor('Grey')
-                    ],
-                    fetchReply: true
-                }).catch(() => {}) as Message<true>;
-                const reply = await waitForMessage({
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Nombre de gagnants')
+                                .setDescription(
+                                    `Vous allez configurer le nombre de gagnants\nSaisissez un nombre entre 1 et 100 dans le chat.\n${util(
+                                        'cancelMsg'
+                                    )}`
+                                )
+                                .setColor('Grey')
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
+                const reply = (await waitForMessage({
                     channel: interaction.channel as TextChannel,
                     user: interaction.user
-                }).catch(() => {}) as Message<true>;
+                }).catch(() => {})) as Message<true>;
                 hasCurrentAction = false;
 
                 if (reply.deletable) reply.delete().catch(() => {});
                 if (!reply || reply.content === 'cancel') {
-                    interaction.editReply({
-                        embeds: [ replies.cancel() ]
-                    }).catch(() => {});
+                    interaction
+                        .editReply({
+                            embeds: [replies.cancel()]
+                        })
+                        .catch(() => {});
                     reedit();
                     setDeleteTmst();
                     return;
@@ -536,9 +653,11 @@ export default new AmethystCommand({
                 if (!int || isNaN(int) || int < 1 || int > 100) {
                     reedit();
                     setDeleteTmst();
-                    interaction.editReply({
-                        embeds: [ replies.invalidNumber(interaction.member as GuildMember) ]
-                    }).catch(() => {});
+                    interaction
+                        .editReply({
+                            embeds: [replies.invalidNumber(interaction.member as GuildMember)]
+                        })
+                        .catch(() => {});
                     return;
                 }
                 data.winnerCount = int;
@@ -546,36 +665,43 @@ export default new AmethystCommand({
                 ctx.deleteReply(rep).catch(() => {});
             }
             if (ctx.customId === 'time') {
-                const rep = await ctx.reply({
-                    embeds: [ basicEmbed(interaction.user)
-                        .setTitle("Durée du giveaway")
-                        .setDescription(`Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(interaction.user.id)}\n${util('cancelMsg')}`)
-                        .setColor('Grey')
-                    ],
-                    fetchReply: true
-                }).catch(() => {}) as Message<true>;
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Durée du giveaway')
+                                .setDescription(
+                                    `Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(
+                                        interaction.user.id
+                                    )}\n${util('cancelMsg')}`
+                                )
+                                .setColor('Grey')
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
 
-                const reply = await waitForMessage({
+                const reply = (await waitForMessage({
                     channel: interaction.channel as TextChannel,
                     user: interaction.user
-                }).catch(() => {}) as Message<true>;
+                }).catch(() => {})) as Message<true>;
 
                 hasCurrentAction = false;
                 if (reply.deletable) reply.delete().catch(() => {});
 
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [ replies.cancel() ]
+                        embeds: [replies.cancel()]
                     }).catch(() => {});
                     reedit();
                     setDeleteTmst();
                     return;
                 }
 
-                const time = ms(reply.content)
+                const time = ms(reply.content);
                 if (!time || isNaN(time)) {
                     ctx.editReply({
-                        embeds: [ replies.invalidTime(interaction?.member as GuildMember ?? interaction.user) ]
+                        embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user)]
                     }).catch(() => {});
                     setDeleteTmst();
                     reedit();
@@ -587,20 +713,27 @@ export default new AmethystCommand({
                 reedit();
             }
             if (ctx.customId === 'reward') {
-                const rep = await ctx.reply({
-                    embeds: [ basicEmbed(interaction.user)
-                        .setTitle("Récompense")
-                        .setDescription(`Quelle est la récompense du giveaway ?\nRépondez dans le chat\n${util('cancelMsg')}`)
-                        .setColor('Grey')
-                    ],
-                    fetchReply: true
-                }).catch(() => {}) as Message<true>;
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Récompense')
+                                .setDescription(
+                                    `Quelle est la récompense du giveaway ?\nRépondez dans le chat\n${util(
+                                        'cancelMsg'
+                                    )}`
+                                )
+                                .setColor('Grey')
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
 
                 reedit();
-                const reply = await waitForMessage({
+                const reply = (await waitForMessage({
                     channel: interaction.channel as TextChannel,
                     user: interaction.user
-                }).catch(() => {}) as Message<true>
+                }).catch(() => {})) as Message<true>;
                 hasCurrentAction = false;
 
                 if (reply.deletable) reply.delete().catch(() => {});
@@ -620,46 +753,58 @@ export default new AmethystCommand({
         });
         collector.on('end', (_ctx, reason) => {
             if (!['sent', 'canceled'].includes(reason)) {
-                interaction.editReply({
-                    embeds: [replies.cancel()],
-                    components: []
-                }).catch(() => {});
+                interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(() => {});
             }
-        })
+        });
     }
     if (cmd === 'liste') {
-        const type = options.getString('giveaways') as GWListType ?? GWListType.Current;
+        const type = (options.getString('giveaways') as GWListType) ?? GWListType.Current;
         const list = interaction.client.giveaways.list.ended.concat(interaction.client.giveaways.list.giveaways);
 
         console.log(type);
-        const gws = list.filter(x => x.guild_id === interaction.guild.id).filter(x => {
-            if (type === GWListType.All) return x.guild_id === interaction.guild.id;
-            if (type === GWListType.Current) return x.guild_id === interaction.guild.id && x.ended === false;
-            if (type === GWListType.Ended) return x.guild_id === interaction.guild.id && x.ended === true;
-            return true
-        });
+        const gws = list
+            .filter((x) => x.guild_id === interaction.guild.id)
+            .filter((x) => {
+                if (type === GWListType.All) return x.guild_id === interaction.guild.id;
+                if (type === GWListType.Current) return x.guild_id === interaction.guild.id && x.ended === false;
+                if (type === GWListType.Ended) return x.guild_id === interaction.guild.id && x.ended === true;
+                return true;
+            });
 
-        const typeStr = type === GWListType.All ? '' : type === GWListType.Current ? ' en cours' : ' terminé'
-        if (gws.length === 0) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Pas de giveaways")
-                .setDescription(`Il n'y a aucun giveaway${typeStr} sur ce serveur`)
-                .setColor(evokerColor(interaction.guild))
-            ]
-        }).catch(() => {});
+        const typeStr = type === GWListType.All ? '' : type === GWListType.Current ? ' en cours' : ' terminé';
+        if (gws.length === 0)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Pas de giveaways')
+                            .setDescription(`Il n'y a aucun giveaway${typeStr} sur ce serveur`)
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
 
         const basic = () => {
             return basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Giveaways")
-                .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`)
-        }
+                .setTitle('Giveaways')
+                .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`);
+        };
         const mapField = (embed: EmbedBuilder, gw: Giveaway) => {
             return embed.addFields({
                 name: gw.reward,
-                value: `Par ${pingUser(gw.hoster_id)} ( \`${gw.hoster_id}\` ) dans ${pingChan(gw.channel_id)}\n> Finit ${displayDate(gw.endsAt)}\n> ${numerize(gw.winnerCount)} gagnant${plurial(gw.winnerCount)} - **${gw.ended ? 'terminé' : 'en cours'}**`,
+                value: `Par ${pingUser(gw.hoster_id)} ( \`${gw.hoster_id}\` ) dans ${pingChan(
+                    gw.channel_id
+                )}\n> Finit ${displayDate(gw.endsAt)}\n> ${numerize(gw.winnerCount)} gagnant${plurial(
+                    gw.winnerCount
+                )} - **${gw.ended ? 'terminé' : 'en cours'}**`,
                 inline: false
-            })
-        }
+            });
+        };
 
         if (gws.length <= 5) {
             const embed = basic();
@@ -667,9 +812,11 @@ export default new AmethystCommand({
                 mapField(embed, gw);
             }
 
-            interaction.reply({
-                embeds: [embed]
-            }).catch(() => {});
+            interaction
+                .reply({
+                    embeds: [embed]
+                })
+                .catch(() => {});
         } else {
             const embeds: EmbedBuilder[] = [basic()];
             gws.forEach((log, i) => {
@@ -689,238 +836,325 @@ export default new AmethystCommand({
         const id = options.getString('identifiant');
         const gw = interaction.client.giveaways.fetchGiveaway(id, true);
 
-        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
-            embeds: [basicEmbed(interaction.user)
-                .setTitle("Pas de giveaway")
-                .setDescription(`Il n'y a pas de giveaway avec l'identifiant \`${id}\``)
-                .setColor(evokerColor(interaction.guild))
-            ]
-        }).catch(() => {});
+        if (!gw || gw.guild_id !== interaction.guild.id)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Pas de giveaway')
+                            .setDescription(`Il n'y a pas de giveaway avec l'identifiant \`${id}\``)
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
 
         const embed = basicEmbed(interaction.user, { defaultColor: true })
             .setTitle(`Giveaway`)
-            .setDescription(`Voici les informations pour le giveaway d'identifiant \`${gw.message_id}\`\n> Giveaway ${gw.ended ? 'terminé' : 'en cours'}`)
-        
+            .setDescription(
+                `Voici les informations pour le giveaway d'identifiant \`${gw.message_id}\`\n> Giveaway ${
+                    gw.ended ? 'terminé' : 'en cours'
+                }`
+            );
+
         if (!gw.ended) {
             embed.addFields({
-                name: "Date de fin",
+                name: 'Date de fin',
                 value: displayDate(gw.endsAt),
                 inline: true
-            })
+            });
         }
         embed.addFields(
             {
-                name: "Offant",
+                name: 'Offant',
                 value: pingUser(gw.hoster_id) + ` ( \`${gw.hoster_id}\` )`,
                 inline: true
             },
             {
-                name: "Salon",
+                name: 'Salon',
                 value: pingChan(gw.channel_id) + ` ( \`${gw.channel_id}\` ) `,
                 inline: true
             },
             {
-                name: "Récompense",
+                name: 'Récompense',
                 value: gw.reward,
                 inline: false
             },
             {
-                name: "Nombre de gagnants",
+                name: 'Nombre de gagnants',
                 value: numerize(gw.winnerCount),
                 inline: true
             },
             {
-                name: "Participants",
+                name: 'Participants',
                 value: numerize(gw.participants.length),
                 inline: true
             }
-        )
+        );
         if (gw.ended) {
-            embed.addFields(
-                {
-                    name: "Gagnants",
-                    value: gw.winners.length > 0 ? `${numerize(gw.winners.length)} gagnant${plurial(gw.winners.length)} ( sur ${numerize(gw.participants.length)} participant${plurial(gw.participants.length)}, soit ${Math.floor(gw.winners.length * 100 / gw.participants.length)}% des participants ) : ${gw.winners.map(pingUser).join(' ')}` : 'Aucun gagnants',
-                    inline: false
-                }
-            )
+            embed.addFields({
+                name: 'Gagnants',
+                value:
+                    gw.winners.length > 0
+                        ? `${numerize(gw.winners.length)} gagnant${plurial(gw.winners.length)} ( sur ${numerize(
+                              gw.participants.length
+                          )} participant${plurial(gw.participants.length)}, soit ${Math.floor(
+                              (gw.winners.length * 100) / gw.participants.length
+                          )}% des participants ) : ${gw.winners.map(pingUser).join(' ')}`
+                        : 'Aucun gagnants',
+                inline: false
+            });
         }
         const names = {
             bonus_roles: 'Rôles bonus',
             denied_roles: 'Rôles interdits',
             required_roles: 'Rôles requis'
-        }
+        };
         for (const roleList of ['bonus_roles', 'required_roles', 'denied_roles']) {
             if (gw[roleList].length > 0) {
                 embed.addFields({
                     name: names[roleList],
                     value: gw[roleList].map(pingRole).join(' '),
                     inline: true
-                })
+                });
             }
         }
 
-        interaction.reply({
-            embeds: [embed]
-        }).catch(() => {});
+        interaction
+            .reply({
+                embeds: [embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'reroll') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
         const gw = interaction.client.giveaways.fetchGiveaway(id, true) as Giveaway;
 
-        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Pas de giveaway")
-                .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
-                .setColor(evokerColor(interaction.guild))
-            ],
-            ephemeral: true
-        }).catch(() => {});
-        if (!gw.ended) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Giveaway non-terminé")
-                .setDescription(`Le giveaway n'est pas terminé`)
-                .setColor(evokerColor(interaction.guild))
-            ]
-        }).catch(() => {});
+        if (!gw || gw.guild_id !== interaction.guild.id)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Pas de giveaway')
+                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
+        if (!gw.ended)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Giveaway non-terminé')
+                            .setDescription(`Le giveaway n'est pas terminé`)
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
         await interaction.deferReply({
             ephemeral: true
-        })
+        });
 
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Reroll")
-                .setDescription(`Vous allez reroll [le giveaway](${getMsgUrl(gw)}) d'identifiant \`${gw.message_id}\` dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`)
-        }).catch(() => {}) as confirmReturn;
+                .setTitle('Reroll')
+                .setDescription(
+                    `Vous allez reroll [le giveaway](${getMsgUrl(gw)}) d'identifiant \`${
+                        gw.message_id
+                    }\` dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`
+                )
+        }).catch(() => {})) as confirmReturn;
 
-        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
+        if (confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
 
         const result = await interaction.client.giveaways.reroll(gw.message_id);
-        if (!result || typeof result === 'string') return interaction.editReply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Reroll échoué")
-                .setDescription(`Le reroll de [ce giveaway](${getMsgUrl(gw)}) a échoué`)
-                .setColor(evokerColor(interaction.guild))
-            ],
-            components: []
-        }).catch(() => {});
+        if (!result || typeof result === 'string')
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Reroll échoué')
+                            .setDescription(`Le reroll de [ce giveaway](${getMsgUrl(gw)}) a échoué`)
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    components: []
+                })
+                .catch(() => {});
 
-        interaction.editReply({
-            embeds: [basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Giveaway rerollé")
-                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été reroll`)
-            ],
-            components: []
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle('Giveaway rerollé')
+                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été reroll`)
+                ],
+                components: []
+            })
+            .catch(() => {});
     }
     if (cmd === 'terminer') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
         const gw = interaction.client.giveaways.fetchGiveaway(id);
 
-        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Pas de giveaway")
-                .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
-                .setColor(evokerColor(interaction.guild))
-            ],
-            ephemeral: true
-        }).catch(() => {});
-        if (gw.ended) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Giveaway terminé")
-                .setDescription(`Le giveaway est déjà terminé.\nSi vous voulez changer les gagnants, utilisez plutôt \`/giveaway reroll\``)
-                .setColor(evokerColor(interaction.guild))
-            ],
-            ephemeral: true
-        }).catch(() => {});
+        if (!gw || gw.guild_id !== interaction.guild.id)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Pas de giveaway')
+                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
+        if (gw.ended)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Giveaway terminé')
+                            .setDescription(
+                                `Le giveaway est déjà terminé.\nSi vous voulez changer les gagnants, utilisez plutôt \`/giveaway reroll\``
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
 
-        await interaction.deferReply({
-            ephemeral: true
-        }).catch(() => {});
+        await interaction
+            .deferReply({
+                ephemeral: true
+            })
+            .catch(() => {});
 
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setDescription(`Vous allez terminer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`)
-                .setTitle("Confirmation")
-        }).catch(() => {}) as confirmReturn;
+                .setDescription(
+                    `Vous allez terminer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(
+                        gw.channel_id
+                    )}.\nVoulez-vous continuer ?`
+                )
+                .setTitle('Confirmation')
+        }).catch(() => {})) as confirmReturn;
 
-        if (!confirmation || confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
-        await interaction.editReply({
-            embeds: [replies.wait(interaction.user)],
-            components: []
-        }).catch(() => {});
+        if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
 
         const result = await interaction.client.giveaways.endGiveaway(gw.message_id);
-        if (!result || typeof result === 'string') return interaction.editReply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Terminaison échouée")
-                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être terminé`)
-                .setColor(evokerColor(interaction.guild))
-            ]
-        }).catch(() => {});
-        interaction.editReply({
-            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Giveaway terminé")
-                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été terminé`)
-            ]
-        }).catch(() => {});
+        if (!result || typeof result === 'string')
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Terminaison échouée')
+                            .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être terminé`)
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle('Giveaway terminé')
+                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été terminé`)
+                ]
+            })
+            .catch(() => {});
     }
     if (cmd === 'supprimer') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
         const gw = interaction.client.giveaways.fetchGiveaway(id, true);
 
-        if (!gw || gw.guild_id !== interaction.guild.id) return interaction.reply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Pas de giveaway")
-                .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
-                .setColor(evokerColor(interaction.guild))
-            ],
-            ephemeral: true
-        }).catch(() => {});
+        if (!gw || gw.guild_id !== interaction.guild.id)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Pas de giveaway')
+                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
 
-        await interaction.deferReply({
-            ephemeral: true
-        }).catch(() => {});
+        await interaction
+            .deferReply({
+                ephemeral: true
+            })
+            .catch(() => {});
 
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setDescription(`Vous allez supprimer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`)
-                .setTitle("Confirmation")
-        }).catch(() => {}) as confirmReturn;
+                .setDescription(
+                    `Vous allez supprimer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(
+                        gw.channel_id
+                    )}.\nVoulez-vous continuer ?`
+                )
+                .setTitle('Confirmation')
+        }).catch(() => {})) as confirmReturn;
 
-        if (!confirmation || confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
-        await interaction.editReply({
-            embeds: [replies.wait(interaction.user)],
-            components: []
-        }).catch(() => {});
+        if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
 
         const result = await interaction.client.giveaways.deleteGiveaway(gw.message_id);
-        if (!result || typeof result === 'string') return interaction.editReply({
-            embeds: [ basicEmbed(interaction.user)
-                .setTitle("Terminaison échouée")
-                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être supprimé`)
-                .setColor(evokerColor(interaction.guild))
-            ]
-        }).catch(() => {});
-        interaction.editReply({
-            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Giveaway terminé")
-                .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été supprimé`)
-            ]
-        }).catch(() => {});
+        if (!result || typeof result === 'string')
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Terminaison échouée')
+                            .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être supprimé`)
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { defaultColor: true })
+                        .setTitle('Giveaway terminé')
+                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été supprimé`)
+                ]
+            })
+            .catch(() => {});
     }
 });

@@ -2,14 +2,14 @@ import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
 
 export type DefaultQueryResult = {
-    fieldCount: number,
-    affectedRows: number,
-    insertId: number,
-    serverStatus: number,
-    warningCount: number,
-    message: string,
-    protocol41: boolean,
-    changedRows: number
+    fieldCount: number;
+    affectedRows: number;
+    insertId: number;
+    serverStatus: number;
+    warningCount: number;
+    message: string;
+    protocol41: boolean;
+    changedRows: number;
 };
 export type QueryResult<T extends any> = T extends DefaultQueryResult ? DefaultQueryResult : T[];
 
@@ -27,9 +27,9 @@ export enum modActionType {
     CoinsRemove = 'Retrait économique',
     LogDeletion = 'Suppression de log',
     LevelReset = 'Réinitialisation de niveaux',
-    CouponCreated = "Coupon crée",
-    CouponClaimed = "Coupon utilisé",
-    CouponDeleted = "Coupon supprimé"
+    CouponCreated = 'Coupon crée',
+    CouponClaimed = 'Coupon utilisé',
+    CouponDeleted = 'Coupon supprimé'
 }
 
 export type modlogs = {
@@ -136,12 +136,14 @@ export type ticketPanels<HasReference extends boolean = true> = {
     image: string | null;
     subject: string;
     description: string;
-} & (HasReference extends true ? {
-    /**
-     * Primary key
-     */
-    reference: number;
-} : {})
+} & (HasReference extends true
+    ? {
+          /**
+           * Primary key
+           */
+          reference: number;
+      }
+    : {});
 export type ticketState = 'open' | 'closed';
 export type ticketChannels = {
     guild_id: string;
@@ -154,20 +156,20 @@ export type ticketChannels = {
     user_id: string;
     state: ticketState;
     channelName: string;
-}
+};
 export type ticketModRoles<T extends boolean = false> = {
     /**
      * Primary key
      */
     guild_id: string;
     roles: If<T, string[], string>;
-}
+};
 export enum DatabaseTables {
     Tickets = 'tickets_channel',
     Panels = 'ticket_panels',
     ModRoles = 'ticket_modroles',
     Modlogs = 'modlogs',
-    Coupons = "coupons"
+    Coupons = 'coupons'
 }
 export type coupons = {
     guild_id: string;
@@ -176,4 +178,4 @@ export type coupons = {
      */
     coupon: string;
     amount: number;
-}
+};
