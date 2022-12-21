@@ -159,3 +159,10 @@ export type ticketModRoles<T extends boolean = false> = {
     guild_id: string;
     roles: If<T, string[], string>;
 }
+export enum DatabaseTables {
+    Tickets = 'tickets_channel',
+    Panels = 'ticket_panels',
+    ModRoles = 'ticket_modroles',
+    Modlogs = 'modlogs',
+    Coupons = "coupons"
+}

@@ -15,11 +15,6 @@ export type levels<DataType = string> = {
     level: DataType;
     required: DataType;
 };
-export enum ticketsTable {
-    Tickets = 'tickets_channel',
-    Panels = 'ticket_panels',
-    ModRoles = 'ticket_modroles'
-}
 export type createTicketOptions<IsPanel extends boolean> = {
     guild: Guild;
     user: User;

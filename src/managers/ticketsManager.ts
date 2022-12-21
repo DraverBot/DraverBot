@@ -1,7 +1,7 @@
 import { AttachmentBuilder, ChannelType, Client, Collection, EmbedBuilder, Guild, Message, OverwriteResolvable, TextChannel, User } from "discord.js";
-import { ticketChannels, ticketModRoles, ticketPanels, ticketState } from "../typings/database";
+import { ticketChannels, ticketModRoles, ticketPanels, ticketState, DatabaseTables } from "../typings/database";
 import query from "../utils/query";
-import { closeTicketOptions, createPanelOptions, ticketButtonIds, createTicketOptions, reopenTicketOptions, ticketsTable, deletePanelOptions } from "../typings/managers";
+import { closeTicketOptions, createPanelOptions, ticketButtonIds, createTicketOptions, reopenTicketOptions, deletePanelOptions } from "../typings/managers";
 import { arrayfy, basicEmbed, buildButton, confirm, displayDate, evokerColor, hint, notNull, pingChan, pingUser, row, sqliseString } from "../utils/toolbox";
 import { getPerm, util } from "../utils/functions";
 import { ticketsClosedButtons, ticketsCreateButtons } from "../data/buttons";
@@ -128,7 +128,7 @@ export class TicketsManager {
                 channelName: ticket.name
             };
             this._tickets.set(msg.id, ticketDatas);
-            await query(`INSERT INTO ${ticketsTable.Tickets} ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${guild.id}', '${ticket.id}', '${user.id}',  '${msg.id}', '${ticketDatas.panel_reference}', 'open', "${sqliseString(ticket.name)}" )`);
+            await query(`INSERT INTO ${DatabaseTables.Tickets} ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${guild.id}', '${ticket.id}', '${user.id}',  '${msg.id}', '${ticketDatas.panel_reference}', 'open', "${sqliseString(ticket.name)}" )`);
 
             return resolve({
                 ticket: ticketDatas,
@@ -173,7 +173,7 @@ export class TicketsManager {
             ticket.state = 'closed';
             this._tickets.set(ticket.message_id, ticket);
 
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state, message_id ) VALUES ( 'closed', '${message.id}' )`);
+            await query(`REPLACE INTO ${DatabaseTables.Tickets} ( state, message_id ) VALUES ( 'closed', '${message.id}' )`);
             return resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -214,7 +214,7 @@ export class TicketsManager {
 
             ticket.state = 'open';
             this._tickets.set(message_id, ticket)
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( state, message_id ) VALUES ('open', '${ticket.message_id}')`);
+            await query(`REPLACE INTO ${DatabaseTables.Tickets} ( state, message_id ) VALUES ('open', '${ticket.message_id}')`);
             resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -232,7 +232,7 @@ export class TicketsManager {
 
             ticket.channelName = name;
             this._tickets.set(ticket.message_id, ticket);
-            await query(`REPLACE INTO ${ticketsTable.Tickets} ( channelName, message_id ) VALUES ("${sqliseString(name)}", '${ticket.message_id}')`);
+            await query(`REPLACE INTO ${DatabaseTables.Tickets} ( channelName, message_id ) VALUES ("${sqliseString(name)}", '${ticket.message_id}')`);
 
             return resolve({
                 embed: basicEmbed(user, { defaultColor: true })
@@ -342,7 +342,7 @@ export class TicketsManager {
             channel.delete().catch(() => {});
 
             this._tickets.delete(message_id);
-            await query(`DELETE FROM ${ticketsTable.Tickets} WHERE message_id='${message.id}'`);
+            await query(`DELETE FROM ${DatabaseTables.Tickets} WHERE message_id='${message.id}'`);
             resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -366,7 +366,7 @@ export class TicketsManager {
         if (!roles.includes(role_id)) roles.push(role_id);
 
         this._modRoles.set(guild_id, { guild_id, roles });
-        await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" ) WHERE guild_id='${guild_id}'`)
+        await query(`REPLACE INTO ${DatabaseTables.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" ) WHERE guild_id='${guild_id}'`)
 
         return true;
     }
@@ -374,7 +374,7 @@ export class TicketsManager {
         const roles = this.getServerModroles(guild_id).roles.filter(x => x !== role_id);
 
         this._modRoles.set(guild_id, { roles, guild_id });
-        await query(`REPLACE INTO ${ticketsTable.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" )`);
+        await query(`REPLACE INTO ${DatabaseTables.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" )`);
 
         return true;
     }
@@ -412,7 +412,7 @@ export class TicketsManager {
                 guild_id: guild.id
             }
 
-            const res = await query(`INSERT INTO ${ticketsTable.Panels} ( guild_id, channel_id, message_id, image, description, subject ) VALUES ( '${guild.id}', '${channel.id}', '${msg.id}', "${sqliseString(data.image)}", "${sqliseString(data.description)}", "${data.subject}" )`);
+            const res = await query(`INSERT INTO ${DatabaseTables.Panels} ( guild_id, channel_id, message_id, image, description, subject ) VALUES ( '${guild.id}', '${channel.id}', '${msg.id}', "${sqliseString(data.image)}", "${sqliseString(data.description)}", "${data.subject}" )`);
 
             const id = res.insertId;
             this._panels.set(msg.id, {
@@ -445,7 +445,7 @@ export class TicketsManager {
             });
 
             if (message.deletable) message.delete().catch(() => {});
-            await query(`DELETE FROM ${ticketsTable.Panels} WHERE reference='${panel.reference}'`);
+            await query(`DELETE FROM ${DatabaseTables.Panels} WHERE reference='${panel.reference}'`);
             this._panels.delete(message_id);
 
             return resolve({
@@ -532,7 +532,7 @@ export class TicketsManager {
     // Private loading methods
     private fillTickets() {
         return new Promise(async(resolve) => {
-            const datas = await query<ticketChannels>(`SELECT * FROM ${ticketsTable.Tickets}`);
+            const datas = await query<ticketChannels>(`SELECT * FROM ${DatabaseTables.Tickets}`);
             this._tickets.clear();
 
             for (const data of datas) {
@@ -543,7 +543,7 @@ export class TicketsManager {
     }
     private fillPanels() {
         return new Promise(async(resolve) => {
-            const datas = await query<ticketPanels>(`SELECT * FROM ${ticketsTable.Panels}`);
+            const datas = await query<ticketPanels>(`SELECT * FROM ${DatabaseTables.Panels}`);
             this._panels.clear();
 
             for (const data of datas) {
@@ -554,7 +554,7 @@ export class TicketsManager {
     }
     private fillModRoles() {
         return new Promise(async(resolve) => {
-            const datas = await query<ticketModRoles<false>>(`SELECT * FROM ${ticketsTable.ModRoles}`);
+            const datas = await query<ticketModRoles<false>>(`SELECT * FROM ${DatabaseTables.ModRoles}`);
             this._modRoles.clear();
 
             for (const data of datas) {
@@ -572,9 +572,9 @@ export class TicketsManager {
     }
     private async checkDb() {
         await Promise.all([
-            query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL DEFAULT '-1', user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open', channelName VARCHAR(255) NOT NULL )`),
-            query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet' )`),
-            query(`CREATE TABLE IF NOT EXISTS ${ticketsTable.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles JSON NOT NULL DEFAULT '[]' )`)
+            query(`CREATE TABLE IF NOT EXISTS ${DatabaseTables.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL DEFAULT '-1', user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open', channelName VARCHAR(255) NOT NULL )`),
+            query(`CREATE TABLE IF NOT EXISTS ${DatabaseTables.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet' )`),
+            query(`CREATE TABLE IF NOT EXISTS ${DatabaseTables.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles JSON NOT NULL DEFAULT '[]' )`)
         ]);
         return false;
     }
