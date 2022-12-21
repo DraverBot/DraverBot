@@ -39,11 +39,12 @@ import { getModEmbedColor, util } from './functions';
 import query from './query';
 import time from '../maps/time';
 
-export const basicEmbed = (user: User, options?: { defaultColor: boolean }) => {
+export const basicEmbed = (user: User, options?: { defaultColor?: boolean; questionMark?: boolean }) => {
     const x = new EmbedBuilder()
         .setTimestamp()
         .setFooter({ text: user.username, iconURL: user.displayAvatarURL({ forceStatic: false }) });
     if (options?.defaultColor) x.setColor(util<ColorResolvable>('accentColor'));
+    if (options?.questionMark) x.setColor('Grey');
 
     return x;
 };
@@ -304,7 +305,7 @@ export const plurial = (num: number, opts?: { singular?: string; plurial?: strin
     const singular = opts?.singular ?? '';
     const plurial = opts?.plurial ?? 's';
 
-    return num > 1 ? plurial : singular;
+    return num === 1 ? singular : plurial;
 };
 export const checkCtx = (interaction: BaseInteraction, user: User) => {
     if (interaction.user.id !== user.id) {
@@ -377,3 +378,4 @@ export const addTimeDoc = (userId: string) => {
     return '';
 }
 export const hint = (text: string) => `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`
+export const codeBox = (text: string, type = 'txt') => `\`\`\`${type}\n${text}\`\`\``;

@@ -6,6 +6,7 @@ type dataType = {
     includeSpaces?: boolean;
     overload?: string;
     length: number;
+    charsToRemove?: string;
 };
 
 export class WordGenerator {
@@ -32,6 +33,11 @@ export class WordGenerator {
             for (let i = 0; i < this.data.overload.length; i++) {
                 let charact = this.data.overload[i];
                 if (!this.letters.includes(charact)) this.letters += charact;
+            }
+        }
+        if (this.data.charsToRemove !== undefined && Array.isArray(this.data.charsToRemove)) {
+            for (const char of this.data.charsToRemove) {
+                this.letters = this.letters.replace(char, '');
             }
         }
     }

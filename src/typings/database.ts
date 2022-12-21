@@ -26,7 +26,10 @@ export enum modActionType {
     CoinsAdd = 'Ajout économique',
     CoinsRemove = 'Retrait économique',
     LogDeletion = 'Suppression de log',
-    LevelReset = 'Réinitialisation de niveaux'
+    LevelReset = 'Réinitialisation de niveaux',
+    CouponCreated = "Coupon crée",
+    CouponClaimed = "Coupon utilisé",
+    CouponDeleted = "Coupon supprimé"
 }
 
 export type modlogs = {
@@ -165,4 +168,12 @@ export enum DatabaseTables {
     ModRoles = 'ticket_modroles',
     Modlogs = 'modlogs',
     Coupons = "coupons"
+}
+export type coupons = {
+    guild_id: string;
+    /**
+     * Primary key
+     */
+    coupon: string;
+    amount: number;
 }
