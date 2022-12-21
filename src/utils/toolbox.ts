@@ -376,4 +376,4 @@ export const addTimeDoc = (userId: string) => {
     if (value >= 3) return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
     return '';
 }
-export const hint = (text: string) => `\n:bulb:\n> ${text}`
+export const hint = (text: string) => `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`
