@@ -29,7 +29,8 @@ export enum modActionType {
     LevelReset = 'Réinitialisation de niveaux',
     CouponCreated = 'Coupon crée',
     CouponClaimed = 'Coupon utilisé',
-    CouponDeleted = 'Coupon supprimé'
+    CouponDeleted = 'Coupon supprimé',
+    Rename = 'Changement de pseudo'
 }
 
 export type modlogs = {
