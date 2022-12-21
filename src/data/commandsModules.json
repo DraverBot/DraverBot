@@ -20,5 +20,6 @@
     "giveaway": "giveaways",
     "admincoupons": "administration",
     "coupon": "economy",
-    "pseudo": "moderation"
+    "pseudo": "moderation",
+    "suggestion": "utils"
 }

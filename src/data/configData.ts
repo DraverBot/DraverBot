@@ -10,6 +10,8 @@ export type configKeys = {
     leave_channel: string;
     join_message: string;
     leave_message: string;
+    suggest_channel: string;
+    suggest_enable: boolean;
 };
 export type configType = {
     description: string;
@@ -107,5 +109,19 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: `{user.name} vient de partir`,
         type: 'string',
         description: 'Message de départ'
+    },
+    suggest_channel: {
+        name: "salon de suggestions",
+        value: 'suggest_channel',
+        default: null,
+        description: "Salon des suggestions",
+        type: 'channel'
+    },
+    suggest_enable: {
+        name: "suggestions",
+        value: 'suggest_enable',
+        default: false,
+        type: 'boolean',
+        description: "Activation des suggestions"
     }
 };
