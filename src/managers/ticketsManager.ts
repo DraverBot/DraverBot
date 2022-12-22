@@ -64,11 +64,11 @@ export class TicketsManager {
     // Public methods
 
     /* Tickets part */
-    public createTicket({
+    public createTicket<OptionsType extends boolean = boolean>({
         guild,
         user,
         ...opts
-    }: createTicketOptions<boolean>): Promise<{ ticket?: ticketChannels; embed: EmbedBuilder }> {
+    }: createTicketOptions<OptionsType>): Promise<{ ticket?: ticketChannels; embed: EmbedBuilder }> {
         return new Promise(async (resolve) => {
             const userTicket = this._tickets.find((x) => x.guild_id === guild.id && x.user_id === user.id);
             const hasRole = notNull(userTicket);
@@ -187,19 +187,20 @@ export class TicketsManager {
                 guild_id: guild.id,
                 user_id: user.id,
                 state: 'open' as ticketState,
-                panel_reference: 0,
+                panel_reference: opts.panel_id ?? 0,
                 message_id: msg.id,
                 channelName: ticket.name
             };
             this._tickets.set(msg.id, ticketDatas);
+            const sql = `INSERT INTO ${
+                DatabaseTables.Tickets
+            } ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${
+                guild.id
+            }', '${ticket.id}', '${user.id}',  '${msg.id}', '${
+                ticketDatas.panel_reference
+            }', 'open', "${sqliseString(ticket.name)}" )`
             await query(
-                `INSERT INTO ${
-                    DatabaseTables.Tickets
-                } ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${
-                    guild.id
-                }', '${ticket.id}', '${user.id}',  '${msg.id}', '${
-                    ticketDatas.panel_reference
-                }', 'open', "${sqliseString(ticket.name)}" )`
+                sql
             );
 
             return resolve({
@@ -244,7 +245,7 @@ export class TicketsManager {
                     .edit(ticket.user_id, {
                         ViewChannel: false
                     })
-                    .catch(() => {}),
+                    .catch(console.log),
                 channel.setName(`${ticket.channelName}-closed`).catch(() => {}),
                 message
                     .edit({
@@ -257,7 +258,7 @@ export class TicketsManager {
             this._tickets.set(ticket.message_id, ticket);
 
             await query(
-                `REPLACE INTO ${DatabaseTables.Tickets} ( state, message_id ) VALUES ( 'closed', '${message.id}' )`
+                `UPDATE ${DatabaseTables.Tickets} SET state='closed' WHERE message_id='${message.id}'`
             );
             return resolve({
                 ticket,
@@ -307,7 +308,7 @@ export class TicketsManager {
             ticket.state = 'open';
             this._tickets.set(message_id, ticket);
             await query(
-                `REPLACE INTO ${DatabaseTables.Tickets} ( state, message_id ) VALUES ('open', '${ticket.message_id}')`
+                `UPDATE ${DatabaseTables.Tickets} SET state='open' WHERE message_id='${ticket.message_id}'`
             );
             resolve({
                 ticket,
@@ -337,7 +338,7 @@ export class TicketsManager {
             ticket.channelName = name;
             this._tickets.set(ticket.message_id, ticket);
             await query(
-                `REPLACE INTO ${DatabaseTables.Tickets} ( channelName, message_id ) VALUES ("${sqliseString(name)}", '${
+                `UPDATE ${DatabaseTables.Tickets} SET channelName="${sqliseString(name)}" WHERE message_id='${
                     ticket.message_id
                 }')`
             );
@@ -427,9 +428,9 @@ export class TicketsManager {
                 });
 
             const id = `${ticket.channelName}-${channel_id}`;
-            htmlSave(messages, id);
+            htmlSave(messages.reverse(), id);
             setTimeout(() => {
-                rmSync(`./dist/saves/${id}`);
+                rmSync(`./dist/saves/${id}.html`);
             }, 20000);
 
             return resolve({
@@ -442,9 +443,9 @@ export class TicketsManager {
             });
         });
     }
-    public async mentionEveryone(channel_id: string, guild: Guild) {
-        const ticket = this._tickets.find((x) => x.channel_id === channel_id);
-        const channel = this.fetchChannel(ticket.channel_id, guild);
+    public async mentionEveryone(message_id: string, guild: Guild) {
+        const ticket = this._tickets.get(message_id);
+        const channel = this.fetchChannel(message_id, guild);
 
         if (!channel) return;
         const msg = this.fetchMessage(ticket.message_id, channel);
@@ -501,7 +502,7 @@ export class TicketsManager {
         });
     }
     public getTicketsList(guild_id: string) {
-        return this._tickets.filter((x) => x.guild_id === guild_id);
+        return this._tickets.filter((x) => x.guild_id === guild_id) ?? new Collection<string, ticketChannels>();
     }
 
     /* End tickets part */
@@ -516,19 +517,20 @@ export class TicketsManager {
 
         this._modRoles.set(guild_id, { guild_id, roles });
         await query(
-            `REPLACE INTO ${DatabaseTables.ModRoles} ( roles ) VALUES ( "${sqliseString(
+            `REPLACE INTO ${DatabaseTables.ModRoles} ( roles, guild_id ) VALUES ( "${sqliseString(
                 JSON.stringify(roles)
-            )}" ) WHERE guild_id='${guild_id}'`
+            )}", "${guild_id}" )`
         );
 
         return true;
     }
     public async removeModRole({ guild_id, role_id }: { guild_id: string; role_id: string }) {
         const roles = this.getServerModroles(guild_id).roles.filter((x) => x !== role_id);
+        const has = this._modRoles.has(guild_id);
 
         this._modRoles.set(guild_id, { roles, guild_id });
-        await query(
-            `REPLACE INTO ${DatabaseTables.ModRoles} ( roles ) VALUES ( "${sqliseString(JSON.stringify(roles))}" )`
+        if (has) await query(
+            `UPDATE ${DatabaseTables.ModRoles} SET roles="${sqliseString(JSON.stringify(roles))}" WHERE guild_id='${guild_id}'`
         );
 
         return true;
@@ -629,14 +631,15 @@ export class TicketsManager {
                             )}`
                         )
                 });
-            const message = this.fetchPanelMessage({ channel, message_id });
+            const message = await this.fetchPanelMessage({ channel, message_id });
             if (!message)
                 return resolve({
                     embed: this.panelNotFound(user, guild)
                 });
 
             if (message.deletable) message.delete().catch(() => {});
-            await query(`DELETE FROM ${DatabaseTables.Panels} WHERE reference='${panel.reference}'`);
+            console.log(await query(`DELETE FROM ${DatabaseTables.Panels} WHERE reference='${panel.reference}'`));
+            message.delete().catch(() => {});
             this._panels.delete(message_id);
 
             return resolve({
@@ -711,7 +714,7 @@ export class TicketsManager {
     }
     private fetchMessage(message_id: string, channel: TextChannel): Message<true> {
         const ticket = this._tickets.get(message_id);
-
+        
         return channel.messages.cache.get(ticket.message_id);
     }
 
@@ -728,7 +731,8 @@ export class TicketsManager {
 
         return channel as TextChannel;
     }
-    private fetchPanelMessage({ message_id, channel }: { message_id: string; channel: TextChannel }) {
+    private async fetchPanelMessage({ message_id, channel }: { message_id: string; channel: TextChannel }) {
+        await channel.messages.fetch().catch(() => {});
         return channel.messages.cache.get(message_id);
     }
 
@@ -813,7 +817,8 @@ export class TicketsManager {
                 }
                 switch (button.customId) {
                     case ticketButtonIds.Mention:
-                        this.mentionEveryone(button.channel.id, button.guild);
+                        this.mentionEveryone(button.message.id, button.guild);
+                        button.deferUpdate().catch(() => {});
                         break;
                     case ticketButtonIds.Close:
                         {
@@ -964,7 +969,7 @@ export class TicketsManager {
                             return;
                         }
 
-                        const at = new AttachmentBuilder(`./dist/saves/${res.id}`)
+                        const at = new AttachmentBuilder(`./dist/saves/${res.id}.html`)
                             .setName(`${button.channel.name}.html`)
                             .setDescription(
                                 `Sauvegarde générée le ${new Date().toLocaleDateString(
@@ -976,7 +981,7 @@ export class TicketsManager {
                                 embeds: [res.embed],
                                 files: [at]
                             })
-                            .catch(() => {});
+                            .catch(console.log);
                     }
                 }
             }

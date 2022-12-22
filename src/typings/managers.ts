@@ -22,8 +22,8 @@ export type levels<DataType = string> = {
 export type createTicketOptions<IsPanel extends boolean> = {
     guild: Guild;
     user: User;
-    panel_id: If<IsPanel, number, null>;
-    subject: IfNot<IsPanel, string>;
+    panel_id?: If<IsPanel, number, null>;
+    subject?: If<IsPanel, null, string>;
     description?: IfNot<IsPanel, string>;
 };
 
