@@ -108,7 +108,7 @@ export default new AmethystCommand({
             basicEmbed(interaction.user, { defaultColor: true })
                 .setTitle(`${util('coins')} ajouté${plurial(coupon[0].amount)}`)
                 .setDescription(
-                    `**${coupon[0].amount} ${util('coins')}** ${
+                    `**${numerize(coupon[0].amount)} ${util('coins')}** ${
                         coupon[0].amount === 1 ? 'a été ajouté' : 'ont été ajoutés'
                     } à votre compte`
                 )
