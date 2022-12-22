@@ -1,7 +1,8 @@
 import { AmethystCommand, preconditions } from "amethystjs";
-import { ApplicationCommandOptionType, GuildMember } from "discord.js";
+import { ApplicationCommandOptionType, GuildMember, TextChannel } from "discord.js";
 import moduleEnabled from "../preconditions/moduleEnabled";
-import { basicEmbed, evokerColor, hint } from "../utils/toolbox";
+import { basicEmbed, codeBox, evokerColor, hint, pingChan } from "../utils/toolbox";
+import { util } from "../utils/functions";
 
 export default new AmethystCommand({
     name: "suggestion",
@@ -9,12 +10,12 @@ export default new AmethystCommand({
     options: [{
         name: "suggestion",
         description: "Votre suggestion",
-        required: false,
+        required: true,
         type: ApplicationCommandOptionType.String
     }],
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async({ interaction, options }) => {
-    const channel = interaction.guild.channels.cache.get(interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_channel'));
+    const channel = interaction.guild.channels.cache.get(interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_channel')) as TextChannel;
     if (!interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_enable') || !channel) return interaction.reply({
         embeds: [ basicEmbed(interaction.user)
             .setTitle("Suggestions désactivées")
@@ -22,5 +23,27 @@ export default new AmethystCommand({
             .setColor(evokerColor(interaction.guild))
         ],
         ephemeral: true
-    })
+    }).catch(() => {});
+
+    await interaction.deferReply();
+    const res = await channel.send({
+        embeds: [ basicEmbed(interaction.user, { questionMark: true })
+            .setTitle("Suggestion")
+            .setDescription(`Nouvelle suggestion de ${interaction.user} :\n${codeBox(options.getString('suggestion'))}`)
+        ]
+    }).catch(() => {});
+
+    interaction.editReply({
+        embeds: [ basicEmbed(interaction.user)
+            .setColor(res ? util('accentColor') : evokerColor(interaction.guild))
+            .setTitle(`Suggestion ${res ? 'envoyée' : 'échouée'}`)
+            .setDescription(res ? `Votre suggestion a été envoyée dans ${pingChan(channel)}` : `La suggestion n'a pas pu être envoyée`)
+        ]
+    }).catch(() => {});
+
+    if (res) {
+        for (const emoji of ['✅', '❌']) {
+            await res.react(emoji).catch(() => {});
+        }
+    }
 })
