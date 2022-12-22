@@ -53,7 +53,7 @@ export default new AmethystCommand({
     const coupon = await query<coupons>(
         `SELECT * FROM ${DatabaseTables.Coupons} WHERE coupon="${sqliseString(
             res.fields.getTextInputValue('coupon.code')
-        )}"`
+        )}" AND guild_id='${interaction.guild.id}'`
     );
 
     if (!coupon || coupon.length === 0)
