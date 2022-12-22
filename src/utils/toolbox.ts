@@ -61,7 +61,7 @@ export const random = ({ max = 100, min = 0 }: randomType): number => {
         min = oldMax;
     }
 
-    return Math.floor(Math.random() * max - min) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
 };
 export const systemReply = (interaction: CommandInteraction, content: InteractionReplyOptions) => {
     const fnt = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
