@@ -1,4 +1,4 @@
-import { AmethystCommand } from "amethystjs";
+import { AmethystCommand, preconditions } from "amethystjs";
 import { ApplicationCommandOptionType, AttachmentBuilder } from "discord.js";
 import moduleEnabled from "../preconditions/moduleEnabled";
 import { basicEmbed, confirm, subcmd, systemReply } from "../utils/toolbox";
@@ -69,7 +69,7 @@ export default new AmethystCommand({
             type: ApplicationCommandOptionType.Subcommand
         }
     ],
-    preconditions: [ moduleEnabled ]
+    preconditions: [ preconditions.GuildOnly, moduleEnabled ]
 }).setChatInputRun(async({ interaction, options }) => {
     const cmd = subcmd(options);
     const checkTicket = () => {
