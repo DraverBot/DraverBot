@@ -204,7 +204,7 @@ export default new AmethystCommand({
         const embed = basicEmbed(interaction.user)
             .setTitle('Log de modération')
             .setDescription(
-                `${capitalize(type)} par <@${mod_id}> (\`${mod_id}\`)${
+                `${capitalize(modActionType[type])} par <@${mod_id}> (\`${mod_id}\`)${
                     dbBool(autoMod) ? ' (auto-modération)' : ''
                 } ${displayDate(parseInt(date))}${
                     member_id !== 'none' ? ` sur <@${member_id}> ( \`${member_id}\` )` : ''
@@ -411,7 +411,7 @@ export default new AmethystCommand({
             guild: interaction.guild,
             reason,
             mod_id: interaction.user.id,
-            type: modActionType.LogDeletion,
+            type: 'LogDeletion',
             member_id: 'none'
         }).catch(() => {});
     }

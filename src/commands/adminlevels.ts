@@ -108,7 +108,7 @@ export default new AmethystCommand({
             reason: 'Pas de raison',
             mod_id: interaction.user.id,
             member_id: user?.id,
-            type: modActionType.LevelReset
+            type: 'LevelReset'
         }).catch(() => {});
 
         setTimeout(() => {

@@ -142,7 +142,7 @@ export default new AmethystCommand({
             guild: interaction.guild,
             mod_id: interaction.user.id,
             member_id: user?.id ?? 'none',
-            type: modActionType.CoinsReset,
+            type: 'CoinsReset',
             reason: 'Pas de raison'
         }).catch(() => {});
 
@@ -230,7 +230,7 @@ export default new AmethystCommand({
             reason: 'Pas de raison',
             member_id: user.id,
             mod_id: interaction.user.id,
-            type: modActionType.CoinsAdd
+            type: 'CoinsAdd'
         }).catch(() => {});
 
         interaction
@@ -336,7 +336,7 @@ export default new AmethystCommand({
             reason: 'Pas de raison',
             member_id: user.id,
             mod_id: interaction.user.id,
-            type: modActionType.CoinsRemove
+            type: 'CoinsRemove'
         }).catch(() => {});
 
         interaction

@@ -38,6 +38,7 @@ import {
 import { getModEmbedColor, util } from './functions';
 import query from './query';
 import time from '../maps/time';
+import { modActionType } from '../typings/database';
 
 export const basicEmbed = (user: User, options?: { defaultColor?: boolean; questionMark?: boolean }) => {
     const x = new EmbedBuilder()
@@ -73,7 +74,7 @@ export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof 
     if (!activated) return false;
 
     const embed = new EmbedBuilder()
-        .setTitle(capitalize(action))
+        .setTitle(capitalize(modActionType[action]))
         .setDescription(
             `Par <@${mod_id}> ( \`${mod_id}\` )${
                 member_id

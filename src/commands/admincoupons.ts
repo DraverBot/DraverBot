@@ -123,7 +123,7 @@ export default new AmethystCommand({
         );
         await addModLog({
             guild: interaction.guild,
-            type: modActionType.CouponCreated,
+            type: 'CouponCreated',
             mod_id: interaction.user.id,
             member_id: '',
             reason: `Coupon d'une valeur de ${numerize(amount)}`
@@ -208,7 +208,7 @@ export default new AmethystCommand({
             guild: interaction.guild,
             mod_id: interaction.user.id,
             member_id: '',
-            type: modActionType.CouponDeleted,
+            type: 'CouponDeleted',
             reason: `Coupon d'une valeur de ${numerize(res[0].amount)} ${util('coins')}`
         }).catch(() => {});
         interaction

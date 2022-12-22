@@ -62,21 +62,21 @@ export const getDefaultJokeConfigs = (guild_id: string): jokes => {
     });
     return datas as jokes;
 };
-export const getModEmbedColor = (action: modActionType): ColorResolvable => {
+export const getModEmbedColor = (action: keyof typeof modActionType): ColorResolvable => {
     let color = util('accentColor');
     switch (action) {
-        case modActionType.Ban:
-        case modActionType.Unban:
-        case modActionType.Warn:
-        case modActionType.Unmute:
-        case modActionType.Unwarn:
-        case modActionType.Kick:
-        case modActionType.Mute:
+        case 'Ban':
+        case 'Unban':
+        case 'Warn':
+        case 'Unmute':
+        case 'Unwarn':
+        case 'Kick':
+        case 'Mute':
             color = '#ff0000';
             break;
-        case modActionType.CoinsAdd:
-        case modActionType.CoinsRemove:
-        case modActionType.CoinsReset:
+        case 'CoinsAdd':
+        case 'CoinsRemove':
+        case 'CoinsReset':
             color = 'Yellow';
             break;
     }

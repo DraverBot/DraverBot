@@ -13,7 +13,7 @@ export type addModLog = {
     reason: string;
     member_id: string;
     mod_id: string;
-    type: modActionType;
+    type: keyof typeof modActionType;
     /**
      * Image URL
      *
@@ -73,7 +73,7 @@ export type commandName = keyof typeof commandModules;
 export type confirmReturn = { value: boolean; interaction: ButtonInteraction } | 'cancel';
 export type sendLogOpts = {
     guild: Guild;
-    action: modActionType;
+    action: keyof typeof modActionType;
     proof?: string;
     mod_id: string;
     member_id: string;

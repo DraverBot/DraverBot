@@ -70,7 +70,7 @@ export default new AmethystCommand({
         guild: interaction.guild,
         member_id: member.id,
         mod_id: interaction.user.id,
-        type: modActionType.Rename,
+        type: 'Rename',
         reason,
         proof: proof?.url
     }).catch(() => {});
