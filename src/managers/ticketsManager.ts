@@ -246,13 +246,13 @@ export class TicketsManager {
                         ViewChannel: false
                     })
                     .catch(console.log),
-                channel.setName(`${ticket.channelName}-closed`).catch(() => {}),
+                channel.setName(`${ticket.channelName}-closed`).catch(console.log),
                 message
                     .edit({
                         components: [row(...ticketsClosedButtons())]
                     })
-                    .catch(() => {})
-            ]).catch(() => {});
+                    .catch(console.log)
+            ]);
 
             ticket.state = 'closed';
             this._tickets.set(ticket.message_id, ticket);
@@ -289,7 +289,7 @@ export class TicketsManager {
                 return resolve({
                     embed: this.invalidChannel(user, guild)
                 });
-            const message = this.fetchMessage(message_id, channel);
+            const message = await this.fetchMessage(message_id, channel);
             if (!message)
                 return resolve({
                     embed: this.invalidMessage(user, guild)
@@ -299,7 +299,7 @@ export class TicketsManager {
                 channel.permissionOverwrites.edit(ticket.user_id, {
                     ViewChannel: true
                 }),
-                channel.setName(ticket.channelName),
+                channel.setName(ticket.channelName).catch(console.log),
                 message.edit({
                     components: [this.createComponentsNoMention]
                 })
@@ -448,7 +448,7 @@ export class TicketsManager {
         const channel = this.fetchChannel(message_id, guild);
 
         if (!channel) return;
-        const msg = this.fetchMessage(ticket.message_id, channel);
+        const msg = await this.fetchMessage(ticket.message_id, channel);
         if (!msg) return;
 
         await msg
@@ -483,7 +483,7 @@ export class TicketsManager {
                 return resolve({
                     embed: this.invalidChannel(user, guild)
                 });
-            const message = this.fetchMessage(message_id, channel);
+            const message = await this.fetchMessage(message_id, channel);
             if (!message)
                 return resolve({
                     embed: this.invalidMessage(user, guild)
@@ -712,7 +712,8 @@ export class TicketsManager {
 
         return channel as TextChannel;
     }
-    private fetchMessage(message_id: string, channel: TextChannel): Message<true> {
+    private async fetchMessage(message_id: string, channel: TextChannel): Promise<Message<true>> {
+        await channel.messages.fetch().catch(() => {});
         const ticket = this._tickets.get(message_id);
         
         return channel.messages.cache.get(ticket.message_id);
@@ -835,7 +836,10 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
-
+                            await button.editReply({
+                                embeds: [ replies.wait(button.user) ],
+                                components: []
+                            }).catch(() => {});
                             const rep = await this.closeTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -873,7 +877,10 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
-
+                            await button.editReply({
+                                embeds: [ replies.wait(button.user) ],
+                                components: []
+                            }).catch(() => {});
                             const rep = await this.deleteTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -931,6 +938,10 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
+                            await button.editReply({
+                                embeds: [ replies.wait(button.user) ],
+                                components: []
+                            }).catch(() => {});
 
                             const rep = await this.reopenTicket({
                                 guild: button.guild,

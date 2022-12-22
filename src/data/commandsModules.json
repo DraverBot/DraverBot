@@ -21,5 +21,7 @@
     "admincoupons": "administration",
     "coupon": "economy",
     "pseudo": "moderation",
-    "suggestion": "utils"
+    "suggestion": "utils",
+    "admintickets": "tickets",
+    "ticket": "tickets"
 }
