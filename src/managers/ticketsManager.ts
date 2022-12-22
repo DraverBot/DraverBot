@@ -182,6 +182,7 @@ export class TicketsManager {
                 });
             }
 
+            msg.pin().catch(() => {});
             const ticketDatas = {
                 channel_id: ticket.id,
                 guild_id: guild.id,
