@@ -45,12 +45,12 @@ export default new AmethystCommand({
                     ?.filter(
                         (x) =>
                             !['Subcommand', 'SubcommandGroup']
-                                .map((x) => ApplicationCommandOptionType[x])
+                                .map((y) => ApplicationCommandOptionType[y])
                                 .includes(x.type)
                     )
                     ?.map(
-                        (opt) =>
-                            `${opt.name} - **${(opt as { required?: boolean })?.required ? 'requis' : 'optionnel'}**`
+                        (opt) => 
+                            `${opt.name} - **${(opt as { required?: boolean })?.required === true ? 'requis' : (opt as { required?: boolean })?.required === false ? 'optionnel' : opt ? 'sous-commande' : 'sous-commande'}**`
                     )
                     ?.join('\n') ?? '';
             if (opts?.length === 0) return "Pas d'option";
@@ -107,7 +107,7 @@ export default new AmethystCommand({
             selects.push(buildSubcommandsSelector(subcommandGroup));
 
             return [
-                row<StringSelectMenuBuilder>(...selects),
+                ...(selects.map(x => row<StringSelectMenuBuilder>(x))),
                 row(
                     buildButton({
                         label: 'Menu',
@@ -232,7 +232,7 @@ export default new AmethystCommand({
                             .setDescription(
                                 `${data.description}\n\nOptions :\n${
                                     (data as ApplicationCommandSubCommandData)?.options
-                                        ?.map((x) => `${x.name} - **${x.required ? 'requis' : 'optionnel'}**`)
+                                        ?.map((x) => `${x.name} - **${x.required === true ? 'requis' : x.required === false ? 'optionnel' : 'sous-commande'}**`)
                                         ?.join('\n') ?? "Pas d'options"
                                 }`
                             )
