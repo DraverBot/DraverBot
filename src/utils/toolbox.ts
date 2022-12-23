@@ -27,7 +27,7 @@ import {
 } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
 import replies, { anyUser, replyKey } from '../data/replies';
-import { Paginator } from '../managers/paginator';
+import { Paginator } from '../managers/Paginator';
 import {
     addModLog as addModLogType,
     checkPermsOptions,
@@ -418,4 +418,44 @@ export const modFields = ({ mod, member, reason }: { mod: anyUser | string, memb
             inline: false
         }
     ] as EmbedField[]
+}
+export const secondsToDays = (time: number) => {
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    let days = 0;
+
+    for (let i = 0; i < time; i++) {
+        seconds++;
+        if (seconds === 60) {
+            seconds = 0;
+            minutes++;
+        }
+        if (minutes === 60) {
+            hours++;
+            minutes = 0;
+        }
+        if (hours === 24) {
+            hours = 0;
+            days++
+        }
+    }
+
+    const superior = [
+        { name: 'seconde', value: seconds },
+        { name: 'minute', value: minutes },
+        { name: 'heure', value: hours },
+        { name: 'jour', value: days }
+    ].filter(x => x.value > 0).reverse();
+
+    const format = [];
+    superior.forEach((sup) => {
+        format.push(`${numerize(sup.value)} ${sup.name}${plurial(sup.value)}`);
+    });
+    let str = '';
+
+    format.forEach((v, i, a) => {
+        str += (v) + ( a[i + 1] ? a[i + 2] ? ', ' : ' et ' : '')
+    })
+    return str;
 }
