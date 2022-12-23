@@ -26,5 +26,6 @@
     "ticket": "tickets",
     "kick": "moderation",
     "ban": "moderation",
-    "avertissement": "moderation"
+    "avertissement": "moderation",
+    "sondage": "utils"
 }
