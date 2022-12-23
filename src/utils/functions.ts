@@ -22,7 +22,7 @@ export const checkDatabase = (): Promise<void> => {
         await query(`CREATE TABLE IF NOT EXISTS coins ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, coins BIGINT NOT NULL DEFAULT '100', bank BIGINT NOT NULL DEFAULT '0' )`)
         await query(
             `CREATE TABLE IF NOT EXISTS modules ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(modulesData)
-                .map((n: moduleType) => `${n} TINYINT(1) NOT NULL DEFAULT "${modulesData[n].default ? '0' : '1'}"`)
+                .map((n: moduleType) => `${n} TINYINT(1) NOT NULL DEFAULT "${boolDb(modulesData[n].default)}"`)
                 .join(', ')} )`
         );
         await query(

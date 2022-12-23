@@ -2,6 +2,7 @@ import { waitForInteraction } from 'amethystjs';
 import {
     ActionRowBuilder,
     AnyComponentBuilder,
+    Attachment,
     BaseChannel,
     BaseInteraction,
     ButtonBuilder,
@@ -15,6 +16,7 @@ import {
     CommandInteractionOptionResolver,
     ComponentType,
     EmbedBuilder,
+    EmbedField,
     Guild,
     GuildMember,
     InteractionReplyOptions,
@@ -67,8 +69,8 @@ export const systemReply = (interaction: CommandInteraction, content: Interactio
     const fnt = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
     return interaction[fnt](content);
 };
-export const boolDb = (bool: boolean): '0' | '1' => (bool ? '0' : '1');
-export const dbBool = (str: string | number) => ['0', 0].includes(str);
+export const boolDb = (bool: boolean): '0' | '1' => (bool ? '1' : '0');
+export const dbBool = (str: string | number) => ['1', 1].includes(str);
 export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof = undefined }: sendLogOpts) => {
     const activated = dbBool(guild.client.configsManager.getValue(guild.id, 'logs_enable')) as boolean;
     if (!activated) return false;
@@ -119,7 +121,7 @@ export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }
                 guild.id
             }", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${sqliseString(
                 reason
-            )}", "${proof}", "${self}", "1", "1" )`
+            )}", "${proof}", "${self}", "${boolDb(false)}", "${boolDb(false)}" )`
         );
 
         const result = await sendLog({ guild, reason, member_id, action: type, proof, mod_id }).catch(() => {});
@@ -390,3 +392,30 @@ export const addTimeDoc = (userId: string) => {
 export const hint = (text: string) =>
     `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`;
 export const codeBox = (text: string, type = 'txt') => `\`\`\`${type}\n${text}\`\`\``;
+export const addProof = (embed: EmbedBuilder, proof?: Attachment | undefined) => {
+    if (proof && proof?.url) embed.setImage(proof.url)
+    return embed;
+}
+export const modFields = ({ mod, member, reason }: { mod: anyUser | string, member: anyUser | string, reason: string }) => {
+    const getId = (user: anyUser | string) => {
+        if (user instanceof User || user instanceof GuildMember) return user.id;
+        return user
+    }
+    return [
+        {
+            name: 'Modérateur',
+            value: `${pingUser(mod)} ( \`${getId(mod)}\` )`,
+            inline: true
+        },
+        {
+            name: 'Membre',
+            value: `${pingUser(member)} ( \`${getId(member)}\` )`,
+            inline: true
+        },
+        {
+            name: "Raison",
+            value: reason,
+            inline: false
+        }
+    ] as EmbedField[]
+}
