@@ -38,7 +38,7 @@ export type modlogs = {
     mod_id: string;
     member_id: string;
     date: string;
-    type: modActionType;
+    type: keyof typeof modActionType;
     reason: string;
     /**
      * Image URL

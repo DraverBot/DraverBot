@@ -23,5 +23,8 @@
     "pseudo": "moderation",
     "suggestion": "utils",
     "admintickets": "tickets",
-    "ticket": "tickets"
+    "ticket": "tickets",
+    "kick": "moderation",
+    "ban": "moderation",
+    "avertissement": "moderation"
 }
