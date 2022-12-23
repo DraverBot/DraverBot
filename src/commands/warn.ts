@@ -14,6 +14,7 @@ export default new AmethystCommand({
     name: 'avertissement',
     description: "Gère les avertissements d'un membre",
     preconditions: [ preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof ],
+    permissions: ['ManageGuild'],
     options: [
         {
             name: 'liste',

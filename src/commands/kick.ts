@@ -31,7 +31,9 @@ export default new AmethystCommand({
             required: false,
             type: ApplicationCommandOptionType.Attachment
         }
-    ]
+    ],
+    permissions: ['KickMembers'],
+    clientPermissions: ['KickMembers']
 }).setChatInputRun(async({ interaction, options }) => {
     const member = options.getMember('membre') as GuildMember;
     const reason = options.getString('raison');
