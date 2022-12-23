@@ -2,7 +2,7 @@ import { Collection } from 'discord.js';
 import { modulesData } from '../data/modulesData';
 import { modules, moduleType } from '../typings/database';
 import query from '../utils/query';
-import { dbBool } from '../utils/toolbox';
+import { boolDb, dbBool } from '../utils/toolbox';
 
 type modulesManager = {
     [K in moduleType]: boolean;
@@ -68,7 +68,7 @@ export class ModulesManager {
 
         return `REPLACE INTO modules (${Object.keys(dt).join(', ')}) VALUES (${Object.keys(dt)
             .map((x) => dt[x])
-            .map((x) => `"${typeof x == 'string' ? x : x === true ? '0' : '1'}"`)
+            .map((x) => `"${typeof x == 'string' ? x : boolDb(x)}"`)
             .join(', ')})`;
     }
     private async fillCache() {

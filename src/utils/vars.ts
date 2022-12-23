@@ -1,6 +1,7 @@
 import { Guild, GuildMember, TextChannel } from 'discord.js';
 import { levels } from '../typings/managers';
 import { numerize, pingChan, pingUser } from './toolbox';
+import { variablesData } from '../data/vars';
 
 export const replaceLevelVariables = ({
     msg,
@@ -14,35 +15,16 @@ export const replaceLevelVariables = ({
     channel: TextChannel;
 }) => {
     let content = msg;
-    [
-        { x: 'user.mention', y: pingUser(member) },
-        { x: 'user.name', y: member.user.username },
-        { x: 'user.tag', y: member.user.discriminator },
-        { x: 'user.id', y: member.id },
-        { x: 'channel.name', y: channel.name },
-        { x: 'channel.id', y: channel.id },
-        { x: 'channel.mention', y: pingChan(channel) },
-        { x: 'guild.name', y: member.guild.name },
-        { x: 'user.level', y: numerize(level.level) },
-        { x: 'user.required', y: numerize(level.required) }
-    ].forEach(({ x, y }) => {
-        content = content.replace(new RegExp(`{${x}}`, 'g'), y.toString());
+    variablesData.level.forEach(({ x, y }) => {
+        content = content.replace(new RegExp(`{${x}}`, 'g'), eval(y));
     });
 
     return content;
 };
 export const replaceFluxVariables = ({ member, guild, msg }: { member: GuildMember; guild: Guild; msg: string }) => {
     let content = msg;
-    [
-        { x: 'user.mention', y: pingUser(member) },
-        { x: 'user.name', y: member.user.username },
-        { x: 'user.tag', y: member.user.discriminator },
-        { x: 'user.id', y: member.id },
-        { x: 'guild.name', y: guild.name },
-        { x: 'guild.id', y: guild.id },
-        { x: 'guild.count', y: numerize(guild.memberCount) }
-    ].forEach(({ x, y }) => {
-        content = content.replace(new RegExp(`{${x}}`, 'g'), y);
+    variablesData.greeting.forEach(({ x, y }) => {
+        content = content.replace(new RegExp(`{${x}}`, 'g'), eval(y));
     });
 
     return content;
