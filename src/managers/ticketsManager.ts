@@ -788,7 +788,7 @@ export class TicketsManager {
                 `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet' )`
             ),
             query(
-                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles JSON NOT NULL DEFAULT '[]' )`
+                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles LONGTEXT )`
             )
         ]);
         return false;
