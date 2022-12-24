@@ -16,7 +16,7 @@ import {
 } from '../utils/toolbox';
 import { WordGenerator } from '../managers/Generator';
 import query from '../utils/query';
-import { DatabaseTables, coupons, modActionType } from '../typings/database';
+import { DatabaseTables, coupons } from '../typings/database';
 import couponsErrors from '../maps/couponsErrors';
 import { util } from '../utils/functions';
 import replies from '../data/replies';

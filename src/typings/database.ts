@@ -11,7 +11,7 @@ export type DefaultQueryResult = {
     protocol41: boolean;
     changedRows: number;
 };
-export type QueryResult<T extends any> = T extends DefaultQueryResult ? DefaultQueryResult : T[];
+export type QueryResult<T> = T extends DefaultQueryResult ? DefaultQueryResult : T[];
 
 export enum modActionType {
     Mute = 'Réduction au silence',
@@ -30,7 +30,10 @@ export enum modActionType {
     CouponCreated = 'Coupon crée',
     CouponClaimed = 'Coupon utilisé',
     CouponDeleted = 'Coupon supprimé',
-    Rename = 'Changement de pseudo'
+    Rename = 'Changement de pseudo',
+    NoteModified = 'Note modifiée',
+    NoteAdded = 'Note ajoutée',
+    NoteRemoved = 'Note retirée'
 }
 
 export type modlogs = {
@@ -144,7 +147,7 @@ export type ticketPanels<HasReference extends boolean = true> = {
            */
           reference: number;
       }
-    : {});
+    : object);
 export type ticketState = 'open' | 'closed';
 export type ticketChannels = {
     guild_id: string;
@@ -170,7 +173,8 @@ export enum DatabaseTables {
     Panels = 'ticket_panels',
     ModRoles = 'ticket_modroles',
     Modlogs = 'modlogs',
-    Coupons = 'coupons'
+    Coupons = 'coupons',
+    Notes = 'notes'
 }
 export type coupons = {
     guild_id: string;

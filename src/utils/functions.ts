@@ -11,7 +11,7 @@ import { ColorResolvable } from 'discord.js';
 export const getPerm = (key: permType) => {
     return perms[key];
 };
-export const util = <T = any>(key: keyof typeof utils) => {
+export const util = <T>(key: keyof typeof utils) => {
     return utils[key] as T;
 };
 export const Module = (key: commandName) => {
@@ -50,6 +50,9 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Coupons} ( guild_id VARCHAR(255) NOT NULL, coupon VARCHAR(255) NOT NULL PRIMARY KEY, amount BIGINT NOT NULL DEFAULT '100' )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Notes} ( guild_id VARCHAR(255) NOT NULL, member_id VARCHAR(255) NOT NULL, note VARCHAR(255) NOT NULL )`
+        );
         resolve();
     });
 };
@@ -66,7 +69,7 @@ export const getDefaultJokeConfigs = (guild_id: string): jokes => {
     return datas as jokes;
 };
 export const getModEmbedColor = (action: keyof typeof modActionType): ColorResolvable => {
-    let color = util('accentColor');
+    let color = util<ColorResolvable>('accentColor');
     switch (action) {
         case 'Ban':
         case 'Unban':

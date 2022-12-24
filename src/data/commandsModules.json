@@ -28,5 +28,6 @@
     "ban": "moderation",
     "avertissement": "moderation",
     "sondage": "utils",
-    "roulette-russe": "fun"
+    "roulette-russe": "fun",
+    "note": "moderation"
 }
