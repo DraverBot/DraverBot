@@ -111,17 +111,17 @@ export const configsData: Record<keyof configKeys, configType> = {
         description: 'Message de départ'
     },
     suggest_channel: {
-        name: "salon de suggestions",
+        name: 'salon de suggestions',
         value: 'suggest_channel',
         default: null,
-        description: "Salon des suggestions",
+        description: 'Salon des suggestions',
         type: 'channel'
     },
     suggest_enable: {
-        name: "suggestions",
+        name: 'suggestions',
         value: 'suggest_enable',
         default: false,
         type: 'boolean',
-        description: "Activation des suggestions"
+        description: 'Activation des suggestions'
     }
 };

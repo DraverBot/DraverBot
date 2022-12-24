@@ -393,14 +393,22 @@ export const hint = (text: string) =>
     `\n:bulb:\n> ${text.replace(/serveur {0,}de {0,}support/g, `[serveur de support](${util('support')})`)}`;
 export const codeBox = (text: string, type = 'txt') => `\`\`\`${type}\n${text}\`\`\``;
 export const addProof = (embed: EmbedBuilder, proof?: Attachment | undefined) => {
-    if (proof && proof?.url) embed.setImage(proof.url)
+    if (proof && proof?.url) embed.setImage(proof.url);
     return embed;
-}
-export const modFields = ({ mod, member, reason }: { mod: anyUser | string, member: anyUser | string, reason: string }) => {
+};
+export const modFields = ({
+    mod,
+    member,
+    reason
+}: {
+    mod: anyUser | string;
+    member: anyUser | string;
+    reason: string;
+}) => {
     const getId = (user: anyUser | string) => {
         if (user instanceof User || user instanceof GuildMember) return user.id;
-        return user
-    }
+        return user;
+    };
     return [
         {
             name: 'Modérateur',
@@ -413,12 +421,12 @@ export const modFields = ({ mod, member, reason }: { mod: anyUser | string, memb
             inline: true
         },
         {
-            name: "Raison",
+            name: 'Raison',
             value: reason,
             inline: false
         }
-    ] as EmbedField[]
-}
+    ] as EmbedField[];
+};
 export const secondsToDays = (time: number) => {
     let seconds = 0;
     let minutes = 0;
@@ -437,7 +445,7 @@ export const secondsToDays = (time: number) => {
         }
         if (hours === 24) {
             hours = 0;
-            days++
+            days++;
         }
     }
 
@@ -446,7 +454,9 @@ export const secondsToDays = (time: number) => {
         { name: 'minute', value: minutes },
         { name: 'heure', value: hours },
         { name: 'jour', value: days }
-    ].filter(x => x.value > 0).reverse();
+    ]
+        .filter((x) => x.value > 0)
+        .reverse();
 
     const format = [];
     superior.forEach((sup) => {
@@ -455,7 +465,7 @@ export const secondsToDays = (time: number) => {
     let str = '';
 
     format.forEach((v, i, a) => {
-        str += (v) + ( a[i + 1] ? a[i + 2] ? ', ' : ' et ' : '')
-    })
+        str += v + (a[i + 1] ? (a[i + 2] ? ', ' : ' et ') : '');
+    });
     return str;
-}
+};

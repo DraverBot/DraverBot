@@ -197,12 +197,10 @@ export class TicketsManager {
                 DatabaseTables.Tickets
             } ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${
                 guild.id
-            }', '${ticket.id}', '${user.id}',  '${msg.id}', '${
-                ticketDatas.panel_reference
-            }', 'open', "${sqliseString(ticket.name)}" )`
-            await query(
-                sql
-            );
+            }', '${ticket.id}', '${user.id}',  '${msg.id}', '${ticketDatas.panel_reference}', 'open', "${sqliseString(
+                ticket.name
+            )}" )`;
+            await query(sql);
 
             return resolve({
                 ticket: ticketDatas,
@@ -258,9 +256,7 @@ export class TicketsManager {
             ticket.state = 'closed';
             this._tickets.set(ticket.message_id, ticket);
 
-            await query(
-                `UPDATE ${DatabaseTables.Tickets} SET state='closed' WHERE message_id='${message.id}'`
-            );
+            await query(`UPDATE ${DatabaseTables.Tickets} SET state='closed' WHERE message_id='${message.id}'`);
             return resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -308,9 +304,7 @@ export class TicketsManager {
 
             ticket.state = 'open';
             this._tickets.set(message_id, ticket);
-            await query(
-                `UPDATE ${DatabaseTables.Tickets} SET state='open' WHERE message_id='${ticket.message_id}'`
-            );
+            await query(`UPDATE ${DatabaseTables.Tickets} SET state='open' WHERE message_id='${ticket.message_id}'`);
             resolve({
                 ticket,
                 embed: basicEmbed(user, { defaultColor: true })
@@ -530,9 +524,12 @@ export class TicketsManager {
         const has = this._modRoles.has(guild_id);
 
         this._modRoles.set(guild_id, { roles, guild_id });
-        if (has) await query(
-            `UPDATE ${DatabaseTables.ModRoles} SET roles="${sqliseString(JSON.stringify(roles))}" WHERE guild_id='${guild_id}'`
-        );
+        if (has)
+            await query(
+                `UPDATE ${DatabaseTables.ModRoles} SET roles="${sqliseString(
+                    JSON.stringify(roles)
+                )}" WHERE guild_id='${guild_id}'`
+            );
 
         return true;
     }
@@ -716,7 +713,7 @@ export class TicketsManager {
     private async fetchMessage(message_id: string, channel: TextChannel): Promise<Message<true>> {
         await channel.messages.fetch().catch(() => {});
         const ticket = this._tickets.get(message_id);
-        
+
         return channel.messages.cache.get(ticket.message_id);
     }
 
@@ -837,10 +834,12 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
-                            await button.editReply({
-                                embeds: [ replies.wait(button.user) ],
-                                components: []
-                            }).catch(() => {});
+                            await button
+                                .editReply({
+                                    embeds: [replies.wait(button.user)],
+                                    components: []
+                                })
+                                .catch(() => {});
                             const rep = await this.closeTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -878,10 +877,12 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
-                            await button.editReply({
-                                embeds: [ replies.wait(button.user) ],
-                                components: []
-                            }).catch(() => {});
+                            await button
+                                .editReply({
+                                    embeds: [replies.wait(button.user)],
+                                    components: []
+                                })
+                                .catch(() => {});
                             const rep = await this.deleteTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -939,10 +940,12 @@ export class TicketsManager {
                                 button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
                                 return;
                             }
-                            await button.editReply({
-                                embeds: [ replies.wait(button.user) ],
-                                components: []
-                            }).catch(() => {});
+                            await button
+                                .editReply({
+                                    embeds: [replies.wait(button.user)],
+                                    components: []
+                                })
+                                .catch(() => {});
 
                             const rep = await this.reopenTicket({
                                 guild: button.guild,

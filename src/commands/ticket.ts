@@ -1,35 +1,35 @@
-import { AmethystCommand, preconditions } from "amethystjs";
-import { ApplicationCommandOptionType, AttachmentBuilder } from "discord.js";
-import moduleEnabled from "../preconditions/moduleEnabled";
-import { basicEmbed, confirm, subcmd, systemReply } from "../utils/toolbox";
-import { confirmReturn } from "../typings/functions";
-import replies from "../data/replies";
+import { AmethystCommand, preconditions } from 'amethystjs';
+import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
+import moduleEnabled from '../preconditions/moduleEnabled';
+import { basicEmbed, confirm, subcmd, systemReply } from '../utils/toolbox';
+import { confirmReturn } from '../typings/functions';
+import replies from '../data/replies';
 
 export default new AmethystCommand({
     name: 'ticket',
-    description: "Interagissez avec le système de tickets",
+    description: 'Interagissez avec le système de tickets',
     options: [
         {
-            name: "créer",
-            description: "Créer un ticket",
+            name: 'créer',
+            description: 'Créer un ticket',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: "sujet",
-                    description: "Sujet du ticket",
+                    name: 'sujet',
+                    description: 'Sujet du ticket',
                     required: true,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: "ajouter",
-            description: "Ajoute un utilisateur au ticket",
+            name: 'ajouter',
+            description: 'Ajoute un utilisateur au ticket',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: "utilisateur",
-                    description: "Utilisateur à ajouter",
+                    name: 'utilisateur',
+                    description: 'Utilisateur à ajouter',
                     type: ApplicationCommandOptionType.User,
                     required: true
                 }
@@ -37,12 +37,12 @@ export default new AmethystCommand({
         },
         {
             name: 'retirer',
-            description: "Retire un utilisateur du ticket",
+            description: 'Retire un utilisateur du ticket',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'utilisateur',
-                    description: "Utilisateur à retirer",
+                    description: 'Utilisateur à retirer',
                     type: ApplicationCommandOptionType.User,
                     required: true
                 }
@@ -50,35 +50,40 @@ export default new AmethystCommand({
         },
         {
             name: 'fermer',
-            description: "Ferme un ticket",
+            description: 'Ferme un ticket',
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: "réouvrir",
-            description: "Réouvrir le ticket",
+            name: 'réouvrir',
+            description: 'Réouvrir le ticket',
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: "supprimer",
-            description: "Supprime le ticket",
+            name: 'supprimer',
+            description: 'Supprime le ticket',
             type: ApplicationCommandOptionType.Subcommand
         },
         {
             name: 'sauvegarder',
-            description: "Sauvegarde le ticket",
+            description: 'Sauvegarde le ticket',
             type: ApplicationCommandOptionType.Subcommand
         }
     ],
-    preconditions: [ preconditions.GuildOnly, moduleEnabled ]
-}).setChatInputRun(async({ interaction, options }) => {
+    preconditions: [preconditions.GuildOnly, moduleEnabled]
+}).setChatInputRun(async ({ interaction, options }) => {
     const cmd = subcmd(options);
     const checkTicket = () => {
-        if (!interaction.client.ticketsManager.tickets.find(x =>x.guild_id === interaction.guild.id && x.channel_id === interaction.channel.id)) {
+        if (
+            !interaction.client.ticketsManager.tickets.find(
+                (x) => x.guild_id === interaction.guild.id && x.channel_id === interaction.channel.id
+            )
+        ) {
             systemReply(interaction, {
                 ephemeral: true,
-                embeds: [ basicEmbed(interaction.user)
-                    .setTitle("Ticket invalide")
-                    .setDescription(`Ce salon n'est pas un ticket`)
+                embeds: [
+                    basicEmbed(interaction.user)
+                        .setTitle('Ticket invalide')
+                        .setDescription(`Ce salon n'est pas un ticket`)
                 ]
             }).catch(() => {});
             return false;
@@ -88,9 +93,11 @@ export default new AmethystCommand({
 
     if (cmd === 'créer') {
         const sujet = options.getString('sujet');
-        await interaction.deferReply({
-            ephemeral: true
-        }).catch(() => {});
+        await interaction
+            .deferReply({
+                ephemeral: true
+            })
+            .catch(() => {});
 
         const res = await interaction.client.ticketsManager.createTicket<false>({
             guild: interaction.guild,
@@ -98,9 +105,11 @@ export default new AmethystCommand({
             subject: sujet
         });
 
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'ajouter') {
         if (!checkTicket()) return;
@@ -114,10 +123,12 @@ export default new AmethystCommand({
             action: 'add'
         });
 
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
-    };
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
+    }
     if (cmd === 'retirer') {
         if (!checkTicket()) return;
         const user = options.getUser('utilisateur');
@@ -130,90 +141,117 @@ export default new AmethystCommand({
             action: 'remove'
         });
 
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'fermer') {
         if (!checkTicket()) return;
 
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Fermeture")
+                .setTitle('Fermeture')
                 .setDescription(`Voulez-vous vraiment fermer le ticket ?`)
-        }).catch(() => {}) as confirmReturn;
+        }).catch(() => {})) as confirmReturn;
 
-        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
-        await interaction.editReply({
-            embeds: [ replies.wait(interaction.user) ],
-            components: []
-        }).catch(() => {});
-        const ticket = interaction.client.ticketsManager.getTicketsList(interaction.guild.id).find(x => x.channel_id === interaction.channel.id);
+        if (confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
+        const ticket = interaction.client.ticketsManager
+            .getTicketsList(interaction.guild.id)
+            .find((x) => x.channel_id === interaction.channel.id);
 
         const res = await interaction.client.ticketsManager.closeTicket({
             guild: interaction.guild,
             message_id: ticket.message_id,
             user: interaction.user
         });
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'réouvrir') {
         if (!checkTicket()) return;
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Réouverture")
+                .setTitle('Réouverture')
                 .setDescription(`Voulez-vous vraiment réouvrir le ticket ?`)
-        }).catch(() => {}) as confirmReturn;
+        }).catch(() => {})) as confirmReturn;
 
-        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
-        await interaction.editReply({
-            embeds: [ replies.wait(interaction.user) ],
-            components: []
-        }).catch(() => {});
-        const ticket = interaction.client.ticketsManager.getTicketsList(interaction.guild.id).find(x => x.channel_id === interaction.channel.id);
+        if (confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
+        const ticket = interaction.client.ticketsManager
+            .getTicketsList(interaction.guild.id)
+            .find((x) => x.channel_id === interaction.channel.id);
 
         const res = await interaction.client.ticketsManager.reopenTicket({
             guild: interaction.guild,
             message_id: ticket.message_id,
             user: interaction.user
         });
-        
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
+
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'supprimer') {
         if (!checkTicket()) return;
 
-        const confirmation = await confirm({
+        const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Suppression")
+                .setTitle('Suppression')
                 .setDescription(`Voulez-vous vraiment supprimer le ticket ?`)
-        }).catch(() => {}) as confirmReturn;
+        }).catch(() => {})) as confirmReturn;
 
-        if (confirmation === 'cancel' || !confirmation?.value) return interaction.editReply({
-            embeds: [ replies.cancel() ],
-            components: []
-        }).catch(() => {});
-        await interaction.editReply({
-            embeds: [ replies.wait(interaction.user) ],
-            components: []
-        }).catch(() => {});
-        const ticket = interaction.client.ticketsManager.getTicketsList(interaction.guild.id).find(x => x.channel_id === interaction.channel.id);
+        if (confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
+        const ticket = interaction.client.ticketsManager
+            .getTicketsList(interaction.guild.id)
+            .find((x) => x.channel_id === interaction.channel.id);
 
         const res = await interaction.client.ticketsManager.deleteTicket({
             guild: interaction.guild,
@@ -222,15 +260,17 @@ export default new AmethystCommand({
         });
 
         if (res.ticket) return;
-        interaction.editReply({
-            embeds: [ res.embed ]
-        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [res.embed]
+            })
+            .catch(() => {});
     }
     if (cmd === 'sauvegarder') {
         if (!checkTicket()) return;
 
         await interaction.deferReply();
-        
+
         const res = await interaction.client.ticketsManager.saveTicket({
             channel_id: interaction.channel.id,
             user: interaction.user,
@@ -257,6 +297,7 @@ export default new AmethystCommand({
             .editReply({
                 embeds: [res.embed],
                 files: [at]
-            }).catch(() => {});
+            })
+            .catch(() => {});
     }
-})
+});

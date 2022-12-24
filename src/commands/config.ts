@@ -65,12 +65,12 @@ export default new AmethystCommand({
         },
         {
             name: 'variables',
-            description: "Affiche les variables de configuration",
+            description: 'Affiche les variables de configuration',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'variable',
-                    description: "Liste de variables que vous voulez voir",
+                    description: 'Liste de variables que vous voulez voir',
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
@@ -87,20 +87,33 @@ export default new AmethystCommand({
             const variables = variablesData[group as variableName];
 
             const embed = basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Variables de configuration")
-                .setDescription(`Utilisez la liste de variables ci-dessous pour configurer, dans les messages du bot, des variables qui seront remplacées\n\n${variables.map(x => `\`{${x.x}}\` : ${x.name}`).join('\n')}`)
-            interaction.reply({
-                embeds: [ embed ]
-            }).catch(() => {});
+                .setTitle('Variables de configuration')
+                .setDescription(
+                    `Utilisez la liste de variables ci-dessous pour configurer, dans les messages du bot, des variables qui seront remplacées\n\n${variables
+                        .map((x) => `\`{${x.x}}\` : ${x.name}`)
+                        .join('\n')}`
+                );
+            interaction
+                .reply({
+                    embeds: [embed]
+                })
+                .catch(() => {});
             return;
         }
 
         interaction.reply({
-            embeds: [ basicEmbed(interaction.user, { defaultColor: true })
-                .setTitle("Liste des groupes")
-                .setDescription(`IL y a ${numerize(variablesGroupNames.length)} groupe${plurial(variablesGroupNames.length)} de variables configurable${plurial(variablesGroupNames.length)} :\n${variablesGroupNames.map(x => capitalize(x.name)).join('\n')}`)
+            embeds: [
+                basicEmbed(interaction.user, { defaultColor: true })
+                    .setTitle('Liste des groupes')
+                    .setDescription(
+                        `IL y a ${numerize(variablesGroupNames.length)} groupe${plurial(
+                            variablesGroupNames.length
+                        )} de variables configurable${plurial(variablesGroupNames.length)} :\n${variablesGroupNames
+                            .map((x) => capitalize(x.name))
+                            .join('\n')}`
+                    )
             ]
-        })
+        });
     }
     if (subcommand === 'paramètre') {
         const parameter = configsData[options.getString('paramètre') as keyof configKeys] as configType;
