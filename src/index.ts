@@ -52,3 +52,6 @@ declare module 'discord.js' {
         ticketsManager: TicketsManager;
     }
 }
+process.on('uncaughtException', () => {});
+process.on('uncaughtExceptionMonitor', () => {});
+process.on('unhandledRejection', () => {});
