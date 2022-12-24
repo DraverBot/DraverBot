@@ -52,6 +52,12 @@ declare module 'discord.js' {
         ticketsManager: TicketsManager;
     }
 }
-process.on('uncaughtException', () => {});
-process.on('uncaughtExceptionMonitor', () => {});
-process.on('unhandledRejection', () => {});
+process.on('uncaughtException', (error, listener) => {
+    console.log(`Error: ${error} at ${listener} listener`);
+});
+process.on('uncaughtExceptionMonitor', (error, origin) => {
+    console.log(`Error: ${error} at ${origin}`);
+});
+process.on('unhandledRejection', (error, promise) => {
+    console.log(`Error: ${error} at ${promise}`);
+});
