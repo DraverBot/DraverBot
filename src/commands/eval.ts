@@ -17,5 +17,6 @@ export default new AmethystCommand({
     });
     run.then((result) => {
         if (result) message.reply(codeBox(result as string, 'js'));
+        else message.reply("Pas de résultat");
     });
 });

@@ -1,4 +1,4 @@
-import { AmethystCommand, waitForMessage } from 'amethystjs';
+import { AmethystCommand, preconditions, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
     ApplicationCommandOptionType,
@@ -45,7 +45,7 @@ export default new AmethystCommand({
     name: 'giveaway',
     description: 'Gère les giveaways sur le serveur',
     permissions: ['ManageChannels', 'ManageGuild'],
-    preconditions: [moduleEnabled, timePrecondition],
+    preconditions: [preconditions.GuildOnly, moduleEnabled, timePrecondition],
     options: [
         {
             name: 'démarrer',

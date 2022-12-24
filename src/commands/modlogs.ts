@@ -131,7 +131,7 @@ export default new AmethystCommand({
 
         const mapEmbed = (embed: EmbedBuilder, log: modlogs) => {
             embed.addFields({
-                name: log.type,
+                name: modActionType[log.type],
                 value: `Par <@${log.mod_id}>${dbBool(log.autoMod) ? ' (Auto-modération)' : ''} ${displayDate(
                     parseInt(log.date)
                 )}${log.proof ? '** - une preuve jointe**' : ''}\nIdentifiant: \`${log.case_id}\``,

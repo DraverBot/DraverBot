@@ -3,7 +3,7 @@
     "module": "config",
     "portefeuille": "economy",
     "admincoins": "administration",
-    "modlogs": "config",
+    "moderation": "config",
     "help": "utils",
     "interserver": "interchat",
     "pay": "economy",
@@ -22,10 +22,11 @@
     "coupon": "economy",
     "pseudo": "moderation",
     "suggestion": "utils",
-    "admintickets": "tickets",
+    "admintickets": "administration",
     "ticket": "tickets",
     "kick": "moderation",
     "ban": "moderation",
     "avertissement": "moderation",
-    "sondage": "utils"
+    "sondage": "utils",
+    "roulette-russe": "fun"
 }
