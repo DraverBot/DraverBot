@@ -114,7 +114,7 @@ export class TicketsManager {
                 });
             }
 
-            let data = {
+            const data = {
                 subject: '',
                 description: null,
                 image: undefined

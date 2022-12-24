@@ -52,7 +52,7 @@ export default new AmethystCommand({
         }
     }
 
-    let numberOfMines = fixed ?? random({ max, min });
+    const numberOfMines = fixed ?? random({ max, min });
     for (let i = 0; i < numberOfMines; i++) {
         const x = random({ max: 9 });
         const y = random({ max: 9 });

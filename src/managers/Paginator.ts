@@ -15,7 +15,7 @@ import { row, systemReply } from '../utils/toolbox';
 
 export class Paginator {
     public readonly options: paginatorOptions;
-    private _index: number = 0;
+    private _index = 0;
     private collector: InteractionCollector<ButtonInteraction>;
 
     constructor(options: paginatorOptions) {

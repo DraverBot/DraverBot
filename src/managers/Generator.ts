@@ -31,7 +31,7 @@ export class WordGenerator {
 
         if (this.data.overload !== undefined && Array.isArray(this.data.overload)) {
             for (let i = 0; i < this.data.overload.length; i++) {
-                let charact = this.data.overload[i];
+                const charact = this.data.overload[i];
                 if (!this.letters.includes(charact)) this.letters += charact;
             }
         }
@@ -46,7 +46,7 @@ export class WordGenerator {
 
         let word = '';
         for (let i = 0; i < this.size; i++) {
-            let charact = this.letters[Math.floor(Math.random() * this.letters.length)];
+            const charact = this.letters[Math.floor(Math.random() * this.letters.length)];
 
             word += charact;
         }

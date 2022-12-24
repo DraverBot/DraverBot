@@ -191,7 +191,7 @@ export class InterserverManager {
             const generator = new WordGenerator({ length: 16, special: true, letters: true });
 
             const tryFrequenceGeneration = (generator: WordGenerator, size?: number) => {
-                let generated: string[] = [];
+                const generated: string[] = [];
                 for (let i = 0; i < (size ?? 5); i++) {
                     generated.push(generator.generate());
                 }

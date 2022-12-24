@@ -595,7 +595,7 @@ export default new AmethystCommand({
                     return true;
                 };
 
-                let valid = checkRoles(roles.map((x) => x.id));
+                const valid = checkRoles(roles.map((x) => x.id));
 
                 if (!valid) {
                     setDeleteTmst();

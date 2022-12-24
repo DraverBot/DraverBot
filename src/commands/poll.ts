@@ -3,7 +3,7 @@ import { ApplicationCommandOptionData, ApplicationCommandOptionType, Message } f
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, notNull } from '../utils/toolbox';
 
-let opts: ApplicationCommandOptionData[] = [];
+const opts: ApplicationCommandOptionData[] = [];
 for (let i = 0; i < 10; i++) {
     opts.push({
         name: `réponse${i + 1}`,

@@ -62,17 +62,17 @@ const format = (text: string, message: Message<true>) => {
     });
     text.split('<@').forEach((splited) => {
         if (splited.startsWith('&')) {
-            let role = message.guild.roles.cache.get(splited.substring(0, splited.indexOf('>')));
+            const role = message.guild.roles.cache.get(splited.substring(0, splited.indexOf('>')));
             if (!role) return;
 
             text = text.replace(`<@&${role.id}>`, `<span class="mention interactive">@${role.name}</span>`);
         } else if (splited.startsWith('#')) {
-            let channel = message.guild.channels.cache.get(splited.substring(0, splited.indexOf('>')));
+            const channel = message.guild.channels.cache.get(splited.substring(0, splited.indexOf('>')));
             if (!channel) return;
 
             text = text.replace(`<#${channel.id}>`, `<span class="mention interactive">#${channel.name}</span>`);
         } else {
-            let member = message.guild.members.cache.get(splited.substring(0, splited.indexOf('>')));
+            const member = message.guild.members.cache.get(splited.substring(0, splited.indexOf('>')));
             if (!member) return;
 
             text = text.replace(
