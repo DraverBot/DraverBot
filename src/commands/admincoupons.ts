@@ -202,9 +202,9 @@ export default new AmethystCommand({
         const coupon = options.getString('coupon');
         await interaction.deferReply().catch(() => {});
 
-        const res = await query<coupons>(
-            `DELETE FROM ${DatabaseTables.Coupons} WHERE coupon="${sqliseString(coupon)}" RETURNING amount, coupon`
-        );
+        const res = await query<coupons>(`SELECT * FROM coupons WHERE coupon="${sqliseString(coupon)}"`);
+        await query(`DELETE FROM ${DatabaseTables.Coupons} WHERE coupon="${sqliseString(coupon)}"`);
+
         addModLog({
             guild: interaction.guild,
             mod_id: interaction.user.id,
