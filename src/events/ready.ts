@@ -11,6 +11,7 @@ import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
+import { ActivityType } from 'discord.js';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -35,4 +36,9 @@ export default new AmethystEvent('ready', async (client) => {
     // Start managers
     client.coinsManager.start();
     client.giveaways.start();
+
+    client.user.setActivity({
+        name: `Mentionnez-moi pour afficher l'aide`,
+        type: ActivityType.Playing
+    });
 });
