@@ -224,7 +224,7 @@ export const displayDate = (date?: number) => {
 };
 export const sqliseString = (str: string) => {
     if (typeof str !== 'string') return str;
-    return str.replace(/"/g, '\\"');
+    return str.replace(/"/g, '\\"').replace(/;/g, '\\;');
 };
 export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Promise<boolean> => {
     return new Promise(async (resolve) => {

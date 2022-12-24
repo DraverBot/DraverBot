@@ -11,6 +11,7 @@ import {
     pagination,
     plurial,
     random,
+    sqliseString,
     subcmd
 } from '../utils/toolbox';
 import { WordGenerator } from '../managers/Generator';
@@ -202,7 +203,7 @@ export default new AmethystCommand({
         await interaction.deferReply().catch(() => {});
 
         const res = await query<coupons>(
-            `DELETE FROM ${DatabaseTables.Coupons} WHERE coupon="${coupon}" RETURNING amount, coupon`
+            `DELETE FROM ${DatabaseTables.Coupons} WHERE coupon="${sqliseString(coupon)}" RETURNING amount, coupon`
         );
         addModLog({
             guild: interaction.guild,
