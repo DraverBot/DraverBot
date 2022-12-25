@@ -81,7 +81,9 @@ export default new AmethystCommand({
 
         await Promise.all([
             interaction.deferReply(),
-            query(`REPLACE INTO jokes (guild_id, ${category}) VALUES ('${interaction.guild.id}', '${boolDb(state)}')`)
+            query(
+                `REPLACE INTO jokes (guild_id, \`${category}\`) VALUES ('${interaction.guild.id}', '${boolDb(state)}')`
+            )
         ]);
         interaction
             .editReply({
