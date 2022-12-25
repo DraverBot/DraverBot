@@ -70,7 +70,7 @@ export default new AmethystEvent('ready', async (client) => {
     let activitiesCount = 0;
 
     const updateActivity = async () => {
-        client.user.setActivity(await activities[activitiesCount]());
+        client.user.setActivity(await activities[activitiesCount % activities.length]());
         activitiesCount++;
     };
     updateActivity();
