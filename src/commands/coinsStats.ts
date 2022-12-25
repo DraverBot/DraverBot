@@ -49,7 +49,7 @@ export default new AmethystCommand({
                         {
                             name: 'Total',
                             value: `${numerize(bank + coins)} ${util('coins')}`,
-                            inline: true
+                            inline: false
                         }
                     )
             ]
