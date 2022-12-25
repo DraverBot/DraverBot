@@ -29,5 +29,8 @@
     "avertissement": "moderation",
     "sondage": "utils",
     "roulette-russe": "fun",
-    "note": "moderation"
+    "note": "moderation",
+    "quotidien": "economy",
+    "hebdomadaire": "economy",
+    "shifumi": "fun"
 }
