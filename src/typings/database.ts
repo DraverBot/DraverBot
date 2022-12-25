@@ -1,5 +1,6 @@
 import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
+import { commandName } from './functions';
 
 export type DefaultQueryResult = {
     fieldCount: number;
@@ -174,7 +175,8 @@ export enum DatabaseTables {
     ModRoles = 'ticket_modroles',
     Modlogs = 'modlogs',
     Coupons = 'coupons',
-    Notes = 'notes'
+    Notes = 'notes',
+    Cooldowns = 'cooldowns'
 }
 export type coupons = {
     guild_id: string;
@@ -183,4 +185,10 @@ export type coupons = {
      */
     coupon: string;
     amount: number;
+};
+export type cooldowns = {
+    guild_id: string;
+    user_id: string;
+    commandName: commandName;
+    endsAt: number;
 };

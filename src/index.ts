@@ -9,6 +9,7 @@ import { LevelsManager } from './managers/levelsManager';
 import { ModulesManager } from './managers/modulesManager';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { TicketsManager } from './managers/ticketsManager';
+import { CooldownsManager } from './managers/cooldownsManager';
 
 config();
 
@@ -50,6 +51,7 @@ declare module 'discord.js' {
         blagues: BlaguesAPI;
         giveaways: GiveawayManager;
         ticketsManager: TicketsManager;
+        cooldownsManager: CooldownsManager;
     }
 }
 

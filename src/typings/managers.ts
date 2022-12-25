@@ -1,6 +1,7 @@
 import { Guild, If, TextChannel, User } from 'discord.js';
+import { commandName } from './functions';
 
-export type IfNot<Condition extends boolean, A extends any, B extends any = null> = Condition extends false
+export type IfNot<Condition extends boolean, A, B = null> = Condition extends false
     ? A
     : Condition extends true
     ? B
@@ -58,4 +59,9 @@ export type deletePanelOptions = {
     guild: Guild;
     user: User;
     message_id: string;
+};
+export type CooldownsInputOptions = {
+    guild_id: string;
+    user_id: string;
+    commandName: commandName;
 };

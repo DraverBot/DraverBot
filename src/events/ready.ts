@@ -13,6 +13,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
 import { ActivityOptions, ActivityType } from 'discord.js';
 import { numerize, random } from '../utils/toolbox';
+import { CooldownsManager } from '../managers/cooldownsManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -33,6 +34,7 @@ export default new AmethystEvent('ready', async (client) => {
         embeds: giveawayEmbeds,
         buttons: giveawayButtons
     });
+    client.cooldownsManager = new CooldownsManager();
 
     // Start managers
     client.coinsManager.start();
