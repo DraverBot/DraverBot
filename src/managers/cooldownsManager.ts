@@ -53,7 +53,7 @@ export class CooldownsManager {
             query(
                 `DELETE FROM ${DatabaseTables.Cooldowns} WHERE guild_id='${guild_id}' AND user_id='${user_id}' AND commandName='${cmd}'`
             );
-        });
+        }, time);
     }
     private async start() {
         await this.checkDb();
