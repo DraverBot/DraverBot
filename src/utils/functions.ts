@@ -7,6 +7,7 @@ import { modulesData } from '../data/modulesData';
 import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
 import { boolDb, capitalize } from './toolbox';
 import { ColorResolvable } from 'discord.js';
+import emojis from '../data/emojis.json';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -89,4 +90,7 @@ export const getModEmbedColor = (action: keyof typeof modActionType): ColorResol
             break;
     }
     return color;
+};
+export const emoji = (key: keyof typeof emojis) => {
+    return emojis[key];
 };
