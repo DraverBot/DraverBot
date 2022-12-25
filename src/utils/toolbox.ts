@@ -427,11 +427,12 @@ export const modFields = ({
         }
     ] as EmbedField[];
 };
-export const secondsToDays = (time: number) => {
+export const secondsToWeeks = (time: number) => {
     let seconds = 0;
     let minutes = 0;
     let hours = 0;
     let days = 0;
+    let weeks = 0;
 
     for (let i = 0; i < time; i++) {
         seconds++;
@@ -447,13 +448,18 @@ export const secondsToDays = (time: number) => {
             hours = 0;
             days++;
         }
+        if (days === 7) {
+            weeks++;
+            days = 0;
+        }
     }
 
     const superior = [
         { name: 'seconde', value: seconds },
         { name: 'minute', value: minutes },
         { name: 'heure', value: hours },
-        { name: 'jour', value: days }
+        { name: 'jour', value: days },
+        { name: 'semaine', value: weeks }
     ]
         .filter((x) => x.value > 0)
         .reverse();
