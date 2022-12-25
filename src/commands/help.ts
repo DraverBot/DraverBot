@@ -13,7 +13,7 @@ import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
 import { commandName, permType } from '../typings/functions';
-import { getPerm, Module, util } from '../utils/functions';
+import { getPerm, Module, moduleName, util } from '../utils/functions';
 import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
@@ -40,8 +40,9 @@ export default new AmethystCommand({
         const cmd = commands.find((x) => x.options.name === command) as AmethystCommand & { module: moduleType };
 
         const cmdOptions = () => {
+            if (cmd.options.options?.length < 1) return "Pas d'options";
             const opts =
-                cmd.options.options
+                cmd.options?.options
                     ?.filter(
                         (x) =>
                             !['Subcommand', 'SubcommandGroup']
@@ -106,7 +107,7 @@ export default new AmethystCommand({
         };
         let onMenu = true;
         const components = (subcommandGroup?: string) => {
-            if (cmd.options.options.length === 0) return [];
+            if ((cmd.options.options?.length ?? 0) === 0) return [];
             if (buildSubcommandsSelector(subcommandGroup).options.length === 0) return [];
             const selects: StringSelectMenuBuilder[] = [];
             if (cmd.options.options.filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup).length > 0)
@@ -152,7 +153,7 @@ export default new AmethystCommand({
                         },
                         {
                             name: 'Module',
-                            value: Module(cmd.options.name as commandName),
+                            value: moduleName(Module(cmd.options.name as commandName), true),
                             inline: true
                         },
                         {
