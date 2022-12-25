@@ -4,6 +4,7 @@ import replies, { replyKey } from '../data/replies';
 import { systemReply } from '../utils/toolbox';
 
 export default new AmethystEvent('commandDenied', (command, reason) => {
+    if (!command?.interaction) return;
     if (reason.metadata?.silent === true) return;
 
     const integrated: { key: commandDeniedCode; value: replyKey }[] = [
@@ -16,13 +17,13 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
 
     const integration = integrated.find((x) => x.key === reason?.code);
 
-    if (!reason.metadata.guild && command.interaction.guild) reason.metadata.guild = command.interaction.guild;
+    if (!reason.metadata?.guild && command.interaction?.guild) reason.metadata.guild = command.interaction.guild;
 
     if (integration) {
         systemReply(command.interaction, {
             embeds: [
                 (replies[integration.value] as (user: User, metadata: any) => EmbedBuilder)(
-                    command.interaction?.user,
+                    command.interaction.user,
                     reason.metadata
                 )
             ],
