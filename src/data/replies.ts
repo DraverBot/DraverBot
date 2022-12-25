@@ -188,14 +188,14 @@ const replies = {
             .setTitle('Fréquence déjà utilisée')
             .setDescription(`Cette fréquence est déjà utilisée dans un autre salon du serveur`);
     },
-    interserverWebhookFailed: (user: anyUser, metadata: {}) => {
+    interserverWebhookFailed: (user: anyUser, metadata: object) => {
         return userMember(user)
             .setTitle('Pas de webhook')
             .setDescription(
                 `Je n'ai pas pu créer de webhook.\nVérifiez que je possède la permission \`gérer les webhooks\` et réessayez`
             );
     },
-    interserverNoFrequence: (user: anyUser, metadata: {}) => {
+    interserverNoFrequence: (user: anyUser, metadata: object) => {
         return userMember(user)
             .setTitle('Pas de fréquence')
             .setDescription(

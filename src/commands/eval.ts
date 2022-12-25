@@ -7,7 +7,7 @@ export default new AmethystCommand({
     preconditions: [dev],
     description: 'Eval'
 }).setMessageRun(async ({ message, options }) => {
-    if (options.emptyArgs) return;
+    if (options.emptyArgs) return message.reply('Mettez des arguments valides');
     const run = new Promise((resolve) => {
         resolve(eval(options.args.join(' ')));
     });
