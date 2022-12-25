@@ -5,13 +5,14 @@ import { ConfigsManager } from '../managers/configsManager';
 import { InterserverManager } from '../managers/interserverManager';
 import { LevelsManager } from '../managers/levelsManager';
 import { ModulesManager } from '../managers/modulesManager';
-import { checkDatabase } from '../utils/functions';
+import { checkDatabase, util } from '../utils/functions';
 import { database } from '../utils/query';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
-import { ActivityType } from 'discord.js';
+import { ActivityOptions, ActivityType } from 'discord.js';
+import { numerize, random } from '../utils/toolbox';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -37,8 +38,40 @@ export default new AmethystEvent('ready', async (client) => {
     client.coinsManager.start();
     client.giveaways.start();
 
-    client.user.setActivity({
-        name: `Mentionnez-moi pour afficher l'aide`,
-        type: ActivityType.Playing
-    });
+    const activities: (() => Promise<ActivityOptions>)[] = [
+        async () => {
+            await client.guilds.fetch();
+            const count = client.guilds.cache.map((x) => x.memberCount).reduce((a, b) => a + b);
+
+            return {
+                name: `${numerize(count)} utilisateurs`,
+                type: ActivityType.Watching
+            };
+        },
+        async () => {
+            return {
+                name: `${numerize(client.guilds.cache.size)} serveurs`,
+                type: ActivityType.Watching
+            };
+        },
+        async () => {
+            return {
+                name: `de la musique Lofi`,
+                type: ActivityType.Listening,
+                url: [
+                    util('lofiGirl'),
+                    'https://discord.com/api/oauth2/authorize?client_id=1037028318404419596&permissions=2184464640&scope=bot%20applications.commands'
+                ][random({ max: 2 })] as string
+            };
+        }
+    ];
+    let activitiesCount = 0;
+
+    const updateActivity = async () => {
+        client.user.setActivity(await activities[activitiesCount]());
+        activitiesCount++;
+    };
+    updateActivity();
+
+    setInterval(updateActivity, 20000);
 });
