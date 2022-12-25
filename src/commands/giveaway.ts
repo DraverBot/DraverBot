@@ -208,7 +208,7 @@ export default new AmethystCommand({
                 reward,
                 required_roles: required.length > 0 ? required : [],
                 denied_roles: denied.length > 0 ? denied : [],
-                hoster_id: interaction.guild.id,
+                hoster_id: interaction.user.id,
                 time: time
             })
             .catch(console.log)) as Giveaway;
