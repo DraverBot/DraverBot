@@ -5,7 +5,7 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import { jokes } from '../typings/database';
 import { getDefaultJokeConfigs, util } from '../utils/functions';
 import query from '../utils/query';
-import { basicEmbed, capitalize, dbBool, evokerColor, notNull, sqlToObj } from '../utils/toolbox';
+import { basicEmbed, capitalize, dbBool, evokerColor, notNull } from '../utils/toolbox';
 import { Category } from 'blagues-api/dist/types/types';
 
 export default new AmethystCommand({
@@ -25,12 +25,12 @@ export default new AmethystCommand({
     const category = options.getString('catégorie') as keyof typeof jokeNames;
 
     await interaction.deferReply();
-    const configs = sqlToObj(
-        (await query(`SELECT * FROM jokes WHERE guild_id='${interaction.guild.id}'`))[0] ??
-            getDefaultJokeConfigs(interaction.guild.id)
-    ) as jokes;
+    const configs =
+        (await query<jokes>(`SELECT * FROM jokes WHERE guild_id='${interaction.guild.id}'`)[0]) ??
+        getDefaultJokeConfigs(interaction.guild.id);
 
     const isRandom = category === 'random' || !notNull(category);
+
     if (!isRandom && !dbBool(configs[category]))
         return interaction
             .editReply({
@@ -49,11 +49,12 @@ export default new AmethystCommand({
         ? await interaction.client.blagues.random({
               disallow: Object.keys(configs)
                   .filter((x) => !x.includes('_'))
-                  .filter((k) => configs[k]) as Category[]
+                  .filter((k) => !dbBool(configs[k])) as Category[]
           })
         : await interaction.client.blagues.randomCategorized(category);
 
-    if (!joke)
+    console.log(joke);
+    if (!joke || (joke as unknown as { status: number }).status === 404)
         return interaction
             .editReply({
                 embeds: [
