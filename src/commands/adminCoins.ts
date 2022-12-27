@@ -4,7 +4,6 @@ import { inBank, inPocket, yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
 import economyCheck from '../preconditions/economyCheck';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { modActionType } from '../typings/database';
 import { util } from '../utils/functions';
 import query from '../utils/query';
 import { addModLog, basicEmbed, confirm, numerize, row, subcmd, waitForReplies } from '../utils/toolbox';
@@ -355,10 +354,10 @@ export default new AmethystCommand({
             .catch(() => {});
     }
     if (subcommand === 'voir') {
-        const user = options.getUser('utilisateur');
+        const user = options.getUser('personne');
         const stats = interaction.client.coinsManager.getData({
             guild_id: interaction.guild.id,
-            user_id: interaction.user.id
+            user_id: user.id
         });
 
         interaction
