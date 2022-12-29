@@ -58,7 +58,7 @@ export default new AmethystEvent('ready', async (client) => {
         },
         async () => {
             return {
-                name: `de la musique Lofi`,
+                name: `Lofi Girl`,
                 type: ActivityType.Listening,
                 url: [
                     util('lofiGirl'),

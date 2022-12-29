@@ -1,13 +1,13 @@
-import perms from '../data/perms.json';
-import { commandName, permType } from '../typings/functions';
-import utils from '../data/utils.json';
-import commandModules from '../data/commandsModules.json';
-import query from './query';
-import { modulesData } from '../data/modulesData';
-import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
-import { boolDb, capitalize } from './toolbox';
 import { ColorResolvable } from 'discord.js';
+import commandModules from '../data/commandsModules.json';
 import emojis from '../data/emojis.json';
+import { modulesData } from '../data/modulesData';
+import perms from '../data/perms.json';
+import utils from '../data/utils.json';
+import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
+import { commandName, permType } from '../typings/functions';
+import query from './query';
+import { boolDb, capitalize } from './toolbox';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -56,6 +56,9 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Notes} ( guild_id VARCHAR(255) NOT NULL, member_id VARCHAR(255) NOT NULL, note VARCHAR(255) NOT NULL )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.JoinRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles LONGTEXT )`
+        );
         resolve();
     });
 };
@@ -81,12 +84,20 @@ export const getModEmbedColor = (action: keyof typeof modActionType): ColorResol
         case 'Unwarn':
         case 'Kick':
         case 'Mute':
+        case 'Rename':
+        case 'JoinRoleRemoved':
+        case 'NoteAdded':
             color = '#ff0000';
             break;
         case 'CoinsAdd':
         case 'CoinsRemove':
         case 'CoinsReset':
+        case 'NoteModified':
             color = 'Yellow';
+            break;
+        case 'JoinRoleSet':
+        case 'NoteRemoved':
+            color = '#00ff00';
             break;
     }
     return color;

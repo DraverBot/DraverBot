@@ -32,5 +32,7 @@
     "note": "moderation",
     "quotidien": "economy",
     "hebdomadaire": "economy",
-    "shifumi": "fun"
+    "shifumi": "fun",
+    "adminjoinroles": "administration",
+    "google": "misc"
 }

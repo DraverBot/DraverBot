@@ -12,6 +12,7 @@ export type configKeys = {
     leave_message: string;
     suggest_channel: string;
     suggest_enable: boolean;
+    join_roles: boolean;
 };
 export type configType = {
     description: string;
@@ -123,5 +124,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: false,
         type: 'boolean',
         description: 'Activation des suggestions'
+    },
+    join_roles: {
+        name: "rôles d'arrivée",
+        value: 'join_roles',
+        default: false,
+        type: 'boolean',
+        description: "Activation des rôles d'arrivée"
     }
 };

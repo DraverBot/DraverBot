@@ -34,7 +34,9 @@ export enum modActionType {
     Rename = 'Changement de pseudo',
     NoteModified = 'Note modifiée',
     NoteAdded = 'Note ajoutée',
-    NoteRemoved = 'Note retirée'
+    NoteRemoved = 'Note retirée',
+    JoinRoleSet = "Rôle d'arrivée configuré",
+    JoinRoleRemoved = "Rôle d'arrivée supprimé"
 }
 
 export type modlogs = {
@@ -176,7 +178,8 @@ export enum DatabaseTables {
     Modlogs = 'modlogs',
     Coupons = 'coupons',
     Notes = 'notes',
-    Cooldowns = 'cooldowns'
+    Cooldowns = 'cooldowns',
+    JoinRoles = 'join_roles'
 }
 export type coupons = {
     guild_id: string;
@@ -191,4 +194,8 @@ export type cooldowns = {
     user_id: string;
     commandName: commandName;
     endsAt: number;
+};
+export type joinRoles = {
+    guild_id: string;
+    roles: string;
 };
