@@ -68,7 +68,7 @@ export default new AmethystCommand({
     );
 
     if (cmd === 'liste') {
-        if (roles.length === 0)
+        if (roles.length === 0 || roles[0]?.roles === '[]')
             return interaction
                 .editReply({
                     embeds: [
@@ -127,7 +127,7 @@ export default new AmethystCommand({
         await query(
             `REPLACE INTO ${DatabaseTables.JoinRoles} ( guild_id, roles ) VALUES ("${
                 interaction.guild.id
-            }", "${sqliseString(JSON.stringify(roles))}")`
+            }", "${sqliseString(JSON.stringify(list))}")`
         );
 
         interaction
@@ -159,7 +159,7 @@ export default new AmethystCommand({
         await query(
             `REPLACE INTO ${DatabaseTables.JoinRoles} ( guild_id, roles ) VALUES ("${
                 interaction.guild.id
-            }", "${sqliseString(JSON.stringify(roles, null, 1))}")`
+            }", "${sqliseString(JSON.stringify(list))}")`
         );
         interaction.editReply({
             embeds: [
