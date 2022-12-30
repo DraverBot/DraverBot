@@ -2,7 +2,7 @@ import { AmethystEvent, ButtonDeniedCode } from 'amethystjs';
 import { EmbedBuilder, User } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
 
-export default new AmethystEvent('buttonDenied', ({ button, message, metadata, user }) => {
+export default new AmethystEvent('buttonDenied', ({ button, metadata, user }) => {
     if (metadata?.silent === true) return;
 
     const integrated: { key: ButtonDeniedCode; value: replyKey }[] = [

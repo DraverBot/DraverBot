@@ -34,7 +34,6 @@ import {
 } from '../utils/toolbox';
 import ms from 'ms';
 import { Giveaway, giveawayInput } from 'discordjs-giveaways';
-import moment from 'moment';
 import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
 import { getPerm, util } from '../utils/functions';

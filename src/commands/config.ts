@@ -219,7 +219,7 @@ export default new AmethystCommand({
                 .catch(() => {});
             return;
         } else if (parameter.type === 'channel') {
-            const msg = (await interaction
+            (await interaction
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)

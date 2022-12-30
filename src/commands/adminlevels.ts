@@ -4,7 +4,6 @@ import replies from '../data/replies';
 import economyCheck from '../preconditions/economyCheck';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { AdminLevelAddType } from '../typings/commands';
-import { modActionType } from '../typings/database';
 import { confirmReturn } from '../typings/functions';
 import { addModLog, basicEmbed, confirm, numerize, plurial, random, subcmd } from '../utils/toolbox';
 

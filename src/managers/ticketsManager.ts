@@ -217,7 +217,6 @@ export class TicketsManager {
         message_id
     }: closeTicketOptions): Promise<{ embed: EmbedBuilder; ticket?: ticketChannels }> {
         const ticket = this._tickets.get(message_id);
-        const panel = this.findPanel({ panel_reference: ticket.panel_reference, guild: guild.id });
 
         return new Promise(async (resolve) => {
             if (ticket.state === 'closed')

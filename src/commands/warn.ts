@@ -10,7 +10,6 @@ import {
     boolDb,
     codeBox,
     confirm,
-    dbBool,
     displayDate,
     evokerColor,
     modFields,
@@ -19,7 +18,6 @@ import {
     pingUser,
     plurial,
     resizeString,
-    sqliseString,
     subcmd
 } from '../utils/toolbox';
 import query from '../utils/query';

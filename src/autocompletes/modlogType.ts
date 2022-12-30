@@ -5,7 +5,7 @@ import { capitalize } from '../utils/toolbox';
 export default new AutocompleteListener({
     commandName: [{ commandName: 'modlogs' }],
     listenerName: 'modlogstype',
-    run: async ({ focused, focusedValue }) => {
+    run: async ({ focusedValue }) => {
         const types = modActionType;
         const typesArray = [];
 

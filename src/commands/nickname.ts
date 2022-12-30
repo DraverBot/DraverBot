@@ -6,7 +6,6 @@ import { WordGenerator } from '../managers/Generator';
 import validProof from '../preconditions/validProof';
 import { util } from '../utils/functions';
 import { addModLog, basicEmbed } from '../utils/toolbox';
-import { modActionType } from '../typings/database';
 
 export default new AmethystCommand({
     name: 'pseudo',
