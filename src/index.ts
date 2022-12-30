@@ -10,6 +10,7 @@ import { ModulesManager } from './managers/modulesManager';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { TicketsManager } from './managers/ticketsManager';
 import { CooldownsManager } from './managers/cooldownsManager';
+import { RemindsManager } from './managers/remindsManager';
 
 config();
 
@@ -52,6 +53,7 @@ declare module 'discord.js' {
         giveaways: GiveawayManager;
         ticketsManager: TicketsManager;
         cooldownsManager: CooldownsManager;
+        RemindsManager: RemindsManager;
     }
 }
 

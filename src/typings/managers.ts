@@ -65,3 +65,14 @@ export type CooldownsInputOptions = {
     user_id: string;
     commandName: commandName;
 };
+
+export type RemindsPlaceType = 'mp' | 'achannel';
+export type reminds = {
+    user_id: string;
+    place: RemindsPlaceType;
+    channel_id: string | null;
+    reason: string;
+    at: number;
+    id: number;
+    setDate: string;
+};
