@@ -433,6 +433,7 @@ export const secondsToWeeks = (time: number) => {
     let hours = 0;
     let days = 0;
     let weeks = 0;
+    let years = 0;
 
     for (let i = 0; i < time; i++) {
         seconds++;
@@ -452,6 +453,10 @@ export const secondsToWeeks = (time: number) => {
             weeks++;
             days = 0;
         }
+        if (weeks === 52) {
+            years++;
+            weeks = 0;
+        }
     }
 
     const superior = [
@@ -459,7 +464,8 @@ export const secondsToWeeks = (time: number) => {
         { name: 'minute', value: minutes },
         { name: 'heure', value: hours },
         { name: 'jour', value: days },
-        { name: 'semaine', value: weeks }
+        { name: 'semaine', value: weeks },
+        { name: 'année', value: years }
     ]
         .filter((x) => x.value > 0)
         .reverse();
