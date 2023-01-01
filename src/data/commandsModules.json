@@ -35,5 +35,6 @@
     "shifumi": "fun",
     "adminjoinroles": "administration",
     "google": "misc",
-    "rappel": "misc"
+    "rappel": "misc",
+    "embed": "utils"
 }

@@ -1,5 +1,6 @@
 import { waitForInteraction } from 'amethystjs';
 import {
+    APIMessageComponentEmoji,
     ActionRowBuilder,
     AnyComponentBuilder,
     Attachment,
@@ -17,6 +18,7 @@ import {
     ComponentType,
     EmbedBuilder,
     EmbedField,
+    Emoji,
     Guild,
     GuildMember,
     InteractionReplyOptions,
@@ -480,4 +482,8 @@ export const secondsToWeeks = (time: number) => {
         str += v + (a[i + 1] ? (a[i + 2] ? ', ' : ' et ') : '');
     });
     return str;
+};
+export const pingEmoji = (emoji: Emoji | APIMessageComponentEmoji) => {
+    if (!emoji.id) return emoji.name;
+    return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>`;
 };

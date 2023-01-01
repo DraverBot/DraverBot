@@ -32,3 +32,19 @@ export enum GWListType {
     Ended = 'terminés',
     Current = 'en cours'
 }
+export enum EmbedBtnIds {
+    Title = 'embed.title',
+    Description = 'embed.description',
+    FooterText = 'embed.footer-text',
+    FooterImage = 'embed.footer-image',
+    Thumbnail = 'embed.thumbnail',
+    Image = 'embed.image',
+    URL = 'embed.url',
+    AuthorText = 'embed.author-text',
+    AuthorImage = 'embed.author-image',
+    Timestamp = 'embed.timestamp',
+    Field = 'embed.field',
+    Color = 'embed.color',
+    Send = 'embed.send',
+    RemoveField = 'embed.remove-field'
+}
