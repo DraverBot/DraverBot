@@ -3,7 +3,7 @@ import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getPerm, moduleName, util } from '../utils/functions';
-import { addTimeDoc, basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
+import { addTimeDoc, anyHexColor, basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 import modules from '../maps/modules';
 
 export type anyUser = User | GuildMember;
@@ -222,6 +222,18 @@ const replies = {
         return userMember(user)
             .setTitle('Temps invalide')
             .setDescription(`Vous n'avez pas saisi une durée valide${addTimeDoc(user.id)}`);
+    },
+    invalidColor: (user: anyUser) => {
+        return userMember(user)
+            .setTitle('Couleur invalide')
+            .setDescription(
+                `Vous n'avez pas saisi une couleur valide.\nVoici quelques exemples de couleurs valides :\n\`${anyHexColor(
+                    { hashtagIncluded: false, type: 'long' }
+                )}\`\n\`${anyHexColor({ hashtagIncluded: true, type: 'long' })}\`\n\`${anyHexColor({
+                    type: 'short',
+                    hashtagIncluded: true
+                })}\``
+            );
     }
 };
 

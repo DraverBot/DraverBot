@@ -32,8 +32,7 @@ export class EmbedPackage {
     public setField(fieldData: { name: string; value: string; inline: boolean }) {
         return this._embed.addFields(fieldData);
     }
-    public removeField(name: string) {
-        const index = this._embed.data.fields?.indexOf(this._embed.data.fields?.find((x) => x.name === name));
+    public removeField(index: number) {
         this._embed.spliceFields(index, 1);
         return this._embed;
     }
@@ -45,7 +44,9 @@ export class EmbedPackage {
     }
     public setTimestamp(enabled: boolean) {
         if (enabled) return this._embed.setTimestamp(Date.now());
-        if (notNull(this._embed.data.timestamp)) return this._embed.setTimestamp();
+        if (notNull(this._embed.data.timestamp)) {
+            this._embed.setTimestamp(null);
+        }
         return this._embed;
     }
     public setThumbnail(url: string | null) {

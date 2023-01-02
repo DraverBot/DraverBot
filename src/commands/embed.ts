@@ -1,21 +1,41 @@
-import { AmethystCommand, preconditions, waitForMessage } from 'amethystjs';
-import moduleEnabled from '../preconditions/moduleEnabled';
-import { ApplicationCommandOptionType, ButtonBuilder, ChannelType, Message, TextChannel } from 'discord.js';
+import { AmethystCommand, preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import {
+    ApplicationCommandOptionType,
+    ButtonBuilder,
+    ChannelType,
+    ColorResolvable,
+    ComponentType,
+    GuildMember,
+    Message,
+    ModalBuilder,
+    StringSelectMenuBuilder,
+    TextChannel,
+    TextInputBuilder,
+    TextInputStyle
+} from 'discord.js';
+import { cancelButton, noBtn, yesBtn } from '../data/buttons';
+import replies from '../data/replies';
+import { EmbedPackage } from '../managers/embedPack';
+import moduleEnabled from '../preconditions/moduleEnabled';
+import { EmbedBtnIds } from '../typings/commands';
+import { getPerm } from '../utils/functions';
+import {
+    anyHexColor,
     basicEmbed,
     buildButton,
     checkCtx,
+    confirm,
     evokerColor,
     getMsgUrl,
     hint,
+    isValidHexColor,
     pingChan,
     pingEmoji,
-    row
+    random,
+    resizeString,
+    row,
+    waitForReplies
 } from '../utils/toolbox';
-import { EmbedPackage } from '../managers/embedPack';
-import { EmbedBtnIds } from '../typings/commands';
-import replies from '../data/replies';
-import { getPerm } from '../utils/functions';
 
 export default new AmethystCommand({
     name: 'embed',
@@ -41,84 +61,103 @@ export default new AmethystCommand({
         description: string;
         value: keyof typeof pack;
         type: 'url' | 'string' | 'boolean' | 'color' | 'field' | 'removeField';
+        call: string;
+        maxValues?: number;
     }[] = [
         {
             btn: buildButton({ emoji: '🏷️', id: EmbedBtnIds.Title, style: 'Primary' }),
             description: "Modifie le titre de l'embed",
             value: 'setTitle',
-            type: 'string'
+            type: 'string',
+            call: 'le titre',
+            maxValues: 256
         },
         {
             btn: buildButton({ emoji: '📜', id: EmbedBtnIds.Description, style: 'Primary' }),
             description: 'Modifie la description',
             value: 'setDescription',
-            type: 'string'
+            type: 'string',
+            call: 'la description',
+            maxValues: 4096
         },
         {
             btn: buildButton({ emoji: '🎨', id: EmbedBtnIds.Color, style: 'Secondary' }),
             value: 'setColor',
             type: 'color',
-            description: "Modifie la couleur de l'embed"
+            description: "Modifie la couleur de l'embed",
+            call: 'la couleur'
         },
         {
             btn: buildButton({ emoji: '📖', id: EmbedBtnIds.AuthorText, style: 'Secondary' }),
             value: 'setAuthorText',
             type: 'string',
-            description: "Modifie le texte de l'auteur"
+            description: "Modifie le texte de l'auteur",
+            call: "le texte de l'auteur",
+            maxValues: 256
         },
         {
             btn: buildButton({ emoji: '📕', id: EmbedBtnIds.AuthorImage, style: 'Secondary' }),
             description: "Ajouter une image à l'auteur",
             type: 'url',
-            value: 'setAuthorImage'
+            value: 'setAuthorImage',
+            call: "l'image de l'auteur"
         },
         {
             btn: buildButton({ emoji: '🖼️', id: EmbedBtnIds.Image, style: 'Primary' }),
             value: 'setImage',
             type: 'url',
-            description: "Ajouter une image à l'embed"
+            description: "Ajouter une image à l'embed",
+            call: "l'image de l'embed"
         },
         {
             btn: buildButton({ emoji: '⚡', id: EmbedBtnIds.Field, style: 'Secondary' }),
             value: 'setField',
             type: 'field',
-            description: 'Ajoute un champs de texte'
+            description: 'Ajoute un champs de texte',
+            call: 'le champs de texte'
         },
         {
             btn: buildButton({ emoji: '🗑️', id: EmbedBtnIds.RemoveField, style: 'Secondary' }),
             value: 'removeField',
             type: 'removeField',
-            description: 'Supprime un champs de texte'
+            description: 'Supprime un champs de texte',
+            call: 'le champs de texte'
         },
         {
             btn: buildButton({ emoji: '📘', id: EmbedBtnIds.FooterText, style: 'Primary' }),
             value: 'setFooterName',
             type: 'string',
-            description: 'Modifie le pied-de-page'
+            description: 'Modifie le pied-de-page',
+            call: 'le pied-de-page',
+            maxValues: 2048
         },
         {
             btn: buildButton({ emoji: '📙', id: EmbedBtnIds.FooterImage, style: 'Secondary' }),
             value: 'setFooterImage',
             description: 'Ajoute une image au pied-de-page',
-            type: 'url'
+            type: 'url',
+            call: "l'image du pied-de-page"
         },
         {
             btn: buildButton({ emoji: '🧵', id: EmbedBtnIds.URL, style: 'Secondary' }),
             value: 'setURL',
             description: 'Configure le lien du titre',
-            type: 'url'
+            type: 'url',
+            call: 'le lien du titre'
         },
         {
             btn: buildButton({ emoji: '🖋️', id: EmbedBtnIds.Thumbnail, style: 'Primary' }),
             value: 'setThumbnail',
             description: 'Ajoute une vignette',
-            type: 'url'
+            type: 'url',
+            call: "la vignette de l'embed"
         },
         {
             btn: buildButton({ emoji: '⌚', id: EmbedBtnIds.Timestamp, style: 'Secondary' }),
             value: 'setTimestamp',
             description: "Configure la date de l'embed",
-            type: 'boolean'
+            type: 'boolean',
+            call: "la date de l'embed"
         }
     ];
     pack.setTitle('Embed');
@@ -156,8 +195,8 @@ export default new AmethystCommand({
                 getBtn('setImage'),
                 getBtn('setThumbnail'),
                 getBtn('setTimestamp'),
-                getBtn('setField').setDisabled(pack.embed.data.fields?.length === 25),
-                getBtn('removeField').setDisabled(pack.embed.data.fields?.length === 0)
+                getBtn('setField').setDisabled((pack.embed.data.fields?.length ?? 0) === 25),
+                getBtn('removeField').setDisabled((pack.embed.data.fields?.length ?? 0) === 0)
             ),
             row(
                 getBtn('setFooterName'),
@@ -193,7 +232,8 @@ export default new AmethystCommand({
         })
         .catch(() => {})) as Message<true>;
     const collector = msg.createMessageComponentCollector({
-        time: 600000
+        time: 600000,
+        componentType: ComponentType.Button
     });
 
     collector.on('collect', async (ctx) => {
@@ -268,6 +308,7 @@ export default new AmethystCommand({
                         components: components()
                     })
                     .catch(() => {});
+                collector.stop('ended');
                 return;
             }
             const result = await channel
@@ -317,7 +358,264 @@ export default new AmethystCommand({
         }
         const data = btns.find((x) => (x.btn.data as { custom_id: string }).custom_id === ctx.customId);
         if (data.type === 'boolean') {
-            
+            interaction
+                .editReply({
+                    components: components(true)
+                })
+                .catch(() => {});
+            const ask = (await ctx
+                .reply({
+                    fetchReply: true,
+                    ephemeral: true,
+                    embeds: [
+                        basicEmbed(interaction.user, { questionMark: true })
+                            .setTitle('Configuration')
+                            .setDescription(
+                                `Voulez vous **activer** ou **désactiver** ${data.call} ?\n${hint(
+                                    `Vous avez **deux minutes**`
+                                )}`
+                            )
+                    ],
+                    components: [row(yesBtn({ label: 'Activer' }), noBtn({ label: 'Désactiver' }), cancelButton())]
+                })
+                .catch(() => {})) as Message<true>;
+            const rep = await waitForInteraction({
+                componentType: ComponentType.Button,
+                message: ask,
+                user: interaction.user,
+                replies: waitForReplies(interaction.client)
+            }).catch(() => {});
+
+            if (!rep || rep.customId === 'cancel') {
+                ctx.editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                }).catch(() => {});
+                interaction
+                    .editReply({
+                        embeds: embeds(),
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            (pack[data.value] as CallableFunction)(rep.customId === 'yes');
+            ctx.deleteReply(ask).catch(() => {});
+
+            interaction
+                .editReply({
+                    embeds: embeds(),
+                    components: components()
+                })
+                .catch(() => {});
         }
+        if (data.type === 'color') {
+            const modal = new ModalBuilder()
+                .setTitle('Couleur')
+                .setCustomId('couleur')
+                .setComponents(
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel('Couleur')
+                            .setCustomId('color')
+                            .setMaxLength(7)
+                            .setMinLength(3)
+                            .setRequired(true)
+                            .setStyle(TextInputStyle.Short)
+                            .setPlaceholder(anyHexColor({ randomlyAddedHashtag: true, hashtagIncluded: true }))
+                    )
+                );
+            await ctx.showModal(modal).catch(() => {});
+            const res = await ctx
+                .awaitModalSubmit({
+                    time: 120000
+                })
+                .catch(() => {});
+            if (!res) {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            const color = res.fields.getTextInputValue('color');
+            if (!isValidHexColor(color)) {
+                res.reply({
+                    embeds: [replies.invalidColor(interaction.member as GuildMember)],
+                    ephemeral: true
+                }).catch(() => {});
+            }
+            res.deferUpdate().catch(() => {});
+            pack.setColor(color as ColorResolvable);
+            interaction
+                .editReply({
+                    embeds: embeds(),
+                    components: components()
+                })
+                .catch(() => {});
+        }
+        if (data.type === 'field') {
+            const modal = new ModalBuilder()
+                .setTitle('Champs de texte')
+                .setCustomId('field')
+                .setComponents(
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel('Nom du champs')
+                            .setCustomId('field.name')
+                            .setRequired(true)
+                            .setStyle(TextInputStyle.Short)
+                            .setMaxLength(256)
+                    ),
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel('Contenu')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder('Contenu du champs de texte')
+                            .setCustomId('field.value')
+                            .setMaxLength(2048)
+                            .setRequired(true)
+                    ),
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel('En colonne')
+                            .setPlaceholder(['oui', 'non'][random({ max: 2, min: 0 })])
+                            .setRequired(false)
+                            .setStyle(TextInputStyle.Short)
+                            .setCustomId('field.inline')
+                            .setMaxLength(3)
+                            .setMinLength(3)
+                    )
+                );
+            await ctx.showModal(modal).catch(() => {});
+            const res = await ctx
+                .awaitModalSubmit({
+                    time: 120000
+                })
+                .catch(() => {});
+            if (!res) {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            const name = res.fields.getTextInputValue('field.name');
+            const value = res.fields.getTextInputValue('field.value');
+            const inline = res.fields.getTextInputValue('field.inline') === 'oui';
+
+            res.deferUpdate().catch(() => {});
+            pack.setField({
+                name,
+                value,
+                inline
+            });
+            interaction
+                .editReply({
+                    components: components(),
+                    embeds: embeds()
+                })
+                .catch(() => {});
+            return;
+        }
+        if (data.type === 'removeField') {
+            interaction
+                .editReply({
+                    components: components(true)
+                })
+                .catch(() => {});
+            const selector = new StringSelectMenuBuilder()
+                .setMaxValues(1)
+                .setOptions(
+                    pack.embed.data.fields.map((x) => ({
+                        label: resizeString({ str: x.name, length: 50 }),
+                        value: pack.embed.data.fields.indexOf(x).toString(),
+                        description: resizeString({ str: x.value, length: 100 })
+                    }))
+                )
+                .setCustomId('field-selector');
+            const question = (await ctx
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { questionMark: true })
+                            .setTitle('Suppression de champs')
+                            .setDescription(`Choisissez le champs que vous voulez supprimer`)
+                    ],
+                    components: [
+                        row<StringSelectMenuBuilder>(selector),
+                        row<StringSelectMenuBuilder>(
+                            new StringSelectMenuBuilder({
+                                custom_id: 'cancel',
+                                options: [
+                                    {
+                                        label: 'Annuler',
+                                        description: 'Annuler la suppression de champs de texte',
+                                        value: 'cancel'
+                                    }
+                                ],
+                                maxValues: 1,
+                                placeholder: 'Annuler'
+                            })
+                        )
+                    ],
+                    fetchReply: true,
+                    ephemeral: true
+                })
+                .catch(() => {})) as Message<true>;
+            const select = await waitForInteraction({
+                message: question,
+                componentType: ComponentType.StringSelect,
+                user: interaction.user,
+                replies: waitForReplies(interaction.client)
+            }).catch(() => {});
+
+            if (!select || select.values[0] === 'cancel') {
+                ctx.deleteReply(question).catch(() => {});
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            await select.deferUpdate();
+            const field = pack.embed.data.fields[parseInt(select.values[0])];
+            const validation = await confirm({
+                embed: basicEmbed(interaction.user)
+                    .setTitle('Suppression de champs')
+                    .setDescription(`Voulez-vous supprimer le champs **${field.name}**`),
+                user: interaction.user,
+                interaction: ctx
+            }).catch(() => {});
+
+            ctx.deleteReply(question).catch(() => {});
+            if (!validation || validation === 'cancel' || !validation.value) {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            pack.removeField(parseInt(select.values[0]));
+
+            interaction
+                .editReply({
+                    components: components(),
+                    embeds: embeds()
+                })
+                .catch(() => {});
+        }
+    });
+    collector.on('end', (collected, reason) => {
+        if (reason !== 'cancel' && reason !== 'ended')
+            interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
     });
 });

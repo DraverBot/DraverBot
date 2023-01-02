@@ -487,3 +487,35 @@ export const pingEmoji = (emoji: Emoji | APIMessageComponentEmoji) => {
     if (!emoji.id) return emoji.name;
     return `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>`;
 };
+export const isValidHexColor = (str: string) => {
+    const regex = /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i;
+    return regex.test(str);
+};
+export const getHexColor = (str: string) => {
+    if (str.startsWith('#')) return str.toUpperCase();
+    return '#' + str.toUpperCase();
+};
+export const anyHexColor = ({
+    hashtagIncluded = true,
+    randomlyAddedHashtag = true,
+    type = 'random'
+}: {
+    hashtagIncluded?: boolean;
+    randomlyAddedHashtag?: boolean;
+    type?: 'long' | 'short' | 'random';
+}) => {
+    const chars = 'ABCDEF0123456789';
+    let color = '';
+
+    if (hashtagIncluded) {
+        if (randomlyAddedHashtag) {
+            if (random({ max: 10 }) == 5) color += '#';
+        }
+    }
+    const length = type === 'long' ? 6 : type === 'short' ? 3 : [3, 6][random({ max: 2, min: 0 })];
+    for (let i = 0; i < length; i++) {
+        color += chars[random({ max: chars.length })];
+    }
+
+    return color;
+};

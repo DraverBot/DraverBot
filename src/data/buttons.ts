@@ -2,16 +2,16 @@ import { ticketButtonIds } from '../typings/managers';
 import { util } from '../utils/functions';
 import { buildButton, notNull, row } from '../utils/toolbox';
 
-export const yesBtn = () => {
+export const yesBtn = (options?: { label?: string }) => {
     return buildButton({
-        label: 'Oui',
+        label: options?.label ?? 'Oui',
         id: 'yes',
         style: 'Success'
     });
 };
-export const noBtn = () => {
+export const noBtn = (options?: { label?: string }) => {
     return buildButton({
-        label: 'Non',
+        label: options?.label ?? 'Non',
         id: 'no',
         style: 'Danger'
     });
