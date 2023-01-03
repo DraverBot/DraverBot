@@ -34,6 +34,7 @@ import {
     random,
     resizeString,
     row,
+    validURL,
     waitForReplies
 } from '../utils/toolbox';
 
@@ -78,7 +79,7 @@ export default new AmethystCommand({
             value: 'setDescription',
             type: 'string',
             call: 'la description',
-            maxValues: 4096
+            maxValues: 4000
         },
         {
             btn: buildButton({ emoji: '🎨', id: EmbedBtnIds.Color, style: 'Secondary' }),
@@ -607,6 +608,215 @@ export default new AmethystCommand({
                     embeds: embeds()
                 })
                 .catch(() => {});
+        }
+        if (data.type === 'string') {
+            const modal = new ModalBuilder()
+                .setTitle('Valeur textuelle')
+                .setCustomId('string')
+                .setComponents(
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel(`${data?.call} de l'embed`)
+                            .setCustomId('value')
+                            .setRequired(true)
+                            .setStyle(data.value === 'setDescription' ? TextInputStyle.Paragraph : TextInputStyle.Short)
+                            .setMaxLength(data.maxValues ?? 2048)
+                    )
+                );
+            await ctx.showModal(modal).catch(() => {});
+            const res = await ctx
+                .awaitModalSubmit({
+                    time: 120000
+                })
+                .catch(() => {});
+            if (!res) {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            const value = res.fields.getTextInputValue('value');
+
+            (pack[data.value] as CallableFunction)(value);
+            res.deferUpdate().catch(() => {});
+            interaction
+                .editReply({
+                    components: components(),
+                    embeds: embeds()
+                })
+                .catch(() => {});
+            return;
+        }
+        if (data.type === 'url' && (data.call.toLowerCase().includes('image') || data.value === 'setThumbnail')) {
+            interaction
+                .editReply({
+                    components: components(true)
+                })
+                .catch(() => {});
+            const ask = (await ctx
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, {
+                            questionMark: true
+                        })
+                            .setTitle(`${data.call} de l'embed`)
+                            .setDescription(
+                                `Quelle est ${
+                                    data.call
+                                } de l'embed ?\nRépondez par une URL ou un fichier dans le chat.\n${hint(
+                                    `Les formats acceptés sont \`jpg\`, \`jpeg\`, \`png\` et \`gif\`\nVous avez deux minutes pour répondre dans le chat\nRépondez par \`vide\` pour supprimer ${data.call}\nRépondez par \`cancel\` pour annuler`
+                                )}`
+                            )
+                    ],
+                    fetchReply: true,
+                    ephemeral: true
+                })
+                .catch(() => {})) as Message<true>;
+            const reply = (await waitForMessage({
+                channel: ctx.channel as TextChannel,
+                user: ctx.user
+            }).catch(() => {})) as Message<true>;
+
+            if (reply && reply.deletable) reply.delete().catch(() => {});
+            if (!reply || reply.content?.toLowerCase() === 'cancel') {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                ctx.editReply({
+                    embeds: [replies.cancel()]
+                }).catch(() => {});
+                return;
+            }
+            if (reply.content?.toLowerCase() === 'vide') {
+                (pack[data.value] as CallableFunction)(null);
+                interaction
+                    .editReply({
+                        embeds: embeds(),
+                        components: components()
+                    })
+                    .catch(() => {});
+                ctx.deleteReply(ask).catch(() => {});
+                return;
+            }
+
+            let url;
+            const invalidLinkEmbed = basicEmbed(interaction.user)
+                .setTitle('Image invalide')
+                .setColor(evokerColor(interaction.guild))
+                .setDescription(
+                    `Ce n'est pas une image valide.\nRéessayez en répondant par un fichier ou un lien.\nLes formats acceptés sont \`jpg\`, \`jpeg\`, \`png\`, \`svg\`, \`webp\` et \`gif\``
+                );
+            if (reply.attachments.size > 0) {
+                const img = reply.attachments.filter((x) => x.contentType.toLowerCase().includes('image')).first();
+                if (!img) {
+                    interaction
+                        .editReply({
+                            components: components()
+                        })
+                        .catch(() => {});
+                    ctx.editReply({
+                        embeds: [invalidLinkEmbed]
+                    }).catch(() => {});
+                    return;
+                }
+                url = img.url;
+            } else {
+                if (!validURL(reply.content)) {
+                    console.log('first');
+                    interaction
+                        .editReply({
+                            components: components()
+                        })
+                        .catch(() => {});
+                    ctx.editReply({
+                        embeds: [invalidLinkEmbed]
+                    }).catch(() => {});
+                    return;
+                }
+                if (!/\.(jpg|jpeg|png|webp|gif|svg)$/.test(reply.content)) {
+                    console.log('second');
+                    interaction
+                        .editReply({
+                            components: components()
+                        })
+                        .catch(() => {});
+                    ctx.editReply({
+                        embeds: [invalidLinkEmbed]
+                    }).catch(() => {});
+                    return;
+                }
+                url = reply.content;
+            }
+            (pack[data.value] as CallableFunction)(url);
+            interaction
+                .editReply({
+                    embeds: embeds(),
+                    components: components()
+                })
+                .catch(() => {});
+            ctx.deleteReply(ask).catch(() => {});
+        } else if (data.type === 'url') {
+            const modal = new ModalBuilder()
+                .setTitle('Lien')
+                .setCustomId('link')
+                .setComponents(
+                    row<TextInputBuilder>(
+                        new TextInputBuilder()
+                            .setLabel(`${data?.call} de l'embed`)
+                            .setCustomId('value')
+                            .setRequired(true)
+                            .setStyle(TextInputStyle.Short)
+                    )
+                );
+            await ctx.showModal(modal).catch(() => {});
+            const res = await ctx
+                .awaitModalSubmit({
+                    time: 120000
+                })
+                .catch(() => {});
+            if (!res) {
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+            const value = res.fields.getTextInputValue('value');
+
+            if (!validURL(value)) {
+                res.reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Lien invalide')
+                            .setDescription(
+                                `Le lien est invalide\nRéessayez avec un lien valide (commençant par \`https\`)`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ],
+                    ephemeral: true
+                }).catch(() => {});
+                interaction
+                    .editReply({
+                        components: components()
+                    })
+                    .catch(() => {});
+                return;
+            }
+
+            (pack[data.value] as CallableFunction)(value);
+            res.deferUpdate().catch(() => {});
+            interaction
+                .editReply({
+                    components: components(),
+                    embeds: embeds()
+                })
+                .catch(() => {});
+            return;
         }
     });
     collector.on('end', (collected, reason) => {
