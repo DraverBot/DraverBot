@@ -116,7 +116,7 @@ export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof 
 };
 export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
     return new Promise(async (resolve) => {
-        const self = mod_id === guild.client.user.id ? '0' : '1';
+        const self = boolDb(mod_id === guild.client.user.id);
 
         const rs = await query(
             `INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${
