@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { DefaultQueryResult, QueryResult } from '../typings/database';
 import { EmbedBuilder, WebhookClient } from 'discord.js';
 import { util } from './functions';
-import { codeBox } from './toolbox';
+import { boolEmoji, codeBox } from './toolbox';
 config();
 
 export const database = createConnection(process.env);
@@ -29,7 +29,11 @@ export default function <T = DefaultQueryResult>(query: string): Promise<QueryRe
                             embeds: [
                                 new EmbedBuilder({
                                     title: 'Erreur SQL',
-                                    description: `Requpête: ${codeBox(query, 'sql')}\nErreur: ${codeBox(query, 'sql')}`,
+                                    description: `Requête: ${codeBox(query, 'sql')}\nErreur: ${error.message}${
+                                        error.cause ? `\nCause: ${error.cause}` : ''
+                                    }\nFatale: ${boolEmoji(error.fatal)}${
+                                        error.sqlMessage ? `\nMessage SQL: ${codeBox(error.sqlMessage, 'sql')}` : ''
+                                    }`,
                                     timestamp: new Date(Date.now())
                                 })
                             ]
