@@ -1,4 +1,4 @@
-import { ColorResolvable } from 'discord.js';
+import { ChannelType, ColorResolvable } from 'discord.js';
 import commandModules from '../data/commandsModules.json';
 import emojis from '../data/emojis.json';
 import { modulesData } from '../data/modulesData';
@@ -8,6 +8,7 @@ import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } f
 import { commandName, permType } from '../typings/functions';
 import query from './query';
 import { boolDb, capitalize } from './toolbox';
+import { channelTypeNames } from '../data/channelTypeNames';
 
 export const getPerm = (key: permType) => {
     return perms[key];
@@ -104,4 +105,7 @@ export const getModEmbedColor = (action: keyof typeof modActionType): ColorResol
 };
 export const emoji = (key: keyof typeof emojis) => {
     return emojis[key];
+};
+export const channelTypeName = (type: keyof typeof ChannelType): string => {
+    return channelTypeNames[type];
 };

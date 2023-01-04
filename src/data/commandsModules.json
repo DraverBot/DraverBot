@@ -36,5 +36,6 @@
     "adminjoinroles": "administration",
     "google": "misc",
     "rappel": "misc",
-    "embed": "utils"
+    "embed": "utils",
+    "salon": "administration"
 }
