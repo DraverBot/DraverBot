@@ -40,6 +40,18 @@ export default new AmethystCommand({
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
+                },
+                {
+                    name: 'modérateur',
+                    description: 'Affiche toutes les actions effectuées par un modérateur',
+                    required: false,
+                    type: ApplicationCommandOptionType.User
+                },
+                {
+                    name: 'membre',
+                    description: 'Affiche toutes les actions effectuées sur un membre',
+                    required: false,
+                    type: ApplicationCommandOptionType.User
                 }
             ]
         },
@@ -107,13 +119,14 @@ export default new AmethystCommand({
     if (subcommand === 'liste') {
         await interaction.deferReply();
         const type = options.getString('type') as modActionType;
+        const mod = options.getUser('modérateur');
+        const member = options.getUser('membre');
 
-        console.log(type);
         const datas = (
             await query<modlogs>(
-                `SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"${
-                    type ? ` AND type='${modActionType[type]}'` : ''
-                }`
+                `SELECT * FROM modlogs WHERE guild_id="${interaction.guild.id}"${type ? ` AND type='${type}'` : ''}${
+                    mod ? ` AND mod_id='${mod.id}'` : ''
+                }${member ? ` AND member_id='${member.id}'` : ''}`
             )
         ).sort((a, b) => parseInt(b.date) - parseInt(a.date));
 
