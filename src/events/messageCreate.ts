@@ -28,7 +28,7 @@ export default new AmethystEvent('messageCreate', (message) => {
 
                 return item;
             });
-            const splashEmbed = basicEmbed(message.author, { defaultColor: true });
+            const splashEmbed = basicEmbed(message.author, { draverColor: true });
             let splash = available[random({ max: available.length })];
 
             if (splash.includes('-rr')) {

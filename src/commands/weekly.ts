@@ -44,7 +44,7 @@ export default new AmethystCommand({
     interaction
         .reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Récompense hebdomadaire')
                     .setDescription(`Vous avez récupéré **${numerize(coins)} ${util('coins')}** cette semaine`)
             ]

@@ -98,7 +98,7 @@ export default new AmethystCommand({
     interaction
         .editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Transaction effectuée')
                     .setDescription(`Vous avez donné **${numerize(amount)} ${util('coins')}** à ${user}`)
             ],

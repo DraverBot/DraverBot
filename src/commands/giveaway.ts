@@ -231,7 +231,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Giveaway crée')
                         .setDescription(
                             `Le giveaway avec la récompense **${reward}** a été crée dans ${pingChan(
@@ -428,7 +428,7 @@ export default new AmethystCommand({
                 interaction
                     .editReply({
                         embeds: [
-                            basicEmbed(interaction.user, { defaultColor: true })
+                            basicEmbed(interaction.user, { draverColor: true })
                                 .setTitle('Giveaway crée')
                                 .setDescription(`Un giveaway a été crée dans ${pingChan(data.channel)}`)
                         ]
@@ -789,7 +789,7 @@ export default new AmethystCommand({
                 .catch(() => {});
 
         const basic = () => {
-            return basicEmbed(interaction.user, { defaultColor: true })
+            return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Giveaways')
                 .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`);
         };
@@ -847,7 +847,7 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
-        const embed = basicEmbed(interaction.user, { defaultColor: true })
+        const embed = basicEmbed(interaction.user, { draverColor: true })
             .setTitle(`Giveaway`)
             .setDescription(
                 `Voici les informations pour le giveaway d'identifiant \`${gw.message_id}\`\n> Giveaway ${
@@ -992,7 +992,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Giveaway rerollé')
                         .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été reroll`)
                 ],
@@ -1078,7 +1078,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Giveaway terminé')
                         .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été terminé`)
                 ]
@@ -1149,7 +1149,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Giveaway terminé')
                         .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été supprimé`)
                 ]

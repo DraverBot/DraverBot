@@ -86,7 +86,7 @@ export default new AmethystCommand({
         if (group) {
             const variables = variablesData[group as variableName];
 
-            const embed = basicEmbed(interaction.user, { defaultColor: true })
+            const embed = basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Variables de configuration')
                 .setDescription(
                     `Utilisez la liste de variables ci-dessous pour configurer, dans les messages du bot, des variables qui seront remplacées\n\n${variables
@@ -103,7 +103,7 @@ export default new AmethystCommand({
 
         interaction.reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Liste des groupes')
                     .setDescription(
                         `IL y a ${numerize(variablesGroupNames.length)} groupe${plurial(
@@ -208,7 +208,7 @@ export default new AmethystCommand({
             reply
                 .reply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Paramètre configuré')
                             .setDescription(
                                 `Le paramètre **${parameter.name}** a été configuré sur \`\`\`${value}\`\`\``
@@ -313,7 +313,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Paramètre configuré')
                         .setDescription(
                             `Le paramètre **${parameter.name}** a été configuré sur ${
@@ -338,7 +338,7 @@ export default new AmethystCommand({
             const value = interaction.client.configsManager.getValue(interaction.guild.id, parameter.value);
             return interaction.reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(`Paramètre ${parameter.name}`)
                         .setDescription(parameter.description)
                         .setFields({
@@ -354,7 +354,7 @@ export default new AmethystCommand({
                 ]
             });
         }
-        const embed = basicEmbed(interaction.user, { defaultColor: true })
+        const embed = basicEmbed(interaction.user, { draverColor: true })
             .setTitle('Configurations')
             .setDescription(`Voici les configurations effectuées`);
 

@@ -159,7 +159,7 @@ export default new AmethystCommand({
                 .catch(() => {});
 
         const basic = () => {
-            return basicEmbed(interaction.user, { defaultColor: true })
+            return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Liste des coupons')
                 .setDescription(`Il y a ${numerize(list.length)} coupon${plurial(list.length)} sur le serveur`);
         };
@@ -215,7 +215,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Coupon supprimé')
                         .setDescription(
                             `Un coupon d'une valeur de ${numerize(res[0].amount)} ${util('coins')} a été supprimé`

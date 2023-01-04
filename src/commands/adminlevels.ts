@@ -114,7 +114,7 @@ export default new AmethystCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Réinitialisation')
                             .setDescription(`Les niveaux ${target} ont été réinitialisés`)
                     ]
@@ -167,7 +167,7 @@ export default new AmethystCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Ajout de niveaux')
                             .setDescription(
                                 `${numerize(amount)} ${strType}${plurial(amount, {

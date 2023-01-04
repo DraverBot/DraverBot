@@ -119,7 +119,7 @@ export default new AmethystCommand({
             return interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle("Pas d'avertissements")
                             .setDescription(`${user} n'a aucun avertissement`)
                     ]
@@ -127,7 +127,7 @@ export default new AmethystCommand({
                 .catch(() => {});
 
         const basic = () => {
-            return basicEmbed(interaction.user, { defaultColor: true })
+            return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Avertissements')
                 .setDescription(`${user} a ${numerize(warns.length)} avertissement${plurial(warns.length)}`);
         };
@@ -246,7 +246,7 @@ export default new AmethystCommand({
 
         interaction.editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Avertissement')
                     .setDescription(`${user} vient de recevoir un avertissement`)
                     .setFields(
@@ -344,7 +344,7 @@ export default new AmethystCommand({
             user
                 .send({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Avertissement supprimé')
                             .setDescription(
                                 `Votre avertissement d'identifiant \`${id}\` sur ${interaction.guild.name} a été supprimé par ${interaction.user.tag}`
@@ -357,7 +357,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Avertissement supprimé')
                         .setDescription(`L'avertissement \`${id}\` de ${user} a été supprimé par ${interaction.user}`)
                 ]

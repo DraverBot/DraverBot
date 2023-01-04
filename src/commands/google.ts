@@ -39,7 +39,7 @@ export default new AmethystCommand({
     interaction
         .reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Recherche google')
                     .setDescription(
                         `Appuyez sur [ce lien](https://google.fr/search?q=${options

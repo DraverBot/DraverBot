@@ -44,11 +44,11 @@ import query from './query';
 import time from '../maps/time';
 import { modActionType } from '../typings/database';
 
-export const basicEmbed = (user: User, options?: { defaultColor?: boolean; questionMark?: boolean }) => {
+export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean }) => {
     const x = new EmbedBuilder()
         .setTimestamp()
         .setFooter({ text: user.username, iconURL: user.displayAvatarURL({ forceStatic: false }) });
-    if (options?.defaultColor) x.setColor(util<ColorResolvable>('accentColor'));
+    if (options?.draverColor) x.setColor(util<ColorResolvable>('accentColor'));
     if (options?.questionMark) x.setColor('Grey');
 
     return x;

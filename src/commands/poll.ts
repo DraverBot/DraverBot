@@ -39,7 +39,7 @@ export default new AmethystCommand({
     const rep = (await interaction
         .reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Sondage')
                     .setDescription(`${question}\n\n${reps.map((x, i) => `${emojis[i]} ${x}`).join('\n')}`)
             ],

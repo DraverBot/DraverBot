@@ -204,7 +204,7 @@ export class TicketsManager {
 
             return resolve({
                 ticket: ticketDatas,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Ticket crée')
                     .setDescription(`Votre ticket a été crée dans ${pingChan(ticket)}`)
             });
@@ -258,7 +258,7 @@ export class TicketsManager {
             await query(`UPDATE ${DatabaseTables.Tickets} SET state='closed' WHERE message_id='${message.id}'`);
             return resolve({
                 ticket,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Ticket fermé')
                     .setDescription(`Le ticket de ${pingUser(ticket.user_id)} a été fermé`)
             });
@@ -306,7 +306,7 @@ export class TicketsManager {
             await query(`UPDATE ${DatabaseTables.Tickets} SET state='open' WHERE message_id='${ticket.message_id}'`);
             resolve({
                 ticket,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Ticket réouvert')
                     .setDescription(`Le ticket de ${pingUser(user)} a été réouvert`)
             });
@@ -338,7 +338,7 @@ export class TicketsManager {
             );
 
             return resolve({
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Nom changé')
                     .setDescription(`Le nom du ticket a été changé`),
                 ticket
@@ -391,7 +391,7 @@ export class TicketsManager {
 
             return resolve({
                 ticket,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Utilisateur ' + (action === 'add' ? 'ajouté' : 'retiré'))
                     .setDescription(`${pingUser(user)} a été ${action === 'add' ? 'ajouté' : 'retiré'} du ticket`)
             });
@@ -428,7 +428,7 @@ export class TicketsManager {
             }, 20000);
 
             return resolve({
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Sauvegarde')
                     .setDescription(`La conversation a été sauvegardée`),
                 ok: true,
@@ -489,7 +489,7 @@ export class TicketsManager {
             await query(`DELETE FROM ${DatabaseTables.Tickets} WHERE message_id='${message.id}'`);
             resolve({
                 ticket,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Ticket fermé')
                     .setDescription(`Le ticket de ${pingUser(user)} a été fermé`)
             });
@@ -600,7 +600,7 @@ export class TicketsManager {
 
             return resolve({
                 panel: this._panels.get(msg.id),
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Panel crée')
                     .setDescription(`Le panel a été crée dans le salon ${pingChan(channel)}`)
             });
@@ -641,7 +641,7 @@ export class TicketsManager {
 
             return resolve({
                 panel,
-                embed: basicEmbed(user, { defaultColor: true })
+                embed: basicEmbed(user, { draverColor: true })
                     .setTitle('Panel supprimé')
                     .setDescription(`Le panel dans le salon ${pingChan(panel.channel_id)} a été supprimé`)
             });

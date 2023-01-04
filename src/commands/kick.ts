@@ -66,7 +66,7 @@ export default new AmethystCommand({
     await member
         .send({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Expulsion')
                     .setDescription(
                         `Vous avez été expulsé de ${interaction.guild.name} par ${interaction.user.tag} <t:${Math.floor(
@@ -92,7 +92,7 @@ export default new AmethystCommand({
         .editReply({
             embeds: [
                 addProof(
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Expulsion')
                         .setDescription(`${member.user.tag} a été expulsé du serveur`)
                         .setFields(modFields({ mod: interaction.user, member: member.user, reason })),

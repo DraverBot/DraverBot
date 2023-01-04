@@ -168,7 +168,7 @@ export default new AmethystCommand({
                 interaction
                     .reply({
                         embeds: [
-                            basicEmbed(interaction.user, { defaultColor: true })
+                            basicEmbed(interaction.user, { draverColor: true })
                                 .setTitle(`Ticket de ${user.username}`)
                                 .setDescription(`Voici les informations du ticket de ${user}`)
                                 .setFields(
@@ -190,7 +190,7 @@ export default new AmethystCommand({
             }
 
             const basic = () => {
-                return basicEmbed(interaction.user, { defaultColor: true })
+                return basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Tickets')
                     .setDescription(`Il y a ${numerize(list.length)} ticket${plurial(list.length)} dans ce serveur`);
             };
@@ -376,7 +376,7 @@ export default new AmethystCommand({
             interaction
                 .reply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Modérateurs de tickets')
                             .setDescription(
                                 `${numerize(roles.length)} rôle${plurial(roles.length, {
@@ -411,7 +411,7 @@ export default new AmethystCommand({
             interaction
                 .reply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Rôle ajouté')
                             .setDescription(
                                 `Le rôle ${pingRole(
@@ -445,7 +445,7 @@ export default new AmethystCommand({
             interaction
                 .reply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Rôle ajouté')
                             .setDescription(
                                 `Le rôle ${pingRole(

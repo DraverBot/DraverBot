@@ -121,7 +121,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Note')
                         .setDescription(`Note de ${user} :\n${codeBox(notes[0].note)}`)
                 ]
@@ -167,7 +167,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Note supprimée')
                         .setDescription(`La note de ${member} a été supprimée`)
                 ]
@@ -208,7 +208,7 @@ export default new AmethystCommand({
             .editReply({
                 embeds: [
                     addProof(
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle(`Note ${noteInDb.length > 0 ? 'modifiée' : 'ajoutée'}`)
                             .setDescription(`La note de ${member} a été changée`)
                             .setFields(modFields({ mod: interaction.user, member: member, reason })),

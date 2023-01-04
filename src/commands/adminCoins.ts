@@ -149,7 +149,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Réinitialisation')
                         .setDescription(
                             `Les ${util('coins')} ${user ? `de ${user}` : 'du serveur'} ont été réinitialisés`
@@ -235,7 +235,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(`${util('coins')} ajoutés`)
                         .setDescription(
                             `**${amount.toLocaleString('fr')} ${util('coins')}** ${
@@ -341,7 +341,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(`${util('coins')} retirés`)
                         .setDescription(
                             `**${amount.toLocaleString('fr')} ${util('coins')}** ${
@@ -363,7 +363,7 @@ export default new AmethystCommand({
         interaction
             .reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setDescription(`Voici les statistiques de ${user}`)
                         .setTitle('Statistiques')
                         .setFields(

@@ -36,7 +36,10 @@ export enum modActionType {
     NoteAdded = 'Note ajoutée',
     NoteRemoved = 'Note retirée',
     JoinRoleSet = "Rôle d'arrivée configuré",
-    JoinRoleRemoved = "Rôle d'arrivée supprimé"
+    JoinRoleRemoved = "Rôle d'arrivée supprimé",
+    ChannelCreate = 'création de salon',
+    ChannelDelete = 'suppression de salon',
+    ChannelEdit = 'Modification de salon'
 }
 
 export type modlogs = {

@@ -117,7 +117,7 @@ export default new AmethystCommand({
                 .catch(() => {});
 
         const basic = () => {
-            return basicEmbed(interaction.user, { defaultColor: true })
+            return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Rappels')
                 .setDescription(`Vous avez **${list.length} rappel${plurial(list.length)}**`);
         };
@@ -181,7 +181,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Rappel supprimé')
                         .setDescription(`J'ai supprimé le rappel \`${rmd.reason}\``)
                 ],

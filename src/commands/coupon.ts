@@ -105,7 +105,7 @@ export default new AmethystCommand({
 
     res.editReply({
         embeds: [
-            basicEmbed(interaction.user, { defaultColor: true })
+            basicEmbed(interaction.user, { draverColor: true })
                 .setTitle(`${util('coins')} ajouté${plurial(coupon[0].amount)}`)
                 .setDescription(
                     `**${numerize(coupon[0].amount)} ${util('coins')}** ${

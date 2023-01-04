@@ -56,7 +56,7 @@ export default new AmethystCommand({
         interaction
             .reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Votre compte en banque')
                         .setDescription(
                             `Vous possédez **${numerize(data.bank)} ${util(
@@ -92,7 +92,7 @@ export default new AmethystCommand({
         interaction
             .reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Transaction effectuée')
                         .setDescription(
                             `${numerize(amount)} ${util('coins')} ${plurial(amount, {
@@ -128,7 +128,7 @@ export default new AmethystCommand({
         interaction
             .reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Transaction effectuée')
                         .setDescription(
                             `${numerize(amount)} ${util('coins')} ${plurial(amount, {

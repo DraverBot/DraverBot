@@ -44,13 +44,13 @@ export default new AmethystCommand({
     };
 
     const embeds: Record<ReturnType<typeof compareSigns>, EmbedBuilder> = {
-        e: basicEmbed(interaction.user, { defaultColor: true })
+        e: basicEmbed(interaction.user, { draverColor: true })
             .setTitle('Égalité')
             .setDescription((user ? `Vous avez fait` : 'Nous avons fait') + ` égalité`),
-        o: basicEmbed(interaction.user, { defaultColor: true })
+        o: basicEmbed(interaction.user, { draverColor: true })
             .setTitle(`Victoire`)
             .setDescription(`${interaction.user} a gagné`),
-        t: basicEmbed(interaction.user, { defaultColor: true })
+        t: basicEmbed(interaction.user, { draverColor: true })
             .setTitle(`Défaite`)
             .setDescription(`${user ? `${user} a gagné` : "J'ai gagné"}`)
     };

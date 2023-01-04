@@ -57,7 +57,7 @@ export default new AmethystCommand({
                 datas[k] = dbBool(datas[k]);
             });
 
-        const embed = basicEmbed(interaction.user, { defaultColor: true })
+        const embed = basicEmbed(interaction.user, { draverColor: true })
             .setTitle('Blagues')
             .setDescription(`Voici la configuration des blagues sur le serveur`)
             .setImage(interaction.client.user.displayAvatarURL());
@@ -88,7 +88,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Catégorie configurée')
                         .setDescription(
                             `La catégorie **${jokeNames[category]}** a été **${state ? 'activée' : 'désactivée'}**`

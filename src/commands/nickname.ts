@@ -61,7 +61,7 @@ export default new AmethystCommand({
     interaction
         .reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Pseudo changé')
                     .setDescription(`Le pseudo de ${member} a été changé`)
             ]

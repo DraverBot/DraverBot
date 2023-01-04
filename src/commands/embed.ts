@@ -166,7 +166,7 @@ export default new AmethystCommand({
 
     const embeds = () => {
         return [
-            basicEmbed(interaction.user, { defaultColor: true })
+            basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Construction')
                 .setDescription(
                     `Appuyez sur les boutons pour construire l'embed que vous voulez.\n${btns
@@ -257,7 +257,7 @@ export default new AmethystCommand({
                 .catch(() => {});
             const rep = (await ctx.reply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Salon')
                         .setDescription(
                             `Dans quel salon voulez-vous envoyer l'embed ?\nRépondez dans le chat par un nom, un identifiant ou une mention\n${hint(
@@ -341,7 +341,7 @@ export default new AmethystCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setDescription(`L'embed a bien été envoyé dans le salon ${pingChan(channel)}`)
                             .setURL(
                                 getMsgUrl({

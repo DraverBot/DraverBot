@@ -72,7 +72,7 @@ export default new AmethystCommand({
             return interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Pas de rôles')
                             .setDescription(`Aucun rôle n'est configuré`)
                     ]
@@ -83,7 +83,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle("Rôles d'arrivée")
                         .setDescription(
                             `Il y a ${numerize(list.length)} rôle${plurial(list.length)} configuré${plurial(
@@ -133,7 +133,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Rôle configuré')
                         .setDescription(`Le rôle ${pingRole(role)} sera désormais attribué aux nouveaux membres`)
                 ]
@@ -163,7 +163,7 @@ export default new AmethystCommand({
         );
         interaction.editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Rôle supprimé')
                     .setDescription(`Le rôle ${pingRole(role)} n'est plus donné aux nouveaux membres`)
             ]

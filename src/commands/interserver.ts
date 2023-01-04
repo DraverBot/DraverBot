@@ -205,7 +205,7 @@ export default new AmethystCommand({
 
         interaction.editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Interchat crée')
                     .setDescription(`Un salon d'interchat à bien été crée dans le salon ${pingChan(channel)}`)
             ],
@@ -260,7 +260,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Interchat supprimé')
                         .setDescription(`L'interchat du salon ${pingChan(channel)} a été supprimé`)
                 ]
@@ -298,7 +298,7 @@ export default new AmethystCommand({
             return interaction
                 .reply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle('Interchat')
                             .setDescription(
                                 `Le salon ${pingChan(channel)} partage sa fréquence avec ${
@@ -325,7 +325,7 @@ export default new AmethystCommand({
         };
 
         const basic = () =>
-            basicEmbed(interaction.user, { defaultColor: true })
+            basicEmbed(interaction.user, { draverColor: true })
                 .setTitle("Salons d'interchat")
                 .setDescription(
                     `Il y a ${list.length} salon${plurial(list.length, {})} configuré${plurial(
@@ -402,7 +402,7 @@ export default new AmethystCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Interchat modifié')
                         .setDescription(`La fréquence du salon d'interchat ${pingChan(channel)} a été modifiée`)
                 ],

@@ -130,7 +130,7 @@ export default new AmethystCommand({
 
         const reply = (await interaction.reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle(`Commande ${cmd.options.name}`)
                     .setDescription(`${cmd.options.description}`)
                     .setFields(
@@ -182,7 +182,7 @@ export default new AmethystCommand({
             onMenu = true;
             interaction.editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(`Commande ${cmd.options.name}`)
                         .setDescription(`${cmd.options.description}`)
                         .setFields(
@@ -236,7 +236,7 @@ export default new AmethystCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { defaultColor: true })
+                        basicEmbed(interaction.user, { draverColor: true })
                             .setTitle(`${group ? 'Sous-commande' : 'Commande'} ${data.name}`)
                             .setDescription(
                                 `${data.description}\n\nOptions :\n${
@@ -292,7 +292,7 @@ export default new AmethystCommand({
             fetchReply: true,
             components: [row<StringSelectMenuBuilder>(selector)],
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setDescription(
                         "Bienvenue sur ma page d'aide.\nSélectionnez un module pour consulter les commandes de celui-ci"
                     )
@@ -346,7 +346,7 @@ export default new AmethystCommand({
 
         interaction.editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle(`Module ${mod.name}`)
                     .setDescription(
                         `Voici les commandes du module ${mod.name} :\n${commands

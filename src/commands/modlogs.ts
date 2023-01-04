@@ -400,7 +400,7 @@ export default new AmethystCommand({
             .editReply({
                 components: [],
                 embeds: [
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Log supprimé')
                         .setDescription(`Le log **\`${id}\`** a été supprimé`)
                 ]

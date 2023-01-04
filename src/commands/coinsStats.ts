@@ -32,7 +32,7 @@ export default new AmethystCommand({
     interaction
         .reply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Votre portefeuille')
                     .setDescription(`Voici votre portefeuille sur ${interaction.guild.name}`)
                     .setFields(

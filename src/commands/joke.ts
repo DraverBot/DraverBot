@@ -73,7 +73,7 @@ export default new AmethystCommand({
     interaction
         .editReply({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle(joke.joke)
                     .setDescription('||' + joke.answer + '||')
                     .setFooter({

@@ -1,3 +1,5 @@
+import { ChannelType } from 'discord.js';
+
 export enum AdminLevelAddType {
     Messages = 'messages',
     Level = 'level'
@@ -48,3 +50,29 @@ export enum EmbedBtnIds {
     Send = 'embed.send',
     RemoveField = 'embed.remove-field'
 }
+export const ChannelCreateChannelTypeOptions = [
+    {
+        name: 'Textuel',
+        value: ChannelType.GuildText
+    },
+    {
+        name: 'Vocal',
+        value: ChannelType.GuildVoice
+    },
+    {
+        name: 'Conférence',
+        value: ChannelType.GuildStageVoice
+    },
+    {
+        name: 'Catégorie',
+        value: ChannelType.GuildCategory
+    },
+    {
+        name: 'Annonces',
+        value: ChannelType.GuildAnnouncement
+    },
+    {
+        name: 'Forum',
+        value: ChannelType.GuildForum
+    }
+];

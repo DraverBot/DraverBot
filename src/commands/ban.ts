@@ -66,7 +66,7 @@ export default new AmethystCommand({
     await member
         .send({
             embeds: [
-                basicEmbed(interaction.user, { defaultColor: true })
+                basicEmbed(interaction.user, { draverColor: true })
                     .setTitle('Bannissement')
                     .setDescription(
                         `Vous avez été banni de ${interaction.guild.name} par ${interaction.user.tag} <t:${Math.floor(
@@ -92,7 +92,7 @@ export default new AmethystCommand({
         .editReply({
             embeds: [
                 addProof(
-                    basicEmbed(interaction.user, { defaultColor: true })
+                    basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Bannissement')
                         .setDescription(`${member.user.tag} a été banni du serveur`)
                         .setFields(modFields({ mod: interaction.user, member: member.user, reason })),
