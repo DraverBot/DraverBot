@@ -631,10 +631,10 @@ cli-truncate@^3.1.0:
     slice-ansi "^5.0.0"
     string-width "^5.0.0"
 
-coins-manager@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/coins-manager/-/coins-manager-1.0.6.tgz#6cbb4c9d578cd2bf0ea57c8fab9f7a60e2155515"
-  integrity sha512-hA6Mg8uRw2YjL/Vu7EEd8Jb3F0JEOLeZp0lscloH00mnbF5Jp200z7LsKkK8NlVdQJzy4Z6GkJ/kzInalYlEFA==
+coins-manager@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/coins-manager/-/coins-manager-1.0.7.tgz#36e385f14f9223f01fe28cebefedc3268f76ee82"
+  integrity sha512-g1Qqj0P8wtOE9jzOSOWRjzXWBN/tUGsH2dbeuYVQsAyGc3NRP6/SrCYILhClAR3SJGBU4CJ0KdiC4GXKNfCK9Q==
   dependencies:
     "@types/mysql" "^2.15.21"
     mysql "^2.18.1"
