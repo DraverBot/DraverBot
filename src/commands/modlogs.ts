@@ -255,18 +255,20 @@ export default new AmethystCommand({
             embed.setImage(proof);
         }
 
-        interaction.editReply({
-            embeds: [embed],
-            components: [
-                row(
-                    buildButton({
-                        label: "Copier l'identifiant",
-                        style: 'Secondary',
-                        id: 'copyLogID'
-                    })
-                )
-            ]
-        });
+        interaction
+            .editReply({
+                embeds: [embed],
+                components: [
+                    row(
+                        buildButton({
+                            label: "Copier l'identifiant",
+                            style: 'Secondary',
+                            id: 'copyLogID'
+                        })
+                    )
+                ]
+            })
+            .catch(() => {});
     }
     if (subcommand === 'modifier') {
         await interaction.deferReply();
