@@ -3,7 +3,7 @@ import { modActionType } from '../typings/database';
 import { capitalize } from '../utils/toolbox';
 
 export default new AutocompleteListener({
-    commandName: [{ commandName: 'modlogs' }],
+    commandName: [{ commandName: 'modlogs', optionName: 'type' }],
     listenerName: 'modlogstype',
     run: async ({ focusedValue }) => {
         const types = modActionType;
