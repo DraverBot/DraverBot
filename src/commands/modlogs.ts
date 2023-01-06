@@ -220,7 +220,7 @@ export default new AmethystCommand({
                 `${capitalize(modActionType[type])} par <@${mod_id}> (\`${mod_id}\`)${
                     dbBool(autoMod) ? ' (auto-modération)' : ''
                 } ${displayDate(parseInt(date))}${
-                    member_id !== 'none' ? ` sur <@${member_id}> ( \`${member_id}\` )` : ''
+                    !['none', ''].includes(member_id) ? ` sur <@${member_id}> ( \`${member_id}\` )` : ''
                 }`
             )
             .setColor(interaction.guild.members.me.displayHexColor)
