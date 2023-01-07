@@ -1,9 +1,28 @@
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { ApplicationCommandOptionType, BaseChannel, CategoryChannel, ChannelType, GuildChannel } from 'discord.js';
-import { addModLog, basicEmbed, codeBox, confirm, evokerColor, hint, pingChan, subcmd } from '../utils/toolbox';
+import {
+    ApplicationCommandOptionType,
+    BaseChannel,
+    BaseGuildTextChannel,
+    CategoryChannel,
+    ChannelType,
+    GuildChannel
+} from 'discord.js';
+import {
+    addModLog,
+    basicEmbed,
+    codeBox,
+    confirm,
+    evokerColor,
+    hint,
+    numerize,
+    pingChan,
+    plurial,
+    resizeString,
+    subcmd
+} from '../utils/toolbox';
 import { channelTypeName, util } from '../utils/functions';
-import { ChannelCreateChannelTypeOptions } from '../typings/commands';
+import { ChannelCreateChannelTypeOptions, ChannelMoveSens } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
@@ -69,6 +88,101 @@ export default new AmethystCommand({
                     description: 'Nouveau nom du salon',
                     required: true,
                     type: ApplicationCommandOptionType.String
+                }
+            ]
+        },
+        {
+            name: 'décrire',
+            description: "Définit la description d'un salon",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: 'Salon à décrire',
+                    type: ApplicationCommandOptionType.Channel,
+                    required: true,
+                    channelTypes: [ChannelType.GuildText, ChannelType.GuildAnnouncement]
+                },
+                {
+                    name: 'description',
+                    description: 'Description du salon',
+                    type: ApplicationCommandOptionType.String,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'identifier',
+            description: "Affiche l'identifiant d'un salon",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: 'Salon à identifier',
+                    required: false,
+                    type: ApplicationCommandOptionType.Channel
+                }
+            ]
+        },
+        {
+            name: 'déplacer',
+            description: 'Déplace un salon',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: 'Salon à déplacer',
+                    required: true,
+                    type: ApplicationCommandOptionType.Channel
+                },
+                {
+                    name: 'places',
+                    description: 'Nombre de places dont le salon doit être déplacé',
+                    required: true,
+                    type: ApplicationCommandOptionType.Integer
+                },
+                {
+                    name: 'direction',
+                    description: 'Direction du changement de place',
+                    type: ApplicationCommandOptionType.String,
+                    required: false,
+                    choices: [
+                        {
+                            name: 'Vers le haut',
+                            value: ChannelMoveSens.Up
+                        },
+                        {
+                            name: 'Vers le bas',
+                            value: ChannelMoveSens.Down
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'catégoriser',
+            description: "Change la catégorie d'un salon",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: 'Salon à catégoriser',
+                    required: true,
+                    type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [
+                        ChannelType.GuildForum,
+                        ChannelType.GuildText,
+                        ChannelType.GuildAnnouncement,
+                        ChannelType.GuildVoice,
+                        ChannelType.GuildStageVoice
+                    ]
+                },
+                {
+                    name: 'catégorie',
+                    description: 'Catégorie dans laquelle il faut mettre le salon',
+                    required: false,
+                    type: ApplicationCommandOptionType.Channel,
+                    channelTypes: [ChannelType.GuildCategory]
                 }
             ]
         }
@@ -272,6 +386,190 @@ export default new AmethystCommand({
                     basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Renommage de salon')
                         .setDescription(`Le salon ${pingChan(channel)} a été renommé`)
+                ]
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'décrire') {
+        const channel = options.getChannel('salon') as BaseGuildTextChannel;
+        const description = options.getString('description') ?? null;
+
+        await interaction.deferReply().catch(() => {});
+        const res = await channel
+            .setTopic(description, `Description par ${interaction.user.tag} (${interaction.user.id})`)
+            .catch(() => {});
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Erreur de description')
+                            .setDescription(
+                                `Le salon ${pingChan(channel)} n'a pas pu être renommé\n${hint(
+                                    `Une des raisons communes peut être que je n'ai pas les permissions dans ce salon.\nVérifiez mes permissions, puis réessayez.\nSi cette erreur persiste, contactez [mon serveur de support](${util(
+                                        'support'
+                                    )})`
+                                )}`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+
+        await addModLog({
+            guild: interaction.guild,
+            reason: `Description du salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
+                channel.id
+            }\` ) ${description ? 'modifiée' : 'supprimée'}`,
+            type: 'ChannelEdit',
+            mod_id: interaction.user.id,
+            member_id: ''
+        }).catch(() => {});
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Salon décrit')
+                        .setDescription(
+                            `La description du salon ${pingChan(channel)} a été ${
+                                description ? 'modifiée' : 'supprimée'
+                            }`
+                        )
+                ]
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'identifier') {
+        const channel = (options.getChannel('salon') ?? interaction.channel) as GuildChannel;
+        interaction
+            .reply({
+                content: `L'identifiant du salon ${pingChan(channel)} est \`${channel.id}\``
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'déplacer') {
+        const channel = options.getChannel('salon') as GuildChannel;
+        const places = options.getInteger('places');
+        const sens = (options.getString('direction') as ChannelMoveSens) ?? ChannelMoveSens.Down;
+
+        const newPlace = channel.position + places * (sens === ChannelMoveSens.Up ? -1 : 1);
+        await interaction.deferReply().catch(() => {});
+        const res = await channel.setPosition(newPlace).catch(() => {});
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Erreur de positionnement')
+                            .setDescription(
+                                `Le salon ${pingChan(channel)} n'a pas pu être déplacé.\n${hint(
+                                    `La raison la plus commune est que je ne possède pas les permissions dans ce salon.\nVérifiez mes permissions et réessayez\nSI l'erreur se reproduit, contactez [mon serveur de support](${util(
+                                        'support'
+                                    )})`
+                                )}`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+
+        await addModLog({
+            guild: interaction.guild,
+            mod_id: interaction.user.id,
+            member_id: null,
+            type: 'ChannelEdit',
+            reason: `Déplaçage du salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
+                channel.id
+            }\` ) de ${numerize(places)} place${plurial(places)} vers le ${
+                sens === ChannelMoveSens.Up ? 'haut' : 'bas'
+            }`
+        }).catch(() => {});
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Déplaçage de salon')
+                        .setDescription(
+                            `Le salon ${pingChan(channel)} a été déplacé de **${numerize(places)}** place${plurial(
+                                places
+                            )} vers le ${sens === ChannelMoveSens.Up ? 'haut' : 'bas'}`
+                        )
+                ]
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'catégoriser') {
+        const channel = options.getChannel('salon') as GuildChannel;
+        const parent = (options.getChannel('catégorie') ?? null) as CategoryChannel | null;
+
+        if (!channel.parent && !parent)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Salon non-catégorisé')
+
+                            .setDescription(`Le salon ${pingChan(channel)} n'a, déjà, pas de catégorie`)
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
+        if (channel.parent?.id === parent?.id)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Salon déjà catégorisé')
+                            .setDescription(`Le salon ${pingChan(channel)} est déjà dans la catégorie ${parent.name}`)
+                    ],
+                    ephemeral: true
+                })
+                .catch(() => {});
+
+        await interaction.deferReply().catch(() => {});
+        const res = await channel.setParent(parent).catch(() => {});
+
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Erreur de catégorisation')
+                            .setDescription(
+                                `Je n'ai pas pu déplacer le salon ${pingChan(channel)}\n${hint(
+                                    `La raison la plus commune est que je n'ai pas les permissions de gérer ce salon.\nVérifiez mes permissions et réessayez\nSi l'erreur persiste, contactez [mon serveur de support](${util(
+                                        'support'
+                                    )})`
+                                )}`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+
+        await addModLog({
+            guild: interaction.guild,
+            type: 'ChannelEdit',
+            member_id: null,
+            mod_id: interaction.user.id,
+            reason: `Le salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
+                channel.id
+            }\` ) a été ${
+                parent ? `Déplacé dans la catégorie ${resizeString({ str: parent.name, length: 50 })}` : `décatégorisé`
+            }`
+        }).catch(() => {});
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Salon catégorisé')
+                        .setDescription(
+                            `Le salon ${pingChan(channel)} ${
+                                parent ? `a été déplacé dans la catégorie ${parent.name}` : `a été décatégorisé`
+                            }`
+                        )
                 ]
             })
             .catch(() => {});

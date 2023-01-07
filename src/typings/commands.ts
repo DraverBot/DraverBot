@@ -76,3 +76,7 @@ export const ChannelCreateChannelTypeOptions = [
         value: ChannelType.GuildForum
     }
 ];
+export enum ChannelMoveSens {
+    Up = 'channel.move.up',
+    Down = 'channel.move.down'
+}
