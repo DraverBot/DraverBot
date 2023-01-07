@@ -20,6 +20,7 @@ import {
     EmbedField,
     Emoji,
     Guild,
+    GuildChannel,
     GuildMember,
     InteractionReplyOptions,
     Message,
@@ -44,12 +45,13 @@ import query from './query';
 import time from '../maps/time';
 import { modActionType } from '../typings/database';
 
-export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean }) => {
+export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
         .setTimestamp()
         .setFooter({ text: user.username, iconURL: user.displayAvatarURL({ forceStatic: false }) });
     if (options?.draverColor) x.setColor(util<ColorResolvable>('accentColor'));
     if (options?.questionMark) x.setColor('Grey');
+    if (options?.evoker) x.setColor(evokerColor(options.evoker));
 
     return x;
 };
@@ -114,14 +116,21 @@ export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof 
     if (!res) return false;
     return true;
 };
-export const addModLog = ({ guild, reason, mod_id, member_id, type, proof = '' }: addModLogType): Promise<boolean> => {
+export const addModLog = ({
+    guild,
+    reason,
+    mod_id,
+    member_id,
+    type,
+    proof = ''
+}: addModLogType & { member_id: string | null }): Promise<boolean> => {
     return new Promise(async (resolve) => {
         const self = boolDb(mod_id === guild.client.user.id);
 
         const rs = await query(
             `INSERT INTO modlogs ( guild_id, mod_id, member_id, date, type, reason, proof, autoMod, deleted, edited ) VALUES ( "${
                 guild.id
-            }", "${mod_id}", "${member_id}", "${Date.now()}", "${type}", "${sqliseString(
+            }", "${mod_id}", "${member_id ?? ''}", "${Date.now()}", "${type}", "${sqliseString(
                 reason
             )}", "${proof}", "${self}", "${boolDb(false)}", "${boolDb(false)}" )`
         );
@@ -239,10 +248,12 @@ export const updateLog = ({ case_id, reason, proofURL }: updateLogOptions): Prom
         return resolve(res ? true : false);
     });
 };
-export const pingChan = (channel: BaseChannel | string) => {
+export const pingChan = (channel: BaseChannel | string, pingMode?: 'mention' | 'text') => {
+    const mode = pingMode ?? 'mention';
     if (channel instanceof BaseChannel) {
-        if (channel.type === ChannelType.GuildCategory) return (channel as CategoryChannel).name;
-        return `<#${channel.id}>`;
+        if (channel.type === ChannelType.GuildCategory)
+            return mode === 'mention' ? (channel as CategoryChannel).name : `#${(channel as CategoryChannel).name}`;
+        return mode === 'mention' ? `<#${channel.id}>` : `#${(channel as GuildChannel).name}`;
     } else {
         return `<#${channel}>`;
     }
