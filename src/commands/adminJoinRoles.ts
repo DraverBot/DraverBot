@@ -7,7 +7,7 @@ import { DatabaseTables, joinRoles } from '../typings/database';
 
 export default new AmethystCommand({
     name: 'adminjoinroles',
-    description: "COnfigure les rôles d'arrivée sur le serveur",
+    description: "Configure les rôles d'arrivée sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild', 'ManageRoles'],
     options: [
