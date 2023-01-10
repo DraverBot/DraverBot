@@ -45,6 +45,7 @@ import { getModEmbedColor, util } from './functions';
 import query from './query';
 import time from '../maps/time';
 import { modActionType } from '../typings/database';
+import { ButtonIds } from '../typings/buttons';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -157,6 +158,7 @@ export const buildButton = ({
     id?: string;
     disabled?: boolean;
     emoji?: string;
+    buttonId?: keyof typeof ButtonIds;
 }) => {
     const componentData: any = {
         style: ButtonStyle[data.style],
@@ -168,6 +170,7 @@ export const buildButton = ({
     if (data.emoji) componentData.emoji = data.emoji;
     if (data.url && !data.id) componentData.url = data.url;
     if (data.id && !data.url) componentData.custom_id = data.id;
+    if (data.buttonId) data.id = ButtonIds[data.buttonId];
 
     return new ButtonBuilder(componentData);
 };

@@ -6,22 +6,27 @@ import {
     BaseGuildTextChannel,
     CategoryChannel,
     ChannelType,
-    GuildChannel
+    GuildChannel,
+    GuildMember,
+    PermissionsString,
+    Role
 } from 'discord.js';
 import {
     addModLog,
     basicEmbed,
+    checkRolePosition,
     codeBox,
     confirm,
     evokerColor,
     hint,
     numerize,
     pingChan,
+    pingRole,
     plurial,
     resizeString,
     subcmd
 } from '../utils/toolbox';
-import { channelTypeName, util } from '../utils/functions';
+import { channelTypeName, getPerm, util } from '../utils/functions';
 import { ChannelCreateChannelTypeOptions, ChannelMoveSens } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
@@ -183,6 +188,64 @@ export default new AmethystCommand({
                     required: false,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildCategory]
+                }
+            ]
+        },
+        {
+            name: 'permissions',
+            description: "Gère les permissions d'un salon",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: 'accorder',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    description: 'Accorde une permission à un rôle',
+                    options: [
+                        {
+                            name: 'permission',
+                            description: 'Permission à accorder',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            autocomplete: true
+                        },
+                        {
+                            name: 'rôle',
+                            description: 'Rôle à qui je dois accorder la permission',
+                            required: true,
+                            type: ApplicationCommandOptionType.Role
+                        },
+                        {
+                            name: 'salon',
+                            required: false,
+                            description: 'Salon où il faut ajouter les permissions',
+                            type: ApplicationCommandOptionType.Channel
+                        }
+                    ]
+                },
+                {
+                    name: 'refuser',
+                    description: 'Refuse une permission à un rôle',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'permission',
+                            description: 'Permission à refuser',
+                            required: true,
+                            type: ApplicationCommandOptionType.String
+                        },
+                        {
+                            name: 'rôle',
+                            description: 'Rôle à qui je dois refuser la permission',
+                            type: ApplicationCommandOptionType.Role,
+                            required: true
+                        },
+                        {
+                            name: 'salon',
+                            description: 'Salon où il faut refuser la permission',
+                            type: ApplicationCommandOptionType.Channel,
+                            required: false
+                        }
+                    ]
                 }
             ]
         }
@@ -569,6 +632,46 @@ export default new AmethystCommand({
                             `Le salon ${pingChan(channel)} ${
                                 parent ? `a été déplacé dans la catégorie ${parent.name}` : `a été décatégorisé`
                             }`
+                        )
+                ]
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'accorder') {
+        const channel = (options.getChannel('salon') ?? interaction.channel) as GuildChannel;
+        const permission = options.getString('permisssion') as PermissionsString;
+        const role = options.getRole('rôle') as Role;
+
+        if (!checkRolePosition({ interaction, member: interaction.member as GuildMember, role, respond: true })) return;
+
+        if (channel.permissionOverwrites.cache.get(role.id).allow.has(permission))
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Permission déjà accordée')
+                            .setDescription(
+                                `La permission **${getPerm(permission)}** est déjà accordée pour le rôle ${pingRole(
+                                    role
+                                )} dans ${pingChan(channel)}`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+        const x = {};
+        x[permission] = true;
+        channel.permissionOverwrites.create(role, x).catch(() => {});
+
+        interaction
+            .reply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Permission accordée')
+                        .setDescription(
+                            `La permission **${getPerm(permission)}** a été accordée au rôle ${pingRole(
+                                role
+                            )} dans ${pingChan(channel)}`
                         )
                 ]
             })

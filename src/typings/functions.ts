@@ -1,6 +1,6 @@
-import { ButtonInteraction, CommandInteraction, EmbedBuilder, Guild, GuildMember, User } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, EmbedBuilder, Guild, GuildMember, Role, User } from 'discord.js';
 import perms from '../data/perms.json';
-import { modActionType } from './database';
+import { QueryResult, modActionType } from './database';
 import commandModules from '../data/commandsModules.json';
 
 export type randomType = {
@@ -79,3 +79,17 @@ export type sendLogOpts = {
     member_id: string;
     reason: string;
 };
+export type checkRoleOptions = {
+    respond?: boolean;
+    role: Role;
+    member?: GuildMember;
+    interaction?: CommandInteraction;
+    ephemeral?: boolean;
+};
+export type sqlLog<T, Completed extends boolean = true> = {
+    query: string;
+    id: number;
+    startDate: number;
+} & (Completed extends true
+    ? { isError: boolean; errorMessage: string | null; endate: number; response: QueryResult<T> | null }
+    : Record<string, never>);

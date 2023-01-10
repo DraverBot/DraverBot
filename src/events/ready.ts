@@ -9,7 +9,7 @@ import { checkDatabase, util } from '../utils/functions';
 import { database } from '../utils/query';
 import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
 import { ActivityOptions, ActivityType } from 'discord.js';
 import { numerize, random } from '../utils/toolbox';
@@ -18,6 +18,8 @@ import { RemindsManager } from '../managers/remindsManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
+    if (!existsSync(`./dist/data/sqllogs.json`)) writeFileSync(`./dist/data/sqllogs.json`, JSON.stringify([]));
+
     await checkDatabase();
 
     client.modulesManager = new ModulesManager();
