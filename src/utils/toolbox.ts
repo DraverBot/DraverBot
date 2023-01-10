@@ -34,6 +34,7 @@ import { Paginator } from '../managers/Paginator';
 import {
     addModLog as addModLogType,
     checkPermsOptions,
+    checkRoleOptions,
     confirmReturn,
     paginatorOptions,
     randomType,
@@ -350,7 +351,7 @@ export const resizeString = ({ str, length = 200 }: { str: string; length?: numb
 
     return str.substring(0, length - 3) + '...';
 };
-export const arrayfy = (obj: object) => {
+export const arrayfy = <T = any>(obj: object): T[] => {
     return Object.keys(obj).map((x) => obj[x]);
 };
 export const sqlToObj = (obj: object) => {
@@ -534,4 +535,38 @@ export const validURL = (str: string) => {
     const regex =
         /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
     return regex.test(str);
+};
+export const checkRolePosition = ({
+    respond = false,
+    ephemeral = true,
+    role,
+    member,
+    interaction
+}: checkRoleOptions): boolean => {
+    const reply = ({ title, description }: { title: string; description: string }): boolean => {
+        if (respond) {
+            systemReply(interaction, {
+                embeds: [
+                    basicEmbed(member?.user ?? role.client.user)
+                        .setTitle(title)
+                        .setDescription(description)
+                        .setColor(evokerColor(role.guild))
+                ],
+                ephemeral
+            }).catch(() => {});
+            return false;
+        }
+    };
+
+    if (member && role.position >= member.roles.highest.position)
+        return reply({
+            title: `Rôle trop haut`,
+            description: `Le rôle ${pingRole(role)} est supérieur ou égal à vous dans la hiérarchie des rôles`
+        });
+    if (role.position >= role.guild.members.me.roles.highest.position)
+        return reply({
+            title: 'Rôle trop haut',
+            description: `Le rôle ${pingRole(role)} est supérieur ou égal à moi dans la hiérarchie des rôles`
+        });
+    return true;
 };
