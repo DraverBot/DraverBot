@@ -309,7 +309,6 @@ export default new AmethystCommand({
                         components: components()
                     })
                     .catch(() => {});
-                collector.stop('ended');
                 return;
             }
             const result = await channel
@@ -335,6 +334,7 @@ export default new AmethystCommand({
                         components: components()
                     })
                     .catch(() => {});
+                collector.stop('ended');
                 return;
             }
             ctx.deleteReply(rep).catch(() => {});
