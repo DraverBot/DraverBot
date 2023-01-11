@@ -86,7 +86,7 @@ export type checkRoleOptions = {
     interaction?: CommandInteraction;
     ephemeral?: boolean;
 };
-export type sqlLog<T, Completed extends boolean = true> = {
+export type sqlLog<T = unknown, Completed extends boolean = true> = {
     query: string;
     id: number;
     startDate: number;

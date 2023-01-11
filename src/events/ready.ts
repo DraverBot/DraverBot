@@ -93,16 +93,23 @@ export default new AmethystEvent('ready', async (client) => {
                     basicEmbed(client.user, { draverColor: true })
                         .setTitle('Panel')
                         .setDescription(`Panel de <@${client.user.id}>`)
+                        .setImage('attachment://banner.png')
                 ],
                 components: [
                     row(
                         buildButton({
                             label: `Télécharger les erreurs SQL`,
                             buttonId: 'DownloadSqlLogs',
+                            style: 'Primary'
+                        }),
+                        buildButton({
+                            label: 'Analyser les logs SQL',
+                            buttonId: 'AnalyzeSqlLogs',
                             style: 'Secondary'
                         })
                     )
-                ]
+                ],
+                files: ['./images/banner.png']
             })
             .catch(console.log);
     };

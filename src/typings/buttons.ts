@@ -1,5 +1,6 @@
 export enum ButtonIds {
     DisplayDevInfo = 'button-dev-info',
     DisplayNote = 'moderation.display-note',
-    DownloadSqlLogs = 'download-sql-logs.dev'
+    DownloadSqlLogs = 'dev.download-sql-logs',
+    AnalyzeSqlLogs = 'dev.analyze-sql-logs'
 }
