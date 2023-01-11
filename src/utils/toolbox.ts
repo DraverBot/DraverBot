@@ -24,6 +24,7 @@ import {
     GuildMember,
     InteractionReplyOptions,
     Message,
+    RepliableInteraction,
     Role,
     TextChannel,
     User
@@ -71,9 +72,9 @@ export const random = ({ max = 100, min = 0 }: randomType): number => {
 
     return Math.floor(Math.random() * (max - min)) + min;
 };
-export const systemReply = (interaction: CommandInteraction, content: InteractionReplyOptions) => {
+export const systemReply = (interaction: CommandInteraction | ButtonInteraction, content: InteractionReplyOptions) => {
     const fnt = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
-    return interaction[fnt](content);
+    return (interaction[fnt] as CallableFunction)(content);
 };
 export const boolDb = (bool: boolean): '0' | '1' => (bool ? '1' : '0');
 export const dbBool = (str: string | number) => ['1', 1].includes(str);
@@ -170,7 +171,7 @@ export const buildButton = ({
     if (data.emoji) componentData.emoji = data.emoji;
     if (data.url && !data.id) componentData.url = data.url;
     if (data.id && !data.url) componentData.custom_id = data.id;
-    if (data.buttonId) data.id = ButtonIds[data.buttonId];
+    if (data.buttonId) componentData.custom_id = ButtonIds[data.buttonId];
 
     return new ButtonBuilder(componentData);
 };

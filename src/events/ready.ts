@@ -11,8 +11,8 @@ import { GiveawayManager } from 'discordjs-giveaways';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
-import { ActivityOptions, ActivityType } from 'discord.js';
-import { numerize, random } from '../utils/toolbox';
+import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
+import { basicEmbed, buildButton, numerize, random, row } from '../utils/toolbox';
 import { CooldownsManager } from '../managers/cooldownsManager';
 import { RemindsManager } from '../managers/remindsManager';
 
@@ -78,6 +78,35 @@ export default new AmethystEvent('ready', async (client) => {
         activitiesCount++;
     };
     updateActivity();
+
+    const loadpanel = async () => {
+        const channel = client.channels.cache.get(
+            client.user.username.includes(' ') ? '1062732662655176835' : '1062732142527918090'
+        ) as TextChannel;
+        if (!channel) return;
+
+        await channel.bulkDelete(100, true).catch(console.log);
+
+        channel
+            .send({
+                embeds: [
+                    basicEmbed(client.user, { draverColor: true })
+                        .setTitle('Panel')
+                        .setDescription(`Panel de <@${client.user.id}>`)
+                ],
+                components: [
+                    row(
+                        buildButton({
+                            label: `Télécharger les erreurs SQL`,
+                            buttonId: 'DownloadSqlLogs',
+                            style: 'Secondary'
+                        })
+                    )
+                ]
+            })
+            .catch(console.log);
+    };
+    loadpanel();
 
     setInterval(updateActivity, 20000);
 });
