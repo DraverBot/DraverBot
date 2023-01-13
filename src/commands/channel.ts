@@ -26,7 +26,7 @@ import {
     resizeString,
     subcmd
 } from '../utils/toolbox';
-import { channelTypeName, getPerm, util } from '../utils/functions';
+import { channelTypeName, getChannelPerm, util } from '../utils/functions';
 import { ChannelCreateChannelTypeOptions, ChannelMoveSens } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
@@ -639,29 +639,37 @@ export default new AmethystCommand({
     }
     if (cmd === 'accorder') {
         const channel = (options.getChannel('salon') ?? interaction.channel) as GuildChannel;
-        const permission = options.getString('permisssion') as PermissionsString;
+        const permission = options.getString('permission') as PermissionsString;
         const role = options.getRole('rôle') as Role;
 
         if (!checkRolePosition({ interaction, member: interaction.member as GuildMember, role, respond: true })) return;
 
-        if (channel.permissionOverwrites.cache.get(role.id).allow.has(permission))
+        if (
+            channel.permissionOverwrites.cache.has(role.id) &&
+            channel.permissionOverwrites.cache.get(role.id).allow.has(permission)
+        )
             return interaction
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
                             .setTitle('Permission déjà accordée')
                             .setDescription(
-                                `La permission **${getPerm(permission)}** est déjà accordée pour le rôle ${pingRole(
-                                    role
-                                )} dans ${pingChan(channel)}`
+                                `La permission **${getChannelPerm(
+                                    permission
+                                )}** est déjà accordée pour le rôle ${pingRole(role)} dans ${pingChan(channel)}`
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
                 .catch(() => {});
-        const x = {};
+        const x = channel.permissionOverwrites.cache.get(role.id)?.toJSON() ?? {};
         x[permission] = true;
-        channel.permissionOverwrites.create(role, x).catch(() => {});
+
+        console.log(permission);
+        console.log(x);
+        if (channel.permissionOverwrites.cache.has(role.id))
+            channel.permissionOverwrites.cache.get(role.id).edit(x).catch(console.log);
+        else channel.permissionOverwrites.create(role, x).catch(console.log);
 
         interaction
             .reply({
@@ -669,7 +677,55 @@ export default new AmethystCommand({
                     basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Permission accordée')
                         .setDescription(
-                            `La permission **${getPerm(permission)}** a été accordée au rôle ${pingRole(
+                            `La permission **${getChannelPerm(permission)}** a été accordée au rôle ${pingRole(
+                                role
+                            )} dans ${pingChan(channel)}`
+                        )
+                ]
+            })
+            .catch(() => {});
+    }
+    if (cmd === 'refuser') {
+        const channel = (options.getChannel('salon') ?? interaction.channel) as GuildChannel;
+        const permission = options.getString('permission') as PermissionsString;
+        const role = options.getRole('rôle') as Role;
+
+        if (!checkRolePosition({ interaction, member: interaction.member as GuildMember, role, respond: true })) return;
+
+        if (
+            channel.permissionOverwrites.cache.has(role.id) &&
+            !channel.permissionOverwrites.cache.get(role.id).allow.has(permission)
+        )
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Permission non-accordée')
+                            .setDescription(
+                                `La permission **${getChannelPerm(
+                                    permission
+                                )}** n'est pas accordée pour le rôle ${pingRole(role)} dans ${pingChan(channel)}`
+                            )
+                            .setColor(evokerColor(interaction.guild))
+                    ]
+                })
+                .catch(() => {});
+        const x = channel.permissionOverwrites.cache.get(role.id)?.toJSON() ?? {};
+        x[permission] = false;
+
+        console.log(permission);
+        console.log(x);
+        if (channel.permissionOverwrites.cache.has(role.id))
+            channel.permissionOverwrites.cache.get(role.id).edit(x).catch(console.log);
+        else channel.permissionOverwrites.create(role, x).catch(console.log);
+
+        interaction
+            .reply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Permission accordée')
+                        .setDescription(
+                            `La permission **${getChannelPerm(permission)}** a été refusée au rôle ${pingRole(
                                 role
                             )} dans ${pingChan(channel)}`
                         )
