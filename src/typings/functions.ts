@@ -7,7 +7,7 @@ export type randomType = {
     max?: number;
     min?: number;
 };
-export type permType = keyof typeof perms;
+export type permType<Type extends keyof typeof perms> = keyof typeof perms[Type];
 export type addModLog = {
     guild: Guild;
     reason: string;

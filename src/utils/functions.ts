@@ -10,8 +10,11 @@ import query from './query';
 import { boolDb, capitalize } from './toolbox';
 import { channelTypeNames } from '../data/channelTypeNames';
 
-export const getPerm = (key: permType) => {
-    return perms[key];
+export const getRolePerm = (key: permType<'role'>) => {
+    return perms.role[key];
+};
+export const getChannelPerm = (key: permType<'channel'>) => {
+    return perms.channel[key];
 };
 export const util = <T>(key: keyof typeof utils) => {
     return utils[key] as T;
