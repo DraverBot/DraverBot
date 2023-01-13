@@ -34,7 +34,7 @@ import {
     row,
     sqliseString
 } from '../utils/toolbox';
-import { getPerm, util } from '../utils/functions';
+import { getRolePerm, util } from '../utils/functions';
 import { ticketsClosedButtons, ticketsCreateButtons } from '../data/buttons';
 import htmlSave from '../utils/htmlSave';
 import { rmSync } from 'fs';
@@ -145,7 +145,7 @@ export class TicketsManager {
                     embed: basicEmbed(user)
                         .setTitle('Salon non-crée')
                         .setDescription(
-                            `Le salon n'a pas pu être crée.\nContactez un administrateur du serveur pour lui faire part de cette erreur et pour vérifier que je possède bien la permission **${getPerm(
+                            `Le salon n'a pas pu être crée.\nContactez un administrateur du serveur pour lui faire part de cette erreur et pour vérifier que je possède bien la permission **${getRolePerm(
                                 'ManageChannels'
                             )}**`
                         )
@@ -622,7 +622,7 @@ export class TicketsManager {
                         .setTitle('Salon invalide')
                         .setDescription(
                             `Je ne trouve pas le salon du panel.\nRéessayez dans quelques minutes.\n${hint(
-                                `Si l'erreur persiste, vérifiez que j'ai la permissions **${getPerm(
+                                `Si l'erreur persiste, vérifiez que j'ai la permissions **${getRolePerm(
                                     'ManageChannels'
                                 )}**`
                             )}`
@@ -665,7 +665,7 @@ export class TicketsManager {
             .setTitle('Erreur de fermeture')
             .setDescription(
                 `Je n'ai pas pu trouver le salon du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(
-                    `Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageChannels')}**`
+                    `Si l'erreur persiste, vérifiez que j'ai la permission **${getRolePerm('ManageChannels')}**`
                 )}`
             )
             .setColor(evokerColor(guild));
@@ -675,7 +675,7 @@ export class TicketsManager {
             .setTitle('Erreur de fermeture')
             .setDescription(
                 `Je n'ai pas pu trouver le message du ticket.\nAttendez quelques minutes, puis réessayez.\n${hint(
-                    `Si l'erreur persiste, vérifiez que j'ai la permission **${getPerm('ManageMessages')}**`
+                    `Si l'erreur persiste, vérifiez que j'ai la permission **${getRolePerm('ManageMessages')}**`
                 )}`
             )
             .setColor(evokerColor(guild));
@@ -686,7 +686,7 @@ export class TicketsManager {
             .setTitle('Panel introuvable')
             .setDescription(
                 `Je ne trouve pas le panel.\nVous ne devriez pas voir ce message d'erreur si vous avez correctement configuré les permissions de Draver\n${hint(
-                    `J'ai besoin de la permission **${getPerm('ManageMessages')}**`
+                    `J'ai besoin de la permission **${getRolePerm('ManageMessages')}**`
                 )}`
             );
     }

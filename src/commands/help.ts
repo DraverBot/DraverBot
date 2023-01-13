@@ -13,7 +13,7 @@ import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
 import { commandName, permType } from '../typings/functions';
-import { getPerm, Module, moduleName, util } from '../utils/functions';
+import { getRolePerm, Module, moduleName, util } from '../utils/functions';
 import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
@@ -147,8 +147,9 @@ export default new AmethystCommand({
                         {
                             name: 'Permissions',
                             value:
-                                cmd.options.permissions?.map((perm) => getPerm(perm as permType)).join(' ') ??
-                                'Pas de permissions',
+                                cmd.options.permissions
+                                    ?.map((perm) => getRolePerm(perm as permType<'role'>))
+                                    .join(' ') ?? 'Pas de permissions',
                             inline: false
                         },
                         {
@@ -201,8 +202,9 @@ export default new AmethystCommand({
                             {
                                 name: 'Permissions',
                                 value:
-                                    cmd.options.permissions?.map((perm) => getPerm(perm as permType)).join(' ') ??
-                                    'Pas de permissions',
+                                    cmd.options.permissions
+                                        ?.map((perm) => getRolePerm(perm as permType<'role'>))
+                                        .join(' ') ?? 'Pas de permissions',
                                 inline: false
                             },
                             {

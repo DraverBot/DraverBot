@@ -18,7 +18,7 @@ import replies from '../data/replies';
 import { EmbedPackage } from '../managers/embedPack';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { EmbedBtnIds } from '../typings/commands';
-import { getPerm } from '../utils/functions';
+import { getRolePerm } from '../utils/functions';
 import {
     anyHexColor,
     basicEmbed,
@@ -324,7 +324,7 @@ export default new AmethystCommand({
                             .setDescription(
                                 `L'embed n'a pas pu être envoyé dans ${pingChan(
                                     channel
-                                )}.\nVérifiez que j'ai bien la permission \`${getPerm('SendMessages')}\` dans ce salon.`
+                                )}.\nVérifiez que j'ai bien la permission \`${getRolePerm('SendMessages')}\` dans ce salon.`
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]

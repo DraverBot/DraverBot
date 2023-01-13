@@ -36,7 +36,7 @@ import ms from 'ms';
 import { Giveaway, giveawayInput } from 'discordjs-giveaways';
 import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
-import { getPerm, util } from '../utils/functions';
+import { getRolePerm, util } from '../utils/functions';
 import { GWListType } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
 
@@ -416,9 +416,9 @@ export default new AmethystCommand({
                                 basicEmbed(interaction.user)
                                     .setTitle('Erreur')
                                     .setDescription(
-                                        `Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getPerm(
+                                        `Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getRolePerm(
                                             'SendMessages'
-                                        )}** et **${getPerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`
+                                        )}** et **${getRolePerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`
                                     )
                                     .setColor(evokerColor(interaction.guild))
                             ]

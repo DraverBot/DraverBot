@@ -2,7 +2,7 @@ import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, T
 import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
-import { getPerm, moduleName, util } from '../utils/functions';
+import { getRolePerm, moduleName, util } from '../utils/functions';
 import { addTimeDoc, anyHexColor, basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
 import modules from '../maps/modules';
 
@@ -39,9 +39,9 @@ const replies = {
             .setDescription(
                 `Je n'ai pas les permissions nécéssaires pour éxécuter cette commande.\n${
                     missing.length === 1
-                        ? `Vérifiez que j'aie bien la permission \`${getPerm(missing[0] as permType)}\``
+                        ? `Vérifiez que j'aie bien la permission \`${getRolePerm(missing[0] as permType<'role'>)}\``
                         : `Vérifiez que j'aie bien les permissions : ${missing
-                              .map((perm) => `\`${getPerm(perm as permType)}\``)
+                              .map((perm) => `\`${getRolePerm(perm as permType<'role'>)}\``)
                               .join(' ')}`
                 }`
             )
@@ -58,9 +58,9 @@ const replies = {
             .setDescription(
                 `Vous n'avez pas pas les permissions nécéssaires pour éxécuter cette commande.\n${
                     missing.length === 1
-                        ? `Vérifiez que vous ayez bien la permission \`${getPerm(missing[0] as permType)}\``
+                        ? `Vérifiez que vous ayez bien la permission \`${getRolePerm(missing[0] as permType<'role'>)}\``
                         : `Vérifiez que vous ayez bien les permissions : ${missing
-                              .map((perm) => `\`${getPerm(perm as permType)}\``)
+                              .map((perm) => `\`${getRolePerm(perm as permType<'role'>)}\``)
                               .join(' ')}`
                 }`
             )
