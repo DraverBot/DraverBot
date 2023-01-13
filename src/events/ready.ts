@@ -106,6 +106,11 @@ export default new AmethystEvent('ready', async (client) => {
                             label: 'Analyser les logs SQL',
                             buttonId: 'AnalyzeSqlLogs',
                             style: 'Secondary'
+                        }),
+                        buildButton({
+                            label: 'Informations instantanées',
+                            buttonId: 'DevInstantInfos',
+                            style: 'Secondary'
                         })
                     )
                 ],
