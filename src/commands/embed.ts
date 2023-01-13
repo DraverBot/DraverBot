@@ -324,7 +324,9 @@ export default new AmethystCommand({
                             .setDescription(
                                 `L'embed n'a pas pu être envoyé dans ${pingChan(
                                     channel
-                                )}.\nVérifiez que j'ai bien la permission \`${getRolePerm('SendMessages')}\` dans ce salon.`
+                                )}.\nVérifiez que j'ai bien la permission \`${getRolePerm(
+                                    'SendMessages'
+                                )}\` dans ce salon.`
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]

@@ -418,7 +418,9 @@ export default new AmethystCommand({
                                     .setDescription(
                                         `Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getRolePerm(
                                             'SendMessages'
-                                        )}** et **${getRolePerm('EmbedLinks')}** dans le salon ${pingChan(data.channel)}`
+                                        )}** et **${getRolePerm('EmbedLinks')}** dans le salon ${pingChan(
+                                            data.channel
+                                        )}`
                                     )
                                     .setColor(evokerColor(interaction.guild))
                             ]
