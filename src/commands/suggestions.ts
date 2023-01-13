@@ -71,5 +71,10 @@ export default new AmethystCommand({
         for (const emoji of ['✅', '❌']) {
             await res.react(emoji).catch(() => {});
         }
+        if (interaction.guild.members.me.permissions.has('CreatePublicThreads')) {
+            res.startThread({
+                name: options.getString('suggestion')
+            }).catch(() => {});
+        }
     }
 });
