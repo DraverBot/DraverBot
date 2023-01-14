@@ -37,10 +37,11 @@ export default new ButtonHandler({
                 })
                     .setTitle('Dernière requête')
                     .setDescription(
-                        `Dernière requête ${displayDate(last.endate)}\nEn-tête: ${codeBox(
-                            resizeString({ str: last.query, length: 200 }),
-                            'sql'
-                        )}\nErreur: ${last.isError ? last.errorMessage : 'N/A'}\nRéponse: ${
+                        `Dernière requête ${displayDate(last.endate)}\nTemps de la requête : ${numerize(
+                            last.endate - last.startDate
+                        )} ms\nEn-tête: ${codeBox(resizeString({ str: last.query, length: 200 }), 'sql')}\nErreur: ${
+                            last.isError ? last.errorMessage : 'N/A'
+                        }\nRéponse: ${
                             last.isError
                                 ? 'N/A'
                                 : codeBox(resizeString({ str: JSON.stringify(last.response), length: 500 }), 'sql')
@@ -50,7 +51,11 @@ export default new ButtonHandler({
                     .setTitle('Dernière erreur')
                     .setDescription(
                         lastError
-                            ? `ID: \`${lastError.id}\`\nEnvoyée ${displayDate(lastError.startDate)}\nEn-tête: ${codeBox(
+                            ? `ID: \`${lastError.id}\`\nEnvoyée ${displayDate(
+                                  lastError.startDate
+                              )}\n\nTemps de la requête : ${numerize(
+                                  lastError.endate - lastError.startDate
+                              )} ms\nEn-tête: ${codeBox(
                                   resizeString({ str: lastError.query, length: 300 }),
                                   'sql'
                               )}\nErreur: ${codeBox(lastError.errorMessage)}`
