@@ -18,10 +18,10 @@ export class EmbedPackage {
         return this._embed.setDescription(str);
     }
     public setAuthorText(str: string) {
-        return this._embed.setAuthor({ name: str, iconURL: this._embed.data?.author?.icon_url });
+        return this._embed.setAuthor({ name: str, iconURL: this._embed.data?.author?.icon_url ?? null });
     }
     public setAuthorImage(url: string) {
-        return this._embed.setAuthor({ name: this._embed.data?.author?.name, iconURL: url });
+        return this._embed.setAuthor({ name: this._embed.data?.author?.name ?? 'auteur', iconURL: url });
     }
     public setColor(color: ColorResolvable) {
         return this._embed.setColor(color);
@@ -37,10 +37,10 @@ export class EmbedPackage {
         return this._embed;
     }
     public setFooterName(name: string) {
-        return this._embed.setFooter({ text: name, iconURL: this._embed?.data?.footer?.icon_url });
+        return this._embed.setFooter({ text: name, iconURL: this._embed?.data?.footer?.icon_url ?? null });
     }
     public setFooterImage(url: string) {
-        return this._embed.setFooter({ text: this._embed.data?.footer?.text, iconURL: url });
+        return this._embed.setFooter({ text: this._embed.data?.footer?.text ?? 'pied-de-page', iconURL: url });
     }
     public setTimestamp(enabled: boolean) {
         if (enabled) return this._embed.setTimestamp(Date.now());
