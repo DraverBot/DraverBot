@@ -12,7 +12,7 @@ import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
 import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
-import { basicEmbed, buildButton, numerize, random, row } from '../utils/toolbox';
+import { basicEmbed, buildButton, numerize, random, row, sendError } from '../utils/toolbox';
 import { CooldownsManager } from '../managers/cooldownsManager';
 import { RemindsManager } from '../managers/remindsManager';
 
@@ -116,7 +116,7 @@ export default new AmethystEvent('ready', async (client) => {
                 ],
                 files: ['./images/banner.png']
             })
-            .catch(console.log);
+            .catch(sendError);
     };
     loadpanel();
 

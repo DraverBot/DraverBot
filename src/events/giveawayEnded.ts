@@ -1,5 +1,5 @@
 import { AmethystEvent } from 'amethystjs';
-import { getMsgUrl, pingUser } from '../utils/toolbox';
+import { getMsgUrl, pingUser, sendError } from '../utils/toolbox';
 import { giveawayEmbeds } from '../data/giveaway';
 
 export default new AmethystEvent('giveawayEnded', (giveaway, channel, winners) => {
@@ -13,5 +13,5 @@ export default new AmethystEvent('giveawayEnded', (giveaway, channel, winners) =
                 messageReference: giveaway.message_id
             }
         })
-        .catch(() => {});
+        .catch(sendError);
 });

@@ -2,7 +2,7 @@ import { Client, Collection, TextChannel } from 'discord.js';
 import { RemindsPlaceType, reminds } from '../typings/managers';
 import query from '../utils/query';
 import { DatabaseTables } from '../typings/database';
-import { pingUser, sqliseString } from '../utils/toolbox';
+import { pingUser, sendError, sqliseString } from '../utils/toolbox';
 
 export class RemindsManager {
     private _cache: Collection<number, reminds> = new Collection();
@@ -86,7 +86,7 @@ export class RemindsManager {
 
             user.send({
                 content: `🔔 Rappel : ${rmd.reason} ( <t:${Math.floor(parseInt(rmd.setDate) / 1000)}:R> )`
-            }).catch(() => {});
+            }).catch(sendError);
             this._cache.delete(id);
             query(`DELETE FROM ${DatabaseTables.Reminds} WHERE id='${id}'`);
         } else {
@@ -97,7 +97,7 @@ export class RemindsManager {
 
                 user.send({
                     content: `🔔 Rappel : ${rmd.reason} ( <t:${Math.floor(parseInt(rmd.setDate) / 1000)}:R> )`
-                }).catch(() => {});
+                }).catch(sendError);
             } else {
                 (channel as TextChannel)
                     .send({
@@ -105,7 +105,7 @@ export class RemindsManager {
                             parseInt(rmd.setDate) / 1000
                         )}:R> )`
                     })
-                    .catch(() => {});
+                    .catch(sendError);
             }
             this._cache.delete(id);
             query(`DELETE FROM ${DatabaseTables.Reminds} WHERE id='${id}'`);

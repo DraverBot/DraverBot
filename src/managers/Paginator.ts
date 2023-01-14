@@ -11,7 +11,7 @@ import { closePaginator, firstPage, lastPage, nextPage, previousPage, selectButt
 import replies from '../data/replies';
 import { paginatorOptions } from '../typings/functions';
 import { util } from '../utils/functions';
-import { row, systemReply } from '../utils/toolbox';
+import { row, sendError, systemReply } from '../utils/toolbox';
 
 export class Paginator {
     public readonly options: paginatorOptions;
@@ -34,7 +34,7 @@ export class Paginator {
                 embeds: [replies.cancel()],
                 components: []
             })
-            .catch(() => {});
+            .catch(sendError);
     }
 
     private async start() {
@@ -42,7 +42,7 @@ export class Paginator {
             components: this.components,
             embeds: [this.pickEmbed()],
             fetchReply: true
-        }).catch(() => {})) as Message<true>;
+        }).catch(sendError)) as Message<true>;
 
         if (!reply) return;
 
@@ -57,7 +57,7 @@ export class Paginator {
                         ephemeral: true,
                         embeds: [replies.replyNotAllowed(interaction.member ?? interaction.user)]
                     })
-                    .catch(() => {});
+                    .catch(sendError);
                 return;
             }
 
@@ -89,7 +89,7 @@ export class Paginator {
                     .awaitModalSubmit({
                         time: 120000
                     })
-                    .catch(() => {});
+                    .catch(sendError);
 
                 if (!reply) return;
                 const pageIndex = parseInt(reply.fields.getTextInputValue('paginatorSelectField'));
@@ -99,7 +99,7 @@ export class Paginator {
                             content: `Merci de sélectionner un nombre valide, compris entre **1** et **${this.options.embeds.length}**`,
                             ephemeral: true
                         })
-                        .catch(() => {});
+                        .catch(sendError);
                     return;
                 }
 
@@ -123,7 +123,7 @@ export class Paginator {
                     break;
             }
 
-            interaction.deferUpdate().catch(() => {});
+            interaction.deferUpdate().catch(sendError);
             this.updateMessage();
         });
 

@@ -3,6 +3,7 @@ import { replaceFluxVariables } from '../utils/vars';
 import { TextChannel } from 'discord.js';
 import query from '../utils/query';
 import { DatabaseTables, joinRoles } from '../typings/database';
+import { sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('guildMemberAdd', async (member) => {
     const guild = member.guild;
@@ -24,7 +25,7 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
             await member.guild.roles.fetch();
 
             const rolesList = member.guild.roles.cache.filter((x) => list.includes(x.id));
-            member.roles.add(rolesList).catch(() => {});
+            member.roles.add(rolesList).catch(sendError);
         }
     }
 
@@ -39,5 +40,5 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
         guild
     });
 
-    (channel as TextChannel).send(msg).catch(() => {});
+    (channel as TextChannel).send(msg).catch(sendError);
 });

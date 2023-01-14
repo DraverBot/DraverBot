@@ -1,7 +1,7 @@
 import { AmethystEvent, commandDeniedCode } from 'amethystjs';
 import { EmbedBuilder, User } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
-import { systemReply } from '../utils/toolbox';
+import { sendError, systemReply } from '../utils/toolbox';
 
 export default new AmethystEvent('commandDenied', (command, reason) => {
     if (!command?.interaction) return;
@@ -28,7 +28,7 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
                 )
             ],
             ephemeral: true
-        }).catch(() => {});
+        }).catch(sendError);
         return;
     }
 
@@ -36,5 +36,5 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
     systemReply(command.interaction, {
         embeds: [reply],
         ephemeral: true
-    }).catch(() => {});
+    }).catch(sendError);
 });

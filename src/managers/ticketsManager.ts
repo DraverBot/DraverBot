@@ -32,6 +32,7 @@ import {
     pingChan,
     pingUser,
     row,
+    sendError,
     sqliseString
 } from '../utils/toolbox';
 import { getRolePerm, util } from '../utils/functions';
@@ -138,7 +139,7 @@ export class TicketsManager {
                     reason: `Ticket ouvert par ${user.id}\n> Au sujet de ${data.subject}`,
                     type: ChannelType.GuildText
                 })
-                .catch(() => {})) as TextChannel;
+                .catch(sendError)) as TextChannel;
 
             if (!ticket)
                 return {
@@ -169,9 +170,9 @@ export class TicketsManager {
                     components: [this.createComponents],
                     content: pingUser(user)
                 })
-                .catch(() => {})) as Message<true>;
+                .catch(sendError)) as Message<true>;
             if (!msg) {
-                ticket.delete().catch(() => {});
+                ticket.delete().catch(sendError);
                 return resolve({
                     embed: basicEmbed(user)
                         .setTitle('Message non-envoyé')
@@ -182,7 +183,7 @@ export class TicketsManager {
                 });
             }
 
-            msg.pin().catch(() => {});
+            msg.pin().catch(sendError);
             const ticketDatas = {
                 channel_id: ticket.id,
                 guild_id: guild.id,
@@ -327,7 +328,7 @@ export class TicketsManager {
             const ticket = this._tickets.find((x) => x.channel_id === channel_id);
             const channel = this.fetchChannel(ticket.message_id, guild);
 
-            await channel.setName(name + (ticket.state === 'closed' ? '-closed' : '')).catch(() => {});
+            await channel.setName(name + (ticket.state === 'closed' ? '-closed' : '')).catch(sendError);
 
             ticket.channelName = name;
             this._tickets.set(ticket.message_id, ticket);
@@ -380,13 +381,13 @@ export class TicketsManager {
                         SendTTSMessages: true,
                         UseApplicationCommands: true
                     })
-                    .catch(() => {});
+                    .catch(sendError);
             } else {
                 await channel.permissionOverwrites
                     .edit(user, {
                         ViewChannel: false
                     })
-                    .catch(() => {});
+                    .catch(sendError);
             }
 
             return resolve({
@@ -411,7 +412,7 @@ export class TicketsManager {
             const channel = this.fetchChannel(ticket.message_id, guild);
             if (!channel) return resolve({ embed: this.invalidChannel(user, guild), ok: false });
 
-            const messages = await channel.messages.fetch({}).catch(() => {});
+            const messages = await channel.messages.fetch({}).catch(sendError);
             if (!messages || messages.size === 0)
                 return resolve({
                     embed: basicEmbed(user)
@@ -449,7 +450,7 @@ export class TicketsManager {
             .edit({
                 components: [this.createComponentsNoMention]
             })
-            .catch(() => {});
+            .catch(sendError);
 
         channel
             .send({
@@ -458,7 +459,7 @@ export class TicketsManager {
                     messageReference: ticket.message_id
                 }
             })
-            .catch(() => {});
+            .catch(sendError);
     }
     public deleteTicket({
         message_id,
@@ -483,7 +484,7 @@ export class TicketsManager {
                     embed: this.invalidMessage(user, guild)
                 });
 
-            channel.delete().catch(() => {});
+            channel.delete().catch(sendError);
 
             this._tickets.delete(message_id);
             await query(`DELETE FROM ${DatabaseTables.Tickets} WHERE message_id='${message.id}'`);
@@ -567,7 +568,7 @@ export class TicketsManager {
                         )
                     ]
                 })
-                .catch(() => {})) as Message<true>;
+                .catch(sendError)) as Message<true>;
 
             if (!msg)
                 return resolve({
@@ -634,9 +635,9 @@ export class TicketsManager {
                     embed: this.panelNotFound(user, guild)
                 });
 
-            if (message.deletable) message.delete().catch(() => {});
+            if (message.deletable) message.delete().catch(sendError);
             console.log(await query(`DELETE FROM ${DatabaseTables.Panels} WHERE reference='${panel.reference}'`));
-            message.delete().catch(() => {});
+            message.delete().catch(sendError);
             this._panels.delete(message_id);
 
             return resolve({
@@ -710,7 +711,7 @@ export class TicketsManager {
         return channel as TextChannel;
     }
     private async fetchMessage(message_id: string, channel: TextChannel): Promise<Message<true>> {
-        await channel.messages.fetch().catch(() => {});
+        await channel.messages.fetch().catch(sendError);
         const ticket = this._tickets.get(message_id);
 
         return channel.messages.cache.get(ticket.message_id);
@@ -730,7 +731,7 @@ export class TicketsManager {
         return channel as TextChannel;
     }
     private async fetchPanelMessage({ message_id, channel }: { message_id: string; channel: TextChannel }) {
-        await channel.messages.fetch().catch(() => {});
+        await channel.messages.fetch().catch(sendError);
         return channel.messages.cache.get(message_id);
     }
 
@@ -810,13 +811,13 @@ export class TicketsManager {
                             embeds: [replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets' })],
                             ephemeral: true
                         })
-                        .catch(() => {});
+                        .catch(sendError);
                     return;
                 }
                 switch (button.customId) {
                     case ticketButtonIds.Mention:
                         this.mentionEveryone(button.message.id, button.guild);
-                        button.deferUpdate().catch(() => {});
+                        button.deferUpdate().catch(sendError);
                         break;
                     case ticketButtonIds.Close:
                         {
@@ -827,10 +828,10 @@ export class TicketsManager {
                                     .setTitle('Fermeture')
                                     .setDescription(`Voulez-vous fermer le ticket ?`),
                                 ephemeral: true
-                            }).catch(() => {})) as confirmReturn;
+                            }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
+                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
                                 return;
                             }
                             await button
@@ -838,7 +839,7 @@ export class TicketsManager {
                                     embeds: [replies.wait(button.user)],
                                     components: []
                                 })
-                                .catch(() => {});
+                                .catch(sendError);
                             const rep = await this.closeTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -850,14 +851,14 @@ export class TicketsManager {
                                 button.channel.send({
                                     embeds: [rep.embed]
                                 });
-                                button.deleteReply().catch(() => {});
+                                button.deleteReply().catch(sendError);
                             } else {
                                 button
                                     .editReply({
                                         embeds: [rep.embed],
                                         components: []
                                     })
-                                    .catch(() => {});
+                                    .catch(sendError);
                             }
                         }
                         break;
@@ -870,10 +871,10 @@ export class TicketsManager {
                                     .setTitle('Suppression')
                                     .setDescription(`Voulez-vous supprimer le ticket ?`),
                                 ephemeral: true
-                            }).catch(() => {})) as confirmReturn;
+                            }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
+                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
                                 return;
                             }
                             await button
@@ -881,7 +882,7 @@ export class TicketsManager {
                                     embeds: [replies.wait(button.user)],
                                     components: []
                                 })
-                                .catch(() => {});
+                                .catch(sendError);
                             const rep = await this.deleteTicket({
                                 guild: button.guild,
                                 user: button.user,
@@ -893,14 +894,14 @@ export class TicketsManager {
                                 button.channel.send({
                                     embeds: [rep.embed]
                                 });
-                                button.deleteReply().catch(() => {});
+                                button.deleteReply().catch(sendError);
                             } else {
                                 button
                                     .editReply({
                                         embeds: [rep.embed],
                                         components: []
                                     })
-                                    .catch(() => {});
+                                    .catch(sendError);
                             }
                         }
                         break;
@@ -921,7 +922,7 @@ export class TicketsManager {
                                     embeds: [rep.embed],
                                     ephemeral: true
                                 })
-                                .catch(() => {});
+                                .catch(sendError);
                         }
                         break;
                     case ticketButtonIds.Reopen:
@@ -933,10 +934,10 @@ export class TicketsManager {
                                     .setTitle('Réouverture')
                                     .setDescription(`Voulez-vous réouvrir le ticket ?`),
                                 ephemeral: true
-                            }).catch(() => {})) as confirmReturn;
+                            }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(() => {});
+                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
                                 return;
                             }
                             await button
@@ -944,7 +945,7 @@ export class TicketsManager {
                                     embeds: [replies.wait(button.user)],
                                     components: []
                                 })
-                                .catch(() => {});
+                                .catch(sendError);
 
                             const rep = await this.reopenTicket({
                                 guild: button.guild,
@@ -957,7 +958,7 @@ export class TicketsManager {
                                 button.channel.send({
                                     embeds: [rep.embed]
                                 });
-                                button.deleteReply().catch(() => {});
+                                button.deleteReply().catch(sendError);
                             } else {
                                 button.editReply({
                                     embeds: [rep.embed],
@@ -967,7 +968,7 @@ export class TicketsManager {
                         }
                         break;
                     case ticketButtonIds.Save: {
-                        await button.deferReply().catch(() => {});
+                        await button.deferReply().catch(sendError);
                         const res = await this.saveTicket({
                             channel_id: button.channel.id,
                             guild: button.guild,
@@ -979,7 +980,7 @@ export class TicketsManager {
                                 .editReply({
                                     embeds: [res.embed]
                                 })
-                                .catch(() => {});
+                                .catch(sendError);
                             return;
                         }
 

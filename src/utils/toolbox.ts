@@ -24,10 +24,10 @@ import {
     GuildMember,
     InteractionReplyOptions,
     Message,
-    RepliableInteraction,
     Role,
     TextChannel,
-    User
+    User,
+    WebhookClient
 } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
 import replies, { anyUser, replyKey } from '../data/replies';
@@ -114,7 +114,7 @@ export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof 
         .send({
             embeds: [embed]
         })
-        .catch(() => {});
+        .catch(sendError);
 
     if (!res) return false;
     return true;
@@ -199,7 +199,7 @@ export const checkPerms = ({
             systemReply(interaction, {
                 embeds: [(replies[key] as (user: User, metadata: any) => EmbedBuilder)(interaction.user, { member })],
                 components: []
-            }).catch(() => {});
+            }).catch(sendError);
         }
         return false;
     };
@@ -301,7 +301,7 @@ export const confirm = ({
                     components: components as ActionRowBuilder<ButtonBuilder>[],
                     ephemeral
                 })
-                .catch(() => {})) as Message<true>;
+                .catch(sendError)) as Message<true>;
         }
 
         const reply = await waitForInteraction({
@@ -336,7 +336,7 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
                     ephemeral: true,
                     embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user)]
                 })
-                .catch(() => {});
+                .catch(sendError);
         }
         return false;
     }
@@ -557,7 +557,7 @@ export const checkRolePosition = ({
                         .setColor(evokerColor(role.guild))
                 ],
                 ephemeral
-            }).catch(() => {});
+            }).catch(sendError);
             return false;
         }
     };
@@ -573,4 +573,21 @@ export const checkRolePosition = ({
             description: `Le rôle ${pingRole(role)} est supérieur ou égal à moi dans la hiérarchie des rôles`
         });
     return true;
+};
+export const sendError = (error: unknown) => {
+    const web = new WebhookClient({
+        url: util('errorWebhook')
+    });
+
+    web.send({
+        embeds: [
+            new EmbedBuilder()
+                .setTitle('Erreur')
+                .setDescription(`Erreur ${displayDate()}\n${error} - ${codeBox(JSON.stringify(error), 'json')}`)
+                .setTimestamp()
+                .setFooter({
+                    text: process.env.password?.length > 1 ? 'Draver' : 'Draver developpement'
+                })
+        ]
+    }).catch(() => {});
 };

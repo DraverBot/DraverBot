@@ -1,5 +1,5 @@
 import { AmethystEvent } from 'amethystjs';
-import { getMsgUrl, pingUser } from '../utils/toolbox';
+import { getMsgUrl, pingUser, sendError } from '../utils/toolbox';
 import { giveawayEmbeds } from '../data/giveaway';
 
 export default new AmethystEvent('giveawayRerolled', (gw, channel, oldW, newW) => {
@@ -13,5 +13,5 @@ export default new AmethystEvent('giveawayRerolled', (gw, channel, oldW, newW) =
                 messageReference: gw.message_id
             }
         })
-        .catch(() => {});
+        .catch(sendError);
 });

@@ -1,6 +1,7 @@
 import { AmethystEvent, ButtonDeniedCode } from 'amethystjs';
 import { EmbedBuilder, User } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
+import { sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('buttonDenied', ({ button, metadata, user }) => {
     if (metadata?.silent === true) return;
@@ -22,7 +23,7 @@ export default new AmethystEvent('buttonDenied', ({ button, metadata, user }) =>
                 embeds: [(replies[integration.value] as (user: User, metadata: any) => EmbedBuilder)(user, metadata)],
                 ephemeral: true
             })
-            .catch(() => {});
+            .catch(sendError);
         return;
     }
 
@@ -33,5 +34,5 @@ export default new AmethystEvent('buttonDenied', ({ button, metadata, user }) =>
             embeds: [reply],
             ephemeral: true
         })
-        .catch(() => {});
+        .catch(sendError);
 });

@@ -3,6 +3,7 @@ import { replyKey } from '../data/replies';
 import { interserver } from '../typings/managers';
 import query from '../utils/query';
 import { WordGenerator } from './Generator';
+import { basicEmbed, evokerColor, sendError } from '../utils/toolbox';
 
 export class InterserverManager {
     private _cache: Collection<string, interserver> = new Collection();
@@ -73,7 +74,7 @@ export class InterserverManager {
             this._cache.delete(channel.id);
 
             const web = new WebhookClient({ url: data.webhook });
-            if (web) web.delete("Salon d'interchat supprimé");
+            if (web) web.delete("Salon d'interchat supprimé").catch(sendError);
 
             return resolve(data);
         });
@@ -126,10 +127,26 @@ export class InterserverManager {
                 message.author.bot ||
                 message.webhookId ||
                 message.system ||
-                message.mentions.everyone ||
-                /<@((\!){0,1})\d+>/.test(message.content)
+                message.mentions.everyone
             )
                 return;
+            if (/<@((\!)?)\d+>/.test(message.content) || /<@&\!?\d+>/.test(message.content)) {
+                message.channel
+                    .send({
+                        embeds: [
+                            basicEmbed(message.author)
+                                .setTitle('Message non-envoyé')
+                                .setDescription(
+                                    `Votre message n'a pas été envoyé, car il contient des mentions d'utilisateurs ou de rôles.\nVeuillez vous assurer d'envoyer des messages sans mentions`
+                                )
+                                .setColor(evokerColor(message.guild))
+                        ],
+                        reply: {
+                            messageReference: message
+                        }
+                    })
+                    .catch(sendError);
+            }
 
             const sendTo = this._cache.filter(
                 (x) =>
@@ -151,7 +168,7 @@ export class InterserverManager {
                             reason: "Pour l'interchat de Draver",
                             avatar: message.client.user.displayAvatarURL({ forceStatic: true })
                         })
-                        .catch(() => {});
+                        .catch(sendError);
                     if (!web) return;
 
                     webhook = new WebhookClient({ url: web.url });
@@ -160,9 +177,7 @@ export class InterserverManager {
                         webhook: web.url
                     });
 
-                    query(`UPDATE interserver SET webhook='${web.url}' WHERE channel_id='${v.channel_id}'`).catch(
-                        () => {}
-                    );
+                    query(`UPDATE interserver SET webhook='${web.url}' WHERE channel_id='${v.channel_id}'`);
                 }
 
                 webhook
@@ -171,7 +186,7 @@ export class InterserverManager {
                         avatarURL: message.author.avatarURL({ forceStatic: false }),
                         content: message.content
                     })
-                    .catch(() => {});
+                    .catch(sendError);
             });
         });
     }

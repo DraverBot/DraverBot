@@ -1,7 +1,7 @@
 import { AmethystEvent } from 'amethystjs';
 import { replaceFluxVariables } from '../utils/vars';
 import { GuildMember, TextChannel } from 'discord.js';
-import { boolDb } from '../utils/toolbox';
+import { boolDb, sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('guildMemberRemove', (member) => {
     const guild = member.guild;
@@ -23,5 +23,5 @@ export default new AmethystEvent('guildMemberRemove', (member) => {
         guild
     });
 
-    (channel as TextChannel).send(msg).catch(() => {});
+    (channel as TextChannel).send(msg).catch(sendError);
 });

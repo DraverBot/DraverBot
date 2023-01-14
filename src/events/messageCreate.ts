@@ -1,7 +1,7 @@
 import { AmethystEvent } from 'amethystjs';
 import splashes from '../data/splash.json';
 import { util } from '../utils/functions';
-import { basicEmbed, random } from '../utils/toolbox';
+import { basicEmbed, random, sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('messageCreate', (message) => {
     if (message.author.bot || message.webhookId) return;
@@ -67,13 +67,13 @@ export default new AmethystEvent('messageCreate', (message) => {
                 },
                 content: util('webdrivertorso')
             })
-            .catch(() => {});
+            .catch(sendError);
     }
     if (/rick {0,}roll/i.test(message.content)) {
-        message.reply(`<${util('rickroll')}>`).catch(() => {});
+        message.reply(`<${util('rickroll')}>`).catch(sendError);
     }
     if (/coffin {0,}dance/i.test(message.content)) {
-        message.reply(util('coffindance')).catch(() => {});
+        message.reply(util('coffindance')).catch(sendError);
     }
     if (
         message.guild &&
@@ -88,6 +88,6 @@ export default new AmethystEvent('messageCreate', (message) => {
             return x;
         };
 
-        message.reply(reverse(`C'est le monde à l'envers 🙃`)).catch(() => {});
+        message.reply(reverse(`C'est le monde à l'envers 🙃`)).catch(sendError);
     }
 });

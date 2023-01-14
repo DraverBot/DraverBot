@@ -2,6 +2,7 @@ import { Precondition } from 'amethystjs';
 import ms from 'ms';
 import replies from '../data/replies';
 import { GuildMember } from 'discord.js';
+import { sendError } from '../utils/toolbox';
 
 export default new Precondition('validTime').setChatInputRun(({ interaction, options }) => {
     const time = options.getString('temps') || options.getString('durée');
@@ -17,7 +18,7 @@ export default new Precondition('validTime').setChatInputRun(({ interaction, opt
                 embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user)],
                 ephemeral: true
             })
-            .catch(() => {});
+            .catch(sendError);
         return {
             ok: false,
             isChatInput: true,

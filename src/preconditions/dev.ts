@@ -1,5 +1,6 @@
 import { Precondition } from 'amethystjs';
 import { util } from '../utils/functions';
+import { sendError } from '../utils/toolbox';
 
 export default new Precondition('dev')
     .setMessageRun(({ message }) => {
@@ -17,7 +18,7 @@ export default new Precondition('dev')
     })
     .setButtonRun(({ button, user }) => {
         if (user.id !== util('dev')) {
-            button.deferUpdate().catch(() => {});
+            button.deferUpdate().catch(sendError);
             return {
                 ok: false,
                 isChatInput: false,
