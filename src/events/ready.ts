@@ -87,7 +87,7 @@ export default new AmethystEvent('ready', async (client) => {
 
         await channel.bulkDelete(100, true).catch(console.log);
 
-        channel
+        const msg = await channel
             .send({
                 embeds: [
                     basicEmbed(client.user, { draverColor: true })
@@ -122,6 +122,7 @@ export default new AmethystEvent('ready', async (client) => {
                 files: ['./images/banner.png']
             })
             .catch(sendError);
+        if (msg && msg.pinnable) msg.pin().catch(sendError);
     };
     loadpanel();
 
