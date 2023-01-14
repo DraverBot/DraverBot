@@ -231,7 +231,8 @@ export default new AmethystCommand({
                             name: 'permission',
                             description: 'Permission à refuser',
                             required: true,
-                            type: ApplicationCommandOptionType.String
+                            type: ApplicationCommandOptionType.String,
+                            autocomplete: true
                         },
                         {
                             name: 'rôle',
