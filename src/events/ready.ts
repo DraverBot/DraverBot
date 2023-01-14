@@ -111,6 +111,11 @@ export default new AmethystEvent('ready', async (client) => {
                             label: 'Informations instantanées',
                             buttonId: 'DevInstantInfos',
                             style: 'Secondary'
+                        }),
+                        buildButton({
+                            label: 'Effacer les logs SQL',
+                            buttonId: 'ClearSqlLogs',
+                            style: 'Danger'
                         })
                     )
                 ],

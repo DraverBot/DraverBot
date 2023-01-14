@@ -3,5 +3,6 @@ export enum ButtonIds {
     DisplayNote = 'moderation.display-note',
     DownloadSqlLogs = 'dev.download-sql-logs',
     AnalyzeSqlLogs = 'dev.analyze-sql-logs',
-    DevInstantInfos = 'dev.display-instant-infos'
+    DevInstantInfos = 'dev.display-instant-infos',
+    ClearSqlLogs = 'dev.clear-sql-logs'
 }
