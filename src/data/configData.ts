@@ -14,6 +14,7 @@ export type configKeys = {
     suggest_enable: boolean;
     join_roles: boolean;
     suggest_thread: boolean;
+    gban: boolean;
 };
 export type configType = {
     description: string;
@@ -139,5 +140,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         type: 'boolean',
         default: false,
         description: "Création d'un fil pour une nouvelle suggestion"
+    },
+    gban: {
+        name: 'GBan',
+        value: 'gban',
+        type: 'boolean',
+        default: true,
+        description: 'Système de GBan'
     }
 };

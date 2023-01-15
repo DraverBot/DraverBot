@@ -183,7 +183,8 @@ export enum DatabaseTables {
     Notes = 'notes',
     Cooldowns = 'cooldowns',
     JoinRoles = 'join_roles',
-    Reminds = 'reminders'
+    Reminds = 'reminders',
+    GBan = 'gban_list'
 }
 export type coupons = {
     guild_id: string;
@@ -203,3 +204,8 @@ export type joinRoles = {
     guild_id: string;
     roles: string;
 };
+export type GBan = {
+    user_id: string;
+    date: string;
+    reason: string;
+}

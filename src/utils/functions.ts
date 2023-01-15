@@ -63,6 +63,9 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.JoinRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles LONGTEXT )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.GBan} ( user_id VARCHAR(255) NOT NULL PRIMARY KEY, reason VARCHAR(255) NOT NULL, date VARCHAR(255) NOT NULL )`
+        );
         resolve();
     });
 };
