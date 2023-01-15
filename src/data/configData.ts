@@ -13,6 +13,7 @@ export type configKeys = {
     suggest_channel: string;
     suggest_enable: boolean;
     join_roles: boolean;
+    suggest_thread: boolean;
 };
 export type configType = {
     description: string;
@@ -131,5 +132,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: false,
         type: 'boolean',
         description: "Activation des rôles d'arrivée"
+    },
+    suggest_thread: {
+        name: 'fil de suggestion',
+        value: 'suggest_thread',
+        type: 'boolean',
+        default: false,
+        description: "Création d'un fil pour une nouvelle suggestion"
     }
 };
