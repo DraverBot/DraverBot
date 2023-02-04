@@ -101,7 +101,7 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: null
     },
     join_message: {
-        name: "message de d'arrivée",
+        name: "message d'arrivée",
         value: 'join_message',
         description: "Message d'arrivée",
         default: `{user.mention} vient d'arriver`,
