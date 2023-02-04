@@ -37,5 +37,6 @@
     "google": "misc",
     "rappel": "misc",
     "embed": "utils",
-    "salon": "administration"
+    "salon": "administration",
+    "adminanonymat": "config"
 }

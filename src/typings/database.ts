@@ -39,7 +39,8 @@ export enum modActionType {
     JoinRoleRemoved = "Rôle d'arrivée supprimé",
     ChannelCreate = 'création de salon',
     ChannelDelete = 'suppression de salon',
-    ChannelEdit = 'Modification de salon'
+    ChannelEdit = 'Modification de salon',
+    WebhookCreationFailed = 'Échec de création de webhook'
 }
 
 export type modlogs = {
@@ -184,7 +185,8 @@ export enum DatabaseTables {
     Cooldowns = 'cooldowns',
     JoinRoles = 'join_roles',
     Reminds = 'reminders',
-    GBan = 'gban_list'
+    GBan = 'gban_list',
+    Anonymous = 'anonymous'
 }
 export type coupons = {
     guild_id: string;
@@ -208,4 +210,19 @@ export type GBan = {
     user_id: string;
     date: string;
     reason: string;
-}
+};
+export type Anonymous = {
+    guild_id: string;
+    channel_id: string;
+    webhook_url: string;
+    /**
+     * MySQL JSON array
+     */
+    banned_roles: string;
+    /**
+     * MySQL JSON array
+     */
+    banned_users: string;
+    id: number;
+    name: string;
+};

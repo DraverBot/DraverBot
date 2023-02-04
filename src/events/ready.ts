@@ -15,6 +15,7 @@ import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
 import { basicEmbed, buildButton, numerize, random, row, sendError } from '../utils/toolbox';
 import { CooldownsManager } from '../managers/cooldownsManager';
 import { RemindsManager } from '../managers/remindsManager';
+import { AnonymousManager } from '../managers/Anonymous';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -39,6 +40,7 @@ export default new AmethystEvent('ready', async (client) => {
     });
     client.cooldownsManager = new CooldownsManager();
     client.RemindsManager = new RemindsManager(client);
+    client.AnonymousManager = new AnonymousManager(client);
 
     // Start managers
     client.coinsManager.start();
@@ -158,5 +160,6 @@ declare module 'discord.js' {
         ticketsManager: TicketsManager;
         cooldownsManager: CooldownsManager;
         RemindsManager: RemindsManager;
+        AnonymousManager: AnonymousManager;
     }
 }

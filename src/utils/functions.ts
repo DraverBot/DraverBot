@@ -66,6 +66,9 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.GBan} ( user_id VARCHAR(255) NOT NULL PRIMARY KEY, reason VARCHAR(255) NOT NULL, date VARCHAR(255) NOT NULL )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Anonymous} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, webhook_url VARCHAR(255) NOT NULL, banned_roles LONGTEXT, banned_users LONGTEXT, name VARCHAR(255) NOT NULL DEFAULT 'Anonyme', id INTEGER(255) NOT NULL PRIMARY KEY AUTO_INCREMENT )`
+        );
         resolve();
     });
 };
