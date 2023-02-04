@@ -322,11 +322,11 @@ export const confirm = ({
 export const setAsQuestion = (embed: EmbedBuilder) => {
     return embed.setColor('Grey');
 };
-export const plurial = (num: number, opts?: { singular?: string; plurial?: string }) => {
+export const plurial = (num: number | any[], opts?: { singular?: string; plurial?: string }) => {
     const singular = opts?.singular ?? '';
     const plurial = opts?.plurial ?? 's';
 
-    return num === 1 ? singular : plurial;
+    return (typeof num === 'number' ? num : num.length) === 1 ? singular : plurial;
 };
 export const checkCtx = (interaction: BaseInteraction, user: User) => {
     if (interaction.user.id !== user.id) {
