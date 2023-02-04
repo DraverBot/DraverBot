@@ -117,6 +117,23 @@ export default new AmethystEvent('ready', async (client) => {
                             buttonId: 'ClearSqlLogs',
                             style: 'Danger'
                         })
+                    ),
+                    row(
+                        buildButton({
+                            label: 'Liste des GBan',
+                            style: 'Primary',
+                            buttonId: 'GBanList'
+                        }),
+                        buildButton({
+                            label: 'GBannir un utilisateur',
+                            buttonId: 'GBanUser',
+                            style: 'Success'
+                        }),
+                        buildButton({
+                            label: 'UnGBannir un utilisateur',
+                            buttonId: 'UnGBanUser',
+                            style: 'Danger'
+                        })
                     )
                 ],
                 files: ['./images/banner.png']
@@ -128,3 +145,18 @@ export default new AmethystEvent('ready', async (client) => {
 
     setInterval(updateActivity, 20000);
 });
+
+declare module 'discord.js' {
+    interface Client {
+        modulesManager: ModulesManager;
+        coinsManager: CoinsManager<'multiguild'>;
+        interserver: InterserverManager;
+        levelsManager: LevelsManager;
+        configsManager: ConfigsManager;
+        blagues: BlaguesAPI;
+        giveaways: GiveawayManager;
+        ticketsManager: TicketsManager;
+        cooldownsManager: CooldownsManager;
+        RemindsManager: RemindsManager;
+    }
+}

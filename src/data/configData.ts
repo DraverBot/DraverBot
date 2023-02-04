@@ -15,6 +15,7 @@ export type configKeys = {
     join_roles: boolean;
     suggest_thread: boolean;
     gban: boolean;
+    gban_ban: boolean;
 };
 export type configType = {
     description: string;
@@ -147,5 +148,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         type: 'boolean',
         default: true,
         description: 'Système de GBan'
+    },
+    gban_ban: {
+        name: 'Bannissement si GBan',
+        value: 'gban_ban',
+        description: `Banni le membre si il est GBanni (sinon expulsé)`,
+        default: false,
+        type: 'boolean'
     }
 };

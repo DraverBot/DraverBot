@@ -29,6 +29,7 @@ import {
     plurial,
     random,
     row,
+    sendError,
     subcmd,
     waitForReplies
 } from '../utils/toolbox';
@@ -177,6 +178,8 @@ export default new AmethystCommand({
 
             frequence = modalResult.fields.getTextInputValue('frequence-field');
             modalResult.deferUpdate();
+        } else {
+            await reply.deferUpdate().catch(sendError);
         }
 
         interaction

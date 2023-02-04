@@ -4,5 +4,8 @@ export enum ButtonIds {
     DownloadSqlLogs = 'dev.download-sql-logs',
     AnalyzeSqlLogs = 'dev.analyze-sql-logs',
     DevInstantInfos = 'dev.display-instant-infos',
-    ClearSqlLogs = 'dev.clear-sql-logs'
+    ClearSqlLogs = 'dev.clear-sql-logs',
+    GBanUser = 'bot-admin.gban.ban-user',
+    UnGBanUser = 'bot-admin.gban.unban-user',
+    GBanList = 'bot-admin.gban.list'
 }

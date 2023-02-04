@@ -1,16 +1,6 @@
 import { AmethystClient } from 'amethystjs';
-import BlaguesAPI from 'blagues-api';
-import { CoinsManager } from 'coins-manager';
 import { Partials } from 'discord.js';
 import { config } from 'dotenv';
-import { ConfigsManager } from './managers/configsManager';
-import { InterserverManager } from './managers/interserverManager';
-import { LevelsManager } from './managers/levelsManager';
-import { ModulesManager } from './managers/modulesManager';
-import { GiveawayManager } from 'discordjs-giveaways';
-import { TicketsManager } from './managers/ticketsManager';
-import { CooldownsManager } from './managers/cooldownsManager';
-import { RemindsManager } from './managers/remindsManager';
 
 config();
 
@@ -40,20 +30,6 @@ declare module 'amethystjs' {
     }
     interface commandOptions {
         module: string;
-    }
-}
-declare module 'discord.js' {
-    interface Client {
-        modulesManager: ModulesManager;
-        coinsManager: CoinsManager<'multiguild'>;
-        interserver: InterserverManager;
-        levelsManager: LevelsManager;
-        configsManager: ConfigsManager;
-        blagues: BlaguesAPI;
-        giveaways: GiveawayManager;
-        ticketsManager: TicketsManager;
-        cooldownsManager: CooldownsManager;
-        RemindsManager: RemindsManager;
     }
 }
 
