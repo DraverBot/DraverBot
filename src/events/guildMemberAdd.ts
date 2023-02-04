@@ -3,7 +3,7 @@ import { replaceFluxVariables } from '../utils/vars';
 import { TextChannel } from 'discord.js';
 import query from '../utils/query';
 import { DatabaseTables, joinRoles } from '../typings/database';
-import { sendError } from '../utils/toolbox';
+import { addModLog, basicEmbed, evokerColor, sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('guildMemberAdd', async (member) => {
     const guild = member.guild;
@@ -12,9 +12,45 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
         msg: guild.client.configsManager.getValue(guild.id, 'join_message'),
         enabled: guild.client.configsManager.getValue(guild.id, 'join_active'),
         channel: guild.client.configsManager.getValue(guild.id, 'join_channel'),
-        roles: guild.client.configsManager.getValue(member.guild.id, 'join_roles')
+        roles: guild.client.configsManager.getValue(member.guild.id, 'join_roles'),
+        gban: guild.client.configsManager.getValue(guild.id, 'gban'),
+        gbanAction: guild.client.configsManager.getValue(guild.id, 'gban_ban') ? 'ban' : 'kick'
     };
 
+    if (configs.gban && member.client.GBan.isGbanned(member.id)) {
+        await member
+            .send({
+                embeds: [
+                    basicEmbed(member.user)
+                        .setTitle('🚫 GBanni')
+                        .setDescription(
+                            `Vous êtes **GBanni** de Draver, ce qui signifie que vous ne pouvez rejoindre aucun serveur dont le système est activé.\nVous avez donc été ${
+                                configs.gbanAction === 'ban' ? 'banni' : 'expulsé'
+                            } de ${member.guild.name}.`
+                        )
+                        .setColor(evokerColor(member.guild))
+                ]
+            })
+            .catch(() => {});
+
+        if (configs.gbanAction === 'ban') {
+            member
+                .ban({
+                    reason: `Utilisateur GBanni`
+                })
+                .catch(() => {});
+        } else {
+            await member.kick(`Membre GBanni`).catch(() => {});
+        }
+
+        addModLog({
+            guild: member.guild,
+            member_id: member.id,
+            mod_id: member.client.user.id,
+            reason: `Utilisateur GBanni`,
+            type: 'Ban'
+        }).catch(() => {});
+    }
     if (configs.roles && !member.user.bot) {
         const roles = await query<joinRoles>(
             `SELECT roles FROM ${DatabaseTables.JoinRoles} WHERE guild_id='${member.guild.id}'`
