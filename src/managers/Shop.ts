@@ -1,8 +1,9 @@
 import { CoinsManager } from 'coins-manager';
 import { Collection } from 'discord.js';
-import { DatabaseTables, Inventory, InventoryItem, ShopItem } from '../typings/database';
+import { DatabaseTables, Inventory, InventoryItem, ShopItem, ShopItemType } from '../typings/database';
 import query from '../utils/query';
 import { ShopManagerErrorReturns } from '../typings/managers';
+import { sqliseString } from '../utils/toolbox';
 
 export class ShopManager {
     private coinsManger: CoinsManager<'multiguild'>;
@@ -15,9 +16,9 @@ export class ShopManager {
         this.start();
     }
 
-    public buyItem({ guild_id, user_id, itemName }: { guild_id: string; user_id: string; itemName: string }) {
+    public buyItem({ guild_id, user_id, itemId }: { guild_id: string; user_id: string; itemId: number }) {
         const shop = this.shops.get(guild_id);
-        const item = shop.items.find((x) => x.itemName === itemName);
+        const item = shop.items.find((x) => x.id === itemId);
         const data = this.coinsManger.getData({
             guild_id,
             user_id
@@ -25,6 +26,122 @@ export class ShopManager {
 
         if (item.quantityLeft === 0 && item.quantity > 0) return ShopManagerErrorReturns.EmptyStock;
         if (item.price > data.coins) return ShopManagerErrorReturns.NotEnoughCoins;
+
+        this.addInInventory({
+            user_id,
+            guild_id,
+            item: {
+                itemName: item.itemName,
+                value: item.price
+            }
+        });
+        this.coinsManger.removeCoins({
+            guild_id,
+            user_id,
+            coins: item.price
+        });
+        if (item.quantity > 0) {
+            item.quantityLeft--;
+            shop.items[shop.items.indexOf(item)].quantityLeft--;
+
+            this.shops.set(guild_id, shop);
+            query(`UPDATE ${DatabaseTables.Shop} SET quantityLeft='${item.quantityLeft}' WHERE id='${itemId}'`);
+        }
+        return true;
+    }
+    public getShop(guild_id: string) {
+        return this.shops.get(guild_id)?.items ?? [];
+    }
+    public updateItem(
+        guild_id: string,
+        {
+            id,
+            name,
+            value,
+            addStock,
+            removeStock,
+            quantity,
+            roleId
+        }: {
+            id: number;
+            name?: string;
+            value?: number;
+            addStock?: number;
+            removeStock?: number;
+            quantity?: number;
+            roleId?: string;
+        }
+    ) {
+        const shop = this.getShop(guild_id);
+        const item = shop.find((x) => x.id === id);
+
+        if (!item) return ShopManagerErrorReturns.ItemNotFound;
+
+        const index = shop.indexOf(item);
+        if (name) item.itemName = name;
+        if (value) item.price = value;
+        if (addStock && !removeStock) item.quantityLeft += Math.abs(addStock);
+        if (removeStock && !addStock) item.quantityLeft -= Math.abs(removeStock);
+        if (quantity) {
+            item.quantity = Math.abs(quantity);
+            if (item.quantityLeft > item.quantity) item.quantityLeft = item.quantity;
+        }
+        if (roleId) item.roleId;
+
+        shop[index] = item;
+
+        this.shops.set(guild_id, { guild_id, items: shop });
+        query(
+            `UPDATE ${DatabaseTables.Shop} SET itemName="${sqliseString(item.itemName)}", quantity="${
+                item.quantity
+            }", quantityLeft='${item.quantityLeft}', price="${item.price}", roleId="${roleId}" WHERE id='${item.id}'`
+        );
+        return true;
+    }
+    public addItem(
+        guild_id: string,
+        {
+            name,
+            price,
+            type,
+            roleId = '',
+            quantity = 0
+        }: { name: string; price: number; type: ShopItemType; roleId?: string; quantity?: number }
+    ) {
+        return new Promise(async (resolve) => {
+            const shop = this.getShop(guild_id);
+
+            if (shop.find((x) => x.itemName === name && x.price === price))
+                resolve(ShopManagerErrorReturns.ItemAlreadyExist);
+            await query(
+                `INSERT INTO ${
+                    DatabaseTables.Shop
+                } ( guild_id, itemName, price, quantity, quantityLeft, roleId, itemType ) VALUES ( "${guild_id}", "${sqliseString(
+                    name
+                )}", "${price}", "${quantity}", "${quantity}", "${roleId}", "${type}" )`
+            );
+            const result = await query<ShopItem>(
+                `SELECT * FROM ${DatabaseTables.Shop} WHERE guild_id='${guild_id}' AND itemName="${sqliseString(
+                    name
+                )}" AND type="${type}" ORDER BY id DESC`
+            );
+
+            shop.push(result[0]);
+            this.shops.set(guild_id, { guild_id, items: shop });
+
+            return resolve(result[0]);
+        });
+    }
+    public removeItem(guild_id: string, id: number) {
+        const shop = this.getShop(guild_id);
+        const item = shop.find((x) => x.id === id);
+        if (!item) return ShopManagerErrorReturns.ItemNotFound;
+
+        shop.splice(shop.indexOf(item), 1);
+        this.shops.set(guild_id, { guild_id, items: shop });
+
+        query(`DELETE FROM ${DatabaseTables.Shop} WHERE id='${id}'`);
+        return true;
     }
 
     public getInventory({ user_id, guild_id }: { user_id: string; guild_id: string }): InventoryItem[] {

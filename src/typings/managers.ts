@@ -78,5 +78,7 @@ export type reminds = {
 };
 export enum ShopManagerErrorReturns {
     EmptyStock = 'Rupture de stock',
-    NotEnoughCoins = 'Pas assez de pièces'
+    NotEnoughCoins = 'Pas assez de pièces',
+    ItemNotFound = 'Item introuvable',
+    ItemAlreadyExist = "L'item existe déjà"
 }

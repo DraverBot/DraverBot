@@ -240,6 +240,10 @@ export type ShopItem = {
     quantity: 0 | number;
     quantityLeft: number;
     roleId: string;
+    /**
+     * Primary key
+     */
+    id: number;
 };
 export type InventoryItem = {
     name: string;
