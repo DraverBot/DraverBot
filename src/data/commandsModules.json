@@ -38,5 +38,6 @@
     "rappel": "misc",
     "embed": "utils",
     "salon": "administration",
-    "adminanonymat": "config"
+    "adminanonymat": "config",
+    "adminmagasin": "economy"
 }
