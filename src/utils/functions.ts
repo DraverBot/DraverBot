@@ -69,6 +69,12 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Anonymous} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, webhook_url VARCHAR(255) NOT NULL, banned_roles LONGTEXT, banned_users LONGTEXT, name VARCHAR(255) NOT NULL DEFAULT 'Anonyme', id INTEGER(255) NOT NULL PRIMARY KEY AUTO_INCREMENT )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Shop} ( guild_id VARCHAR(255) NOT NULL, itemType VARCHAR(255) NOT NULL, itemName VARCHAR(255) NOT NULL, price INTEGER(255) NOT NULL, quantity INTEGER(255) NOT NULL DEFAULT '0', quantityLeft INTEGER(255) NOT NULL, roleId VARCHAR(255) DEFAULT NULL )`
+        );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Inventories} ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, inventory LONGTEXT DEFAULT '[]' )`
+        );
         resolve();
     });
 };

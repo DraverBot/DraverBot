@@ -186,7 +186,9 @@ export enum DatabaseTables {
     JoinRoles = 'join_roles',
     Reminds = 'reminders',
     GBan = 'gban_list',
-    Anonymous = 'anonymous'
+    Anonymous = 'anonymous',
+    Shop = 'shops_list',
+    Inventories = 'inventories'
 }
 export type coupons = {
     guild_id: string;
@@ -225,4 +227,27 @@ export type Anonymous = {
     banned_users: string;
     id: number;
     name: string;
+};
+export type ShopItemType = 'role' | 'item';
+export type ShopItem = {
+    guild_id: string;
+    itemType: ShopItemType;
+    itemName: string;
+    price: number;
+    /**
+     * If set to 0, it is infinite
+     */
+    quantity: 0 | number;
+    quantityLeft: number;
+    roleId: string;
+};
+export type InventoryItem = {
+    name: string;
+    quantity: number;
+    value: number;
+};
+export type Inventory<Raw extends boolean = true> = {
+    guild_id: string;
+    user_id: string;
+    inventory: If<Raw, string, InventoryItem[]>;
 };

@@ -76,3 +76,7 @@ export type reminds = {
     id: number;
     setDate: string;
 };
+export enum ShopManagerErrorReturns {
+    EmptyStock = 'Rupture de stock',
+    NotEnoughCoins = 'Pas assez de pièces'
+}
