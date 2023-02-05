@@ -107,7 +107,7 @@ export class ShopManager {
             roleId = '',
             quantity = 0
         }: { name: string; price: number; type: ShopItemType; roleId?: string; quantity?: number }
-    ) {
+    ): Promise<ShopManagerErrorReturns.ItemAlreadyExist | ShopItem> {
         return new Promise(async (resolve) => {
             const shop = this.getShop(guild_id);
 
@@ -123,7 +123,7 @@ export class ShopManager {
             const result = await query<ShopItem>(
                 `SELECT * FROM ${DatabaseTables.Shop} WHERE guild_id='${guild_id}' AND itemName="${sqliseString(
                     name
-                )}" AND type="${type}" ORDER BY id DESC`
+                )}" AND itemType="${type}" ORDER BY id DESC`
             );
 
             shop.push(result[0]);
