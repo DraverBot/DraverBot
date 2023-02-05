@@ -41,7 +41,8 @@ export class Paginator {
         const reply = (await systemReply(this.options.interaction, {
             components: this.components,
             embeds: [this.pickEmbed()],
-            fetchReply: true
+            fetchReply: true,
+            ephemeral: this.options.ephemeral ?? false
         }).catch(sendError)) as Message<true>;
 
         if (!reply) return;

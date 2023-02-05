@@ -58,10 +58,11 @@ export type checkPermsOptions = {
     checkSelf?: boolean;
 };
 export type paginatorOptions = {
-    interaction: CommandInteraction;
+    interaction: CommandInteraction | ButtonInteraction;
     user: User;
     embeds: EmbedBuilder[];
     time?: number;
+    ephemeral?: boolean;
 };
 export type updateLogOptions = {
     guild: Guild;

@@ -216,12 +216,19 @@ export const checkPerms = ({
     if (checkOwner && member.id === member.guild.ownerId && !modOwner) return send('memberOwner');
     return true;
 };
-export const pagination = ({ interaction, user, embeds, time = 120000 }: paginatorOptions): Paginator => {
+export const pagination = ({
+    interaction,
+    user,
+    embeds,
+    time = 120000,
+    ephemeral = false
+}: paginatorOptions): Paginator => {
     return new Paginator({
         interaction,
         user,
         embeds,
-        time
+        time,
+        ephemeral
     });
 };
 export const numerize = (int: number) => int.toLocaleString('fr');
