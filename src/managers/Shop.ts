@@ -41,7 +41,6 @@ export class ShopManager {
             coins: item.price
         });
         if (item.quantity > 0) {
-            item.quantityLeft--;
             shop.items[shop.items.indexOf(item)].quantityLeft--;
 
             this.shops.set(guild_id, shop);
@@ -158,8 +157,12 @@ export class ShopManager {
         guild_id: string;
         item: { itemName: string; value: number };
     }) {
+        if (!this.inventories.has(guild_id)) this.inventories.set(guild_id, new Collection());
+
         const inventory = this.getInventory({ user_id, guild_id });
         const testItem = inventory.find((x) => x.name === item.itemName && x.value === item.value);
+
+        const wasEmpty = inventory.length < 1;
 
         if (testItem) {
             inventory[inventory.indexOf(testItem)].quantity++;
@@ -173,11 +176,20 @@ export class ShopManager {
         }
 
         this.inventories.get(guild_id).set(user_id, { guild_id, user_id, inventory });
-        query(
-            `UPDATE ${DatabaseTables.Inventories} SET inventory='${JSON.stringify(
-                inventory.map((x) => removeKey(x, 'id'))
-            )}' WHERE guild_id='${guild_id}' AND user_id='${user_id}'`
-        );
+        if (wasEmpty)
+            query(
+                `INSERT INTO ${
+                    DatabaseTables.Inventories
+                } ( guild_id, user_id, inventory ) VALUES ( "${guild_id}", "${user_id}", '${JSON.stringify(
+                    inventory.map((x) => removeKey(x, 'id'))
+                )}' )`
+            );
+        else
+            query(
+                `UPDATE ${DatabaseTables.Inventories} SET inventory='${JSON.stringify(
+                    inventory.map((x) => removeKey(x, 'id'))
+                )}' WHERE guild_id='${guild_id}' AND user_id='${user_id}'`
+            );
         return inventory;
     }
     public removeFromInventory({
