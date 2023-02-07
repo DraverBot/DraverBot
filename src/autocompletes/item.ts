@@ -16,6 +16,9 @@ export default new AutocompleteListener({
                     focusedValue.toLowerCase().includes(x.itemName.toLowerCase())
             )
             .splice(0, 24)
-            .map((x) => ({ name: x.itemName, value: x.id.toString() }));
+            .map((x) => ({
+                name: `${x.itemName} - ${x.itemType === 'item' ? 'objet' : x.itemType === 'role' ? 'rôle' : 'inconnu'}`,
+                value: x.id.toString()
+            }));
     }
 });
