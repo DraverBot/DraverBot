@@ -39,5 +39,6 @@
     "embed": "utils",
     "salon": "administration",
     "adminanonymat": "config",
-    "adminmagasin": "economy"
+    "adminmagasin": "economy",
+    "magasin": "economy"
 }
