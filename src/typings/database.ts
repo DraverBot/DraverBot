@@ -250,8 +250,8 @@ export type InventoryItem = {
     quantity: number;
     value: number;
 };
-export type Inventory<Raw extends boolean = true> = {
+export type Inventory<Raw extends boolean = true, Identified extends boolean = false> = {
     guild_id: string;
     user_id: string;
-    inventory: If<Raw, string, InventoryItem[]>;
+    inventory: If<Raw, string, (InventoryItem & If<Identified, { id: number }, Record<string, never>>)[]>;
 };

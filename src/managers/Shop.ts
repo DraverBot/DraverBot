@@ -3,12 +3,12 @@ import { Collection } from 'discord.js';
 import { DatabaseTables, Inventory, InventoryItem, ShopItem, ShopItemType } from '../typings/database';
 import query from '../utils/query';
 import { ShopManagerErrorReturns } from '../typings/managers';
-import { sqliseString } from '../utils/toolbox';
+import { removeKey, sqliseString } from '../utils/toolbox';
 
 export class ShopManager {
     private coinsManger: CoinsManager<'multiguild'>;
     private shops: Collection<string, { guild_id: string; items: ShopItem[] }> = new Collection();
-    private inventories: Collection<string, Collection<string, Inventory<false>>> = new Collection();
+    private inventories: Collection<string, Collection<string, Inventory<false, true>>> = new Collection();
 
     constructor(coinsManger: CoinsManager<'multiguild'>) {
         this.coinsManger = coinsManger;
@@ -144,7 +144,7 @@ export class ShopManager {
         return true;
     }
 
-    public getInventory({ user_id, guild_id }: { user_id: string; guild_id: string }): InventoryItem[] {
+    public getInventory({ user_id, guild_id }: { user_id: string; guild_id: string }) {
         if (this.inventories.has(guild_id) && this.inventories.get(guild_id).has(user_id))
             return this.inventories.get(guild_id).get(user_id).inventory;
         return [];
@@ -167,14 +167,15 @@ export class ShopManager {
             inventory.push({
                 value: item.value,
                 name: item.itemName,
-                quantity: 1
+                quantity: 1,
+                id: inventory.length
             });
         }
 
         this.inventories.get(guild_id).set(user_id, { guild_id, user_id, inventory });
         query(
             `UPDATE ${DatabaseTables.Inventories} SET inventory='${JSON.stringify(
-                inventory
+                inventory.map((x) => removeKey(x, 'id'))
             )}' WHERE guild_id='${guild_id}' AND user_id='${user_id}'`
         );
         return inventory;
@@ -203,7 +204,7 @@ export class ShopManager {
         this.inventories.get(guild_id).set(user_id, { guild_id, user_id, inventory });
         query(
             `UPDATE ${DatabaseTables.Inventories} SET inventory='${JSON.stringify(
-                inventory
+                inventory.map((x) => removeKey(x, 'id'))
             )}' WHERE guild_id='${guild_id}' AND user_id='${user_id}'`
         );
     }
@@ -227,7 +228,7 @@ export class ShopManager {
 
             this.inventories.get(inventory.guild_id).set(inventory.user_id, {
                 ...inventory,
-                inventory: JSON.parse(inventory.inventory)
+                inventory: (JSON.parse(inventory.inventory) as InventoryItem[]).map((v, i) => ({ ...v, id: i }))
             });
         });
     }
