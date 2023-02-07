@@ -15,6 +15,7 @@ import {
     basicEmbed,
     buildButton,
     checkCtx,
+    confirm,
     evokerColor,
     hint,
     numerize,
@@ -32,6 +33,7 @@ import { ShopManagerErrorReturns } from '../typings/managers';
 import { util } from '../utils/functions';
 import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
+import { confirmReturn } from '../typings/functions';
 
 export default new AmethystCommand({
     name: 'adminmagasin',
@@ -99,6 +101,20 @@ export default new AmethystCommand({
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
+                }
+            ]
+        },
+        {
+            name: 'supprimer',
+            description: 'Supprime un item',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'item',
+                    description: 'Item à supprimer',
+                    type: ApplicationCommandOptionType.String,
+                    autocomplete: true,
+                    required: true
                 }
             ]
         }
@@ -565,5 +581,38 @@ export default new AmethystCommand({
                     .catch(() => {});
             }
         });
+    }
+    if (cmd === 'supprimer') {
+        const id = parseInt(options.getString('item'));
+        const item = interaction.client.shop.getShop(interaction.guild.id).find((x) => x.id === id);
+
+        const confirmation = (await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle("Suppression d'item")
+                .setDescription(`Êtes-vous sûr de vouloir supprimer l'item \`${item.itemName}\` ?`)
+        }).catch(() => {})) as confirmReturn;
+
+        if (confirmation === 'cancel' || !confirmation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+
+        interaction.client.shop.removeItem(interaction.guild.id, id);
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Item supprimé')
+                        .setDescription(`L'item \`${item.itemName}\` a été supprimé`)
+                ],
+                components: []
+            })
+            .catch(() => {});
     }
 });
