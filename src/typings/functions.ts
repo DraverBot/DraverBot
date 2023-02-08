@@ -94,3 +94,4 @@ export type sqlLog<T = unknown, Completed extends boolean = true> = {
 } & (Completed extends true
     ? { isError: boolean; errorMessage: string | null; endate: number; response: QueryResult<T> | null }
     : Record<string, never>);
+export type ElementType<T extends any[]> = T extends Array<infer U> ? U : never;
