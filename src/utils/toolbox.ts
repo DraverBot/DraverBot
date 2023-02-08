@@ -11,6 +11,7 @@ import {
     ButtonStyle,
     CategoryChannel,
     ChannelType,
+    ChatInputCommandInteraction,
     Client,
     ColorResolvable,
     CommandInteraction,
@@ -33,6 +34,7 @@ import { yesNoRow } from '../data/buttons';
 import replies, { anyUser, replyKey } from '../data/replies';
 import { Paginator } from '../managers/Paginator';
 import {
+    ElementType,
     addModLog as addModLogType,
     checkPermsOptions,
     checkRoleOptions,
@@ -601,4 +603,37 @@ export const sendError = (error: unknown) => {
 export const removeKey = <T, K extends keyof T>(obj: T, key: K): Omit<T, K> => {
     const { [key]: _, ...rest } = obj;
     return rest;
+};
+export const paginatorize = <T extends any[], K extends ElementType<T>>({
+    array,
+    embedFunction,
+    mapper,
+    interaction,
+    user,
+    ephemeral = false,
+    time = 120000
+}: {
+    array: T;
+    embedFunction: () => EmbedBuilder;
+    mapper: (embed: EmbedBuilder, item: K) => EmbedBuilder;
+    interaction: ButtonInteraction | ChatInputCommandInteraction | CommandInteraction;
+    user: User;
+    ephemeral?: boolean;
+    time?: number;
+}) => {
+    const embeds = [embedFunction()];
+
+    array.forEach((v, i) => {
+        if (i % 5 === 0 && i > 0) embeds.push(embedFunction());
+
+        mapper(embeds[embeds.length - 1], v);
+    });
+
+    pagination({
+        interaction,
+        time,
+        ephemeral,
+        embeds,
+        user
+    });
 };
