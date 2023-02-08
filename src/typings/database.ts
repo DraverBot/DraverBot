@@ -249,6 +249,8 @@ export type InventoryItem = {
     name: string;
     quantity: number;
     value: number;
+    roleId: 'none' | string;
+    type: ShopItemType;
 };
 export type Inventory<Raw extends boolean = true, Identified extends boolean = false> = {
     guild_id: string;

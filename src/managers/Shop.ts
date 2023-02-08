@@ -32,7 +32,9 @@ export class ShopManager {
             guild_id,
             item: {
                 itemName: item.itemName,
-                value: item.price
+                value: item.price,
+                roleId: item.roleId.length > 0 ? item.roleId : null,
+                type: item.itemType
             }
         });
         this.coinsManger.removeCoins({
@@ -155,7 +157,7 @@ export class ShopManager {
     }: {
         user_id: string;
         guild_id: string;
-        item: { itemName: string; value: number };
+        item: { itemName: string; value: number; roleId?: string; type: ShopItemType };
     }) {
         if (!this.inventories.has(guild_id)) this.inventories.set(guild_id, new Collection());
 
@@ -171,7 +173,9 @@ export class ShopManager {
                 value: item.value,
                 name: item.itemName,
                 quantity: 1,
-                id: inventory.length
+                id: inventory.length,
+                roleId: item.roleId ?? 'none',
+                type: item.type
             });
         }
 
