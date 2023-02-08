@@ -150,6 +150,12 @@ export class ShopManager {
             return this.inventories.get(guild_id).get(user_id).inventory;
         return [];
     }
+    private getId(array: (InventoryItem & { id: number })[]) {
+        const sorted = array.sort((a, b) => a.id - b.id);
+        if (sorted.length === 0) return 0;
+
+        return sorted[sorted.length - 1].id + 1;
+    }
     public addInInventory({
         user_id,
         guild_id,
@@ -173,7 +179,7 @@ export class ShopManager {
                 value: item.value,
                 name: item.itemName,
                 quantity: 1,
-                id: inventory.length,
+                id: this.getId(inventory),
                 roleId: item.roleId ?? 'none',
                 type: item.type
             });
@@ -199,16 +205,16 @@ export class ShopManager {
     public removeFromInventory({
         user_id,
         guild_id,
-        itemData,
+        itemId,
         quantity = 1
     }: {
         user_id: string;
         guild_id: string;
-        itemData: { name: string; value: number };
+        itemId: number;
         quantity?: number;
     }) {
         const inventory = this.getInventory({ user_id, guild_id });
-        const item = inventory.find((x) => x.name === itemData.name && x.value === itemData.value);
+        const item = inventory.find((x) => x.id === itemId);
 
         if (!item) return inventory;
         if (item.quantity - quantity < 1) {
