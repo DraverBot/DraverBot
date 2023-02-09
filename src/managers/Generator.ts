@@ -10,12 +10,12 @@ type dataType = {
 };
 
 export class WordGenerator {
-    private letters: string;
+    private _letters: string;
     public readonly data: dataType;
     private size: number;
 
     constructor(data: dataType) {
-        this.letters = '';
+        this._letters = '';
         this.data = data;
         this.size = data.length || 16;
 
@@ -23,21 +23,21 @@ export class WordGenerator {
     }
 
     private init() {
-        if (this.data.letters == true) this.letters = 'abcdefghijklmnopqrstuvwx';
-        if (this.data.capitals == true) this.letters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        if (this.data.numbers == true) this.letters += '012345678';
-        if (this.data.special == true) this.letters += '+×÷=/_€£¥₩!@#$%^&*()-:;,?`~|<>{}[]]}';
-        if (this.data.includeSpaces == true) this.letters += ' ';
+        if (this.data.letters == true) this._letters = 'abcdefghijklmnopqrstuvwx';
+        if (this.data.capitals == true) this._letters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if (this.data.numbers == true) this._letters += '0123456789';
+        if (this.data.special == true) this._letters += '+×÷=/_€£¥₩!@#$%^&*()-:;,?`~|<>{}[]]}';
+        if (this.data.includeSpaces == true) this._letters += ' ';
 
         if (this.data.overload !== undefined && Array.isArray(this.data.overload)) {
             for (let i = 0; i < this.data.overload.length; i++) {
                 const charact = this.data.overload[i];
-                if (!this.letters.includes(charact)) this.letters += charact;
+                if (!this._letters.includes(charact)) this._letters += charact;
             }
         }
         if (this.data.charsToRemove !== undefined && Array.isArray(this.data.charsToRemove)) {
             for (const char of this.data.charsToRemove) {
-                this.letters = this.letters.replace(char, '');
+                this._letters = this._letters.replace(char, '');
             }
         }
     }
@@ -46,11 +46,14 @@ export class WordGenerator {
 
         let word = '';
         for (let i = 0; i < this.size; i++) {
-            const charact = this.letters[Math.floor(Math.random() * this.letters.length)];
+            const charact = this._letters[Math.floor(Math.random() * this._letters.length)];
 
             word += charact;
         }
 
         return word;
+    }
+    public get letters() {
+        return this._letters;
     }
 }

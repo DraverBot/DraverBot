@@ -188,7 +188,8 @@ export enum DatabaseTables {
     GBan = 'gban_list',
     Anonymous = 'anonymous',
     Shop = 'shops_list',
-    Inventories = 'inventories'
+    Inventories = 'inventories',
+    Passwords = 'passwords_storage'
 }
 export type coupons = {
     guild_id: string;
@@ -256,4 +257,9 @@ export type Inventory<Raw extends boolean = true, Identified extends boolean = f
     guild_id: string;
     user_id: string;
     inventory: If<Raw, string, (InventoryItem & If<Identified, { id: number }, Record<string, never>>)[]>;
+};
+export type passwords = {
+    user_id: string;
+    input: string;
+    value: string;
 };

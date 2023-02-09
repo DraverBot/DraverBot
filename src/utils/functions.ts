@@ -75,6 +75,9 @@ export const checkDatabase = (): Promise<void> => {
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Inventories} ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, inventory LONGTEXT DEFAULT '[]' )`
         );
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Passwords} ( user_id VARCHAR(255) NOT NULL, input VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL )`
+        );
         resolve();
     });
 };

@@ -18,6 +18,7 @@ import { RemindsManager } from '../managers/remindsManager';
 import { AnonymousManager } from '../managers/Anonymous';
 import { GBanSystem } from '../managers/GBanSystem';
 import { ShopManager } from '../managers/Shop';
+import { PasswordManager } from '../managers/PasswordManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -45,6 +46,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.AnonymousManager = new AnonymousManager(client);
     client.GBan = new GBanSystem();
     client.shop = new ShopManager(client.coinsManager);
+    client.passwords = new PasswordManager();
 
     // Start managers
     client.coinsManager.start();
@@ -167,5 +169,6 @@ declare module 'discord.js' {
         AnonymousManager: AnonymousManager;
         GBan: GBanSystem;
         shop: ShopManager;
+        passwords: PasswordManager;
     }
 }

@@ -9,7 +9,7 @@
     "pay": "economy",
     "banque": "economy",
     "pile-ou-face": "fun",
-    "generatepassword": "misc",
+    "password": "misc",
     "démineur": "fun",
     "classement": "information",
     "configurer": "config",
