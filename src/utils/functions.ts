@@ -73,7 +73,7 @@ export const checkDatabase = (): Promise<void> => {
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Shop} ( guild_id VARCHAR(255) NOT NULL, itemType VARCHAR(255) NOT NULL, itemName VARCHAR(255) NOT NULL, price INTEGER(255) NOT NULL, quantity INTEGER(255) NOT NULL DEFAULT '0', quantityLeft INTEGER(255) NOT NULL, roleId VARCHAR(255) DEFAULT NULL, id INTEGER(255) NOT NULL PRIMARY KEY AUTO_INCREMENT )`
         );
         await query(
-            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Inventories} ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, inventory LONGTEXT DEFAULT '[]' )`
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Inventories} ( guild_id VARCHAR(255) NOT NULL, user_id VARCHAR(255) NOT NULL, inventory LONGTEXT )`
         );
         await query(
             `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Passwords} ( user_id VARCHAR(255) NOT NULL, input VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL )`
