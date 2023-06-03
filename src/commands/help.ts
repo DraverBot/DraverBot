@@ -1,4 +1,4 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ApplicationCommandSubCommandData,
@@ -321,8 +321,37 @@ export default new AmethystCommand({
         time: 180000,
         componentType: ComponentType.StringSelect
     });
+    const buttonCollector = msg.createMessageComponentCollector({
+        time: 180000,
+        componentType: ComponentType.Button
+    });
+
+    buttonCollector.on('collect', (ctx) => {
+        if (!ctx.isButton()) return;
+        if (ctx.user.id != interaction.user.id) {
+            ctx.reply({
+                embeds: [replies.cancel()],
+                ephemeral: true
+            });
+        }
+
+        const mod = modulesData[ctx.customId as moduleType];
+        const state = interaction.client.modulesManager.enabled(interaction.guild.id, mod.id);
+
+        interaction.client.modulesManager.setState({
+            guild_id: interaction.guild.id,
+            module: mod.id,
+            state: !state
+        });
+
+        ctx.deferUpdate().catch(log4js.trace);
+        interaction.editReply({
+            components: [row<StringSelectMenuBuilder>(selector), row(moduleEnabledButton(!state, mod.id))]
+        });
+    });
 
     collector.on('collect', (ctx) => {
+        if (!ctx.isStringSelectMenu) return;
         if (ctx.user.id !== interaction.user.id) {
             ctx.reply({
                 embeds: [replies.replyNotAllowed((ctx?.member as GuildMember) ?? ctx.user)],
@@ -338,6 +367,7 @@ export default new AmethystCommand({
                     embeds: [replies.cancel()]
                 })
                 .catch(() => {});
+            collector.stop();
             return;
         }
 
@@ -359,10 +389,14 @@ export default new AmethystCommand({
                 row<StringSelectMenuBuilder>(selector),
                 row(
                     moduleEnabledButton(
-                        interaction.client.modulesManager.enabled(interaction.guild.id, ctx.values[0] as moduleType)
+                        interaction.client.modulesManager.enabled(interaction.guild.id, ctx.values[0] as moduleType),
+                        ctx.values[0]
                     )
                 )
             ]
         });
+    });
+    collector.on('end', () => {
+        buttonCollector.stop();
     });
 });

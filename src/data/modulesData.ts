@@ -5,72 +5,84 @@ export const modulesData: Record<moduleType, moduleDataType> = {
         name: 'modération',
         editable: true,
         default: true,
-        emoji: '🔨'
+        emoji: '🔨',
+        id: 'moderation'
     },
     misc: {
         name: 'divers',
         editable: true,
         default: true,
-        emoji: '☁️'
+        emoji: '☁️',
+        id: 'misc'
     },
     economy: {
         name: 'économie',
         editable: true,
         default: false,
-        emoji: '🪙'
+        emoji: '🪙',
+        id: 'economy'
     },
     administration: {
         name: 'administration',
         editable: true,
         default: true,
-        emoji: '⚒️'
+        emoji: '⚒️',
+        id: 'administration'
     },
     config: {
         name: 'configuration',
         editable: false,
         default: true,
-        emoji: '⚙️'
+        emoji: '⚙️',
+        id: 'config'
     },
     fun: {
         name: 'amusement',
         editable: true,
         default: true,
-        emoji: '🥳'
+        emoji: '🥳',
+        id: 'fun'
     },
     giveaways: {
         name: 'giveaways',
         editable: true,
         default: false,
-        emoji: '🎉'
+        emoji: '🎉',
+        id: 'giveaways'
     },
     information: {
         name: 'information',
         editable: true,
         default: true,
-        emoji: 'ℹ️'
+        emoji: 'ℹ️',
+        id: 'information'
     },
     utils: {
         name: 'utilitaires',
         editable: true,
         default: true,
-        emoji: '🔧'
+        emoji: '🔧',
+        id: 'utils'
     },
     level: {
         name: 'niveaux',
         editable: true,
         default: false,
-        emoji: '🏆'
+        emoji: '🏆',
+        id: 'level'
     },
     tickets: {
         name: 'tickets',
         editable: true,
         default: false,
-        emoji: '📩'
+        emoji: '📩',
+        id: 'tickets'
     },
     interchat: {
         name: 'interserveur',
         editable: true,
         default: false,
-        emoji: '💬'
+        emoji: '💬',
+        id: 'interchat'
     }
 };
