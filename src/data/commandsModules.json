@@ -41,5 +41,6 @@
     "adminanonymat": "config",
     "adminmagasin": "economy",
     "magasin": "economy",
-    "inventaire": "economy"
+    "inventaire": "economy",
+    "role": "administration"
 }

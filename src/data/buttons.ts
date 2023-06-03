@@ -70,12 +70,11 @@ export const closePaginator = () => {
         style: 'Danger'
     });
 };
-export const moduleEnabled = (enabled: boolean) => {
+export const moduleEnabled = (enabled: boolean, moduleId: string) => {
     return buildButton({
-        label: enabled ? 'Activé' : 'Désactivé',
-        id: 'moduleEnabledOrNot',
-        style: 'Primary',
-        disabled: true
+        label: enabled ? 'Désactiver' : 'Activer',
+        id: moduleId,
+        style: 'Primary'
     });
 };
 export const frequenceBtn = () => {

@@ -40,7 +40,10 @@ export enum modActionType {
     ChannelCreate = 'création de salon',
     ChannelDelete = 'suppression de salon',
     ChannelEdit = 'Modification de salon',
-    WebhookCreationFailed = 'Échec de création de webhook'
+    WebhookCreationFailed = 'Échec de création de webhook',
+    RoleCreate = 'Création de rôle',
+    RoleEdit = 'Modification de rôle',
+    RoleDelete = 'Supression de rôle'
 }
 
 export type modlogs = {
@@ -117,6 +120,7 @@ export type moduleDataType = {
     editable: boolean;
     default: boolean;
     emoji: string;
+    id: moduleType;
 };
 export type configs = {
     [K in keyof configKeys]: string;

@@ -413,7 +413,7 @@ export const addTimeDoc = (userId: string) => {
     time.set(userId, value + 1);
 
     if (value >= 3)
-        return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nUtilisez \`s\` pour les secondes, \`m\` pour les minutes, \`h\` pour les heures et \`d\` pour les jours`;
+        return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nVous pouvez utiliser des unités pour spécifier le temps que vous souhaitez\n* \`s\` pour les secondes\n* \`m\` pour les minutes\n* \`h\` pour les heures\n* \`d\` pour les jours`;
     return '';
 };
 export const hint = (text: string) =>
@@ -601,6 +601,7 @@ export const sendError = (error: unknown) => {
     }).catch(() => {});
 };
 export const removeKey = <T, K extends keyof T>(obj: T, key: K): Omit<T, K> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [key]: _, ...rest } = obj;
     return rest;
 };
