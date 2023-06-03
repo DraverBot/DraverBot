@@ -25,7 +25,7 @@ export default new Precondition('modPermCheck').setChatInputRun(({ interaction, 
     )
         return {
             ok: false,
-            isChatInput: true,
+            type: 'chatInput',
             interaction,
             metadata: {
                 silent: true
