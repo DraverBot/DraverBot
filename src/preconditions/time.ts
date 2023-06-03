@@ -9,8 +9,8 @@ export default new Precondition('validTime').setChatInputRun(({ interaction, opt
     if (!time)
         return {
             ok: true,
-            isChatInput: true,
-            interaction
+            interaction,
+            type: 'chatInput'
         };
     if (!ms(time)) {
         interaction
@@ -21,7 +21,7 @@ export default new Precondition('validTime').setChatInputRun(({ interaction, opt
             .catch(sendError);
         return {
             ok: false,
-            isChatInput: true,
+            type: 'chatInput',
             interaction,
             metadata: {
                 silent: true
@@ -30,7 +30,7 @@ export default new Precondition('validTime').setChatInputRun(({ interaction, opt
     }
     return {
         ok: true,
-        isChatInput: true,
+        type: 'chatInput',
         interaction
     };
 });

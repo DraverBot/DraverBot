@@ -1,13 +1,14 @@
 import { Precondition } from 'amethystjs';
 import { GuildMember } from 'discord.js';
 import { checkPerms } from '../utils/toolbox';
+import { preconditionType } from 'amethystjs/dist/typings/Precondition';
 
 export default new Precondition('modPermCheck').setChatInputRun(({ interaction, options }) => {
     const member = options.getMember('membre') ?? options.getMember('utilisateur');
 
     const ok = {
         ok: true,
-        isChatInput: true,
+        type: 'chatInput' as preconditionType,
         interaction
     };
     if (!member) return ok;

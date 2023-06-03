@@ -6,7 +6,7 @@ export default new Precondition('moduleEnabled').setChatInputRun(({ command, int
         return {
             ok: true,
             interaction,
-            isChatInput: true
+            type: 'chatInput'
         };
     }
 
@@ -14,7 +14,7 @@ export default new Precondition('moduleEnabled').setChatInputRun(({ command, int
     if (!state) {
         return {
             ok: false,
-            isChatInput: true,
+            type: 'chatInput',
             interaction,
             metadata: {
                 replyKey: 'moduleDisabled',
@@ -25,7 +25,7 @@ export default new Precondition('moduleEnabled').setChatInputRun(({ command, int
     }
     return {
         ok: true,
-        isChatInput: true,
+        type: 'chatInput',
         interaction
     };
 });

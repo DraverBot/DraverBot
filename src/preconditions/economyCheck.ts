@@ -1,14 +1,15 @@
 import { Precondition } from 'amethystjs';
 import { GuildMember } from 'discord.js';
 import { checkPerms } from '../utils/toolbox';
+import { preconditionType } from 'amethystjs/dist/typings/Precondition';
 
 export default new Precondition('economyPermCheck').setChatInputRun(({ interaction, options }) => {
     const member = options.getMember('membre') ?? options.getMember('utilisateur');
 
     const ok = {
         ok: true,
-        isChatInput: true,
-        interaction
+        interaction,
+        type: 'chatInput' as preconditionType
     };
     if (!member) return ok;
     if (
@@ -29,7 +30,8 @@ export default new Precondition('economyPermCheck').setChatInputRun(({ interacti
             interaction,
             metadata: {
                 silent: true
-            }
+            },
+            type: 'chatInput'
         };
     return ok;
 });

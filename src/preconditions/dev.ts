@@ -6,13 +6,13 @@ export default new Precondition('dev')
     .setMessageRun(({ message }) => {
         if (message.author.id !== util('dev'))
             return {
+                type: 'message',
                 ok: false,
-                isChatInput: false,
                 channelMessage: message
             };
         return {
+            type: 'message',
             ok: true,
-            isChatInput: false,
             channelMessage: message
         };
     })
@@ -20,16 +20,14 @@ export default new Precondition('dev')
         if (user.id !== util('dev')) {
             button.deferUpdate().catch(sendError);
             return {
+                type: 'button',
                 ok: false,
-                isChatInput: false,
-                button,
-                isButton: true
+                button
             };
         }
         return {
+            type: 'button',
             ok: true,
-            isChatInput: false,
-            button,
-            isButton: true
+            button
         };
     });

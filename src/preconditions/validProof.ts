@@ -1,11 +1,12 @@
 import { Precondition } from 'amethystjs';
 import { util } from '../utils/functions';
+import { preconditionType } from 'amethystjs/dist/typings/Precondition';
 
 export default new Precondition('validProof').setChatInputRun(({ interaction, options }) => {
     const proof = options.getAttachment(util('proofName'), false);
     const ok = {
         ok: true,
-        isChatInput: true,
+        type: 'chatInput' as preconditionType,
         interaction
     };
     if (!proof) return ok;
@@ -13,7 +14,7 @@ export default new Precondition('validProof').setChatInputRun(({ interaction, op
     if (!proof.contentType.includes('image'))
         return {
             ok: false,
-            isChatInput: true,
+            type: 'chatInput',
             interaction,
             metadata: {
                 replyKey: 'invalidProofType',

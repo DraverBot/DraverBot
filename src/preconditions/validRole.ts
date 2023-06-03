@@ -24,7 +24,7 @@ export default new Precondition('goodRole').setChatInputRun(({ interaction, opti
         return {
             ok: false,
             interaction,
-            isChatInput: true,
+            type: 'chatInput',
             metadata: {
                 silent: true
             }
@@ -47,7 +47,7 @@ export default new Precondition('goodRole').setChatInputRun(({ interaction, opti
 
         return {
             ok: false,
-            isChatInput: true,
+            type: 'chatInput',
             interaction,
             metadata: {
                 silent: true
@@ -56,7 +56,7 @@ export default new Precondition('goodRole').setChatInputRun(({ interaction, opti
     }
     return {
         ok: true,
-        isChatInput: true,
+        type: 'chatInput',
         interaction
     };
 });

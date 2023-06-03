@@ -4,7 +4,7 @@ export default new Precondition('secret').setMessageRun(({ message }) => {
     if (message.deletable) message.delete().catch(() => {});
     return {
         ok: true,
-        isChatInput: false,
+        type: 'message',
         channelMessage: message
     };
 });
