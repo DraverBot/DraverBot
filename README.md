@@ -1,13 +1,11 @@
-<img src="./images/banner.png">
+![Discord Bots](https://top.gg/api/widget/1056111589897551954.svg)
 
-# Draver
+# License
 
-C'est le code source de Draver fait par Greensky
+Released under the [MIT License](./LICENSE).
 
-## TO DO
+# Contributors
 
-- [x] Move [Admincoins](./src/commands/adminCoins.ts) to administration module
-
-## License
-
-Released under the [MIT License](./LICENSE)
+<a href="https://github.com/DraverBot/Documentation/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=DraverBot/Documentation" />
+</a>
