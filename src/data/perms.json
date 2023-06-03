@@ -84,6 +84,11 @@
         "UseExternalStickers": "Utiliser des stickers externes",
         "SendMessagesInThreads": "Envoyer des messages dans les fils",
         "UseEmbeddedActivities": "Utiliser des activités intégrées",
-        "ModerateMembers": "Exclure temporairement les membres"
+        "ModerateMembers": "Exclure temporairement les membres",
+        "ManageGuildExpressions": "Gérer les émojis",
+        "ViewCreatorMonetizationAnalytics": "Voir les abonnements de rôle",
+        "UseSoundboard": "Utiliser Soundbord",
+        "UseExternalSounds": "Utiliser des sons externes",
+        "SendVoiceMessages": "Envoyer des messages vocaux"
     }
 }

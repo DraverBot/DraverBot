@@ -8,7 +8,7 @@ export default new AmethystEvent('giveawayRerolled', (gw, channel, oldW, newW) =
     channel
         .send({
             content: newW.map(pingUser).join(' ') ?? 'Pas de gagnants',
-            embeds: [giveawayEmbeds.winners(newW, getMsgUrl(gw))],
+            embeds: [giveawayEmbeds.winners(newW, gw, getMsgUrl(gw))],
             reply: {
                 messageReference: gw.message_id
             }

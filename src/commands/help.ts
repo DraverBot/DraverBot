@@ -1,8 +1,8 @@
 import { AmethystCommand, preconditions } from 'amethystjs';
 import {
-    APIApplicationCommandSubcommandGroupOption,
     ApplicationCommandOptionType,
     ApplicationCommandSubCommandData,
+    ApplicationCommandSubGroupData,
     ComponentType,
     GuildMember,
     Message,
@@ -72,9 +72,7 @@ export default new AmethystCommand({
             if (subcommandGroup) {
                 subcommands.splice(0);
                 (
-                    cmd.options.options.find(
-                        (x) => x.name === subcommandGroup
-                    ) as APIApplicationCommandSubcommandGroupOption
+                    cmd.options.options.find((x) => x.name === subcommandGroup) as ApplicationCommandSubCommandData
                 ).options.forEach((opt) => subcommands.push(opt));
             }
 
@@ -229,7 +227,7 @@ export default new AmethystCommand({
                 cmd.options.options.find((x) => x.name === value) ||
                 cmd.options.options
                     .filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup)
-                    .map((x: APIApplicationCommandSubcommandGroupOption) => x)
+                    .map((x: ApplicationCommandSubGroupData) => x)
                     .map((x) => x.options)
                     .flat()
                     .find((x) => x.name === value);

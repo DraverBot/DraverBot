@@ -117,11 +117,11 @@ export const giveawayEmbeds: embedsInputData = {
             .setDescription(`Votre participation à ${thisGw(url)} a été supprimée`)
             .setColor('#ff0000');
     },
-    winners: (winners, url) => {
+    winners: (winners, data, url) => {
         return new EmbedBuilder()
             .setTitle('Gagnants')
             .setDescription(
-                `[**Ce giveaway**](${url}) a prit fin.\n` +
+                `[**Le giveaway**](${url}) a prit fin.\n` +
                     (winners.length > 0
                         ? `Le${plurial(winners.length)} gagnant${plurial(winners.length, {
                               singular: ' est',

@@ -36,11 +36,18 @@ export default new AmethystEvent('ready', async (client) => {
     client.configsManager = new ConfigsManager();
     client.ticketsManager = new TicketsManager(client);
     client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
-    client.giveaways = new GiveawayManager(client, database, {
-        sendMessages: false,
-        embeds: giveawayEmbeds,
-        buttons: giveawayButtons
-    });
+    client.giveaways = new GiveawayManager(
+        client,
+        {
+            connection: database,
+            mode: 'mysql'
+        },
+        {
+            sendMessages: false,
+            embeds: giveawayEmbeds,
+            buttons: giveawayButtons
+        }
+    );
     client.cooldownsManager = new CooldownsManager();
     client.RemindsManager = new RemindsManager(client);
     client.AnonymousManager = new AnonymousManager(client);
@@ -162,7 +169,7 @@ declare module 'discord.js' {
         levelsManager: LevelsManager;
         configsManager: ConfigsManager;
         blagues: BlaguesAPI;
-        giveaways: GiveawayManager;
+        giveaways: GiveawayManager<'mysql'>;
         ticketsManager: TicketsManager;
         cooldownsManager: CooldownsManager;
         RemindsManager: RemindsManager;
