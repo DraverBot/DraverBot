@@ -193,7 +193,8 @@ export enum DatabaseTables {
     Anonymous = 'anonymous',
     Shop = 'shops_list',
     Inventories = 'inventories',
-    Passwords = 'passwords_storage'
+    Passwords = 'passwords_storage',
+    Loto = 'loto'
 }
 export type coupons = {
     guild_id: string;
@@ -266,4 +267,16 @@ export type passwords = {
     user_id: string;
     input: string;
     value: string;
+};
+export type lotos<Raw extends boolean = false> = {
+    id: number;
+    guild_id: string;
+    participants: If<Raw, string, [string, number[], number[]]>;
+    coins: number;
+    startedAt: string;
+    endsAt: string;
+    ended: If<Raw, number, boolean>;
+    channel_id: string;
+    numbers: number;
+    complementaries: number;
 };

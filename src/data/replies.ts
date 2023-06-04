@@ -3,7 +3,18 @@ import errors from '../maps/errors';
 import { moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getRolePerm, moduleName, util } from '../utils/functions';
-import { addTimeDoc, anyHexColor, basicEmbed as basic, evokerColor, pingChan } from '../utils/toolbox';
+import {
+    addTimeDoc,
+    anyHexColor,
+    basicEmbed as basic,
+    displayDate,
+    evokerColor,
+    numerize,
+    pingChan,
+    pingUser,
+    plurial,
+    random
+} from '../utils/toolbox';
 import modules from '../maps/modules';
 
 export type anyUser = User | GuildMember;
@@ -234,6 +245,145 @@ const replies = {
                     hashtagIncluded: true
                 })}\``
             );
+    },
+    loto: {
+        noCurrentLoto: (user: User, guild: Guild) =>
+            userMember(user)
+                .setColor(evokerColor(guild))
+                .setTitle('Loto inexistant')
+                .setDescription(`Il n'y a aucun giveaway en cours sur ce serveur`),
+        participationRegistered: (user: User) =>
+            userMember(user)
+                .setColor(util<ColorResolvable>('accentColor'))
+                .setTitle('Participation enregistrée')
+                .setDescription(`Votre participation au loto a été enregistrée`),
+        alreadyParticipate: (user: User, guild: Guild) =>
+            userMember(user)
+                .setColor(evokerColor(guild))
+                .setTitle('Participation déjà enregistrée')
+                .setDescription(`Vous participez déjà au loto`),
+        noParticipation: (user: User, guild: Guild) =>
+            userMember(user)
+                .setColor(evokerColor(guild))
+                .setTitle('Participation non enregistrée')
+                .setDescription(`Vous ne participez pas au loto sur ce serveur`),
+        participationDeleted: (user: User) =>
+            userMember(user)
+                .setColor(util<ColorResolvable>('accentColor'))
+                .setTitle('Participation retirée')
+                .setDescription(`Votre participation au loto a été annulée`),
+        lotoDeleted: (user: User) =>
+            userMember(user)
+                .setColor(util<ColorResolvable>('accentColor'))
+                .setTitle('Loto supprimé')
+                .setDescription(`Le loto a été annulé sur le serveur`),
+        lotoStarted: (user: User, data: { coins: number; complementaries: number; numbers: number; endsAt: number }) =>
+            userMember(user)
+                .setColor(util<ColorResolvable>('accentColor'))
+                .setTitle('Loto')
+                .setDescription(
+                    `Un loto a été lancé par ${pingUser(
+                        user
+                    )} !\nPour participer, utilisez la commande \`/loto participer\`\n\nModalités :\n* ${numerize(
+                        data.numbers
+                    )} numéros gagnants nécessaires\n* ${numerize(data.complementaries)} numéro${plurial(
+                        data.complementaries
+                    )} complémentaire${plurial(data.complementaries)} nécessaires\n* Se finit ${displayDate(
+                        data.endsAt
+                    )}${
+                        data.coins > 0
+                            ? `\n* ${numerize(data.coins)} ${util('coins')} sont en jeu à partager entre les gagnants`
+                            : ''
+                    }`
+                )
+                .setTimestamp(data.endsAt),
+        invalidParticipation: (user: User, guild: Guild, data: { numbers: number; complementaries: number }) => {
+            const numbers: number[] = [];
+            const complementaries: number[] = [];
+
+            const available: number[] = [];
+            for (let i = 1; i < 100; i++) {
+                available.push(i);
+            }
+
+            for (let i = 0; i < data.numbers; i++) {
+                const int = available[random({ max: available.length })];
+                numbers.push(int);
+
+                available.splice(available.indexOf(int), 1);
+            }
+            for (let i = 0; i < data.complementaries; i++) {
+                const int = available[random({ max: available.length })];
+                complementaries.push(int);
+
+                available.splice(available.indexOf(int, 1));
+            }
+            return userMember(user)
+                .setColor(evokerColor(guild))
+                .setTitle('Participation invalide')
+                .setDescription(
+                    `Votre participation est invalide.\nVous devez spécifier **${
+                        data.numbers
+                    }** numéros gagnants, et **${data.complementaries}** numéro${plurial(
+                        data.complementaries
+                    )} complémentaire${plurial(
+                        data.complementaries
+                    )} tous différents\n\nPar exemple :\n* Numéros gagnants : \`${numbers.join(' ')}\`${
+                        data.complementaries > 0
+                            ? `\n* Numéro${plurial(data.complementaries)} complémentaire${plurial(
+                                  data.complementaries
+                              )} : \`${complementaries.join(' ')}\``
+                            : ''
+                    }`
+                );
+        },
+        lotoAlreadyStarted: (user: User, guild: Guild) =>
+            userMember(user)
+                .setColor(evokerColor(guild))
+                .setTitle('Loto déjà lancé')
+                .setDescription(`Un loto existe déjà sur ${guild.name}`),
+        lotoResult: (
+            user: User,
+            rolled: { numbers: number[]; complementaries: number[] },
+            winners: {
+                userId: string;
+                numbers: number[];
+                complementaries: number[];
+                accuracy: number;
+                reward: number;
+            }[]
+        ) => {
+            if (winners.length == 0)
+                return userMember(user, util<ColorResolvable>('accentColor'))
+                    .setTitle('Résultats du loto')
+                    .setDescription(
+                        `Numéros tirés :\n* Gagnants : \`${rolled.numbers.join(' ')}\`${
+                            rolled.complementaries.length > 0
+                                ? `\n* Complémentaire${plurial(
+                                      rolled.complementaries
+                                  )} : \`${rolled.complementaries.join(' ')}\``
+                                : ''
+                        }\n\nIl n'y a aucun gagnant pour ce loto`
+                    );
+            return userMember(user, util<ColorResolvable>('accentColor'))
+                .setTitle('Résultats du loto')
+                .setDescription(
+                    `Numéros tirés :\n* Gagnants : \`${rolled.numbers.join(' ')}\`${
+                        rolled.complementaries.length > 0
+                            ? `\n* Complémentaire${plurial(rolled.complementaries)} : \`${rolled.complementaries.join(
+                                  ' '
+                              )}\``
+                            : ''
+                    }\n\nGagnants : ${winners
+                        .map(
+                            (w) =>
+                                `${pingUser(w.userId)} avec ${w.accuracy * 100}% de précision ( ${w.reward} ${util(
+                                    'coins'
+                                )} )`
+                        )
+                        .join('\n')}`
+                );
+        }
     }
 };
 

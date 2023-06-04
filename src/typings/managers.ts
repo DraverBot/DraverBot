@@ -82,3 +82,21 @@ export enum ShopManagerErrorReturns {
     ItemNotFound = 'Item introuvable',
     ItemAlreadyExist = "L'item existe déjà"
 }
+export type lotoCollectionParticipants = {
+    userId: string;
+    numbers: number[];
+    complementaries: number[];
+}[];
+
+export type lotoCollection = {
+    id: string;
+    guildId: string;
+    participants: lotoCollectionParticipants;
+    startedAt: string;
+    endsAt: string;
+    coins: number;
+    ended: boolean;
+    numbers: number;
+    complementaries: number;
+    channelId: string;
+};

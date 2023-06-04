@@ -42,5 +42,6 @@
     "adminmagasin": "economy",
     "magasin": "economy",
     "inventaire": "economy",
-    "role": "administration"
+    "role": "administration",
+    "loto": "economy"
 }
