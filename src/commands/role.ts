@@ -14,13 +14,14 @@ import {
 import replies from '../data/replies';
 import { getRolePerm, util } from '../utils/functions';
 import { permType } from '../typings/functions';
+import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new AmethystCommand({
     name: 'role',
     description: 'Gère les rôles du serveur',
     permissions: ['ManageRoles'],
     clientPermissions: ['ManageRoles'],
-    preconditions: [preconditions.GuildOnly],
+    preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
             name: 'créer',
