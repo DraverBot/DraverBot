@@ -12,7 +12,8 @@ import {
     systemReply
 } from '../utils/toolbox';
 import replies from '../data/replies';
-import { util } from '../utils/functions';
+import { getRolePerm, util } from '../utils/functions';
+import { permType } from '../typings/functions';
 
 export default new AmethystCommand({
     name: 'role',
@@ -150,6 +151,53 @@ export default new AmethystCommand({
                     description: "Utilisateur qui n'aura plus le rôle",
                     required: true,
                     type: ApplicationCommandOptionType.User
+                }
+            ]
+        },
+        {
+            name: 'permission',
+            description: "Gère les permissions d'un rôle",
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: 'accorder',
+                    description: 'Accorde une permission à un rôle',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'rôle',
+                            description: 'Rôle auquel vous voulez ajouter une permission',
+                            type: ApplicationCommandOptionType.Role,
+                            required: true
+                        },
+                        {
+                            name: 'permission',
+                            description: 'Permission que vous voulez ajouter',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            autocomplete: true
+                        }
+                    ]
+                },
+                {
+                    name: 'refuser',
+                    description: 'Refuse une permission à un rôle',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'rôle',
+                            description: 'Rôle auquel vous voulez refuser une permission',
+                            type: ApplicationCommandOptionType.Role,
+                            required: true
+                        },
+                        {
+                            name: 'permission',
+                            description: 'Permission que vous voulez retirer',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            autocomplete: true
+                        }
+                    ]
                 }
             ]
         }
@@ -463,6 +511,139 @@ export default new AmethystCommand({
                     basicEmbed(interaction.user, { draverColor: true })
                         .setTitle('Rôle retiré')
                         .setDescription(`Le rôle ${pingRole(role)} a été retiré à ${pingUser(user)}`)
+                ]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'accorder') {
+        const role = options.getRole('rôle', true) as Role;
+        const permission = options.getString('permission') as permType<'role'>;
+
+        if (!checkRolePosition(role.position)) return;
+
+        if (!(interaction.member as GuildMember).permissions.has(permission))
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.userMissingPermissions(interaction.user, {
+                            permissions: { missing: [permission] },
+                            guild: interaction.guild
+                        })
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+        if (!interaction.guild.members.me.permissions.has(permission))
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.clientMissingPermissions(interaction.user, {
+                            permissions: { missing: [permission] },
+                            guild: interaction.guild
+                        })
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+
+        await interaction.deferReply().catch(log4js.trace);
+        const res = await role.setPermissions(role.permissions.add(permission)).catch(log4js.trace);
+
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Erreur de permission')
+                            .setDescription(
+                                `La permission ${getRolePerm(permission)} n'a pas pu être accordée au rôle ${pingRole(
+                                    role
+                                )}.\nCette erreur peut être causée parce que mon rôle est en-dessous de ${pingRole(
+                                    role
+                                )}, ou que je ne possède pas la permission ${getRolePerm(
+                                    permission
+                                )}. Veuillez vous assurez que ces conditions soient bien remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support](${util(
+                                    'support'
+                                )})`
+                            )
+                    ]
+                })
+                .catch(log4js.trace);
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Permission accordée')
+                        .setDescription(
+                            `La permission ${getRolePerm(permission)} a été accordée au rôle ${pingRole(role)}`
+                        )
+                ]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'refuser') {
+        const role = options.getRole('rôle', true) as Role;
+        const permission = options.getString('permission') as permType<'role'>;
+
+        if (!checkRolePosition(role.position)) return;
+
+        if (!(interaction.member as GuildMember).permissions.has(permission))
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.userMissingPermissions(interaction.user, {
+                            permissions: { missing: [permission] },
+                            guild: interaction.guild
+                        })
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+        if (!interaction.guild.members.me.permissions.has(permission))
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.clientMissingPermissions(interaction.user, {
+                            permissions: { missing: [permission] },
+                            guild: interaction.guild
+                        })
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+
+        await interaction.deferReply().catch(log4js.trace);
+        const res = await role.setPermissions(role.permissions.remove(permission)).catch(log4js.trace);
+
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Erreur de permission')
+                            .setDescription(
+                                `La permission ${getRolePerm(permission)} n'a pas pu être refusée au rôle ${pingRole(
+                                    role
+                                )}.\nCette erreur peut être causée parce que mon rôle est en-dessous de ${pingRole(
+                                    role
+                                )}, ou que je ne possède pas la permission ${getRolePerm(
+                                    permission
+                                )}. Veuillez vous assurez que ces conditions soient bien remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support](${util(
+                                    'support'
+                                )})`
+                            )
+                    ]
+                })
+                .catch(log4js.trace);
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Permission refusée')
+                        .setDescription(
+                            `La permission ${getRolePerm(permission)} a été refusée au rôle ${pingRole(role)}`
+                        )
                 ]
             })
             .catch(log4js.trace);

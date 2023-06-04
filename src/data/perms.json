@@ -35,13 +35,17 @@
         "RequestToSpeak": "Demander pour parler",
         "ManageEvents": "Gérer les évènements",
         "ManageThreads": "Gérer les fils",
-        "UsePublicThreads": "Utiliser des fils publics",
         "CreatePrivateThreads": "Créer des fils privés",
         "UseExternalStickers": "Utiliser des stickers externes",
         "SendMessagesInThreads": "Envoyer des messages dans les fils",
         "ModerateMembers": "Exclure temporairement les membres",
         "UseEmbeddedActivities": "Utiliser des activités intégrées",
-        "CreatePublicThreads": "Créer des fils publics"
+        "CreatePublicThreads": "Créer des fils publics",
+        "ManageGuildExpressions": "Gérer les émojis",
+        "ViewCreatorMonetizationAnalytics": "Voir les abonnements de rôle",
+        "UseSoundboard": "Utiliser Soundbord",
+        "UseExternalSounds": "Utiliser des sons externes",
+        "SendVoiceMessages": "Envoyer des messages vocaux"
     },
     "channel": {
         "CreateInstantInvite": "Créer des invitations",
