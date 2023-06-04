@@ -59,6 +59,26 @@ export default new AmethystCommand({
             name: 'tirage',
             description: 'Fait le tirage du loto en cours',
             type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: 'participer',
+            description: 'Participez au loto du serveur',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'gagnants',
+                    description: 'Vos numéros gagnants (séparés par un espace)',
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                },
+                {
+                    name: 'complémentaires',
+                    description:
+                        "Vos numéros complémentaires (écrivez n'importe quoi si les numéros ne sont pas nécessaires",
+                    required: true,
+                    type: ApplicationCommandOptionType.String
+                }
+            ]
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
