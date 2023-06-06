@@ -5,7 +5,7 @@ import { util } from '../utils/functions';
 import ms from 'ms';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
-import { basicEmbed } from '../utils/toolbox';
+import { basicEmbed, confirm } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'loto',
@@ -79,6 +79,16 @@ export default new AmethystCommand({
                     type: ApplicationCommandOptionType.String
                 }
             ]
+        },
+        {
+            name: 'abandonner',
+            description: 'Annule votre participation au loto',
+            type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: 'annuler',
+            description: 'Annule le loto',
+            type: ApplicationCommandOptionType.Subcommand
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
@@ -174,6 +184,154 @@ export default new AmethystCommand({
         interaction
             .reply({
                 embeds: [replies.loto.lotoResult(interaction.user, results.rolled, results.winners)]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'participer') {
+        const gagnants = options.getString('gagnants', true);
+        const complementaries = options.getString('complémentaires', true);
+
+        const formatting = {
+            gagnants: gagnants
+                .split(/ +/g)
+                .map((x) => parseInt(x))
+                .filter((x) => !isNaN(x) && x <= 100 && x > 0),
+            complementaries: complementaries
+                .split(/ +/g)
+                .map((x) => parseInt(x))
+                .filter((x) => !isNaN(x) && x <= 100 && x > 0)
+        };
+
+        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        if (!loto || loto.ended)
+            return interaction
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+        const registration = interaction.client.lotoManager.registerParticipation(loto.id, {
+            userId: interaction.user.id,
+            numbers: formatting.gagnants,
+            complementaries: formatting.complementaries
+        });
+
+        if (registration == 'unexisting loto')
+            return interaction
+                .reply({
+                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)]
+                })
+                .catch(log4js.trace);
+        if (registration == 'user is already participating to the loto')
+            return interaction
+                .reply({ embeds: [replies.loto.alreadyParticipate(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+
+        if (registration == 'invalid numbers array' || registration == 'one of arrays has duplicates')
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.loto.invalidParticipation(interaction.user, interaction.guild, {
+                            numbers: loto.numbers,
+                            complementaries: loto.complementaries
+                        })
+                    ]
+                })
+                .catch(log4js.trace);
+
+        interaction
+            .reply({
+                embeds: [replies.loto.participationRegistered(interaction.user)]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'abandonner') {
+        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        if (!loto || loto.ended)
+            return interaction
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+        if (!loto.isParticipating(interaction.user.id))
+            return interaction
+                .reply({ embeds: [replies.loto.noParticipation(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user, { questionMark: true })
+                .setTitle('❓ | Annulation')
+                .setDescription(`Êtes-vous sûr d'annuler votre participation au loto ?`),
+            ephemeral: true
+        }).catch(log4js.trace);
+
+        if (!confirmation || confirmation == 'cancel' || !confirmation.value)
+            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+        const annulation = interaction.client.lotoManager.unregisterParticipation(loto.id, interaction.user.id);
+
+        // This should never be called
+        if (annulation == 'unexisting loto')
+            return interaction
+                .editReply({
+                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)],
+                    components: []
+                })
+                .catch(log4js.trace);
+
+        // This should never be called
+        if (annulation == 'user is not participating in the loto')
+            return interaction
+                .editReply({
+                    embeds: [replies.loto.noParticipation(interaction.user, interaction.guild)],
+                    components: []
+                })
+                .catch(log4js.trace);
+
+        interaction
+            .editReply({ embeds: [replies.loto.participationDeleted(interaction.user)], components: [] })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'annuler') {
+        if (!(interaction.member as GuildMember).permissions.has('ManageGuild'))
+            return interaction
+                .reply({
+                    embeds: [
+                        replies.userMissingPermissions(interaction.user, {
+                            permissions: { missing: ['ManageGuild'] },
+                            guild: interaction.guild
+                        })
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        if (!loto)
+            return interaction
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user, { questionMark: true })
+                .setTitle(`❓| Annulation du loto`)
+                .setDescription(`Êtes-vous sûr de vouloir annuler le loto ?`)
+        }).catch(log4js.trace);
+
+        if (!confirmation || confirmation == 'cancel' || !confirmation.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(log4js.trace);
+
+        interaction.client.lotoManager.cancelLoto(loto.id);
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Loto annulé')
+                        .setDescription(`Le loto a été annulé`)
+                ],
+                components: []
             })
             .catch(log4js.trace);
     }

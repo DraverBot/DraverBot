@@ -70,6 +70,9 @@ class Loto {
     public get id() {
         return this._id;
     }
+    public isParticipating(userId: string) {
+        return !!this._participants.find((x) => x.userId == userId);
+    }
 
     private roll() {
         const numbers: number[] = [];
@@ -229,10 +232,12 @@ export class LotoManager {
         participation: { userId: string; numbers: number[]; complementaries: number[] }
     ) {
         if (!this.lotoExists(id)) return 'unexisting loto';
+        if (this.getLoto(id).isParticipating(participation.userId)) return 'user is already participating to the loto';
         return this.getLoto(id).registerParticipation(participation);
     }
     public unregisterParticipation(id: string, userId: string) {
         if (!this.lotoExists(id)) return 'unexisting loto';
+        if (!this.getLoto(id).isParticipating(userId)) return 'user is not participating in the loto';
         return this.getLoto(id).unregisterParticipation(userId);
     }
     public end(id: string) {
@@ -328,7 +333,7 @@ export class LotoManager {
         await query(
             `CREATE TABLE IF NOT EXISTS ${
                 DatabaseTables.Loto
-            } ( id INTEGER NOT NULL PRIMARY KEY, startedAt VARCHAR(255) NOT NULL, endsAt VARCHAR(255) NOT NULL, participants LONGTEXT, numbers INTEGER(255) NOT NULL DEFAULT "5", complementaries INTEGER NOT NULL DEFAULT "2", coins INTEGER(255) NOT NULL DEFAULT "0", guild_id VARCHAR(255) NOT NULL, ended TINYINT(1) NOT NULL DEFAULT "${boolDb(
+            } ( id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, startedAt VARCHAR(255) NOT NULL, endsAt VARCHAR(255) NOT NULL, participants LONGTEXT, numbers INTEGER(255) NOT NULL DEFAULT "5", complementaries INTEGER NOT NULL DEFAULT "2", coins INTEGER(255) NOT NULL DEFAULT "0", guild_id VARCHAR(255) NOT NULL, ended TINYINT(1) NOT NULL DEFAULT "${boolDb(
                 false
             )}", channel_id VARCHAR(255) NOT NULL )`
         );
