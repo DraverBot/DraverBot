@@ -37,6 +37,9 @@ class Loto {
         this.start();
     }
 
+    public get availableForJoin() {
+        return parseInt(this._endsAt) > Date.now();
+    }
     public get ended() {
         return this._ended;
     }
@@ -182,7 +185,6 @@ class Loto {
     }
     private ends() {
         if (this.timeout) clearTimeout(this.timeout);
-        if (!this.channel) console.log('No channel');
         if (this.channel)
             this.channel
                 .send({
@@ -251,7 +253,7 @@ export class LotoManager {
         return true;
     }
     public getGuildLoto(guildId: string) {
-        return this._cache.find((x) => x.guildId == guildId);
+        return this._cache.find((x) => x.guildId == guildId && !x.ended);
     }
     public async create({
         time,

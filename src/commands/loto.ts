@@ -5,7 +5,7 @@ import { util } from '../utils/functions';
 import ms from 'ms';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
-import { basicEmbed, confirm } from '../utils/toolbox';
+import { basicEmbed, confirm, displayDate, numerize, plurial } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'loto',
@@ -88,6 +88,11 @@ export default new AmethystCommand({
         {
             name: 'annuler',
             description: 'Annule le loto',
+            type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: 'afficher',
+            description: 'Affiche le loto en cours',
             type: ApplicationCommandOptionType.Subcommand
         }
     ]
@@ -203,7 +208,8 @@ export default new AmethystCommand({
         };
 
         const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
-        if (!loto || loto.ended)
+
+        if (!loto || !loto.availableForJoin)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
                 .catch(log4js.trace);
@@ -332,6 +338,46 @@ export default new AmethystCommand({
                         .setDescription(`Le loto a été annulé`)
                 ],
                 components: []
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd == 'afficher') {
+        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        if (!loto)
+            return interaction
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .catch(log4js.trace);
+
+        const embed = basicEmbed(interaction.user, { draverColor: true })
+            .setTitle('Loto')
+            .setDescription(
+                `Le loto se finit ${displayDate(parseInt(loto.endsAt))}\n\nModalités :\n* ${numerize(
+                    loto.numbers
+                )} numéros gagnants nécessaires\n* ${numerize(loto.complementaries)} numéro${plurial(
+                    loto.complementaries
+                )} complémentaire${plurial(loto.complementaries)} nécessaires${
+                    loto.coins > 0
+                        ? `\n* ${numerize(loto.coins)} ${util('coins')} sont en jeu à partager entre les gagnants`
+                        : ''
+                }`
+            );
+        if (loto.availableForJoin) {
+            embed.addFields({
+                name: 'Participer',
+                value: 'Pour participer, utilisez la commande `/loto participer` suivie de vos numéros',
+                inline: false
+            });
+        } else {
+            embed.addFields({
+                name: 'Terminer',
+                value: 'Pour terminer le lot, utilisez la commande `/loto tirage`',
+                inline: false
+            });
+        }
+
+        interaction
+            .reply({
+                embeds: [embed]
             })
             .catch(log4js.trace);
     }
