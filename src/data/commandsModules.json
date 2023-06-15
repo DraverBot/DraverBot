@@ -43,5 +43,6 @@
     "magasin": "economy",
     "inventaire": "economy",
     "role": "administration",
-    "loto": "economy"
+    "loto": "economy",
+    "réflexe": "fun"
 }

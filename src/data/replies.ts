@@ -384,7 +384,15 @@ const replies = {
                         .join('\n')}`
                 );
         }
-    }
+    },
+    internalError: (user: anyUser) =>
+        userMember(user)
+            .setTitle('Erreur interne')
+            .setDescription(
+                `Une erreur interne est survenue.\nVeuillez réeesayer. Si l'erreur persiste, contactez mon [serveur de support](${util(
+                    'support'
+                )})`
+            )
 };
 
 export type replyKey = keyof typeof replies;
