@@ -280,3 +280,13 @@ export type lotos<Raw extends boolean = false> = {
     numbers: number;
     complementaries: number;
 };
+export type polls<Raw extends boolean = false> = {
+    guild_id: string;
+    endsAt: number;
+    participants: If<Raw, string, string[]>;
+    choices: If<Raw, string, { name: string; id: number }[]>;
+    poll_id: number;
+    started_by: string;
+    message_id: string;
+    channel_id: string;
+};
