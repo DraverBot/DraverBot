@@ -15,6 +15,7 @@ export default new AutocompleteListener({
                     focusedValue.toLowerCase().includes(x.name.toLowerCase()) ||
                     x.description.includes(focusedValue.toLowerCase())
             )
-            .map((x) => ({ name: capitalize(x.name), value: x.value }));
+            .map((x) => ({ name: capitalize(x.name), value: x.value }))
+            .splice(0, 25);
     }
 });
