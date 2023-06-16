@@ -6,7 +6,10 @@ import { basicEmbed, random, sendError } from '../utils/toolbox';
 export default new AmethystEvent('messageCreate', (message) => {
     if (message.author.bot || message.webhookId) return;
 
-    if (message.mentions.has(message.client.user.id)) {
+    if (
+        message.mentions.has(message.client.user.id) &&
+        (!!message.guild ? !!message.client.configsManager.getValue(message.guild.id, 'mention_message') : true)
+    ) {
         if (message.content.length < 100) {
             let available = splashes.filter(
                 (x) =>

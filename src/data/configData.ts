@@ -16,6 +16,7 @@ export type configKeys = {
     suggest_thread: boolean;
     gban: boolean;
     gban_ban: boolean;
+    mention_message: boolean;
 };
 export type configType = {
     description: string;
@@ -154,6 +155,13 @@ export const configsData: Record<keyof configKeys, configType> = {
         value: 'gban_ban',
         description: `Banni le membre si il est GBanni (sinon expulsé)`,
         default: false,
+        type: 'boolean'
+    },
+    mention_message: {
+        name: 'Message de mention',
+        value: 'mention_message',
+        description: 'Affiche le message lors de la mention',
+        default: true,
         type: 'boolean'
     }
 };
