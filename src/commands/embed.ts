@@ -15,7 +15,7 @@ import {
 } from 'discord.js';
 import { cancelButton, noBtn, yesBtn } from '../data/buttons';
 import replies from '../data/replies';
-import { EmbedPackage } from '../managers/embedPack';
+import { EmbedPackage } from '../structures/embedPack';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { EmbedBtnIds } from '../typings/commands';
 import { getRolePerm } from '../utils/functions';
