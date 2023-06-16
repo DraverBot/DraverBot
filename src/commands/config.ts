@@ -354,10 +354,12 @@ export default new AmethystCommand({
                 ]
             });
         }
-        const embed = basicEmbed(interaction.user, { draverColor: true })
-            .setTitle('Configurations')
-            .setDescription(`Voici les configurations effectuées`);
+        const embed = () =>
+            basicEmbed(interaction.user, { draverColor: true })
+                .setTitle('Configurations')
+                .setDescription(`Voici les configurations effectuées`);
 
+        const embeds = [embed()];
         Object.keys(configsData)
             .sort((a: keyof configKeys, b: keyof configKeys) => {
                 const mapping: Record<configOptionType, number> = {
@@ -370,10 +372,11 @@ export default new AmethystCommand({
                 return mapping[a] - mapping[b];
             })
             .forEach((key: keyof configKeys, i) => {
+                if (i % 19 === 0 && i > 0) embeds.push(embed());
                 const parameter = configsData[key] as configType;
                 const value = interaction.client.configsManager.getValue(interaction.guild.id, key);
 
-                embed.addFields([
+                embeds[embeds.length - 1].addFields([
                     {
                         name: capitalize(parameter.name),
                         value:
@@ -392,7 +395,7 @@ export default new AmethystCommand({
                     }
                 ]);
                 if (i % 4 === 0 && i > 0 && parameter.type !== 'string') {
-                    embed.addFields({
+                    embed().addFields({
                         name: '\u200b',
                         value: '\u200b',
                         inline: false
@@ -402,7 +405,7 @@ export default new AmethystCommand({
 
         interaction
             .reply({
-                embeds: [embed]
+                embeds
             })
             .catch(() => {});
     }
