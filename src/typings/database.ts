@@ -194,7 +194,8 @@ export enum DatabaseTables {
     Shop = 'shops_list',
     Inventories = 'inventories',
     Passwords = 'passwords_storage',
-    Loto = 'loto'
+    Loto = 'loto',
+    Polls = 'polls'
 }
 export type coupons = {
     guild_id: string;
@@ -284,9 +285,11 @@ export type polls<Raw extends boolean = false> = {
     guild_id: string;
     endsAt: number;
     participants: If<Raw, string, string[]>;
-    choices: If<Raw, string, { name: string; id: number }[]>;
+    choices: If<Raw, string, { name: string; id: number; count: number }[]>;
     poll_id: number;
     started_by: string;
     message_id: string;
     channel_id: string;
+    question: string;
+    ended: If<Raw, string, boolean>;
 };

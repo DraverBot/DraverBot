@@ -7,5 +7,9 @@ export enum ButtonIds {
     ClearSqlLogs = 'dev.clear-sql-logs',
     GBanUser = 'bot-admin.gban.ban-user',
     UnGBanUser = 'bot-admin.gban.unban-user',
-    GBanList = 'bot-admin.gban.list'
+    GBanList = 'bot-admin.gban.list',
+    PollAddChoice = 'cmd.poll.add-choice',
+    PollRemoveChoice = 'cmd.poll.remove-choice',
+    PollCancel = 'cmd.poll.cancel',
+    PollValidate = 'cmd.poll.validate'
 }

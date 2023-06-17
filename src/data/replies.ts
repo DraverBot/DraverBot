@@ -392,7 +392,21 @@ const replies = {
                 `Une erreur interne est survenue.\nVeuillez réeesayer. Si l'erreur persiste, contactez mon [serveur de support](${util(
                     'support'
                 )})`
+            ),
+    pollEmbed: (
+        user: User,
+        question: string,
+        endsAt: number,
+        choices: { name: string; count: number; id?: number }[]
+    ) =>
+        userMember(user, util<ColorResolvable>('accentColor'))
+            .setTitle('Sondage')
+            .setDescription(
+                `Sondage lancé par ${pingUser(user)}\n> ${question}\n\n${choices
+                    .map((x) => `${x.name} ( ${x.count} vote${plurial(x.count)} )`)
+                    .join('\n')}`
             )
+            .addFields({ name: 'Fin', value: displayDate(endsAt), inline: false })
 };
 
 export type replyKey = keyof typeof replies;

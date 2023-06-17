@@ -3,6 +3,7 @@ import {
     APIMessageComponentEmoji,
     ActionRowBuilder,
     AnyComponentBuilder,
+    AnySelectMenuInteraction,
     Attachment,
     BaseChannel,
     BaseInteraction,
@@ -283,7 +284,7 @@ export const confirm = ({
     components = [yesNoRow()],
     ephemeral = false
 }: {
-    interaction: CommandInteraction | ButtonInteraction;
+    interaction: CommandInteraction | ButtonInteraction | AnySelectMenuInteraction;
     user: User;
     embed: EmbedBuilder;
     time?: number;
@@ -637,4 +638,7 @@ export const paginatorize = <T extends any[], K extends ElementType<T>>({
         embeds,
         user
     });
+};
+export const round = (number: number, fixed = 0) => {
+    return number.toFixed(fixed).replace(/\.?0+$/, '');
 };

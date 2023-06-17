@@ -20,6 +20,7 @@ import { GBanSystem } from '../managers/GBanSystem';
 import { ShopManager } from '../managers/Shop';
 import { PasswordManager } from '../managers/PasswordManager';
 import { LotoManager } from '../managers/LotoManager';
+import { PollsManager } from '../managers/pollsManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -56,6 +57,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.shop = new ShopManager(client.coinsManager);
     client.passwords = new PasswordManager();
     client.lotoManager = new LotoManager(client);
+    client.pollsManager = new PollsManager(client);
 
     // Start managers
     client.coinsManager.start();
@@ -180,5 +182,6 @@ declare module 'discord.js' {
         shop: ShopManager;
         passwords: PasswordManager;
         lotoManager: LotoManager;
+        pollsManager: PollsManager;
     }
 }
