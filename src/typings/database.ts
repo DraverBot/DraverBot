@@ -1,6 +1,7 @@
 import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
 import { commandName } from './functions';
+import { ConnectionMap } from 'enigma-machine/build/typings/types';
 
 export type DefaultQueryResult = {
     fieldCount: number;
@@ -195,7 +196,8 @@ export enum DatabaseTables {
     Inventories = 'inventories',
     Passwords = 'passwords_storage',
     Loto = 'loto',
-    Polls = 'polls'
+    Polls = 'polls',
+    Plugboards = 'plugboards'
 }
 export type coupons = {
     guild_id: string;
@@ -292,4 +294,10 @@ export type polls<Raw extends boolean = false> = {
     channel_id: string;
     question: string;
     ended: If<Raw, string, boolean>;
+};
+export type plugboard<Raw extends boolean = false> = {
+    user_id: string;
+    plugboard: If<Raw, string, ConnectionMap>;
+    name: string;
+    id: number;
 };
