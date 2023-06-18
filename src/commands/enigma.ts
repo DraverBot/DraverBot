@@ -466,6 +466,7 @@ export default new AmethystCommand({
                             ephemeral: true
                         })
                         .catch(log4js.trace);
+                    return;
                 }
 
                 const old = connections[first];
