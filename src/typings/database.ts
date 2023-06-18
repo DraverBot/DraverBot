@@ -44,7 +44,8 @@ export enum modActionType {
     WebhookCreationFailed = 'Échec de création de webhook',
     RoleCreate = 'Création de rôle',
     RoleEdit = 'Modification de rôle',
-    RoleDelete = 'Supression de rôle'
+    RoleDelete = 'Supression de rôle',
+    MessageBulkDelete = 'Suppression de messages'
 }
 
 export type modlogs = {
