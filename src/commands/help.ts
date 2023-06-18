@@ -303,7 +303,7 @@ export default new AmethystCommand({
                             name: 'Liens',
                             value: `[Invitation](${inviteLink(interaction.client)})\n[Serveur de support](${util(
                                 'support'
-                            )})`,
+                            )})\n[Instagram](${util('instagram')})`,
                             inline: true
                         },
                         {
