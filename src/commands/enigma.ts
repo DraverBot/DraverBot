@@ -307,7 +307,7 @@ export default new AmethystCommand({
                 })
                 .catch(log4js.trace);
 
-        const connections = defaultPlugboard as ConnectionMap;
+        const connections = JSON.parse(JSON.stringify(defaultPlugboard)) as ConnectionMap;
         const embed = () =>
             basicEmbed(interaction.user, { questionMark: true })
                 .setTitle('Création')
