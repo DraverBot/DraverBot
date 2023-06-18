@@ -80,7 +80,7 @@ export class PollsManager {
     public getPoll(poll_id: number) {
         return this.cache.get(poll_id);
     }
-    public end(poll_id) {
+    public end(poll_id: number) {
         if (!this.isPoll(poll_id)) return 'invalid poll';
         const poll = this.getPoll(poll_id);
 
