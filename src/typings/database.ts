@@ -198,7 +198,8 @@ export enum DatabaseTables {
     Passwords = 'passwords_storage',
     Loto = 'loto',
     Polls = 'polls',
-    Plugboards = 'plugboards'
+    Plugboards = 'plugboards',
+    Tasks = 'tasks'
 }
 export type coupons = {
     guild_id: string;
@@ -300,5 +301,20 @@ export type plugboard<Raw extends boolean = false> = {
     user_id: string;
     plugboard: If<Raw, string, ConnectionMap>;
     name: string;
+    id: number;
+};
+export type taskState = 'pending' | 'working' | 'closed' | 'done';
+export type tasks<Raw extends boolean = false> = {
+    guild_id: string;
+    assignees: If<Raw, string, string[]>;
+    state: taskState;
+    opened_by: string;
+    name: string;
+    description: string;
+    image: string | null;
+    started: number;
+    deadline: number | null;
+    channel_id: string;
+    message_id: string;
     id: number;
 };

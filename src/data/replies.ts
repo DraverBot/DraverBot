@@ -1,19 +1,23 @@
 import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, TextChannel, User } from 'discord.js';
 import errors from '../maps/errors';
-import { moduleType } from '../typings/database';
+import { moduleType, tasks } from '../typings/database';
 import { permType } from '../typings/functions';
 import { getRolePerm, moduleName, util } from '../utils/functions';
 import {
     addTimeDoc,
     anyHexColor,
     basicEmbed as basic,
+    basicEmbed,
+    color,
     displayDate,
     evokerColor,
+    notNull,
     numerize,
     pingChan,
     pingUser,
     plurial,
-    random
+    random,
+    resizeString
 } from '../utils/toolbox';
 import modules from '../maps/modules';
 
@@ -406,7 +410,77 @@ const replies = {
                     .map((x) => `${x.name} ( ${x.count} vote${plurial(x.count)} )`)
                     .join('\n')}`
             )
-            .addFields({ name: 'Fin', value: displayDate(endsAt), inline: false })
+            .addFields({ name: 'Fin', value: displayDate(endsAt), inline: false }),
+    tasks: {
+        pending: (data: tasks) => {
+            const embed = new EmbedBuilder()
+                .setTitle(resizeString({ str: data.name, length: 256 }))
+                .setDescription(
+                    resizeString({
+                        str: `Tâche en attente\n${data.description}\n\nAssignez-vous pour commencer la tâche`,
+                        length: 4096
+                    })
+                )
+                .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by) ?? 'inconnu', inline: true })
+                .setColor(color('taskPending'))
+                .setTimestamp(data.started);
+
+            if (notNull(data.deadline))
+                embed.addFields({
+                    name: 'À faire avant',
+                    value: displayDate(data.deadline) ?? 'Inconnu',
+                    inline: true
+                });
+            if (notNull(data.image)) embed.setImage(data.image);
+            return embed;
+        },
+        working: (data: tasks) => {
+            const embed = new EmbedBuilder()
+                .setTitle(resizeString({ str: data.name, length: 256 }))
+                .setDescription(resizeString({ str: `Tâche en cours\n${data.description}`, length: 4096 }))
+                .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by), inline: true })
+                .setColor(color('taskWorking'))
+                .setTimestamp(data.started);
+
+            if (notNull(data.deadline))
+                embed.addFields({ name: 'À faire avant', value: displayDate(data.deadline), inline: true });
+            if (notNull(data.image)) embed.setImage(data.image);
+
+            embed.addFields({
+                name: 'Assigné' + plurial(data.assignees),
+                value: data.assignees.length === 0 ? 'Aucun assigné' : data.assignees.map(pingUser).join(', '),
+                inline: false
+            });
+
+            return embed;
+        },
+        closed: (data: tasks, reason: 'deadline crossed' | 'someone closed') => {
+            const embed = new EmbedBuilder()
+                .setTitle(resizeString({ str: data.name, length: 256 }))
+                .setDescription(resizeString({ str: `Tâche fermée\n${data.description}`, length: 4096 }))
+                .setTimestamp()
+                .setColor(color('taskClosed'))
+                .setFields({
+                    name: 'Informations',
+                    value:
+                        reason === 'deadline crossed' ? `La date limite a été atteinte` : `Quelqu'un a fermé la tâche`,
+                    inline: false
+                });
+            if (notNull(data.image)) embed.setImage(data.image);
+
+            return embed;
+        },
+        done: (data: tasks) => {
+            const embed = new EmbedBuilder()
+                .setTitle(resizeString({ str: data.name, length: 256 }))
+                .setDescription(resizeString({ str: `La tâche a été terminée\n${data.description}`, length: 4096 }))
+                .setTimestamp();
+
+            if (notNull(data.image)) embed.setImage(data.image);
+
+            return embed;
+        }
+    }
 };
 
 export type replyKey = keyof typeof replies;

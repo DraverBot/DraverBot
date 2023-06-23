@@ -1,0 +1,6 @@
+{
+    "taskPending": "#F2C8BC",
+    "taskWorking": "#24D3C5",
+    "taskClosed": "#AA0A28",
+    "taskDone": "accent"
+}
