@@ -17,6 +17,8 @@ export type configKeys = {
     gban: boolean;
     gban_ban: boolean;
     mention_message: boolean;
+    task_channel: string;
+    task_enable: boolean;
 };
 export type configType = {
     description: string;
@@ -162,6 +164,20 @@ export const configsData: Record<keyof configKeys, configType> = {
         value: 'mention_message',
         description: 'Affiche le message lors de la mention',
         default: true,
+        type: 'boolean'
+    },
+    task_channel: {
+        name: 'Salon des tâches',
+        description: 'Salon dans lequel les tâches sont envoyées',
+        type: 'channel',
+        value: 'task_channel',
+        default: null
+    },
+    task_enable: {
+        name: 'Tâches activées',
+        description: 'Définit si les tâches sont utilisables sur le serveur',
+        value: 'task_enable',
+        default: false,
         type: 'boolean'
     }
 };

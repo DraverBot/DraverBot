@@ -312,8 +312,8 @@ export type tasks<Raw extends boolean = false> = {
     name: string;
     description: string;
     image: string | null;
-    started: number;
-    deadline: number | null;
+    startedAt: If<Raw, string, number>;
+    deadline: If<Raw, string, number | null>;
     channel_id: string;
     message_id: string;
     id: number;

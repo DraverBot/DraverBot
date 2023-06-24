@@ -6,6 +6,7 @@ import {
     ComponentType,
     EmbedBuilder,
     Guild,
+    GuildMember,
     InteractionCollector,
     Message,
     TextChannel
@@ -13,7 +14,7 @@ import {
 import { DatabaseTables, taskState, tasks } from '../typings/database';
 import { log4js } from 'amethystjs';
 import replies from '../data/replies';
-import { basicEmbed, buildButton, notNull, row } from '../utils/toolbox';
+import { basicEmbed, buildButton, confirm, notNull, row } from '../utils/toolbox';
 import query from '../utils/query';
 import { ButtonIds } from '../typings/buttons';
 
@@ -47,9 +48,9 @@ export class Task {
         this.opened_by = data.opened_by;
         this.name = data.name;
         this.description = data.description;
-        this.img = data.image ?? null;
-        this.startedAt = data.started;
-        this.deadline = data.deadline === 0 ? null : data.deadline ?? null;
+        this.img = data.image === 'null' ? null : data.image ?? null;
+        this.startedAt = parseInt(data.startedAt);
+        this.deadline = parseInt(data.deadline) === 0 ? null : parseInt(data.deadline) ?? null;
         this.channel_id = data.channel_id;
         this.message_id = data.message_id;
         this.state = data.state;
@@ -62,7 +63,7 @@ export class Task {
             description: this.description,
             image: this.img,
             deadline: this.deadline,
-            started: this.startedAt,
+            startedAt: this.startedAt,
             state: this.state,
             assignees: this.assignees,
             opened_by: this.opened_by,
@@ -172,6 +173,7 @@ export class Task {
                 row(
                     buildButton({ label: 'Assigner', buttonId: 'TaskAssign', style: 'Secondary' }),
                     buildButton({ label: 'Se retirer', buttonId: 'TaskUnAssign', style: 'Primary' }),
+                    buildButton({ label: 'Terminer', buttonId: 'TaskDone', style: 'Success' }),
                     buildButton({ label: 'Fermer', style: 'Danger', buttonId: 'TaskClose' })
                 )
             ];
@@ -192,12 +194,16 @@ export class Task {
         this.edit();
         if (!this.ended) {
             this.collector = this.message.createMessageComponentCollector({ componentType: ComponentType.Button });
-            this.collector.on('collect', (ctx) => {
+            this.collector.on('collect', async (ctx) => {
                 if (ctx.customId === ButtonIds.TaskAssign) {
                     if (this.isAssigned(ctx.user.id)) {
                         ctx.reply({
                             ephemeral: true,
-                            content: `Vous êtes déjà assigné à cette tâche`
+                            embeds: [
+                                basicEmbed(ctx.user, { evoker: ctx.guild })
+                                    .setTitle('Assigné')
+                                    .setDescription(`Vous êtes déjà assigné à cette tâche`)
+                            ]
                         }).catch(log4js.trace);
                         return;
                     }
@@ -213,6 +219,40 @@ export class Task {
                     }).catch(log4js.trace);
                 }
                 if (ctx.customId === ButtonIds.TaskClose) {
+                    if (
+                        !(ctx.member as GuildMember).permissions.has('ManageGuild') &&
+                        this.data.opened_by !== ctx.user.id
+                    ) {
+                        ctx.reply({
+                            embeds: [
+                                replies.userMissingPermissions(ctx.user, {
+                                    permissions: { missing: ['ManageGuild'] },
+                                    guild: ctx.guild
+                                })
+                            ],
+                            ephemeral: true
+                        }).catch(log4js.trace);
+                        return;
+                    }
+
+                    const confirmation = await confirm({
+                        interaction: ctx,
+                        user: ctx.user,
+                        embed: basicEmbed(ctx.user)
+                            .setTitle('Fermeture')
+                            .setDescription(`Êtes-vous sûr de fermer cette tâche ?`),
+                        ephemeral: true
+                    }).catch(log4js.trace);
+                    if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
+                        ctx.editReply({
+                            embeds: [replies.cancel()],
+                            components: []
+                        }).catch(log4js.trace);
+                        return;
+                    }
+                    this.close(true);
+
+                    ctx.deleteReply().catch(log4js.trace);
                     const rep = this.close();
 
                     if (rep === 'already closed') {
@@ -238,8 +278,6 @@ export class Task {
                         }).catch(log4js.trace);
                         return;
                     }
-
-                    ctx.deferUpdate().catch(log4js.trace);
                 }
                 if (ctx.customId === ButtonIds.TaskUnAssign) {
                     if (!this.isAssigned(ctx.user.id)) {
@@ -264,9 +302,58 @@ export class Task {
                         ephemeral: true
                     }).catch(log4js.trace);
                 }
+                if (ctx.customId === ButtonIds.TaskDone) {
+                    if (
+                        !(ctx.member as GuildMember).permissions.has('ManageGuild') &&
+                        this.data.opened_by !== ctx.user.id
+                    ) {
+                        ctx.reply({
+                            embeds: [
+                                replies.userMissingPermissions(ctx.user, {
+                                    permissions: { missing: ['ManageGuild'] },
+                                    guild: ctx.guild
+                                })
+                            ],
+                            ephemeral: true
+                        }).catch(log4js.trace);
+                        return;
+                    }
+                    const confirmation = await confirm({
+                        interaction: ctx,
+                        user: ctx.user,
+                        embed: basicEmbed(ctx.user)
+                            .setTitle('Terminer')
+                            .setDescription(`Êtes-vous sûr de marquer cette tâche comme terminée ?`),
+                        ephemeral: true
+                    }).catch(log4js.trace);
+                    if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
+                        ctx.editReply({
+                            embeds: [replies.cancel()],
+                            components: []
+                        }).catch(log4js.trace);
+                        return;
+                    }
+                    this.close(true);
+
+                    ctx.deleteReply().catch(log4js.trace);
+                    if (this.ended) {
+                        ctx.reply({
+                            embeds: [
+                                basicEmbed(ctx.user, { evoker: this.guild })
+                                    .setTitle('Tâche terminée')
+                                    .setDescription(`Cette tâche a déjà été terminée`)
+                            ],
+                            ephemeral: true
+                        }).catch(log4js.trace);
+                        this.edit();
+                        return;
+                    }
+                    this.done();
+                    ctx.deferUpdate().catch(log4js.trace);
+                }
             });
 
-            if (notNull(this.deadline)) {
+            if (notNull(this.deadline) && this.deadline > 0) {
                 setTimeout(() => {
                     this.close(false);
                 }, this.deadline - this.startedAt);

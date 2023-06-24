@@ -7,8 +7,6 @@ import {
     addTimeDoc,
     anyHexColor,
     basicEmbed as basic,
-    basicEmbed,
-    color,
     displayDate,
     evokerColor,
     notNull,
@@ -19,6 +17,7 @@ import {
     random,
     resizeString
 } from '../utils/toolbox';
+import { color } from '../utils/functions';
 import modules from '../maps/modules';
 
 export type anyUser = User | GuildMember;
@@ -423,7 +422,7 @@ const replies = {
                 )
                 .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by) ?? 'inconnu', inline: true })
                 .setColor(color('taskPending'))
-                .setTimestamp(data.started);
+                .setTimestamp(data.startedAt);
 
             if (notNull(data.deadline))
                 embed.addFields({
@@ -440,7 +439,7 @@ const replies = {
                 .setDescription(resizeString({ str: `Tâche en cours\n${data.description}`, length: 4096 }))
                 .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by), inline: true })
                 .setColor(color('taskWorking'))
-                .setTimestamp(data.started);
+                .setTimestamp(data.startedAt);
 
             if (notNull(data.deadline))
                 embed.addFields({ name: 'À faire avant', value: displayDate(data.deadline), inline: true });
@@ -474,12 +473,15 @@ const replies = {
             const embed = new EmbedBuilder()
                 .setTitle(resizeString({ str: data.name, length: 256 }))
                 .setDescription(resizeString({ str: `La tâche a été terminée\n${data.description}`, length: 4096 }))
-                .setTimestamp();
+                .setTimestamp()
+                .setColor(color('taskDone'));
 
             if (notNull(data.image)) embed.setImage(data.image);
 
             return embed;
-        }
+        },
+        unexisting: (user: anyUser) =>
+            userMember(user).setTitle('Tâche inexistante').setDescription(`Cette tâche n'existe pas`)
     }
 };
 

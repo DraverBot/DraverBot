@@ -16,6 +16,37 @@ export class TaskManager {
         this.start();
     }
 
+    public exist(id: number) {
+        return this.cache.has(id);
+    }
+    public assign({ userId, taskId }: { userId: string; taskId: number }) {
+        if (!this.exist(taskId)) return 'unexisting';
+
+        const task = this.cache.get(taskId);
+        return task.assign(userId);
+    }
+    public unAssign({ userId, taskId }: { userId: string; taskId: number }) {
+        if (!this.exist(taskId)) return 'unexisting';
+
+        const task = this.cache.get(taskId);
+        return task.removeAssignation(userId);
+    }
+    public close(taskId: number) {
+        if (!this.exist(taskId)) return 'unexisting';
+
+        return this.cache.get(taskId).close(true);
+    }
+    public done(taskId: number) {
+        if (!this.exist(taskId)) return 'unexisting';
+
+        return this.cache.get(taskId).done();
+    }
+    public getServer(guildId: string) {
+        return this.cache.filter((x) => x.data.guild_id === guildId);
+    }
+    public getTask(taskId: number | string) {
+        return this.cache.get(parseInt(taskId.toString()));
+    }
     public async create({
         name,
         description,
@@ -46,7 +77,9 @@ export class TaskManager {
                 channel.guild.id
             }", '${channel.id}', '${message.id}', "${sqliseString(description)}", "${sqliseString(
                 name
-            )}", "${sqliseString(image)}", '[]', "${time}", "${by.id}", "${message.createdAt.getTime()}" )`
+            )}", "${sqliseString(image)}", '[]', "${time == 0 ? 0 : message.createdAt.getTime() + time}", "${
+                by.id
+            }", "${message.createdAt.getTime()}" )`
         );
 
         if (!insertion) {
@@ -59,18 +92,18 @@ export class TaskManager {
             channel_id: channel.id,
             message_id: message.id,
             id: insertion.insertId,
-            deadline: time === 0 ? null : message.createdAt.getTime() + time,
+            deadline: time === 0 ? null : (message.createdAt.getTime() + time).toString(),
             state: 'pending',
             description,
             name,
             image: image ?? null,
-            started: message.createdAt.getTime(),
+            startedAt: message.createdAt.getTime().toString(),
             assignees: '[]',
             opened_by: by.id
         });
 
         this.cache.set(task.data.id, task);
-        return 'ok';
+        return task;
     }
 
     private async checkDb() {

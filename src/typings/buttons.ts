@@ -14,5 +14,6 @@ export enum ButtonIds {
     PollValidate = 'cmd.poll.validate',
     TaskAssign = 'task.assign',
     TaskClose = 'task.close',
-    TaskUnAssign = 'task.remove.assign'
+    TaskUnAssign = 'task.remove.assign',
+    TaskDone = 'task.done'
 }

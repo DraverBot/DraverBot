@@ -50,7 +50,6 @@ import query from './query';
 import time from '../maps/time';
 import { modActionType } from '../typings/database';
 import { ButtonIds } from '../typings/buttons';
-import colors from '../data/colors.json';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -76,7 +75,10 @@ export const random = ({ max = 100, min = 0 }: randomType): number => {
 
     return Math.floor(Math.random() * (max - min)) + min;
 };
-export const systemReply = (interaction: CommandInteraction | ButtonInteraction, content: InteractionReplyOptions) => {
+export const systemReply = (
+    interaction: CommandInteraction | ButtonInteraction,
+    content: InteractionReplyOptions
+): Promise<unknown> => {
     const fnt = interaction.replied || interaction.deferred ? 'editReply' : 'reply';
     return (interaction[fnt] as CallableFunction)(content);
 };
@@ -643,5 +645,3 @@ export const paginatorize = <T extends any[], K extends ElementType<T>>({
 export const round = (number: number, fixed = 0) => {
     return number.toFixed(fixed).replace(/\.?0+$/, '');
 };
-export const color = (color: keyof typeof colors) =>
-    colors[color] === 'accent' ? util<ColorResolvable>('accentColor') : (colors[color] as ColorResolvable);

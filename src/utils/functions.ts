@@ -9,6 +9,7 @@ import { commandName, permType } from '../typings/functions';
 import query from './query';
 import { boolDb, capitalize } from './toolbox';
 import { channelTypeNames } from '../data/channelTypeNames';
+import colors from '../data/colors.json';
 
 export const getRolePerm = (key: permType<'role'>) => {
     return perms.role[key];
@@ -127,3 +128,5 @@ export const emoji = (key: keyof typeof emojis) => {
 export const channelTypeName = (type: keyof typeof ChannelType): string => {
     return channelTypeNames[type];
 };
+export const color = (color: keyof typeof colors) =>
+    colors[color] === 'accent' ? util<ColorResolvable>('accentColor') : (colors[color] as ColorResolvable);
