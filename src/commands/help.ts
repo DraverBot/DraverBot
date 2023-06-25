@@ -310,6 +310,11 @@ export default new AmethystCommand({
                             name: 'Projets associés',
                             value: `[Lofi Girl](${util('lofiGirl')})`,
                             inline: true
+                        },
+                        {
+                            name: 'Email',
+                            value: util('email'),
+                            inline: false
                         }
                     )
             ]

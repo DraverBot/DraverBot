@@ -401,10 +401,10 @@ ajv@^6.10.0, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amethystjs@^1.5.21:
-  version "1.5.21"
-  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.5.21.tgz#8f0648b10df3118822729bb26420d47600fba320"
-  integrity sha512-2VkRAjTRky9rzQbUKfkbwcx2yefqo4finuQ4tJHDHzA5hrO2LaqwgNb+8Od4qkLFldxycB91/hZPucROmpDzLQ==
+amethystjs@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.6.1.tgz#73c91656bc3eaa86839da8fa9a47afe7ee8f286c"
+  integrity sha512-6VU85xjioAE7De3Nt+YrOM+4SCBhbO/LIfCbQOXE70hcg4nYl8WznRcZBDVLqt88Nrh8B+KvPxMWAov+X9F80A==
   dependencies:
     discord.js "^14.8.0"
     dsc-pagination "^1.0.3"
