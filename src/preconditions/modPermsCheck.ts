@@ -3,33 +3,63 @@ import { GuildMember } from 'discord.js';
 import { checkPerms } from '../utils/toolbox';
 import { preconditionType } from 'amethystjs/dist/typings/Precondition';
 
-export default new Precondition('modPermCheck').setChatInputRun(({ interaction, options }) => {
-    const member = options.getMember('membre') ?? options.getMember('utilisateur');
+export default new Precondition('modPermCheck')
+    .setChatInputRun(({ interaction, options }) => {
+        const member = options.getMember('membre') ?? options.getMember('utilisateur');
 
-    const ok = {
-        ok: true,
-        type: 'chatInput' as preconditionType,
-        interaction
-    };
-    if (!member) return ok;
-    if (
-        !checkPerms({
-            member: member as GuildMember,
-            mod: interaction.member as GuildMember,
-            checkClientPosition: true,
-            checkModPosition: true,
-            checkOwner: true,
-            sendErrorMessage: true,
+        const ok = {
+            ok: true,
+            type: 'chatInput' as preconditionType,
             interaction
-        })
-    )
-        return {
-            ok: false,
-            type: 'chatInput',
-            interaction,
-            metadata: {
-                silent: true
-            }
         };
-    return ok;
-});
+        if (!member) return ok;
+        if (
+            !checkPerms({
+                member: member as GuildMember,
+                mod: interaction.member as GuildMember,
+                checkClientPosition: true,
+                checkModPosition: true,
+                checkOwner: true,
+                sendErrorMessage: true,
+                interaction
+            })
+        )
+            return {
+                ok: false,
+                type: 'chatInput',
+                interaction,
+                metadata: {
+                    silent: true
+                }
+            };
+        return ok;
+    })
+    .setUserContextMenuRun(({ interaction }) => {
+        const member = interaction.targetMember;
+
+        const ok = {
+            ok: true,
+            type: 'userContextMenu' as preconditionType,
+            contextMenu: interaction
+        };
+        if (!member) return ok;
+        if (
+            !checkPerms({
+                member: member as GuildMember,
+                mod: interaction.member as GuildMember,
+                checkClientPosition: true,
+                checkModPosition: true,
+                checkOwner: true,
+                sendErrorMessage: true,
+                interaction
+            })
+        )
+            return {
+                ok: false,
+                type: 'userContextMenu',
+                contextMenu: interaction,
+                metadata: {
+                    silent: true
+                }
+            };
+    });
