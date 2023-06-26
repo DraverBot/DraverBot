@@ -18,6 +18,7 @@ import {
     CommandInteraction,
     CommandInteractionOptionResolver,
     ComponentType,
+    ContextMenuCommandInteraction,
     EmbedBuilder,
     EmbedField,
     Emoji,
@@ -198,13 +199,15 @@ export const checkPerms = ({
     ownerByPass = false,
     checkSelf,
     sendErrorMessage = false,
-    interaction = undefined
+    interaction = undefined,
+    ephemeral = false
 }: checkPermsOptions) => {
     const send = (key: replyKey): false => {
         if (sendErrorMessage === true && interaction) {
             systemReply(interaction, {
                 embeds: [(replies[key] as (user: User, metadata: any) => EmbedBuilder)(interaction.user, { member })],
-                components: []
+                components: [],
+                ephemeral
             }).catch(sendError);
         }
         return false;
@@ -287,7 +290,7 @@ export const confirm = ({
     components = [yesNoRow()],
     ephemeral = false
 }: {
-    interaction: CommandInteraction | ButtonInteraction | AnySelectMenuInteraction;
+    interaction: CommandInteraction | ButtonInteraction | AnySelectMenuInteraction | ContextMenuCommandInteraction;
     user: User;
     embed: EmbedBuilder;
     time?: number;

@@ -1,4 +1,4 @@
-import { AmethystCommand } from 'amethystjs';
+import { AmethystCommand, log4js } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { buildButton, row } from '../utils/toolbox';
@@ -25,17 +25,26 @@ export default new AmethystCommand({
             choices: sizes.map((size) => ({ name: `${size}x${size}`, value: size }))
         }
     ]
-}).setChatInputRun(({ interaction, options }) => {
-    const user = options.getUser('membre') ?? interaction.user;
-    const size = (options.getInteger('taille', false) ?? 2048) as allowedImageSizes;
+})
+    .setChatInputRun(({ interaction, options }) => {
+        const user = options.getUser('membre') ?? interaction.user;
+        const size = (options.getInteger('taille', false) ?? 2048) as allowedImageSizes;
 
-    const avatar = user.displayAvatarURL({ size, forceStatic: false });
+        const avatar = user.displayAvatarURL({ size, forceStatic: false });
 
-    const button = buildButton({ label: 'Ouvrir', style: 'Link', url: avatar });
-    interaction
-        .reply({
-            content: `Voici l'avatar de ${user.username} :\n${avatar}`,
-            components: [row(button)]
-        })
-        .catch(() => {});
-});
+        const button = buildButton({ label: 'Ouvrir', style: 'Link', url: avatar });
+        interaction
+            .reply({
+                content: `Voici l'avatar de ${user.username} :\n${avatar}`,
+                components: [row(button)]
+            })
+            .catch(() => {});
+    })
+    .setUserContextRun(({ interaction, user }) => {
+        const avatar = user.displayAvatarURL({ forceStatic: false, size: 2048 });
+
+        const button = buildButton({ label: 'Ouvrir', style: 'Link', url: avatar });
+        interaction
+            .reply({ content: `Voici l'avatar de ${user.username} :\n${avatar}`, components: [row(button)] })
+            .catch(log4js.trace);
+    });

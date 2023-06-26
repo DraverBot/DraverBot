@@ -51,7 +51,8 @@ export default new Precondition('modPermCheck')
                 checkModPosition: true,
                 checkOwner: true,
                 sendErrorMessage: true,
-                interaction
+                interaction,
+                ephemeral: true
             })
         )
             return {
@@ -62,4 +63,5 @@ export default new Precondition('modPermCheck')
                     silent: true
                 }
             };
+        return ok;
     });

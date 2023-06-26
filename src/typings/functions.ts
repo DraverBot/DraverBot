@@ -56,6 +56,7 @@ export type checkPermsOptions = {
      * Returns true if the mod is the member
      */
     checkSelf?: boolean;
+    ephemeral?: boolean;
 };
 export type paginatorOptions = {
     interaction: CommandInteraction | ButtonInteraction;

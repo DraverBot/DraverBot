@@ -47,5 +47,9 @@
     "réflexe": "fun",
     "énigma": "fun",
     "clear": "moderation",
-    "tache": "administration"
+    "tache": "administration",
+    "Terminer le giveaway": "giveaways",
+    "Reroll le giveaway": "giveaways",
+    "Supprimer le giveaway": "giveaways",
+    "censurer": "moderation"
 }
