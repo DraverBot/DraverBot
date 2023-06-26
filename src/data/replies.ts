@@ -424,7 +424,7 @@ const replies = {
                 .setColor(color('taskPending'))
                 .setTimestamp(data.startedAt);
 
-            if (notNull(data.deadline))
+            if (notNull(data.deadline) && data.deadline > 0)
                 embed.addFields({
                     name: 'À faire avant',
                     value: displayDate(data.deadline) ?? 'Inconnu',
@@ -441,7 +441,7 @@ const replies = {
                 .setColor(color('taskWorking'))
                 .setTimestamp(data.startedAt);
 
-            if (notNull(data.deadline))
+            if (notNull(data.deadline) && data.deadline > 0)
                 embed.addFields({ name: 'À faire avant', value: displayDate(data.deadline), inline: true });
             if (notNull(data.image)) embed.setImage(data.image);
 

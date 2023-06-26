@@ -108,7 +108,7 @@ export class TaskManager {
 
     private async checkDb() {
         await query(
-            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Tasks} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'pending', image VARCHAR(255) NOT NULL DEFAULT '', assignees LONGTEXT, deadline INTEGER(255) DEFAULT '0', opened_by VARCHAR(255) NOT NULL, startedAt INTEGER(255) NOT NULL, id INTEGER(255) NOT NULL PRIMARY KEY AUTO_INCREMENT)`
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Tasks} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'pending', image VARCHAR(255) NOT NULL DEFAULT '', assignees LONGTEXT, deadline VARCHAR(255) DEFAULT '0', opened_by VARCHAR(255) NOT NULL, startedAt VARCHAR(255) NOT NULL, id INTEGER(255) NOT NULL PRIMARY KEY AUTO_INCREMENT)`
         );
 
         return true;
