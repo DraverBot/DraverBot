@@ -648,3 +648,14 @@ export const paginatorize = <T extends any[], K extends ElementType<T>>({
 export const round = (number: number, fixed = 0) => {
     return number.toFixed(fixed).replace(/\.?0+$/, '');
 };
+export const hexToRgb = (hex: string | ColorResolvable) => {
+    hex = hex.toString().replace('#', '');
+
+    if (hex.length === 3) {
+        hex = hex.replace(/(.)/g, '$1$1');
+    }
+
+    const [r, g, b] = hex.match(/[A-Fa-f0-9]{2}/g).map((value) => parseInt(value, 16));
+
+    return { r, g, b };
+};
