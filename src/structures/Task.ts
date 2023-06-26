@@ -333,7 +333,7 @@ export class Task {
                         }).catch(log4js.trace);
                         return;
                     }
-                    this.close(true);
+                    this.done();
 
                     ctx.deleteReply().catch(log4js.trace);
                     if (this.ended) {
