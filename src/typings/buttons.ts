@@ -15,5 +15,7 @@ export enum ButtonIds {
     TaskAssign = 'task.assign',
     TaskClose = 'task.close',
     TaskUnAssign = 'task.remove.assign',
-    TaskDone = 'task.done'
+    TaskDone = 'task.done',
+    MastermindReply = 'mastermind.try',
+    MastermindResign = 'mastermind.resign'
 }

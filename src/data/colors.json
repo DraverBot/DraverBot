@@ -2,5 +2,8 @@
     "taskPending": "#F2C8BC",
     "taskWorking": "#24D3C5",
     "taskClosed": "#AA0A28",
-    "taskDone": "accent"
+    "taskDone": "accent",
+    "mastermind": "#98c41f",
+    "mastermindResign": "#8B2274",
+    "mastermindWin": "#DFAE27"
 }
