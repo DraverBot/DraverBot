@@ -481,7 +481,11 @@ const replies = {
             return embed;
         },
         unexisting: (user: anyUser) =>
-            userMember(user).setTitle('Tâche inexistante').setDescription(`Cette tâche n'existe pas`)
+            userMember(user).setTitle('Tâche inexistante').setDescription(`Cette tâche n'existe pas`),
+        taskEnded: (user: anyUser) =>
+            userMember(user)
+                .setTitle('Tâche terminée')
+                .setDescription(`Cette tâche est terminée, vous ne pouvez pas assigner quelqu'un`)
     }
 };
 

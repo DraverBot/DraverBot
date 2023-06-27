@@ -368,6 +368,11 @@ export default new AmethystCommand({
             return interaction
                 .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember)], ephemeral: true })
                 .catch(log4js.trace);
+        if (task.ended)
+            return interaction
+                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember)], ephemeral: true })
+                .catch(log4js.trace);
+
         if (!checkUser(task))
             return interaction
                 .reply({
@@ -447,6 +452,11 @@ export default new AmethystCommand({
             return interaction
                 .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember)], ephemeral: true })
                 .catch(log4js.trace);
+        if (task.ended)
+            return interaction
+                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember)], ephemeral: true })
+                .catch(log4js.trace);
+
         if (!checkUser(task))
             return interaction
                 .reply({
