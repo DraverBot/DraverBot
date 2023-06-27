@@ -67,7 +67,7 @@ export type CooldownsInputOptions = {
 };
 
 export type RemindsPlaceType = 'mp' | 'achannel';
-export type reminds = {
+export type reminds<Raw extends boolean = false> = {
     user_id: string;
     place: RemindsPlaceType;
     channel_id: string | null;
@@ -75,6 +75,7 @@ export type reminds = {
     at: number;
     id: number;
     setDate: string;
+    recurrent: If<Raw, string, boolean>;
 };
 export enum ShopManagerErrorReturns {
     EmptyStock = 'Rupture de stock',

@@ -54,6 +54,12 @@ export default new AmethystCommand({
                             value: 'achannel'
                         }
                     ]
+                },
+                {
+                    name: 'récurrent',
+                    required: false,
+                    type: ApplicationCommandOptionType.Boolean,
+                    description: 'Si le rappel doit se répéter'
                 }
             ]
         },
@@ -84,6 +90,7 @@ export default new AmethystCommand({
     if (cmd === 'créer') {
         const reason = options.getString('raison');
         const time = ms(options.getString('temps'));
+        const repeat = options.getBoolean('récurrent') ?? false;
         const place = (options.getString('endroit') as RemindsPlaceType) ?? 'mp';
 
         await interaction.deferReply().catch(() => {});
@@ -93,7 +100,8 @@ export default new AmethystCommand({
             place,
             channel: interaction.channel as TextChannel,
             time,
-            reason
+            reason,
+            repeat
         });
 
         interaction
