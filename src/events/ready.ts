@@ -23,6 +23,7 @@ import { LotoManager } from '../managers/LotoManager';
 import { PollsManager } from '../managers/pollsManager';
 import { PlugboardsManager } from '../managers/PlugboardManager';
 import { TaskManager } from '../managers/TaskManager';
+import { RolesReactManager } from '../managers/RoleReactsManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -62,6 +63,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.pollsManager = new PollsManager(client);
     client.plugboardsManager = new PlugboardsManager();
     client.tasksManager = new TaskManager(client);
+    client.rolesReact = new RolesReactManager(client);
 
     // Start managers
     client.coinsManager.start();
@@ -189,5 +191,6 @@ declare module 'discord.js' {
         pollsManager: PollsManager;
         plugboardsManager: PlugboardsManager;
         tasksManager: TaskManager;
+        rolesReact: RolesReactManager;
     }
 }

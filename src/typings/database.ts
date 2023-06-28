@@ -200,7 +200,8 @@ export enum DatabaseTables {
     Loto = 'loto',
     Polls = 'polls',
     Plugboards = 'plugboards',
-    Tasks = 'tasks'
+    Tasks = 'tasks',
+    RoleReacts = 'roleReacts'
 }
 export type coupons = {
     guild_id: string;
