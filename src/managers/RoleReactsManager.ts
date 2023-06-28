@@ -5,7 +5,8 @@ import { DatabaseTables } from '../typings/database';
 import { roleReactType, roleReacts } from '../typings/rolereact';
 import { log4js } from 'amethystjs';
 import replies from '../data/replies';
-import { sqliseString } from '../utils/toolbox';
+import { removeKey, sqliseString } from '../utils/toolbox';
+import GetEmojiStorage from '../process/GetEmojiStorage';
 
 export class RolesReactManager {
     private client: Client;
@@ -17,6 +18,22 @@ export class RolesReactManager {
         this.init();
     }
 
+    public getList(serverId: string) {
+        return this.cache.filter((x) => x.guild_id === serverId);
+    }
+    public exists(id: number) {
+        return this.cache.has(id);
+    }
+    public delete(id: number) {
+        if (!this.exists(id)) return false;
+        this.cache.get(id).delete();
+        this.cache.delete(id);
+
+        return true;
+    }
+    public getPanel(id: number) {
+        return this.cache.get(id);
+    }
     public async create({
         title,
         description,
@@ -28,7 +45,7 @@ export class RolesReactManager {
         title: string;
         description: string;
         image?: string | '';
-        roles: { name: string; role_id: string; type: roleReactType }[];
+        roles: { name: string; role_id: string; type: roleReactType; emoji: string }[];
         channel: TextChannel;
         user: User;
     }) {
@@ -44,9 +61,9 @@ export class RolesReactManager {
                 DatabaseTables.RoleReacts
             } ( guild_id, channel_id, message_id, ids, title, description) VALUES ( '${channel.guild.id}', '${
                 channel.id
-            }', '${message.id}', '${JSON.stringify(roles).replace(/'/g, "\\'")}', "${sqliseString(
-                title
-            )}", "${sqliseString(description)}" )`
+            }', '${message.id}', '${JSON.stringify(
+                roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
+            ).replace(/'/g, "\\'")}', "${sqliseString(title)}", "${sqliseString(description)}" )`
         );
 
         const Roles = new RoleReact(this.client, {
@@ -57,7 +74,9 @@ export class RolesReactManager {
             image: image,
             title,
             description,
-            ids: JSON.stringify(roles).replace(/'/g, "\\'"),
+            ids: JSON.stringify(
+                roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
+            ).replace(/'/g, "\\'"),
             type: 'both'
         });
 

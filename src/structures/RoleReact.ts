@@ -15,6 +15,7 @@ import { color, getRolePerm } from '../utils/functions';
 import { log4js } from 'amethystjs';
 import query from '../utils/query';
 import { DatabaseTables } from '../typings/database';
+import GetEmojiFromStorage from '../process/GetEmojiFromStorage';
 
 export class RoleReact {
     private _guild_id: string;
@@ -135,7 +136,7 @@ export class RoleReact {
         this.collector.stop();
         this._message.delete().catch(log4js.trace);
 
-        query(`DELTE FROM ${DatabaseTables.RoleReacts} WHERE id='${this._id}'`);
+        query(`DELETE FROM ${DatabaseTables.RoleReacts} WHERE id='${this._id}'`);
     }
     private get components() {
         const buttons = () => {
@@ -149,8 +150,8 @@ export class RoleReact {
                     rows[rows.length - 1].addComponents(
                         buildButton({
                             label: resizeString({ str: id.name, length: 50 }),
-                            emoji: notNull(id.emoji) ? id.emoji : undefined,
-                            id: `roleReact.${i.toString()}`,
+                            emoji: notNull(id.emoji) ? GetEmojiFromStorage.process(id.emoji) : undefined,
+                            id: `roleReactButton.${i.toString()}`,
                             style: 'Primary'
                         })
                     );
@@ -160,8 +161,8 @@ export class RoleReact {
             return rows;
         };
         const selectMenus = () => {
-            if (this._ids.filter((x) => x.type === 'selectmenu')) return [];
-            const menus = [new StringSelectMenuBuilder().setCustomId('roleReact.1').setMaxValues(1)];
+            if (this._ids.filter((x) => x.type === 'selectmenu').length === 0) return [];
+            const menus = [new StringSelectMenuBuilder().setCustomId('roleReactMenu.1').setMaxValues(1)];
 
             this._ids
                 .filter((x) => x.type === 'selectmenu')
@@ -174,7 +175,7 @@ export class RoleReact {
                     menus[menus.length - 1].addOptions({
                         label: resizeString({ str: id.name, length: 50 }),
                         description: `Rôle à réaction`,
-                        emoji: notNull(id.emoji) ? id.emoji : undefined,
+                        emoji: notNull(id.emoji) ? GetEmojiFromStorage.process(id.emoji) : undefined,
                         value: id.role_id
                     });
                 });
@@ -238,10 +239,7 @@ export class RoleReact {
         this.collector.on('collect', async (ctx) => {
             if (ctx.isButton()) {
                 const roleIndex = parseInt(ctx.customId.split('.')[1]);
-                console.log(ctx.customId);
-                console.log(roleIndex);
                 const value = this._ids.filter((x) => x.type === 'buttons')[roleIndex];
-                console.log(value);
 
                 await ctx.deferReply({ ephemeral: true }).catch(log4js.trace);
                 const role =
@@ -273,7 +271,7 @@ export class RoleReact {
                             basicEmbed(ctx.user, { evoker: this._guild })
                                 .setTitle('Rôle non ajouté')
                                 .setDescription(
-                                    `Le rôle n'a pas pu vous être ajouté, cela peut être du aux permissions et à ma position par rapport à vous.\nVérifiez que je posède la permission \`${getRolePerm(
+                                    `Le rôle n'a pas pu vous être ajouté, cela peut être dû aux permissions et à ma position par rapport à vous.\nVérifiez que je possède la permission \`${getRolePerm(
                                         'ManageRoles'
                                     )}\` et que mon rôle soit au-dessus des autres`
                                 )
@@ -324,7 +322,7 @@ export class RoleReact {
                             basicEmbed(ctx.user, { evoker: this._guild })
                                 .setTitle('Rôle non ajouté')
                                 .setDescription(
-                                    `Le rôle n'a pas pu vous être ajouté, cela peut être du aux permissions et à ma position par rapport à vous.\nVérifiez que je posède la permission \`${getRolePerm(
+                                    `Le rôle n'a pas pu vous être ajouté, cela peut être dû aux permissions et à ma position par rapport à vous.\nVérifiez que je possède la permission \`${getRolePerm(
                                         'ManageRoles'
                                     )}\` et que mon rôle soit au-dessus des autres`
                                 )
@@ -336,7 +334,9 @@ export class RoleReact {
                     embeds: [
                         basicEmbed(ctx.user, { draverColor: true })
                             .setTitle('Rôle ajouté')
-                            .setDescription(`Le rôle ${pingRole(role)} vous a aété ajouté`)
+                            .setDescription(
+                                `Le rôle ${pingRole(role)} vous a été ${method === 'add' ? 'ajouté' : 'retiré'}`
+                            )
                     ]
                 }).catch(log4js.trace);
             }
