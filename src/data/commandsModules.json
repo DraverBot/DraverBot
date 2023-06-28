@@ -53,5 +53,6 @@
     "Supprimer le giveaway": "giveaways",
     "censurer": "moderation",
     "mastermind": "fun",
-    "couleur": "utils"
+    "couleur": "utils",
+    "autorole": "administration"
 }
