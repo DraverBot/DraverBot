@@ -67,6 +67,21 @@ export default new AmethystCommand({
                     autocomplete: true
                 }
             ]
+        },
+        {
+            name: 'liste',
+            description: "Affiche la liste des rôles à réaction",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'panneau',
+                    type: ApplicationCommandOptionType.Integer,
+                    required: false,
+                    autocomplete
+                    : true,
+                    description: "Panneau que vous voulez afficher en détails"
+                }
+            ]
         }
     ],
     preconditions: [preconditions.GuildOnly, moduleEnabled],
@@ -386,5 +401,11 @@ export default new AmethystCommand({
                 components: []
             })
             .catch(log4js.trace);
+    }
+    if (cmd === 'liste') {
+        const panelId = options.getInteger('panneau')
+        if (client.rolesReact.exists(panelId)) {
+            const panel = client.rolesReact.getPanel(panelId)
+        }
     }
 });
