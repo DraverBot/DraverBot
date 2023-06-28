@@ -1,4 +1,4 @@
-import { AmethystCommand } from 'amethystjs';
+import { AmethystCommand, log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import time from '../preconditions/time';
@@ -92,6 +92,20 @@ export default new AmethystCommand({
         const time = ms(options.getString('temps'));
         const repeat = options.getBoolean('récurrent') ?? false;
         const place = (options.getString('endroit') as RemindsPlaceType) ?? 'mp';
+
+        if (repeat && time < 600000)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Durée invalide')
+                            .setDescription(
+                                `Vous devez mettre une durée d'au moins dix minutes pour avoir un rappel récurrent`
+                            )
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
 
         await interaction.deferReply().catch(() => {});
 

@@ -51,6 +51,7 @@ import query from './query';
 import time from '../maps/time';
 import { modActionType } from '../typings/database';
 import { ButtonIds } from '../typings/buttons';
+import SetRandomComponent from '../process/SetRandomComponent';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -350,7 +351,8 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
             interaction
                 .reply({
                     ephemeral: true,
-                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user)]
+                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user)],
+                    components: SetRandomComponent.process()
                 })
                 .catch(sendError);
         }
@@ -392,11 +394,13 @@ export const waitForReplies = (client: Client) => {
     return {
         everyone: {
             embeds: [replies.replyNotAllowed(client.user)],
-            ephemeral: true
+            ephemeral: true,
+            components: SetRandomComponent.process()
         },
         user: {
             embeds: [replies.replyNotAllowed(client.user)],
-            ephemeral: true
+            ephemeral: true,
+            components: SetRandomComponent.process()
         }
     };
 };

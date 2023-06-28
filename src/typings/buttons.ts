@@ -17,5 +17,12 @@ export enum ButtonIds {
     TaskUnAssign = 'task.remove.assign',
     TaskDone = 'task.done',
     MastermindReply = 'mastermind.try',
-    MastermindResign = 'mastermind.resign'
+    MastermindResign = 'mastermind.resign',
+    RoleReactAdd = 'cmd.rolesreact.roles.add',
+    RoleReactRemove = 'cmd.rolesreact.roles.remove',
+    RoleReactsOk = 'cmd.rolesreact.validate',
+    RoleReactsCancel = 'cmd.rolesreact.cancel',
+    PlayMastermindEasy = 'play.mastermind.easy',
+    PlayMastermindHard = 'play.mastermind.hard',
+    PlayMinesweeper = 'play.minesweeper'
 }

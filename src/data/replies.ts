@@ -486,7 +486,13 @@ const replies = {
             userMember(user)
                 .setTitle('Tâche terminée')
                 .setDescription(`Cette tâche est terminée, vous ne pouvez pas assigner quelqu'un`)
-    }
+    },
+    invalidEmoji: (user: anyUser) =>
+        userMember(user)
+            .setTitle('Émoji invalide')
+            .setDescription(
+                `Ce n'est pas un émoji valide.\nVeuillez envoyer un émoji correct, et assurez-vous que je puisse accéder à cet émoji`
+            )
 };
 
 export type replyKey = keyof typeof replies;

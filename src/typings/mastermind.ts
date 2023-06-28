@@ -9,3 +9,8 @@ export type pinType = {
     id: pinId;
     emoji: string;
 };
+export type callbackType = (
+    state: 'win' | 'loose',
+    board: { input: colorId[]; res: pinId[] }[],
+    combination: colorId[]
+) => any;

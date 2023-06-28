@@ -8,7 +8,7 @@ import {
     Message,
     User
 } from 'discord.js';
-import { colorId, colorType, pinId, pinType } from '../typings/mastermind';
+import { callbackType, colorId, colorType, pinId, pinType } from '../typings/mastermind';
 import { basicEmbed, buildButton, capitalize, confirm, random, row, systemReply } from '../utils/toolbox';
 import { color } from '../utils/functions';
 import { log4js } from 'amethystjs';
@@ -19,36 +19,44 @@ export class Mastermind {
     private rows: number;
     private colors: number;
     private user: User;
-    private interaction: CommandInteraction;
+    private interaction: CommandInteraction | ButtonInteraction;
     private tries: { input: colorId[]; res: pinId[] }[] = [];
     private maxTries: number;
     private collector: InteractionCollector<ButtonInteraction>;
     private message: Message;
     private ended = false;
     private combination: colorId[] = [];
+    private ephemeral: boolean;
+    private onEndMethod: callbackType = () => {};
 
     constructor({
         rows,
         colors,
         user,
         interaction,
-        maxTries
+        maxTries,
+        ephemeral = false
     }: {
         rows: 4 | 5;
         colors: 6 | 8;
         user: User;
-        interaction: CommandInteraction;
+        interaction: CommandInteraction | ButtonInteraction;
         maxTries: number;
+        ephemeral?: boolean;
     }) {
         this.rows = rows;
         this.colors = colors;
         this.user = user;
         this.interaction = interaction;
         this.maxTries = maxTries;
+        this.ephemeral = ephemeral;
 
         this.start();
     }
 
+    public onEnd(callback: callbackType) {
+        this.onEndMethod = callback;
+    }
     public get pinGood() {
         return this.pins.find((x) => x.id === 'good').emoji;
     }
@@ -170,6 +178,7 @@ export class Mastermind {
         }
     }
     private loose() {
+        this.onEndMethod('loose', this.tries, this.combination);
         this.interaction
             .editReply({
                 embeds: [
@@ -193,6 +202,7 @@ export class Mastermind {
         this.collector.stop('defeat');
     }
     private win() {
+        this.onEndMethod('win', this.tries, this.combination);
         this.interaction
             .editReply({
                 embeds: [
@@ -305,7 +315,12 @@ export class Mastermind {
             this.message = (await this.interaction.fetchReply().catch(log4js.trace)) as Message<true>;
         } else {
             this.message = (await this.interaction
-                .reply({ embeds: [this.embed], components: this.components, fetchReply: true })
+                .reply({
+                    embeds: [this.embed],
+                    components: this.components,
+                    fetchReply: true,
+                    ephemeral: this.ephemeral
+                })
                 .catch(log4js.trace)) as Message<true>;
         }
         if (!this.message)
