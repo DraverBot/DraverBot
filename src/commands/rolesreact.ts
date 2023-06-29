@@ -3,18 +3,31 @@ import {
     ApplicationCommandOptionType,
     ChannelType,
     ComponentType,
+    EmbedBuilder,
     GuildMember,
     Message,
     TextChannel
 } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { basicEmbed, buildButton, confirm, pingChan, pingRole, resizeString, row } from '../utils/toolbox';
+import {
+    basicEmbed,
+    buildButton,
+    confirm,
+    numerize,
+    pagination,
+    pingChan,
+    pingRole,
+    plurial,
+    resizeString,
+    row
+} from '../utils/toolbox';
 import { roleReactButtonType } from '../typings/rolereact';
 import { ButtonIds } from '../typings/buttons';
 import RoleReactAdd from '../process/RoleReactAdd';
 import GetValidRole from '../process/GetValidRole';
 import replies from '../data/replies';
 import SetRandomComponent from '../process/SetRandomComponent';
+import { RoleReact } from '../structures/RoleReact';
 
 export default new AmethystCommand({
     name: 'autorole',
@@ -70,16 +83,15 @@ export default new AmethystCommand({
         },
         {
             name: 'liste',
-            description: "Affiche la liste des rôles à réaction",
+            description: 'Affiche la liste des rôles à réaction',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
                     name: 'panneau',
                     type: ApplicationCommandOptionType.Integer,
                     required: false,
-                    autocomplete
-                    : true,
-                    description: "Panneau que vous voulez afficher en détails"
+                    autocomplete: true,
+                    description: 'Panneau que vous voulez afficher en détails'
                 }
             ]
         }
@@ -403,9 +415,79 @@ export default new AmethystCommand({
             .catch(log4js.trace);
     }
     if (cmd === 'liste') {
-        const panelId = options.getInteger('panneau')
+        const panelId = options.getInteger('panneau');
         if (client.rolesReact.exists(panelId)) {
-            const panel = client.rolesReact.getPanel(panelId)
+            const panel = client.rolesReact.getPanel(panelId);
+
+            const roles = {
+                button: panel.ids.filter((x) => x.type === 'buttons'),
+                menus: panel.ids.filter((x) => x.type === 'selectmenu')
+            };
+
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { draverColor: true })
+                            .setTitle(`Panneau ${resizeString({ str: panel.title, length: 100 })}`)
+                            .setFields(
+                                { name: 'Salon', value: pingChan(panel.channel_id), inline: true },
+                                {
+                                    name: 'Rôles (bouttons)',
+                                    value:
+                                        roles.button.length === 0
+                                            ? 'Aucun rôle boutton'
+                                            : roles.button.map((x) => `${x.emoji} ${pingRole(x.role_id)}`).join('\n'),
+                                    inline: true
+                                },
+                                {
+                                    name: 'Rôles (menu)',
+                                    value:
+                                        roles.menus.length === 0
+                                            ? 'Aucun rôle menu'
+                                            : roles.menus.map((x) => `${x.emoji} ${pingRole(x.role_id)}`).join('\n'),
+                                    inline: true
+                                }
+                            )
+                    ]
+                })
+                .catch(log4js.trace);
+        }
+
+        const list = client.rolesReact.getList(interaction.guild.id);
+        const embed = () =>
+            basicEmbed(interaction.user, { draverColor: true })
+                .setTitle('Rôles à réaction')
+                .setDescription(
+                    `Il y a **${numerize(list.size)}** panneau${plurial(list.size, {
+                        plurial: 'x'
+                    })} de rôles à réaction sur ${interaction.guild.name}`
+                );
+        const mapper = (embed: EmbedBuilder, item: RoleReact) =>
+            embed.addFields({
+                name: resizeString({ str: item.title, length: 100 }),
+                value: `${numerize(item.ids.length)} rôle${plurial(item.ids)} ( ${numerize(
+                    item.ids.filter((x) => x.type === 'buttons').length
+                )} boutton${plurial(item.ids.filter((x) => x.type === 'buttons').length)}, ${numerize(
+                    item.ids.filter((x) => x.type === 'selectmenu').length
+                )} menu${plurial(item.ids.filter((x) => x.type === 'selectmenu').length)} ) dans ${pingChan(
+                    item.channel_id
+                )}`
+            });
+        if (list.size <= 5) {
+            const em = embed();
+            list.forEach((x) => mapper(em, x));
+
+            interaction.reply({ embeds: [em] }).catch(log4js.trace);
+        } else {
+            const embeds = [embed()];
+
+            list.forEach((x, i) => {
+                if (i % 5 === 0 && i > 0) embeds.push(embed());
+
+                mapper(embeds[embeds.length - 1], x);
+            });
+
+            pagination({ interaction, user: interaction.user, embeds });
         }
     }
 });
