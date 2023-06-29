@@ -53,7 +53,6 @@ export default new AmethystCommand({
           })
         : await interaction.client.blagues.randomCategorized(category);
 
-    console.log(joke);
     if (!joke || (joke as unknown as { status: number }).status === 404)
         return interaction
             .editReply({
@@ -61,9 +60,9 @@ export default new AmethystCommand({
                     basicEmbed(interaction.user)
                         .setTitle(`Erreur`)
                         .setDescription(
-                            `Aucune blague n'a été trouvée.\nVous ne devriez pas voir ce messag.\nRéessayez dans quelques minutes.\nSi ce message d'erreur persiste, contactez mes développeurs via [le support](${util(
+                            `Aucune blague n'a été trouvée.\nVous ne devriez pas voir ce messagr.\nRéessayez dans quelques minutes.\nSi ce message d'erreur persiste, contactez mes développeurs via [le support](${util(
                                 'support'
-                            )})`
+                            )}) ou par mail \`${util('email')}\``
                         )
                         .setColor(evokerColor(interaction.guild))
                 ]
