@@ -1,13 +1,29 @@
 import { ButtonHandler, log4js } from 'amethystjs';
 import { ButtonIds } from '../typings/buttons';
 import { Mastermind } from '../structures/Mastermind';
-import { row } from '../utils/toolbox';
-import { ButtonBuilder } from 'discord.js';
+import { basicEmbed, buildButton, row } from '../utils/toolbox';
+import masterminds from '../maps/masterminds';
 
 export default new ButtonHandler({
     customId: ButtonIds.PlayMastermindEasy,
     identifiers: [ButtonIds.PlayMastermindHard]
-}).setRun(async ({ button, message }) => {
+}).setRun(async ({ button, user }) => {
+    if (masterminds.has(user.id))
+        return button
+            .reply({
+                embeds: [
+                    basicEmbed(user, { evoker: button.guild })
+                        .setTitle('Partie en cours')
+                        .setDescription(
+                            `Vous avez déjà une partie en cours\nSi vous ne la retrouvez plus, abandonnez la`
+                        )
+                ],
+                ephemeral: true,
+                components: [
+                    row(buildButton({ label: 'Abandonner', style: 'Danger', buttonId: 'ResignToCurrentMastermind' }))
+                ]
+            })
+            .catch(log4js.trace);
     const rows = button.customId === ButtonIds.PlayMastermindEasy ? 4 : 5;
 
     const Master = new Mastermind({
@@ -18,11 +34,8 @@ export default new ButtonHandler({
         user: button.user,
         ephemeral: true
     });
-    const components = [row(new ButtonBuilder(message.components[0].toJSON()).setDisabled(true))];
-    message.edit({ components }).catch(log4js.trace);
-
+    masterminds.set(user.id, Master);
     Master.onEnd(() => {
-        const updatedComponents = [row(new ButtonBuilder(message.components[0].toJSON()).setDisabled(false))];
-        message.edit({ components: updatedComponents }).catch(log4js.trace);
+        masterminds.delete(user.id);
     });
 });

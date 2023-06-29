@@ -14,6 +14,7 @@ import { color } from '../utils/functions';
 import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { ButtonIds } from '../typings/buttons';
+import SetRandomComponent from '../process/SetRandomComponent';
 
 export class Mastermind {
     private rows: number;
@@ -137,8 +138,8 @@ export class Mastermind {
         ];
     }
     private disableButtons() {
-        this.message
-            .edit({ components: [row(...this.components[0].components.map((x) => x.setDisabled(true)))] })
+        this.interaction
+            .editReply({ components: [row(...this.components[0].components.map((x) => x.setDisabled(true)))] })
             .catch(log4js.trace);
     }
     private enableButtons() {
@@ -218,6 +219,9 @@ export class Mastermind {
             .catch(log4js.trace);
         this.collector.stop('win');
     }
+    public resign() {
+        this.collector.stop('resign');
+    }
     private async handleAnswer(interaction: ButtonInteraction) {
         this.disableButtons();
         const choice: colorId[] = [];
@@ -254,7 +258,8 @@ export class Mastermind {
             .reply({
                 embeds: [choiceEmbed()],
                 components: choiceComponents(),
-                fetchReply: true
+                fetchReply: true,
+                ephemeral: this.ephemeral
             })
             .catch(log4js.trace)) as Message<true>;
         if (!rep) return this.enableButtons();
@@ -271,7 +276,8 @@ export class Mastermind {
                         basicEmbed(ctx.user)
                             .setTitle('Interaction refusée')
                             .setDescription(`Vous ne pouvez pas interagir avec ce message`)
-                    ]
+                    ],
+                    components: SetRandomComponent.process()
                 }).catch(log4js.trace);
                 return;
             }
@@ -341,7 +347,8 @@ export class Mastermind {
                         basicEmbed(ctx.user)
                             .setTitle('Interaction refusée')
                             .setDescription(`Vous ne pouvez pas interagir avec ce message`)
-                    ]
+                    ],
+                    components: SetRandomComponent.process()
                 }).catch(log4js.trace);
                 return;
             }
@@ -367,8 +374,8 @@ export class Mastermind {
         });
         this.collector.on('end', (_c, reason) => {
             if (reason === 'resign') {
-                this.message
-                    .edit({
+                this.interaction
+                    .editReply({
                         embeds: [
                             basicEmbed(this.user)
                                 .setColor(color('mastermindResign'))
@@ -385,6 +392,7 @@ export class Mastermind {
                         components: []
                     })
                     .catch(log4js.trace);
+                this.onEndMethod('loose', this.tries, this.combination);
             }
             if (reason === 'defeat') {
             }

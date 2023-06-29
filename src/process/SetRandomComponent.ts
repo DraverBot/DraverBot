@@ -16,6 +16,10 @@ export default new Process('default game component', () => {
         {
             name: 'Jouer au démineur',
             id: ButtonIds.PlayMinesweeper
+        },
+        {
+            name: 'Blague',
+            id: ButtonIds.SendRandomJoke
         }
     ];
 

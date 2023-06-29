@@ -24,5 +24,7 @@ export enum ButtonIds {
     RoleReactsCancel = 'cmd.rolesreact.cancel',
     PlayMastermindEasy = 'play.mastermind.easy',
     PlayMastermindHard = 'play.mastermind.hard',
-    PlayMinesweeper = 'play.minesweeper'
+    PlayMinesweeper = 'play.minesweeper',
+    SendRandomJoke = 'play.sendRandom.joke',
+    ResignToCurrentMastermind = 'mastermind.external.resign'
 }
