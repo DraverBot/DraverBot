@@ -393,11 +393,16 @@ export class Mastermind {
                     })
                     .catch(log4js.trace);
                 this.onEndMethod('loose', this.tries, this.combination);
+                return;
             }
             if (reason === 'defeat') {
+                return;
             }
             if (reason === 'win') {
+                return;
             }
+
+            this.loose();
         });
     }
 }
