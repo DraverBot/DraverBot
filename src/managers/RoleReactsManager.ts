@@ -10,7 +10,7 @@ import GetEmojiStorage from '../process/GetEmojiStorage';
 
 export class RolesReactManager {
     private client: Client;
-    private cache: Collection<number, RoleReact> = new Collection();
+    private _cache: Collection<number, RoleReact> = new Collection();
 
     constructor(client: Client) {
         this.client = client;
@@ -18,21 +18,24 @@ export class RolesReactManager {
         this.init();
     }
 
+    public get cache() {
+        return this._cache;
+    }
     public getList(serverId: string) {
-        return this.cache.filter((x) => x.guild_id === serverId);
+        return this._cache.filter((x) => x.guild_id === serverId);
     }
     public exists(id: number) {
-        return this.cache.has(id);
+        return this._cache.has(id);
     }
     public delete(id: number) {
         if (!this.exists(id)) return false;
-        this.cache.get(id).delete();
-        this.cache.delete(id);
+        this._cache.get(id).delete();
+        this._cache.delete(id);
 
         return true;
     }
     public getPanel(id: number) {
-        return this.cache.get(id);
+        return this._cache.get(id);
     }
     public async create({
         title,
@@ -59,11 +62,11 @@ export class RolesReactManager {
         const res = await query(
             `INSERT INTO ${
                 DatabaseTables.RoleReacts
-            } ( guild_id, channel_id, message_id, ids, title, description) VALUES ( '${channel.guild.id}', '${
+            } ( guild_id, channel_id, message_id, ids, title, description, image) VALUES ( '${channel.guild.id}', '${
                 channel.id
             }', '${message.id}', '${JSON.stringify(
                 roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
-            ).replace(/'/g, "\\'")}', "${sqliseString(title)}", "${sqliseString(description)}" )`
+            ).replace(/'/g, "\\'")}', "${sqliseString(title)}", "${sqliseString(description)}", '${image}' )`
         );
 
         const Roles = new RoleReact(this.client, {
@@ -77,10 +80,49 @@ export class RolesReactManager {
             ids: JSON.stringify(
                 roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
             ).replace(/'/g, "\\'"),
-            type: 'both'
+            type: 'both',
+            from_message: '0'
         });
 
-        this.cache.set(res.insertId, Roles);
+        this._cache.set(res.insertId, Roles);
+        return Roles;
+    }
+    public async fromMessage({
+        message,
+        roles,
+        title,
+        description
+    }: {
+        message: Message<true>;
+        roles: { name: string; role_id: string; type: roleReactType; emoji: string }[];
+        title: string;
+        description: string;
+    }) {
+        const res = await query(
+            `INSERT INTO ${
+                DatabaseTables.RoleReacts
+            } ( guild_id, channel_id, message_id, ids, title, description, from_message, image ) VALUES ('${
+                message.guild.id
+            }', '${message.channel.id}', '${message.id}', '${JSON.stringify(
+                roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
+            ).replace(/'/g, "\\'")}', "${sqliseString(title)}", "${sqliseString(description)}", '1', '')`
+        );
+        const Roles = new RoleReact(this.client, {
+            channel_id: message.channel.id,
+            guild_id: message.guild.id,
+            message_id: message.id,
+            id: res.insertId,
+            image: '',
+            title: '',
+            description: '',
+            type: 'both',
+            from_message: '1',
+            ids: JSON.stringify(
+                roles.map((x) => ({ emoji: GetEmojiStorage.process(x.emoji), ...removeKey(x, 'emoji') }))
+            ).replace(/'/g, "\\'")
+        });
+
+        this._cache.set(res.insertId, Roles);
         return Roles;
     }
 
@@ -95,7 +137,7 @@ export class RolesReactManager {
         if (!datas) return log4js.trace('No data in database for Roles React manager');
 
         datas.forEach((x) => {
-            this.cache.set(x.id, new RoleReact(this.client, x));
+            this._cache.set(x.id, new RoleReact(this.client, x));
         });
     }
     private async init() {

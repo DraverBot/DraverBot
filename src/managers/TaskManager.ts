@@ -7,7 +7,7 @@ import replies from '../data/replies';
 import { sqliseString } from '../utils/toolbox';
 
 export class TaskManager {
-    private cache: Collection<number, Task> = new Collection();
+    private _cache: Collection<number, Task> = new Collection();
     private client: Client;
 
     constructor(client: Client) {
@@ -16,36 +16,39 @@ export class TaskManager {
         this.start();
     }
 
+    public get cache() {
+        return this._cache;
+    }
     public exist(id: number) {
-        return this.cache.has(id);
+        return this._cache.has(id);
     }
     public assign({ userId, taskId }: { userId: string; taskId: number }) {
         if (!this.exist(taskId)) return 'unexisting';
 
-        const task = this.cache.get(taskId);
+        const task = this._cache.get(taskId);
         return task.assign(userId);
     }
     public unAssign({ userId, taskId }: { userId: string; taskId: number }) {
         if (!this.exist(taskId)) return 'unexisting';
 
-        const task = this.cache.get(taskId);
+        const task = this._cache.get(taskId);
         return task.removeAssignation(userId);
     }
     public close(taskId: number) {
         if (!this.exist(taskId)) return 'unexisting';
 
-        return this.cache.get(taskId).close(true);
+        return this._cache.get(taskId).close(true);
     }
     public done(taskId: number) {
         if (!this.exist(taskId)) return 'unexisting';
 
-        return this.cache.get(taskId).done();
+        return this._cache.get(taskId).done();
     }
     public getServer(guildId: string) {
-        return this.cache.filter((x) => x.data.guild_id === guildId);
+        return this._cache.filter((x) => x.data.guild_id === guildId);
     }
     public getTask(taskId: number | string) {
-        return this.cache.get(parseInt(taskId.toString()));
+        return this._cache.get(parseInt(taskId.toString()));
     }
     public async create({
         name,
@@ -102,7 +105,7 @@ export class TaskManager {
             opened_by: by.id
         });
 
-        this.cache.set(task.data.id, task);
+        this._cache.set(task.data.id, task);
         return task;
     }
 
@@ -118,7 +121,7 @@ export class TaskManager {
 
         if (!tasks) return log4js.trace('No response from database in tasks manager');
         for (const task of tasks) {
-            this.cache.set(task.id, new Task(this.client, task));
+            this._cache.set(task.id, new Task(this.client, task));
         }
     }
     private async start() {

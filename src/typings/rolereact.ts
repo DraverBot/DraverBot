@@ -18,4 +18,5 @@ export type roleReacts<Raw extends boolean = true> = {
     type: roleReactType | 'both';
     ids: If<Raw, string, roleReactButtonType[]>;
     id: number;
+    from_message: If<Raw, string, boolean>
 };

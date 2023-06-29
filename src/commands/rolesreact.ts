@@ -1,33 +1,12 @@
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
-import {
-    ApplicationCommandOptionType,
-    ChannelType,
-    ComponentType,
-    EmbedBuilder,
-    GuildMember,
-    Message,
-    TextChannel
-} from 'discord.js';
+import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, GuildMember, Message, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import {
-    basicEmbed,
-    buildButton,
-    confirm,
-    numerize,
-    pagination,
-    pingChan,
-    pingRole,
-    plurial,
-    resizeString,
-    row
-} from '../utils/toolbox';
-import { roleReactButtonType } from '../typings/rolereact';
-import { ButtonIds } from '../typings/buttons';
-import RoleReactAdd from '../process/RoleReactAdd';
-import GetValidRole from '../process/GetValidRole';
+import { basicEmbed, confirm, numerize, pagination, pingChan, pingRole, plurial, resizeString } from '../utils/toolbox';
 import replies from '../data/replies';
-import SetRandomComponent from '../process/SetRandomComponent';
 import { RoleReact } from '../structures/RoleReact';
+import RoleReactConfigPanel from '../process/RoleReactConfigPanel';
+import GetMessage from '../process/GetMessage';
+import masterminds from '../maps/masterminds';
 
 export default new AmethystCommand({
     name: 'autorole',
@@ -36,34 +15,62 @@ export default new AmethystCommand({
         {
             name: 'créer',
             description: 'Créer un paneau de rôles à réactions',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'titre',
-                    description: "Titre donné à l'embed",
-                    required: true,
-                    type: ApplicationCommandOptionType.String,
-                    maxLength: 256
+                    name: 'construction',
+                    description: 'Construit le panneau de rôles',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'titre',
+                            description: "Titre donné à l'embed",
+                            required: true,
+                            type: ApplicationCommandOptionType.String,
+                            maxLength: 256
+                        },
+                        {
+                            name: 'description',
+                            description: "Description de l'embed",
+                            required: true,
+                            type: ApplicationCommandOptionType.String,
+                            maxLength: 4096
+                        },
+                        {
+                            name: 'salon',
+                            description: 'Salon dans lequel le paneau sera envoyé',
+                            required: true,
+                            type: ApplicationCommandOptionType.Channel,
+                            channelTypes: [ChannelType.GuildText, ChannelType.GuildAnnouncement]
+                        },
+                        {
+                            name: 'image',
+                            description: "Image donnée à l'embed",
+                            required: false,
+                            type: ApplicationCommandOptionType.Attachment
+                        }
+                    ]
                 },
                 {
-                    name: 'description',
-                    description: "Description de l'embed",
-                    required: true,
-                    type: ApplicationCommandOptionType.String,
-                    maxLength: 4096
-                },
-                {
-                    name: 'salon',
-                    description: 'Salon dans lequel le paneau sera envoyé',
-                    required: true,
-                    type: ApplicationCommandOptionType.Channel,
-                    channelTypes: [ChannelType.GuildText, ChannelType.GuildAnnouncement]
-                },
-                {
-                    name: 'image',
-                    description: "Image donnée à l'embed",
-                    required: false,
-                    type: ApplicationCommandOptionType.Attachment
+                    name: 'message',
+                    description: 'Créer un panneau de rôle sur un message qui existe déjà',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'titre',
+                            description: "Titre du panneau (si il n'y a pas d'embed)",
+                            required: true,
+                            type: ApplicationCommandOptionType.String,
+                            maxLength: 256
+                        },
+                        {
+                            name: 'description',
+                            description: "Description du panneau (si il n'y a pas d'embed)",
+                            required: true,
+                            type: ApplicationCommandOptionType.String,
+                            maxLength: 4096
+                        }
+                    ]
                 }
             ]
         },
@@ -101,7 +108,7 @@ export default new AmethystCommand({
     clientPermissions: ['ManageChannels']
 }).setChatInputRun(async ({ interaction, options, client }) => {
     const cmd = options.getSubcommand();
-    if (cmd === 'créer') {
+    if (cmd === 'construction') {
         const title = options.getString('titre');
         const description = options.getString('description');
         const channel = options.getChannel('salon') as TextChannel;
@@ -119,258 +126,37 @@ export default new AmethystCommand({
                 })
                 .catch(log4js.trace);
 
-        const roles: roleReactButtonType[] = [];
-        const embed = () => {
-            const btnRoles = roles.filter((x) => x.type === 'buttons');
-            const menuRoles = roles.filter((x) => x.type === 'selectmenu');
-            return basicEmbed(interaction.user, { questionMark: true })
-                .setTitle('Rôles à réaction')
-                .setDescription(
-                    `Vous êtes en train de configurer le panneau de rôles à réaction qui sera envoyé dans ${pingChan(
-                        channel
-                    )}`
-                )
-                .setFields(
-                    {
-                        name: 'Rôles (bouttons)',
-                        value:
-                            btnRoles.length === 0
-                                ? 'Pas de rôles'
-                                : btnRoles
-                                      .map((x) => `${x.emoji ? x.emoji : ''} ${x.name} ( ${pingRole(x.role_id)} )`)
-                                      .join('\n') ?? 'Pas de rôles',
-                        inline: true
-                    },
-                    {
-                        name: 'Rôles (menu)',
-                        value:
-                            menuRoles.length === 0
-                                ? 'Pas de rôles'
-                                : menuRoles
-                                      .map((x) => `${x.emoji ? x.emoji : ''} ${x.name} ( ${pingRole(x.role_id)} )`)
-                                      .join('\n'),
-                        inline: true
-                    }
-                );
-        };
-        const components = (disabled = false) => {
-            const calculateIfValid = () => {
-                const totalBtns = roles.filter((x) => x.type === 'buttons').length;
-                const totalMenus = roles.filter((x) => x.type === 'selectmenu').length;
+        const res = await RoleReactConfigPanel.process({ interaction, channel: interaction.channel as TextChannel });
 
-                const btnRows = Math.ceil(totalBtns / 5);
-                const menuRows = Math.ceil(totalMenus / 25);
+        if (res === 'cancel') return;
+        res.button.deferUpdate().catch(() => {});
 
-                const maxLength = btnRows + menuRows === 0 ? 1 : btnRows * 5 + menuRows * 25;
-                return roles.length === maxLength;
-            };
-            return [
-                row(
-                    buildButton({
-                        label: 'Ajouter un bouton',
-                        disabled: calculateIfValid() || disabled,
-                        style: 'Primary',
-                        buttonId: 'RoleReactAdd'
-                    }),
-                    buildButton({
-                        label: 'Supprimer un bouton',
-                        disabled: roles.length === 0 || disabled,
-                        style: 'Secondary',
-                        buttonId: 'RoleReactRemove'
-                    }),
-                    buildButton({
-                        label: 'Annuler',
-                        style: 'Danger',
-                        buttonId: 'RoleReactsCancel',
-                        disabled: disabled
-                    }),
-                    buildButton({
-                        label: 'Valider',
-                        disabled: roles.length === 0 || disabled,
-                        style: 'Success',
-                        buttonId: 'RoleReactsOk'
-                    })
-                )
-            ];
-        };
+        const creation = await interaction.client.rolesReact.create({
+            title,
+            description,
+            image: img?.url ?? '',
+            channel,
+            user: interaction.user,
+            roles: res.roles
+        });
 
-        const panel = (await interaction
-            .reply({
-                embeds: [embed()],
-                components: components(),
-                fetchReply: true
+        if (creation === 'message not found') {
+            interaction
+                .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
+                .catch(log4js.trace);
+            return;
+        }
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Panneau crée')
+                        .setDescription(`Le paneau a été crée dans ${pingChan(channel)}`)
+                ],
+                components: []
             })
-            .catch(log4js.trace)) as Message<true>;
-        if (!panel) return;
-
-        const collector = panel.createMessageComponentCollector({
-            componentType: ComponentType.Button,
-            time: 600000
-        });
-        collector.on('collect', async (ctx) => {
-            if (ctx.user.id !== interaction.user.id) {
-                ctx.reply({
-                    embeds: [
-                        basicEmbed(ctx.user, { evoker: interaction.guild })
-                            .setTitle('Interaction refusée')
-                            .setDescription(`Vous n'avez pas le droit d'interagir avec cette interaction`)
-                    ],
-                    ephemeral: true,
-                    components: SetRandomComponent.process()
-                }).catch(log4js.trace);
-                return;
-            }
-            if (ctx.customId === ButtonIds.RoleReactAdd) {
-                await RoleReactAdd.process({
-                    interaction,
-                    message: panel,
-                    ctx,
-                    embedGenerator: embed,
-                    componentGenerator: components,
-                    roles
-                });
-
-                ctx.deleteReply().catch(log4js.trace);
-                panel
-                    .edit({
-                        embeds: [embed()],
-                        components: components()
-                    })
-                    .catch(log4js.trace);
-            }
-            if (ctx.customId === ButtonIds.RoleReactRemove) {
-                panel
-                    .edit({
-                        components: components(true)
-                    })
-                    .catch(log4js.trace);
-                const rep = (await ctx
-                    .reply({
-                        embeds: [
-                            basicEmbed(interaction.user, { questionMark: true })
-                                .setTitle('Rôle')
-                                .setDescription(
-                                    `Quel rôle voulez-vous retirer ?\nRépondez dans le chat par un **nom**, un **identifiant** ou une **mention**`
-                                )
-                        ],
-                        fetchReply: true
-                    })
-                    .catch(log4js.trace)) as Message<true>;
-                if (!rep) {
-                    panel.edit({ components: components() }).catch(log4js.trace);
-                    return;
-                }
-
-                const role = await GetValidRole.process({
-                    message: rep,
-                    user: interaction.user,
-                    allowCancel: true,
-                    time: 120000,
-                    checks: [
-                        {
-                            check: (r) => !!roles.find((x) => x.role_id === r.id),
-                            reply: {
-                                embeds: [
-                                    basicEmbed(interaction.user, { evoker: interaction.guild })
-                                        .setTitle('Rôle non-ajouté')
-                                        .setDescription(`Ce rôle n'a pas été ajouté en réaction`)
-                                ]
-                            }
-                        }
-                    ]
-                });
-
-                if (role === 'cancel' || role === "time's up") {
-                    ctx.deleteReply(rep).catch(log4js.trace);
-                    panel.edit({ components: components() }).catch(log4js.trace);
-                    return;
-                }
-
-                const confirmation = await confirm({
-                    interaction: ctx,
-                    embed: basicEmbed(interaction.user)
-                        .setTitle('Retrait')
-                        .setDescription(`Êtes-vous sûr de vouloir retirer le rôle ${pingRole(role)} ?`),
-                    user: interaction.user
-                }).catch(log4js.trace);
-                ctx.deleteReply().catch(log4js.trace);
-
-                if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
-                    panel.edit({ components: components() }).catch(log4js.trace);
-                    return;
-                }
-                roles.splice(roles.indexOf(roles.find((x) => x.role_id === role.id)), 1);
-                panel.edit({ components: components(), embeds: [embed()] }).catch(log4js.trace);
-            }
-            if (ctx.customId === ButtonIds.RoleReactsCancel) {
-                panel.edit({ components: components(true) }).catch(log4js.trace);
-                const confirmation = await confirm({
-                    interaction: ctx,
-                    user: interaction.user,
-                    ephemeral: true,
-                    embed: basicEmbed(interaction.user)
-                        .setTitle('Annulation')
-                        .setDescription(`Êtes-vous sûr de vouloir annuler la création des rôles à réaction ?`)
-                }).catch(log4js.trace);
-
-                ctx.deleteReply().catch(log4js.trace);
-                if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
-                    panel.edit({ components: components() }).catch(log4js.trace);
-                    return;
-                }
-                panel
-                    .edit({
-                        components: [],
-                        embeds: [replies.cancel()]
-                    })
-                    .catch(log4js.trace);
-            }
-            if (ctx.customId === ButtonIds.RoleReactsOk) {
-                panel.edit({ components: components(true) }).catch(log4js.trace);
-                const confirmation = await confirm({
-                    interaction: ctx,
-                    user: interaction.user,
-                    ephemeral: true,
-                    embed: basicEmbed(interaction.user)
-                        .setTitle('Validation')
-                        .setDescription(`Êtes-vous sûr de vouloir valider la création des rôles à réaction ?`)
-                }).catch(log4js.trace);
-
-                if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
-                    ctx.deleteReply().catch(log4js.trace);
-                    panel.edit({ components: components() }).catch(log4js.trace);
-                    return;
-                }
-                ctx.deleteReply().catch(log4js.trace);
-
-                const creation = await interaction.client.rolesReact.create({
-                    title,
-                    description,
-                    image: img?.url ?? '',
-                    channel,
-                    user: interaction.user,
-                    roles: roles
-                });
-
-                if (creation === 'message not found') {
-                    interaction
-                        .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
-                        .catch(log4js.trace);
-                    return;
-                }
-
-                interaction
-                    .editReply({
-                        embeds: [
-                            basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Panneau crée')
-                                .setDescription(`Le paneau a été crée dans ${pingChan(channel)}`)
-                        ],
-                        components: []
-                    })
-                    .catch(log4js.trace);
-            }
-        });
+            .catch(log4js.trace);
         // Core
         // await interaction
         //     .reply({
@@ -489,5 +275,154 @@ export default new AmethystCommand({
 
             pagination({ interaction, user: interaction.user, embeds });
         }
+    }
+    if (cmd === 'message') {
+        const message = await GetMessage.process({
+            interaction,
+            allowCancel: true,
+            user: interaction.user,
+            checks: {
+                channel: [
+                    {
+                        check: (c) =>
+                            [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum].includes(
+                                c.type
+                            ),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Salon invalide')
+                                    .setDescription(
+                                        `Le salon que vous avez fournit n'est pas un salon valide\nVeuillez préciser un salon textuel`
+                                    )
+                            ]
+                        }
+                    }
+                ],
+                message: [
+                    {
+                        check: (m) => m.author.id === client.user.id,
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Auteur invalide')
+                                    .setDescription(
+                                        `Ce n'est pas moi qui ai envoyé ce mesage\nIl faut que l'auteur du message soi moi-même, sinon je ne pourrais pas ajouter les boutons`
+                                    )
+                            ]
+                        }
+                    },
+                    {
+                        check: (m) => !client.ticketsManager.isTicket(m.id) && !client.ticketsManager.panels.get(m.id),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Ticket')
+                                    .setDescription(
+                                        `Ce message fait partie du système de tickets.\nVeuillez envoyer un message qui ne fait partie d'aucun système de Draver`
+                                    )
+                            ]
+                        }
+                    },
+                    {
+                        check: (m) =>
+                            !client.giveaways.map.giveaways.has(m.id) && !client.giveaways.map.ended.has(m.id),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Giveaway')
+                                    .setDescription(
+                                        `Ce message fait partie du système de giveaway\nVeuillez en choisir un autre si il vous plait`
+                                    )
+                            ]
+                        }
+                    },
+                    {
+                        check: (m) => !client.tasksManager.cache.find((x) => x.data.message_id === m.id),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Tâche')
+                                    .setDescription(
+                                        `Ce message est une tâche, vous ne pouvez remplacer une tâche par un panneau de rôles à réactions`
+                                    )
+                            ]
+                        }
+                    },
+                    {
+                        check: (m) => !client.rolesReact.cache.find((x) => x.message_id === m.id),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Rôels à réaction')
+                                    .setDescription(
+                                        `Ce message est un panneau de rôles à réactions\nVeuillez choisir un autre message`
+                                    )
+                            ]
+                        }
+                    },
+                    {
+                        check: (m) => !masterminds.find((x) => x.message.id === m.id),
+                        reply: {
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Mastermind')
+                                    .setDescription(`Ce message est une partie de Mastermind`)
+                            ]
+                        }
+                    }
+                ]
+            }
+        });
+
+        if (message === 'cancel' || message === "time's up" || message === 'error') return;
+        const confirmation = await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle('Rôles à réaction')
+                .setDescription(
+                    `Êtes-vous sûr de vouloir mettre le panneau sur [ce message](${message.url}) ?\nLes boutons actuels (si il y en a) seront supprimés et remplacés par ceux du panneau`
+                )
+        }).catch(log4js.trace);
+        if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
+            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+
+        confirmation.interaction.deferUpdate().catch(log4js.trace);
+        const roles = await RoleReactConfigPanel.process({
+            channel: message.channel as TextChannel,
+            interaction
+        });
+
+        if (roles === 'cancel')
+            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+        roles.button.deferUpdate().catch(() => {});
+
+        await client.rolesReact
+            .fromMessage({
+                message: message as Message<true>,
+                roles: roles.roles,
+                title: (message.embeds ?? [])[0]?.title ?? options.getString('titre'),
+                description: resizeString({
+                    str: (message.embeds ?? [])[0]?.description ?? options.getString('description'),
+                    length: 4096
+                })
+            })
+            .catch(() => {});
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Panneau crée')
+                        .setDescription(
+                            `Le panneau a été crée sur [ce message](${message.url}) dans ${pingChan(
+                                message.channel.id
+                            )}`
+                        )
+                ],
+                components: []
+            })
+            .catch(log4js.trace);
     }
 });

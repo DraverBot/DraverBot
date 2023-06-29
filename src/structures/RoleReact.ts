@@ -1,6 +1,7 @@
 import {
     Client,
     CollectedInteraction,
+    EmbedBuilder,
     Guild,
     GuildMember,
     InteractionCollector,
@@ -10,7 +11,7 @@ import {
     TextChannel
 } from 'discord.js';
 import { roleReactButtonType, roleReactType, roleReacts } from '../typings/rolereact';
-import { basicEmbed, buildButton, notNull, pingRole, resizeString, row } from '../utils/toolbox';
+import { basicEmbed, buildButton, dbBool, notNull, pingRole, resizeString, row } from '../utils/toolbox';
 import { color, getRolePerm } from '../utils/functions';
 import { log4js } from 'amethystjs';
 import query from '../utils/query';
@@ -27,6 +28,7 @@ export class RoleReact {
     private _description: string;
     private _image = '';
     private _id: number;
+    private _from_message: boolean;
 
     private _guild: Guild;
     private _channel: TextChannel;
@@ -36,6 +38,9 @@ export class RoleReact {
     private collector: InteractionCollector<CollectedInteraction>;
     private _client: Client;
 
+    public get from_message() {
+        return this._from_message;
+    }
     public get client() {
         return this._client;
     }
@@ -78,7 +83,7 @@ export class RoleReact {
 
     constructor(
         client: Client,
-        { guild_id, channel_id, message_id, ids: values, type, title, description, image, id }: roleReacts
+        { guild_id, channel_id, message_id, ids: values, type, title, description, image, id, from_message }: roleReacts
     ) {
         this._guild_id = guild_id;
         this._channel_id = channel_id;
@@ -89,6 +94,7 @@ export class RoleReact {
         this._description = description;
         this._image = image;
         this._id = id;
+        this._from_message = dbBool(from_message);
 
         this._client = client;
         this.start();
@@ -189,6 +195,9 @@ export class RoleReact {
         };
     }
     private get embed() {
+        if (this._from_message) {
+            return new EmbedBuilder(this._message.embeds[0]?.toJSON());
+        }
         const em = basicEmbed(this._client.user)
             .setColor(color('roleReact'))
             .setTitle(resizeString({ str: this._title, length: 256 }))
@@ -197,6 +206,15 @@ export class RoleReact {
         if (this._image.length > 0) em.setImage(this._image);
 
         return em;
+    }
+    private get messageContent() {
+        const embeds = this._from_message
+            ? this._message.embeds?.length === 0
+                ? []
+                : this._message.embeds?.map((x) => new EmbedBuilder(x.toJSON()))
+            : [this.embed];
+        const content = this._from_message ? this._message.content ?? undefined : undefined;
+        return { embeds, content };
     }
     public edit() {
         const components = () => {
@@ -210,9 +228,11 @@ export class RoleReact {
                 return [...cmps.buttons, ...cmps.menus];
             }
         };
+        const { embeds, content } = this.messageContent;
         this._message
             .edit({
-                embeds: [this.embed],
+                embeds: embeds,
+                content,
                 components: components()
             })
             .catch(log4js.trace);

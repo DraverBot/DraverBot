@@ -19,16 +19,29 @@ import SetRandomComponent from '../process/SetRandomComponent';
 export class Mastermind {
     private rows: number;
     private colors: number;
-    private user: User;
-    private interaction: CommandInteraction | ButtonInteraction;
+    private _user: User;
+    private _interaction: CommandInteraction | ButtonInteraction;
     private tries: { input: colorId[]; res: pinId[] }[] = [];
     private maxTries: number;
     private collector: InteractionCollector<ButtonInteraction>;
-    private message: Message;
-    private ended = false;
+    private _message: Message;
+    private _ended = false;
     private combination: colorId[] = [];
     private ephemeral: boolean;
     private onEndMethod: callbackType = () => {};
+
+    public get user() {
+        return this._user;
+    }
+    public get interaction() {
+        return this._interaction;
+    }
+    public get message() {
+        return this._message;
+    }
+    public get ended() {
+        return this._ended;
+    }
 
     constructor({
         rows,
@@ -47,8 +60,8 @@ export class Mastermind {
     }) {
         this.rows = rows;
         this.colors = colors;
-        this.user = user;
-        this.interaction = interaction;
+        this._user = user;
+        this._interaction = interaction;
         this.maxTries = maxTries;
         this.ephemeral = ephemeral;
 
@@ -115,7 +128,7 @@ export class Mastermind {
         return content;
     }
     private get embed() {
-        const embed = basicEmbed(this.user)
+        const embed = basicEmbed(this._user)
             .setColor(color('mastermind'))
             .setTitle('Mastermind')
             .setFields({
@@ -138,7 +151,7 @@ export class Mastermind {
         ];
     }
     private disableButtons() {
-        this.interaction
+        this._interaction
             .editReply({ components: [row(...this.components[0].components.map((x) => x.setDisabled(true)))] })
             .catch(log4js.trace);
     }
@@ -146,7 +159,7 @@ export class Mastermind {
         this.edit();
     }
     private edit() {
-        return systemReply(this.interaction, { embeds: [this.embed], components: this.components, fetchReply: true });
+        return systemReply(this._interaction, { embeds: [this.embed], components: this.components, fetchReply: true });
     }
     private try(choice: colorId[]) {
         const check = () => {
@@ -180,10 +193,10 @@ export class Mastermind {
     }
     private loose() {
         this.onEndMethod('loose', this.tries, this.combination);
-        this.interaction
+        this._interaction
             .editReply({
                 embeds: [
-                    basicEmbed(this.user)
+                    basicEmbed(this._user)
                         .setColor(color('mastermindResign'))
                         .setTitle('Défaite')
                         .setDescription(
@@ -204,10 +217,10 @@ export class Mastermind {
     }
     private win() {
         this.onEndMethod('win', this.tries, this.combination);
-        this.interaction
+        this._interaction
             .editReply({
                 embeds: [
-                    basicEmbed(this.user)
+                    basicEmbed(this._user)
                         .setColor(color('mastermindWin'))
                         .setTitle('Victoire')
                         .setDescription(
@@ -227,7 +240,7 @@ export class Mastermind {
         const choice: colorId[] = [];
 
         const choiceEmbed = () => {
-            return basicEmbed(this.user, { questionMark: true })
+            return basicEmbed(this._user, { questionMark: true })
                 .setTitle(`Choix`)
                 .setDescription(
                     `${this.join(choice.map((x) => this.palette.find((y) => y.id === x).emoji))} ${this.join(
@@ -269,7 +282,7 @@ export class Mastermind {
             time: 120000
         });
         choiceCollector.on('collect', async (ctx) => {
-            if (ctx.user.id !== this.user.id) {
+            if (ctx.user.id !== this._user.id) {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
@@ -313,14 +326,14 @@ export class Mastermind {
         }
     }
     private async start() {
-        const replied = this.interaction.replied || this.interaction.deferred;
+        const replied = this._interaction.replied || this._interaction.deferred;
         this.generateCombination();
 
         if (replied) {
             this.edit().catch(log4js.trace);
-            this.message = (await this.interaction.fetchReply().catch(log4js.trace)) as Message<true>;
+            this._message = (await this._interaction.fetchReply().catch(log4js.trace)) as Message<true>;
         } else {
-            this.message = (await this.interaction
+            this._message = (await this._interaction
                 .reply({
                     embeds: [this.embed],
                     components: this.components,
@@ -329,18 +342,18 @@ export class Mastermind {
                 })
                 .catch(log4js.trace)) as Message<true>;
         }
-        if (!this.message)
-            return this.interaction
-                .editReply({ embeds: [replies.internalError(this.user)], components: [] })
+        if (!this._message)
+            return this._interaction
+                .editReply({ embeds: [replies.internalError(this._user)], components: [] })
                 .catch(log4js.trace);
 
-        this.collector = this.message.createMessageComponentCollector({
+        this.collector = this._message.createMessageComponentCollector({
             componentType: ComponentType.Button,
             time: 600000
         });
 
         this.collector.on('collect', async (ctx) => {
-            if (ctx.user.id !== this.user.id) {
+            if (ctx.user.id !== this._user.id) {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
@@ -356,10 +369,10 @@ export class Mastermind {
             if (ctx.customId === ButtonIds.MastermindResign) {
                 const confirmation = await confirm({
                     interaction: ctx,
-                    embed: basicEmbed(this.user)
+                    embed: basicEmbed(this._user)
                         .setTitle('Abandon')
                         .setDescription(`Êtes-vous sûr de vouloir abandonner ?`),
-                    user: this.user,
+                    user: this._user,
                     ephemeral: true
                 }).catch(log4js.trace);
 
@@ -374,10 +387,10 @@ export class Mastermind {
         });
         this.collector.on('end', (_c, reason) => {
             if (reason === 'resign') {
-                this.interaction
+                this._interaction
                     .editReply({
                         embeds: [
-                            basicEmbed(this.user)
+                            basicEmbed(this._user)
                                 .setColor(color('mastermindResign'))
                                 .setTitle('Abandon')
                                 .setDescription(`Vous avez abandonné`)
