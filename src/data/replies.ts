@@ -492,6 +492,14 @@ const replies = {
             .setTitle('Émoji invalide')
             .setDescription(
                 `Ce n'est pas un émoji valide.\nVeuillez envoyer un émoji correct, et assurez-vous que je puisse accéder à cet émoji`
+            ),
+    requestStopped: (user: anyUser) =>
+        userMember(user)
+            .setTitle('Erreur')
+            .setDescription(
+                `Les données n'ont pas pu être trouvées à cause d'un problème venant de la plateforme.\nPatientez quelques minutes, puis réessayez.\nSi cette erreur persiste, contactez le développeur, par le [serveur de support](${util(
+                    'support'
+                )}) ou par l'adresse email ( \`${util('email')}\` )`
             )
 };
 
