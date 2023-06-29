@@ -273,7 +273,7 @@ export class Mastermind {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
-                        basicEmbed(ctx.user)
+                        basicEmbed(ctx.user, { evoker: ctx.guild })
                             .setTitle('Interaction refusée')
                             .setDescription(`Vous ne pouvez pas interagir avec ce message`)
                     ],
@@ -344,7 +344,7 @@ export class Mastermind {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
-                        basicEmbed(ctx.user)
+                        basicEmbed(ctx.user, { evoker: ctx.guild })
                             .setTitle('Interaction refusée')
                             .setDescription(`Vous ne pouvez pas interagir avec ce message`)
                     ],
