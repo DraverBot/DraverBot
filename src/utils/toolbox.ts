@@ -663,3 +663,16 @@ export const hexToRgb = (hex: string | ColorResolvable) => {
 
     return { r, g, b };
 };
+export const getItemsFromArray = <T>(array: T[], count: number): T[] => {
+    const res: T[] = [];
+    const available = [...array];
+    if (Math.abs(count) >= array.length) return array;
+
+    for (let i = 0; i < Math.abs(count); i++) {
+        const item = available[random({ max: available.length })];
+        available.splice(available.indexOf(item), 1);
+        res.push(item);
+    }
+
+    return res;
+};
