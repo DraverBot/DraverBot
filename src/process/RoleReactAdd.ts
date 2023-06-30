@@ -41,13 +41,61 @@ export default new Process(
                     const totalBtns = roles.filter((x) => x.type === 'buttons').length;
                     const totalMenus = roles.filter((x) => x.type === 'selectmenu').length;
 
+                    [
+                        {
+                            // pb
+                            btns: 20,
+                            menus: 0,
+                            res: {
+                                btns: false,
+                                menus: false
+                            }
+                        },
+                        {
+                            // Pb
+                            btns: 0,
+                            menus: 100,
+                            res: {
+                                btns: false,
+                                menus: false
+                            }
+                        }
+                    ];
                     const btnRows = Math.ceil(totalBtns / 5);
                     const menuRows = Math.ceil(totalMenus / 25);
+                    const emptyRows = 5 - btnRows - menuRows;
 
-                    return {
-                        btns: btnRows === 0 ? 1 : btnRows * 5,
-                        menus: menuRows === 0 ? 1 : menuRows * 25
-                    };
+                    if (emptyRows >= 2) {
+                        return {
+                            btns: true,
+                            menus: true
+                        };
+                    }
+                    const btnFull = totalBtns % 5 === 0 && totalBtns > 0;
+                    const menusFull = totalMenus % 25 === 0 && totalBtns > 0;
+                    if (emptyRows === 0) {
+                        return {
+                            btns: !btnFull,
+                            menus: !menusFull
+                        };
+                    }
+
+                    if (btnFull && totalMenus > 0) {
+                        return {
+                            btns: false,
+                            menus: !menusFull
+                        };
+                    } else if (menusFull && totalBtns > 0) {
+                        return {
+                            btns: !btnFull,
+                            menus: false
+                        };
+                    } else {
+                        return {
+                            btns: true,
+                            menus: true
+                        };
+                    }
                 };
                 return [
                     row(
@@ -55,13 +103,13 @@ export default new Process(
                             label: 'Bouton',
                             style: 'Primary',
                             id: 'rolereact.btn',
-                            disabled: roles.filter((x) => x.type === 'buttons').length === calculateMax().btns
+                            disabled: !calculateMax().btns
                         }),
                         buildButton({
                             label: 'Menu',
                             style: 'Primary',
                             id: 'rolereact.menu',
-                            disabled: roles.filter((x) => x.type === 'selectmenu').length === calculateMax().menus
+                            disabled: !calculateMax().menus
                         })
                     )
                 ];
