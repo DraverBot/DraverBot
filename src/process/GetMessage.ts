@@ -50,7 +50,7 @@ export default new Process(
                 if (allowCancel && msg.content.toLowerCase() === 'cancel') return collector.stop('cancel');
                 if (step === 'message') {
                     const testMsg =
-                        channel.messages.cache.get(msg.content) ?? channel.messages.cache.get(msg.reference.messageId);
+                        channel.messages.cache.get(msg.content) ?? channel.messages.cache.get(msg.reference?.messageId);
                     if (!testMsg) {
                         SendAndDelete.process(
                             {
