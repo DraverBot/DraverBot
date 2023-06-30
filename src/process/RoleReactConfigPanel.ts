@@ -49,20 +49,26 @@ export default new Process(
             };
             const components = (disabled = false) => {
                 const calculateIfValid = () => {
+                    if (roles.length === 0) return true;
                     const totalBtns = roles.filter((x) => x.type === 'buttons').length;
                     const totalMenus = roles.filter((x) => x.type === 'selectmenu').length;
 
                     const btnRows = Math.ceil(totalBtns / 5);
                     const menuRows = Math.ceil(totalMenus / 25);
 
-                    const maxLength = btnRows + menuRows === 0 ? 1 : btnRows * 5 + menuRows * 25;
-                    return roles.length === maxLength;
+                    const spaceOfButtons = btnRows * 5;
+                    const spaceOfMenus = menuRows * 25;
+                    const emptyRows = 5 - btnRows - menuRows;
+                    const theoricalMaxLength = spaceOfButtons + spaceOfMenus + emptyRows * 5;
+
+                    if (theoricalMaxLength === 0) return true;
+                    return totalBtns + totalMenus < theoricalMaxLength;
                 };
                 return [
                     row(
                         buildButton({
                             label: 'Ajouter un bouton',
-                            disabled: calculateIfValid() || disabled,
+                            disabled: !calculateIfValid() || disabled,
                             style: 'Primary',
                             buttonId: 'RoleReactAdd'
                         }),
