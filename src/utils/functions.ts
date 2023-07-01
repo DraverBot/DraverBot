@@ -10,6 +10,8 @@ import query from './query';
 import { boolDb, capitalize } from './toolbox';
 import { channelTypeNames } from '../data/channelTypeNames';
 import colors from '../data/colors.json';
+import { BenderAPIOptions, BenderAPIType } from '../typings/apis';
+import axios from 'axios';
 
 export const getRolePerm = (key: permType<'role'>) => {
     return perms.role[key];
@@ -130,3 +132,13 @@ export const channelTypeName = (type: keyof typeof ChannelType): string => {
 };
 export const color = (color: keyof typeof colors) =>
     colors[color] === 'accent' ? util<ColorResolvable>('accentColor') : (colors[color] as ColorResolvable);
+export const reportToBender = async <T extends BenderAPIType>({ type, guild, user, data }: BenderAPIOptions<T>) => {
+    return await axios
+        .post(`http://localhost:${process.env.benderPort}/actions`, {
+            type,
+            guild,
+            user,
+            data
+        })
+        .catch(() => {});
+};

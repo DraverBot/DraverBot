@@ -26,7 +26,7 @@ import {
     resizeString,
     subcmd
 } from '../utils/toolbox';
-import { channelTypeName, getChannelPerm, util } from '../utils/functions';
+import { channelTypeName, getChannelPerm, reportToBender, util } from '../utils/functions';
 import { ChannelCreateChannelTypeOptions, ChannelMoveSens } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
@@ -318,13 +318,21 @@ export default new AmethystCommand({
                     ]
                 })
                 .catch(() => {});
-        addModLog({
-            guild: interaction.guild,
-            mod_id: interaction.user.id,
-            member_id: '',
-            reason: `Création de ${pingChan(channel)} ( ${name} \`${channel.id}\` )`,
-            type: 'ChannelCreate'
-        });
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                mod_id: interaction.user.id,
+                member_id: '',
+                reason: `Création de ${pingChan(channel)} ( ${name} \`${channel.id}\` )`,
+                type: 'ChannelCreate'
+            }),
+            reportToBender({
+                type: 'ChannelCreate',
+                guild: interaction.guild.id,
+                user: interaction.user.id,
+                data: { id: channel.id }
+            })
+        ]);
         interaction
             .editReply({
                 embeds: [
@@ -388,15 +396,23 @@ export default new AmethystCommand({
                     ]
                 })
                 .catch(() => {});
-        addModLog({
-            guild: interaction.guild,
-            member_id: '',
-            mod_id: interaction.user.id,
-            type: 'ChannelDelete',
-            reason: `Suppression du salon ${(channel as { name?: string })?.name ?? '*nom inconnu*'} ( \`${
-                channel.id
-            }\` )`
-        }).catch(() => {});
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                member_id: '',
+                mod_id: interaction.user.id,
+                type: 'ChannelDelete',
+                reason: `Suppression du salon ${(channel as { name?: string })?.name ?? '*nom inconnu*'} ( \`${
+                    channel.id
+                }\` )`
+            }).catch(() => {}),
+            reportToBender({
+                type: 'ChannelDelete',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { value: channel.toJSON() }
+            })
+        ]);
         interaction
             .editReply({
                 embeds: [
@@ -414,6 +430,7 @@ export default new AmethystCommand({
         const name = options.getString('nom');
 
         await interaction.deferReply().catch(() => {});
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
         const res = await channel.setName(name.replace(/ +/g, '-')).catch(() => {});
 
         if (!res)
@@ -436,13 +453,21 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
-        await addModLog({
-            guild: interaction.guild,
-            mod_id: interaction.user.id,
-            member_id: '',
-            type: 'ChannelEdit',
-            reason: `Renommage du salon ${channel.name} ( \`${channel.id}\` )`
-        }).catch(() => {});
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                mod_id: interaction.user.id,
+                member_id: '',
+                type: 'ChannelEdit',
+                reason: `Renommage du salon ${channel.name} ( \`${channel.id}\` )`
+            }).catch(() => {}),
+            reportToBender({
+                type: 'ChannelEdit',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { before, after: channel.toJSON() }
+            })
+        ]);
 
         interaction
             .editReply({
@@ -459,6 +484,7 @@ export default new AmethystCommand({
         const description = options.getString('description') ?? null;
 
         await interaction.deferReply().catch(() => {});
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
         const res = await channel
             .setTopic(description, `Description par ${interaction.user.tag} (${interaction.user.id})`)
             .catch(() => {});
@@ -480,15 +506,24 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
-        await addModLog({
-            guild: interaction.guild,
-            reason: `Description du salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
-                channel.id
-            }\` ) ${description ? 'modifiée' : 'supprimée'}`,
-            type: 'ChannelEdit',
-            mod_id: interaction.user.id,
-            member_id: ''
-        }).catch(() => {});
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                reason: `Description du salon ${pingChan(channel)} ( ${resizeString({
+                    str: channel.name,
+                    length: 50
+                })} \`${channel.id}\` ) ${description ? 'modifiée' : 'supprimée'}`,
+                type: 'ChannelEdit',
+                mod_id: interaction.user.id,
+                member_id: ''
+            }).catch(() => {}),
+            reportToBender({
+                type: 'ChannelEdit',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { before, after: channel.toJSON() }
+            })
+        ]);
 
         interaction
             .editReply({
@@ -519,6 +554,8 @@ export default new AmethystCommand({
 
         const newPlace = channel.position + places * (sens === ChannelMoveSens.Up ? -1 : 1);
         await interaction.deferReply().catch(() => {});
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
+
         const res = await channel.setPosition(newPlace).catch(() => {});
         if (!res)
             return interaction
@@ -538,17 +575,26 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
-        await addModLog({
-            guild: interaction.guild,
-            mod_id: interaction.user.id,
-            member_id: null,
-            type: 'ChannelEdit',
-            reason: `Déplaçage du salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
-                channel.id
-            }\` ) de ${numerize(places)} place${plurial(places)} vers le ${
-                sens === ChannelMoveSens.Up ? 'haut' : 'bas'
-            }`
-        }).catch(() => {});
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                mod_id: interaction.user.id,
+                member_id: null,
+                type: 'ChannelEdit',
+                reason: `Déplaçage du salon ${pingChan(channel)} ( ${resizeString({
+                    str: channel.name,
+                    length: 50
+                })} \`${channel.id}\` ) de ${numerize(places)} place${plurial(places)} vers le ${
+                    sens === ChannelMoveSens.Up ? 'haut' : 'bas'
+                }`
+            }).catch(() => {}),
+            reportToBender({
+                type: 'ChannelEdit',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { before, after: channel.toJSON() }
+            })
+        ]);
 
         interaction
             .editReply({
@@ -593,6 +639,7 @@ export default new AmethystCommand({
                 .catch(() => {});
 
         await interaction.deferReply().catch(() => {});
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
         const res = await channel.setParent(parent).catch(() => {});
 
         if (!res)
@@ -613,17 +660,27 @@ export default new AmethystCommand({
                 })
                 .catch(() => {});
 
-        await addModLog({
-            guild: interaction.guild,
-            type: 'ChannelEdit',
-            member_id: null,
-            mod_id: interaction.user.id,
-            reason: `Le salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
-                channel.id
-            }\` ) a été ${
-                parent ? `Déplacé dans la catégorie ${resizeString({ str: parent.name, length: 50 })}` : `décatégorisé`
-            }`
-        }).catch(() => {});
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                type: 'ChannelEdit',
+                member_id: null,
+                mod_id: interaction.user.id,
+                reason: `Le salon ${pingChan(channel)} ( ${resizeString({ str: channel.name, length: 50 })} \`${
+                    channel.id
+                }\` ) a été ${
+                    parent
+                        ? `Déplacé dans la catégorie ${resizeString({ str: parent.name, length: 50 })}`
+                        : `décatégorisé`
+                }`
+            }).catch(() => {}),
+            reportToBender({
+                type: 'ChannelEdit',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { before, after: channel.toJSON() }
+            })
+        ]);
         interaction
             .editReply({
                 embeds: [
@@ -665,13 +722,18 @@ export default new AmethystCommand({
                 .catch(() => {});
         const x = channel.permissionOverwrites.cache.get(role.id)?.toJSON() ?? {};
         x[permission] = true;
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
 
-        console.log(permission);
-        console.log(x);
         if (channel.permissionOverwrites.cache.has(role.id))
             channel.permissionOverwrites.cache.get(role.id).edit(x).catch(console.log);
         else channel.permissionOverwrites.create(role, x).catch(console.log);
 
+        reportToBender({
+            type: 'ChannelEdit',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { before, after: channel.toJSON() }
+        });
         interaction
             .reply({
                 embeds: [
@@ -714,12 +776,17 @@ export default new AmethystCommand({
         const x = channel.permissionOverwrites.cache.get(role.id)?.toJSON() ?? {};
         x[permission] = false;
 
-        console.log(permission);
-        console.log(x);
+        const before = JSON.parse(JSON.stringify(channel.toJSON()));
         if (channel.permissionOverwrites.cache.has(role.id))
             channel.permissionOverwrites.cache.get(role.id).edit(x).catch(console.log);
         else channel.permissionOverwrites.create(role, x).catch(console.log);
 
+        reportToBender({
+            type: 'ChannelEdit',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { before, after: channel.toJSON() }
+        });
         interaction
             .reply({
                 embeds: [

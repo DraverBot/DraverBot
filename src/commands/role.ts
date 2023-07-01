@@ -12,7 +12,7 @@ import {
     systemReply
 } from '../utils/toolbox';
 import replies from '../data/replies';
-import { getRolePerm, util } from '../utils/functions';
+import { getRolePerm, reportToBender, util } from '../utils/functions';
 import { permType } from '../typings/functions';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
@@ -263,7 +263,13 @@ export default new AmethystCommand({
                 mod_id: interaction.user.id,
                 reason: options.getString('raison') ?? 'Pas de raison',
                 type: 'RoleDelete'
-            }).catch(log4js.trace)
+            }).catch(log4js.trace),
+            reportToBender({
+                type: 'RoleDelete',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: { value: role.toJSON() }
+            })
         ]);
 
         interaction
@@ -321,6 +327,12 @@ export default new AmethystCommand({
             type: 'RoleCreate',
             reason
         }).catch(log4js.trace);
+        await reportToBender({
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            type: 'RoleCreate',
+            data: { id: role.id }
+        });
 
         interaction
             .editReply({
@@ -345,6 +357,7 @@ export default new AmethystCommand({
                 .reply({ embeds: [replies.invalidColor(interaction.member as GuildMember)], ephemeral: true })
                 .catch(log4js.trace);
 
+        const before = JSON.parse(JSON.stringify(role.toJSON()));
         role.setColor(getHexColor(color) as ColorResolvable, reason);
 
         addModLog({
@@ -353,6 +366,12 @@ export default new AmethystCommand({
             type: 'RoleEdit',
             reason: reason,
             member_id: null
+        });
+        reportToBender({
+            type: 'RoleEdit',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { before, after: role.toJSON() }
         });
 
         interaction
@@ -372,6 +391,7 @@ export default new AmethystCommand({
 
         if (!checkRolePosition(role.position)) return;
 
+        const before = JSON.parse(JSON.stringify(role.toJSON()));
         role.setName(name, reason);
 
         addModLog({
@@ -380,6 +400,12 @@ export default new AmethystCommand({
             mod_id: interaction.user.id,
             type: 'RoleEdit',
             reason
+        });
+        reportToBender({
+            type: 'RoleEdit',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { before, after: role.toJSON() }
         });
 
         interaction
@@ -444,6 +470,12 @@ export default new AmethystCommand({
                 .catch(log4js.trace);
             return;
         }
+        reportToBender({
+            type: 'RoleAdded',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { member: user.id, role: role.id }
+        });
         interaction
             .reply({
                 embeds: [
@@ -506,6 +538,12 @@ export default new AmethystCommand({
                 .catch(log4js.trace);
             return;
         }
+        reportToBender({
+            type: 'RoleRemoved',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: { member: user.id, role: role.id }
+        });
         interaction
             .reply({
                 embeds: [
@@ -548,6 +586,8 @@ export default new AmethystCommand({
                 .catch(log4js.trace);
 
         await interaction.deferReply().catch(log4js.trace);
+
+        const before = JSON.parse(JSON.stringify(role.toJSON()));
         const res = await role.setPermissions(role.permissions.add(permission)).catch(log4js.trace);
 
         if (!res)
@@ -571,6 +611,15 @@ export default new AmethystCommand({
                 })
                 .catch(log4js.trace);
 
+        await reportToBender({
+            type: 'RoleEdit',
+            guild: interaction.guild.id,
+            user: interaction.user.id,
+            data: {
+                before,
+                after: role.toJSON()
+            }
+        });
         interaction
             .editReply({
                 embeds: [
@@ -615,6 +664,7 @@ export default new AmethystCommand({
                 .catch(log4js.trace);
 
         await interaction.deferReply().catch(log4js.trace);
+        const before = JSON.parse(JSON.stringify(role.toJSON()));
         const res = await role.setPermissions(role.permissions.remove(permission)).catch(log4js.trace);
 
         if (!res)
@@ -637,6 +687,15 @@ export default new AmethystCommand({
                     ]
                 })
                 .catch(log4js.trace);
+        reportToBender({
+            type: 'RoleEdit',
+            user: interaction.user.id,
+            guild: interaction.guild.id,
+            data: {
+                before,
+                after: role.toJSON()
+            }
+        });
         interaction
             .editReply({
                 embeds: [

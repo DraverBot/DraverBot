@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import { WordGenerator } from '../managers/Generator';
 import validProof from '../preconditions/validProof';
 import { addModLog, basicEmbed, pingUser } from '../utils/toolbox';
-import { getRolePerm } from '../utils/functions';
+import { getRolePerm, reportToBender } from '../utils/functions';
 import replies from '../data/replies';
 
 export default new AmethystCommand({
@@ -53,6 +53,7 @@ export default new AmethystCommand({
         }).generate();
 
         await interaction.deferReply().catch(log4js.trace);
+        const old = member?.nickname ?? member.user.username;
         const res = await member.setNickname(nick, reason).catch(log4js.trace);
 
         if (!res)
@@ -71,14 +72,25 @@ export default new AmethystCommand({
                     ]
                 })
                 .catch(log4js.trace);
-        await addModLog({
-            guild: interaction.guild,
-            reason,
-            proof: proof?.url,
-            member_id: member.id,
-            mod_id: interaction.user.id,
-            type: 'Censor'
-        }).catch(log4js.trace);
+
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                reason,
+                proof: proof?.url,
+                member_id: member.id,
+                mod_id: interaction.user.id,
+                type: 'Censor'
+            }).catch(log4js.trace),
+            reportToBender({
+                type: 'Censor',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: {
+                    oldName: old
+                }
+            })
+        ]);
 
         interaction
             .editReply({
@@ -105,6 +117,8 @@ export default new AmethystCommand({
         }).generate();
 
         await interaction.deferReply().catch(log4js.trace);
+
+        const old = member?.nickname ?? member.user.username;
         const res = await member
             .setNickname(nick, `Pas de raison - par ${interaction.user.username} ( ${interaction.user.id} )`)
             .catch(log4js.trace);
@@ -125,13 +139,23 @@ export default new AmethystCommand({
                     ]
                 })
                 .catch(log4js.trace);
-        await addModLog({
-            guild: interaction.guild,
-            reason: 'Pas de raison (commande de contexte)',
-            member_id: member.id,
-            mod_id: interaction.user.id,
-            type: 'Censor'
-        }).catch(log4js.trace);
+        await Promise.all([
+            addModLog({
+                guild: interaction.guild,
+                reason: 'Pas de raison (commande de contexte)',
+                member_id: member.id,
+                mod_id: interaction.user.id,
+                type: 'Censor'
+            }).catch(log4js.trace),
+            reportToBender({
+                type: 'Censor',
+                user: interaction.user.id,
+                guild: interaction.guild.id,
+                data: {
+                    oldName: old
+                }
+            })
+        ]);
 
         interaction
             .editReply({

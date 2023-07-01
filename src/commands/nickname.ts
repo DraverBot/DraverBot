@@ -3,7 +3,7 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import validProof from '../preconditions/validProof';
-import { util } from '../utils/functions';
+import { reportToBender, util } from '../utils/functions';
 import { addModLog, basicEmbed } from '../utils/toolbox';
 
 export default new AmethystCommand({
@@ -45,6 +45,16 @@ export default new AmethystCommand({
 
     let nick = pseudo;
     if (!nick) nick = member.user.username;
+    const old = member?.nickname ?? member.user.username;
+
+    reportToBender({
+        type: 'Rename',
+        guild: interaction.guild.id,
+        user: interaction.user.id,
+        data: {
+            oldName: old
+        }
+    });
 
     member.setNickname(nick).catch(() => {});
 

@@ -2,7 +2,7 @@ import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
-import { util } from '../utils/functions';
+import { reportToBender, util } from '../utils/functions';
 import validProof from '../preconditions/validProof';
 import { addModLog, addProof, basicEmbed, codeBox, confirm, modFields } from '../utils/toolbox';
 import { confirmReturn } from '../typings/functions';
@@ -86,6 +86,14 @@ export default new AmethystCommand({
             type: 'Ban',
             reason,
             proof: proof?.url
+        }),
+        reportToBender({
+            type: 'Ban',
+            guild: interaction.guild.id,
+            user: interaction.user.id,
+            data: {
+                member: member.id
+            }
         })
     ]);
     interaction

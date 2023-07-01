@@ -7,8 +7,9 @@ declare global {
             user: string;
             password: string;
             BLAGUES_API_TOKEN: string;
+            benderPort: string;
         }
     }
 }
 
-export {}
+export {};
