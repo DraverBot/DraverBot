@@ -354,7 +354,7 @@ export default new AmethystCommand({
                 .catch(() => {});
     }
     if (cmd === 'supprimer') {
-        const channel = options.getChannel('salon', true) as BaseChannel;
+        const channel = options.getChannel('salon', true) as GuildChannel;
 
         const confirmation = (await confirm({
             interaction,
@@ -410,7 +410,7 @@ export default new AmethystCommand({
                 type: 'ChannelDelete',
                 user: interaction.user.id,
                 guild: interaction.guild.id,
-                data: { value: channel.toJSON() }
+                data: { value: channel.toJSON(), permissions: channel.permissionOverwrites.cache.toJSON() }
             })
         ]);
         interaction

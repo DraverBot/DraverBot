@@ -204,17 +204,17 @@ export type BenderAPIType =
     | 'RoleRemoved';
 
 type BenderAPIOptionsData<T extends BenderAPIType> = T extends 'Unmute'
-    ? { remainingTimeInMs: number }
+    ? { remainingTimeInMs: number; member: string }
     : T extends 'Kick' | 'Mute'
-    ? Record<string, never>
+    ? { member: string }
     : T extends 'Censor' | 'Rename'
-    ? { oldName: string }
+    ? { oldName: string; member: string }
     : T extends 'ChannelEdit' | 'RoleEdit'
     ? { before: any; after: any }
     : T extends 'RoleCreate' | 'ChannelCreate'
     ? { id: string }
     : T extends 'RoleDelete' | 'ChannelDelete'
-    ? { value: any }
+    ? { value: any; permissions: any }
     : T extends 'RoleAdded' | 'RoleRemoved'
     ? { member: string; role: string }
     : T extends 'Ban' | 'Unban'

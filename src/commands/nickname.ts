@@ -52,7 +52,8 @@ export default new AmethystCommand({
         guild: interaction.guild.id,
         user: interaction.user.id,
         data: {
-            oldName: old
+            oldName: old,
+            member: member.id
         }
     });
 

@@ -46,7 +46,10 @@ export enum modActionType {
     RoleEdit = 'Modification de rôle',
     RoleDelete = 'Supression de rôle',
     MessageBulkDelete = 'Suppression de messages',
-    Censor = 'Censuration'
+    Censor = 'Censuration',
+    Tempban = 'Bannissement temporaire',
+    Nuke = 'Nettoyage de salon',
+    Demote = 'Destitution'
 }
 
 export type modlogs = {

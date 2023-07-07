@@ -91,7 +91,9 @@ export default new AmethystCommand({
             type: 'Kick',
             guild: interaction.guild.id,
             user: interaction.user.id,
-            data: {}
+            data: {
+                member: member.id
+            }
         })
     ]);
     interaction

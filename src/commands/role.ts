@@ -268,7 +268,7 @@ export default new AmethystCommand({
                 type: 'RoleDelete',
                 user: interaction.user.id,
                 guild: interaction.guild.id,
-                data: { value: role.toJSON() }
+                data: { value: role.toJSON(), permissions: role.permissions.toJSON() }
             })
         ]);
 
