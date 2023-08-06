@@ -101,3 +101,8 @@ export type lotoCollection = {
     complementaries: number;
     channelId: string;
 };
+export type levelsList<Raw extends boolean = false> = {
+    guild_id: string;
+    wl: If<Raw, string, string[]>;
+    bl: If<Raw, string, string[]>;
+};

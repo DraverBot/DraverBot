@@ -1,4 +1,13 @@
-import { ColorResolvable, EmbedBuilder, Guild, GuildMember, PermissionsString, TextChannel, User } from 'discord.js';
+import {
+    ChannelType,
+    ColorResolvable,
+    EmbedBuilder,
+    Guild,
+    GuildMember,
+    PermissionsString,
+    TextChannel,
+    User
+} from 'discord.js';
 import errors from '../maps/errors';
 import { moduleType, tasks } from '../typings/database';
 import { permType } from '../typings/functions';
@@ -500,7 +509,35 @@ const replies = {
                 `Les données n'ont pas pu être trouvées à cause d'un problème venant de la plateforme.\nPatientez quelques minutes, puis réessayez.\nSi cette erreur persiste, contactez le développeur, par le [serveur de support](${util(
                     'support'
                 )}) ou par l'adresse email ( \`${util('email')}\` )`
-            )
+            ),
+    invalidChannel: (user: anyUser) =>
+        userMember(user)
+            .setTitle('Salon invalide')
+            .setDescription(`Ce n'est pas un salon valide, réessayez avec un nom, un identifiant ou une mention`),
+    invalidChannelType: (user: anyUser, types: ChannelType[]) => {
+        const vals: Record<ChannelType, string> = {
+            10: "fil d'annonce",
+            1: 'messages privés',
+            3: 'groupe privé',
+            5: 'annonces',
+            4: 'catégorie',
+            14: 'catégorie',
+            15: 'forum',
+            12: 'fil privé',
+            11: 'fil public',
+            13: 'conférences',
+            0: 'textuel',
+            2: 'vocal'
+        };
+
+        return userMember(user)
+            .setTitle('Type de salon invalide')
+            .setDescription(
+                `Ce n'est pas un salon valide, veuillez spécifier un salon de type : ${types
+                    .map((x) => vals[x])
+                    .join(', ')}`
+            );
+    }
 };
 
 export type replyKey = keyof typeof replies;

@@ -27,5 +27,9 @@ export enum ButtonIds {
     PlayMastermindHard = 'play.mastermind.hard',
     PlayMinesweeper = 'play.minesweeper',
     SendRandomJoke = 'play.sendRandom.joke',
-    ResignToCurrentMastermind = 'mastermind.external.resign'
+    ResignToCurrentMastermind = 'mastermind.external.resign',
+    LevelAddChannel = 'cmd.level.list.add',
+    LevelRemoveChannel = 'cmd.level.list.remove',
+    LevelPurgeList = 'cmd.level.list.purge',
+    LevelListSwap = 'cmd.level.list.swap'
 }

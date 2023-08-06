@@ -1,11 +1,25 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { AmethystCommand, log4js, preconditions, wait } from 'amethystjs';
+import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import economyCheck from '../preconditions/economyCheck';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { AdminLevelAddType } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
-import { addModLog, basicEmbed, confirm, numerize, plurial, random, subcmd } from '../utils/toolbox';
+import {
+    addModLog,
+    basicEmbed,
+    buildButton,
+    confirm,
+    numerize,
+    pingChan,
+    plurial,
+    random,
+    row,
+    subcmd
+} from '../utils/toolbox';
+import { cancelButton } from '../data/buttons';
+import { ButtonIds } from '../typings/buttons';
+import GetChannel from '../process/GetChannel';
 
 export default new AmethystCommand({
     name: 'adminlevel',
@@ -61,9 +75,26 @@ export default new AmethystCommand({
                     minValue: 1
                 }
             ]
+        },
+        {
+            name: 'salons',
+            description: 'Gère la liste des salons',
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: 'liste',
+                    description: 'Affiche la liste des salons configurés',
+                    type: ApplicationCommandOptionType.Subcommand
+                },
+                {
+                    name: 'configurer',
+                    description: 'Configure la liste des salons',
+                    type: ApplicationCommandOptionType.Subcommand
+                }
+            ]
         }
     ]
-}).setChatInputRun(async ({ interaction, options }) => {
+}).setChatInputRun(async ({ interaction, options, client }) => {
     if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'level'))
         return interaction
             .reply({
@@ -74,6 +105,238 @@ export default new AmethystCommand({
 
     const cmd = subcmd(options);
 
+    if (cmd === 'configurer') {
+        // eslint-disable-next-line prefer-const
+        let configured: 'bl' | 'wl' = client.levelsChannels.getConfigured(interaction);
+        let data = client.levelsChannels.getLists(interaction)[configured];
+
+        const embed = () => {
+            return basicEmbed(interaction.user, { draverColor: true })
+                .setTitle('Configuration')
+                .setDescription(
+                    `La liste est actuellement configurée en tant que **${
+                        configured === 'bl' ? 'blacklist' : 'whitelist'
+                    }**, ce qui signifie que les messages sont ${
+                        configured === 'bl' ? `ignorés` : 'comptés uniquement'
+                    } dans les salons listés\n${data.length > 0 ? data.map((x) => pingChan(x)).join(' ') : ''}`
+                );
+        };
+        const components = (allDisabled = false) => {
+            return [
+                row(
+                    buildButton({
+                        label: 'Ajouter',
+                        buttonId: 'LevelAddChannel',
+                        style: 'Primary',
+                        disabled: allDisabled || data.length === 25
+                    }),
+                    buildButton({
+                        label: 'Retirer',
+                        buttonId: 'LevelRemoveChannel',
+                        style: 'Secondary',
+                        disabled: allDisabled || data.length === 0
+                    }),
+                    buildButton({
+                        label: `Changer en ${configured === 'bl' ? 'whitelist' : 'blacklist'}`,
+                        buttonId: 'LevelListSwap',
+                        style: 'Secondary',
+                        disabled: allDisabled
+                    }),
+                    buildButton({
+                        label: 'Vider',
+                        buttonId: 'LevelPurgeList',
+                        style: 'Secondary',
+                        disabled: allDisabled || data.length === 0
+                    })
+                ),
+                row(
+                    buildButton({
+                        label: 'Appliquer',
+                        style: 'Success',
+                        id: 'apply'
+                    }),
+                    cancelButton().setDisabled(allDisabled)
+                )
+            ];
+        };
+        const panel = (await interaction
+            .reply({
+                embeds: [embed()],
+                components: components(),
+                fetchReply: true
+            })
+            .catch(log4js.trace)) as Message<true>;
+        if (!panel) return;
+
+        const collector = panel.createMessageComponentCollector({
+            time: 300000,
+            componentType: ComponentType.Button
+        });
+
+        collector.on('collect', async (ctx) => {
+            if (ctx.user.id !== interaction.user.id) {
+                ctx.reply({
+                    embeds: [replies.replyNotAllowed(ctx.member as GuildMember)],
+                    ephemeral: true
+                }).catch(log4js.trace);
+                return;
+            }
+
+            if (ctx.customId === 'cancel') {
+                interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(log4js.trace);
+                collector.stop('cancel');
+            }
+            if (ctx.customId === 'apply') {
+                interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user, { draverColor: true })
+                                .setTitle('Changements appliqués')
+                                .setDescription(`Les changements ont été appliqués`)
+                        ],
+                        components: []
+                    })
+                    .catch(log4js.trace);
+                collector.stop('apply');
+            }
+            if (ctx.customId === ButtonIds.LevelPurgeList) {
+                data = [];
+
+                ctx.deferUpdate().catch(log4js.trace);
+                interaction
+                    .editReply({
+                        embeds: [embed()],
+                        components: components()
+                    })
+                    .catch(log4js.trace);
+            }
+            if (ctx.customId === ButtonIds.LevelListSwap) {
+                configured = configured === 'bl' ? 'wl' : 'bl';
+
+                ctx.deferUpdate().catch(log4js.trace);
+                interaction
+                    .editReply({
+                        embeds: [embed()],
+                        components: components()
+                    })
+                    .catch(log4js.trace);
+            }
+            if (ctx.customId === ButtonIds.LevelAddChannel || ctx.customId === ButtonIds.LevelRemoveChannel) {
+                const action = ctx.customId === ButtonIds.LevelAddChannel ? 'add' : 'remove';
+
+                interaction
+                    .editReply({
+                        components: components(true)
+                    })
+                    .catch(log4js.trace);
+                const channel = await GetChannel.process({
+                    interaction: ctx,
+                    embed: basicEmbed(interaction.user, { questionMark: true })
+                        .setTitle('Salon')
+                        .setDescription(
+                            `Quel salon voulez-vous ${
+                                action === 'add' ? 'ajouter' : 'retirer'
+                            } ?\nRépondez dans le chat par un identifiant, un nom ou une mention.\nTapez \`cancel\` pour annuler`
+                        ),
+                    user: interaction.user,
+                    channelTypes: [ChannelType.GuildText, ChannelType.GuildCategory],
+                    checks: [
+                        {
+                            check: (chan) => (action === 'add' ? !data.includes(chan.id) : data.includes(chan.id)),
+                            reply: {
+                                embeds: [
+                                    basicEmbed(interaction.user, { evoker: interaction.guild })
+                                        .setTitle('Salon invalide')
+                                        .setDescription(
+                                            action === 'add'
+                                                ? `Ce salon est déjà dans la liste`
+                                                : "Ce salon n'est pas dans la liste"
+                                        )
+                                ]
+                            }
+                        }
+                    ]
+                });
+
+                if (channel === 'cancel' || channel === "time's up") {
+                    ctx.deleteReply().catch(log4js.trace);
+                    interaction
+                        .editReply({
+                            components: components()
+                        })
+                        .catch(log4js.trace);
+                    return;
+                }
+
+                ctx.deleteReply().catch(log4js.trace);
+
+                if (action === 'add') {
+                    data.push(channel.id);
+                } else {
+                    data = data.filter((x) => x !== channel.id);
+                }
+
+                interaction
+                    .editReply({
+                        embeds: [embed()],
+                        components: components()
+                    })
+                    .catch(log4js.trace);
+            }
+        });
+
+        collector.on('end', async (_c, reason) => {
+            if (reason === 'apply') {
+                if (configured !== client.levelsChannels.getConfigured(interaction)) {
+                    client.levelsChannels.swap(interaction);
+                    await wait(500);
+                }
+                client.levelsChannels.setList(interaction.guild, data);
+            } else if (reason !== 'cancel') {
+                interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(log4js.trace);
+            }
+        });
+    }
+    if (cmd === 'liste') {
+        const configured = client.levelsChannels.getConfigured(interaction);
+        const list = client.levelsChannels.getLists(interaction)[configured];
+
+        if (list.length === 0)
+            return interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Liste vide')
+                            .setDescription(`La liste est vide, vous n'avez configuré aucun salon`)
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+
+        interaction
+            .reply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle(configured === 'bl' ? 'Blacklist de salons' : 'Whitelist de salons')
+                        .setDescription(
+                            `Les messages ${
+                                configured === 'bl' ? `ne sont pas comptés` : 'sont comptés uniquement'
+                            } dans ces salons :\n${list.map((x) => pingChan(x)).join(' ')}`
+                        )
+                ]
+            })
+            .catch(log4js.trace);
+    }
     if (cmd === 'réinitialiser') {
         const user = options.getUser('membre');
         const target = user ? `de ${user}` : 'du serveur';
