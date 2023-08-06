@@ -292,7 +292,7 @@ export type lotos<Raw extends boolean = false> = {
 };
 export type polls<Raw extends boolean = false> = {
     guild_id: string;
-    endsAt: number;
+    endsAt: If<Raw, string, number>;
     participants: If<Raw, string, string[]>;
     choices: If<Raw, string, { name: string; id: number; count: number }[]>;
     poll_id: number;
@@ -301,6 +301,7 @@ export type polls<Raw extends boolean = false> = {
     channel_id: string;
     question: string;
     ended: If<Raw, string, boolean>;
+    choosable: number;
 };
 export type plugboard<Raw extends boolean = false> = {
     user_id: string;

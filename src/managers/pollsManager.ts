@@ -21,13 +21,15 @@ export class PollsManager {
         by,
         channel,
         choices,
-        time
+        time,
+        choosable = 1
     }: {
         question: string;
         by: User;
         channel: TextChannel;
         choices: string[];
         time: number;
+        choosable?: number;
     }) {
         const options = choices.map((x, i) => ({ name: x, count: 0, id: i }));
         if (options.length > 25) return 'options is too large';
@@ -36,7 +38,7 @@ export class PollsManager {
 
         const selector = new StringSelectMenuBuilder()
             .setCustomId('poll-selector')
-            .setMaxValues(1)
+            .setMaxValues(choosable)
             .setOptions(
                 options.map((x, i) => ({ label: `Option n°${i + 1}`, value: x.id.toString(), description: x.name }))
             );
@@ -50,12 +52,12 @@ export class PollsManager {
         const insertion = await query(
             `INSERT INTO ${
                 DatabaseTables.Polls
-            } ( guild_id, message_id, channel_id, started_by, endsAt, participants, choices, question ) VALUES ( "${
+            } ( guild_id, message_id, channel_id, started_by, endsAt, participants, choices, question, choosable ) VALUES ( "${
                 channel.guild.id
             }", "${msg.id}", "${channel.id}", "${by.id}", "${endsAt}", "[]", "${JSON.stringify(options).replace(
                 /"/g,
                 '\\"'
-            )}", "${sqliseString(question)}")`
+            )}", "${sqliseString(question)}", '${choosable}')`
         );
 
         if (!insertion) return 'invalid insertion';
@@ -69,7 +71,8 @@ export class PollsManager {
             question,
             poll_id: insertion.insertId,
             started_by: by.id,
-            ended: false
+            ended: false,
+            choosable
         });
 
         this.cache.set(poll.data.poll_id, poll);
@@ -109,11 +112,12 @@ export class PollsManager {
                     channel_id: data.channel_id,
                     message_id: data.message_id,
                     started_by: data.started_by,
-                    endsAt: data.endsAt,
+                    endsAt: parseInt(data.endsAt),
                     poll_id: data.poll_id,
                     choices: JSON.parse(data.choices),
                     participants: JSON.parse(data.participants),
-                    ended: dbBool(data.ended)
+                    ended: dbBool(data.ended),
+                    choosable: data.choosable
                 });
 
                 this.cache.set(data.poll_id, poll);

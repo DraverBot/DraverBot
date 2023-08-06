@@ -12,7 +12,7 @@ import {
     TextInputStyle
 } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { basicEmbed, buildButton, confirm, pingChan, row, waitForReplies } from '../utils/toolbox';
+import { basicEmbed, buildButton, confirm, numerize, pingChan, plurial, row, waitForReplies } from '../utils/toolbox';
 import { cancelButton } from '../data/buttons';
 import { ButtonIds } from '../typings/buttons';
 import replies from '../data/replies';
@@ -73,6 +73,7 @@ export default new AmethystCommand({
         const channel = (options.getChannel('salon') ?? interaction.channel) as TextChannel;
 
         const choices: string[] = [];
+        let choosable = 1;
         const time = ms(options.getString('durée'));
         const components = (allDisabled?: boolean) => [
             row(
@@ -87,6 +88,12 @@ export default new AmethystCommand({
                     buttonId: 'PollRemoveChoice',
                     style: 'Secondary',
                     disabled: !!allDisabled ? true : choices.length === 0
+                }),
+                buildButton({
+                    label: 'Nombre de choix',
+                    buttonId: 'PollChoices',
+                    style: 'Secondary',
+                    disabled: !!allDisabled ? true : choices.length <= 2
                 }),
                 buildButton({
                     label: 'Valider',
@@ -104,7 +111,15 @@ export default new AmethystCommand({
                     `Appuyez sur les boutons pour configurer le sondage${
                         choices.length > 0 ? `\n\nOptions :\n${choices.map((x) => `- ${x}`).join('\n')}` : ''
                     }`
-                );
+                )
+                .setFields({
+                    name: "Nombre d'options",
+                    value: `${numerize(choosable)} option${plurial(choosable, {
+                        singular: ' est choisissable',
+                        plurial: 's sont choisissables'
+                    })}`,
+                    inline: false
+                });
         const builder = (await interaction
             .reply({
                 embeds: [embed()],
@@ -250,7 +265,8 @@ export default new AmethystCommand({
                     by: interaction.user,
                     choices: choices,
                     time,
-                    channel
+                    channel,
+                    choosable
                 });
 
                 if (creation === 'invalid insertion' || creation === 'message not sent') {
@@ -269,6 +285,53 @@ export default new AmethystCommand({
                                 .setTitle('Sondage lancé')
                                 .setDescription(`Le sondage a été lancé dans ${pingChan(channel)}`)
                         ]
+                    })
+                    .catch(log4js.trace);
+            }
+            if (ctx.customId === ButtonIds.PollChoices) {
+                const max = choices.length - 1;
+                await ctx
+                    .showModal(
+                        new ModalBuilder()
+                            .setTitle('Options')
+                            .setCustomId('poll-options-choosable')
+                            .setComponents(
+                                row(
+                                    new TextInputBuilder()
+                                        .setLabel("Nombre d'options choisissables")
+                                        .setMaxLength(max.toString().length)
+                                        .setStyle(TextInputStyle.Short)
+                                        .setRequired(true)
+                                        .setPlaceholder(`Nombre entre 1 et ${max}`)
+                                        .setCustomId('value')
+                                )
+                            )
+                    )
+                    .catch(log4js.trace);
+
+                const rep = await ctx
+                    .awaitModalSubmit({
+                        time: 120000
+                    })
+                    .catch(log4js.trace);
+
+                if (!rep) return;
+                let int = parseInt(rep.fields.getTextInputValue('value'));
+                if (!int || isNaN(int)) {
+                    rep.reply({
+                        embeds: [replies.invalidNumber(interaction.member as GuildMember)],
+                        ephemeral: true
+                    }).catch(log4js.trace);
+                    return;
+                }
+                if (int > max) int = max;
+
+                choosable = int;
+                rep.deferUpdate().catch(log4js.trace);
+
+                builder
+                    .edit({
+                        embeds: [embed()]
                     })
                     .catch(log4js.trace);
             }

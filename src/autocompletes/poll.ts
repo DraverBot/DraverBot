@@ -5,7 +5,9 @@ export default new AutocompleteListener({
     commandName: [{ commandName: 'sondage', optionName: 'sondage' }],
     listenerName: 'poll',
     run: ({ interaction, focusedValue }) => {
-        const list = interaction.client.pollsManager.getPollsList(interaction.guild?.id);
+        const list = interaction.client.pollsManager
+            .getPollsList(interaction.guild?.id)
+            .filter((x) => x.ended === false);
 
         return list
             .filter(

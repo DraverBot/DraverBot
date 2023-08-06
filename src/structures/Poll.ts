@@ -55,13 +55,17 @@ export class Poll {
         return this._data;
     }
 
-    public async registerParticipationFor(user_id: string, vote: number) {
-        if (!this._data.choices.find((x) => x.id === vote)) return 'no vote with the specified id';
+    public async registerParticipationFor(user_id: string, votes: number[]) {
+        const choices = this._data.choices.filter((x) => votes.includes(x.id));
+        if (!choices) return 'no vote with the specified id';
         if (this._data.participants.includes(user_id)) return 'user already participates';
 
         this._data.participants.push(user_id);
-        const index = this._data.choices.indexOf(this._data.choices.find((x) => x.id == vote));
-        this._data.choices[index].count++;
+
+        votes.forEach((vote) => {
+            const index = this._data.choices.indexOf(this._data.choices.find((x) => x.id == vote));
+            this._data.choices[index].count++;
+        });
 
         await query(
             `UPDATE ${DatabaseTables.Polls} SET participants='${JSON.stringify(
@@ -165,14 +169,16 @@ export class Poll {
                 }).catch(log4js.trace);
                 return;
             }
-            const choice = this._data.choices.find((x) => x.id === parseInt(ctx.values[0]));
-            if (!choice) {
+            const choices = ctx.values.map((x) => this._data.choices.find((y) => y.id === parseInt(x)));
+            if (!choices) {
                 ctx.reply({
                     embeds: [replies.internalError((ctx.member as GuildMember) ?? ctx.user)],
                     ephemeral: true
                 }).catch(log4js.trace);
                 return;
             }
+            const displayChoice = () =>
+                choices.length === 1 ? `\`${choices[0].name}\`` : choices.map((x) => `\`${x.name}\``).join(', ');
 
             const confirmation = await confirm({
                 interaction: ctx,
@@ -182,7 +188,7 @@ export class Poll {
                 embed: basicEmbed(ctx.user)
                     .setTitle('Participation')
                     .setDescription(
-                        `Êtes vous sûr de voter pour \`${choice.name}\` ? Vous ne pourrez plus changer votre vote.`
+                        `Êtes vous sûr de voter pour ${displayChoice()} ? Vous ne pourrez plus changer votre vote.`
                     )
             }).catch(log4js.trace);
 
@@ -192,7 +198,10 @@ export class Poll {
             }
 
             await Promise.all([
-                this.registerParticipationFor(ctx.user.id, choice.id),
+                this.registerParticipationFor(
+                    ctx.user.id,
+                    choices.map((x) => x.id)
+                ),
                 ctx.editReply({ embeds: [replies.wait(ctx.user)], components: [] }).catch(log4js.trace),
                 this.editMessage()
             ]);
@@ -201,7 +210,7 @@ export class Poll {
                 embeds: [
                     basicEmbed(ctx.user, { draverColor: true })
                         .setTitle('Participation enregistrée')
-                        .setDescription(`Vous avez voté pour \`${choice.name}\``)
+                        .setDescription(`Vous avez voté pour ${displayChoice()}`)
                 ]
             }).catch(log4js.trace);
         });

@@ -9,6 +9,7 @@ export enum ButtonIds {
     UnGBanUser = 'bot-admin.gban.unban-user',
     GBanList = 'bot-admin.gban.list',
     PollAddChoice = 'cmd.poll.add-choice',
+    PollChoices = 'cmd.poll.choices',
     PollRemoveChoice = 'cmd.poll.remove-choice',
     PollCancel = 'cmd.poll.cancel',
     PollValidate = 'cmd.poll.validate',
