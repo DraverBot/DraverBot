@@ -24,6 +24,7 @@ import { PollsManager } from '../managers/pollsManager';
 import { PlugboardsManager } from '../managers/PlugboardManager';
 import { TaskManager } from '../managers/TaskManager';
 import { RolesReactManager } from '../managers/RoleReactsManager';
+import { Counter } from 'discord-count-channels';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -64,10 +65,12 @@ export default new AmethystEvent('ready', async (client) => {
     client.plugboardsManager = new PlugboardsManager();
     client.tasksManager = new TaskManager(client);
     client.rolesReact = new RolesReactManager(client);
+    client.counters = new Counter(client, database);
 
     // Start managers
     client.coinsManager.start();
     client.giveaways.start();
+    client.counters.start();
 
     const activities: (() => Promise<ActivityOptions>)[] = [
         async () => {
@@ -192,5 +195,6 @@ declare module 'discord.js' {
         plugboardsManager: PlugboardsManager;
         tasksManager: TaskManager;
         rolesReact: RolesReactManager;
+        counters: Counter;
     }
 }

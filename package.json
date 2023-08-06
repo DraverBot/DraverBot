@@ -11,6 +11,7 @@
 		"axios": "^1.4.0",
 		"blagues-api": "^2.1.0",
 		"coins-manager": "^1.0.7",
+		"discord-count-channels": "^1.1.2",
 		"discord.js": "^14.11.0",
 		"discordjs-giveaways": "^1.4.2",
 		"dotenv": "^16.0.3",

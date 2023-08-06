@@ -19,6 +19,7 @@ import {
 } from '../utils/toolbox';
 import { color } from '../utils/functions';
 import modules from '../maps/modules';
+import { configKeys, configsData } from './configData';
 
 export type anyUser = User | GuildMember;
 
@@ -166,7 +167,7 @@ const replies = {
     },
     replyNotAllowed: (user: anyUser) => {
         return userMember(user)
-            .setTitle('Interaction non-autorisée')
+            .setTitle('Interaction non autorisée')
             .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`);
     },
     unexistingLog: (user: anyUser, id: string) => {
@@ -500,7 +501,15 @@ const replies = {
                 `Les données n'ont pas pu être trouvées à cause d'un problème venant de la plateforme.\nPatientez quelques minutes, puis réessayez.\nSi cette erreur persiste, contactez le développeur, par le [serveur de support](${util(
                     'support'
                 )}) ou par l'adresse email ( \`${util('email')}\` )`
-            )
+            ),
+    configDisabled: (user: anyUser, config: keyof configKeys) =>
+        userMember(user)
+            .setTitle('Paramètre désactivé')
+            .setDescription(`Le paramètre **${configsData[config].name}** est désactivé`),
+    configNotConfigured: (user: anyUser, config: keyof configKeys) =>
+        userMember(user)
+            .setTitle('Paramètre non configuré')
+            .setDescription(`Le paramètre **${configsData[config].name}** n'est pas configuré`)
 };
 
 export type replyKey = keyof typeof replies;
