@@ -25,9 +25,8 @@ export default new AmethystCommand({
     const category = options.getString('catégorie') as keyof typeof jokeNames;
 
     await interaction.deferReply();
-    const configs =
-        (await query<jokes>(`SELECT * FROM jokes WHERE guild_id='${interaction.guild.id}'`)[0]) ??
-        getDefaultJokeConfigs(interaction.guild.id);
+    let configs = (await query<jokes>(`SELECT * FROM jokes WHERE guild_id='${interaction.guild.id}'`))[0];
+    if (!configs) configs = getDefaultJokeConfigs(interaction.guild.id);
 
     const isRandom = category === 'random' || !notNull(category);
 
@@ -60,7 +59,7 @@ export default new AmethystCommand({
                     basicEmbed(interaction.user)
                         .setTitle(`Erreur`)
                         .setDescription(
-                            `Aucune blague n'a été trouvée.\nVous ne devriez pas voir ce messagr.\nRéessayez dans quelques minutes.\nSi ce message d'erreur persiste, contactez mes développeurs via [le support](${util(
+                            `Aucune blague n'a été trouvée.\nVous ne devriez pas voir ce message.\nRéessayez dans quelques minutes.\nSi ce message d'erreur persiste, contactez mes développeurs via [le support](${util(
                                 'support'
                             )}) ou par mail \`${util('email')}\``
                         )
