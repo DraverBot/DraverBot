@@ -337,7 +337,15 @@ export default new AmethystCommand({
             ctx.reply({
                 embeds: [replies.cancel()],
                 ephemeral: true
-            });
+            }).catch(log4js.trace);
+            return;
+        }
+        if (!(ctx.member as GuildMember).permissions.has('Administrator')) {
+            ctx.reply({
+                embeds: [replies.userMissingPermissions(ctx.user, { permissions: { missing: ['Administrator'] } })],
+                ephemeral: true
+            }).catch(log4js.trace);
+            return;
         }
 
         const mod = modulesData[ctx.customId as moduleType];
