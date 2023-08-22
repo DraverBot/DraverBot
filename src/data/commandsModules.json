@@ -55,5 +55,6 @@
     "mastermind": "fun",
     "couleur": "utils",
     "autorole": "administration",
-    "statistiques": "fun"
+    "statistiques": "fun",
+    "météo": "utils"
 }
