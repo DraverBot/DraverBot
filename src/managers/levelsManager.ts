@@ -117,8 +117,10 @@ export class LevelsManager {
             const active = this.client.levelsChannels.getConfigured(message.guild);
 
             const parentId = (message.channel as GuildChannel)?.parentId;
-            if (active === 'bl' && list[active].some((x) => x === message.channel.id || x === parentId)) return;
-            if (active === 'wl' && !list[active].some((x) => x === message.channel.id || x === parentId)) return;
+            if (!!active && active === 'bl' && list[active].some((x) => x === message.channel.id || x === parentId))
+                return;
+            if (!!active && active === 'wl' && !list[active].some((x) => x === message.channel.id || x === parentId))
+                return;
 
             const code = this.getCode({ guild_id: message.guild.id, user_id: message.author.id });
             const has = this._cache.has(code);

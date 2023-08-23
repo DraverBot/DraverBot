@@ -28,6 +28,7 @@ import {
 } from '../utils/toolbox';
 import { color } from '../utils/functions';
 import modules from '../maps/modules';
+import { configKeys, configsData } from './configData';
 
 export type anyUser = User | GuildMember;
 
@@ -537,7 +538,11 @@ const replies = {
                     .map((x) => vals[x])
                     .join(', ')}`
             );
-    }
+    },
+    configDisabled: (user: anyUser, config: keyof configKeys) =>
+        userMember(user)
+            .setTitle('Paramètre désactivé')
+            .setDescription(`Le paramètre **${configsData[config].name}** est désactivé`)
 };
 
 export type replyKey = keyof typeof replies;

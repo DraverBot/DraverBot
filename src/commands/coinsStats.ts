@@ -22,7 +22,7 @@ export default new AmethystCommand({
                         .setDescription(
                             random({ max: 100 }) === 95
                                 ? `Vous n'avez pas d'argent sur votre compte.\nRécupérez des pièces et ré-effectuez cette commande, parce que pour l'instant vous êtes à la rue`
-                                : `Vous n'avez pas d'argent sur votre compte.\nRécupérérez des pièces et ré-effectuez cette commande.`
+                                : `Vous n'avez pas d'argent sur votre compte.\nRécupérez des pièces et ré-effectuez cette commande.`
                         )
                         .setColor(evokerColor(interaction.guild))
                 ]

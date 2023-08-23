@@ -56,5 +56,6 @@
     "couleur": "utils",
     "autorole": "administration",
     "statistiques": "fun",
-    "météo": "utils"
+    "météo": "utils",
+    "récompenses": "config"
 }

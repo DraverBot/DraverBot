@@ -107,7 +107,7 @@ export default new AmethystCommand({
 
     if (cmd === 'configurer') {
         // eslint-disable-next-line prefer-const
-        let configured: 'bl' | 'wl' = client.levelsChannels.getConfigured(interaction);
+        let configured: 'bl' | 'wl' = client.levelsChannels.getConfigured(interaction) ?? 'wl';
         let data = client.levelsChannels.getLists(interaction)[configured];
 
         const embed = () => {
@@ -373,17 +373,20 @@ export default new AmethystCommand({
             type: 'LevelReset'
         }).catch(() => {});
 
-        setTimeout(() => {
-            interaction
-                .editReply({
-                    embeds: [
-                        basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Réinitialisation')
-                            .setDescription(`Les niveaux ${target} ont été réinitialisés`)
-                    ]
-                })
-                .catch(() => {});
-        }, random({ max: 6, min: 3 }) * 1000);
+        setTimeout(
+            () => {
+                interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user, { draverColor: true })
+                                .setTitle('Réinitialisation')
+                                .setDescription(`Les niveaux ${target} ont été réinitialisés`)
+                        ]
+                    })
+                    .catch(() => {});
+            },
+            random({ max: 6, min: 3 }) * 1000
+        );
     }
     if (cmd === 'ajouter') {
         const user = options.getUser('membre');
@@ -426,22 +429,25 @@ export default new AmethystCommand({
             guild_id: interaction.guild.id
         });
 
-        setTimeout(() => {
-            interaction
-                .editReply({
-                    embeds: [
-                        basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Ajout de niveaux')
-                            .setDescription(
-                                `${numerize(amount)} ${strType}${plurial(amount, {
-                                    singular: ' a été ajouté',
-                                    plurial: plurialSuffix + ' ont été ajoutés'
-                                })} à ${user}`
-                            )
-                    ],
-                    components: []
-                })
-                .catch(() => {});
-        }, random({ max: 5, min: 2 }) * 1000);
+        setTimeout(
+            () => {
+                interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user, { draverColor: true })
+                                .setTitle('Ajout de niveaux')
+                                .setDescription(
+                                    `${numerize(amount)} ${strType}${plurial(amount, {
+                                        singular: ' a été ajouté',
+                                        plurial: plurialSuffix + ' ont été ajoutés'
+                                    })} à ${user}`
+                                )
+                        ],
+                        components: []
+                    })
+                    .catch(() => {});
+            },
+            random({ max: 5, min: 2 }) * 1000
+        );
     }
 });

@@ -49,7 +49,8 @@ export enum modActionType {
     Censor = 'Censuration',
     Tempban = 'Bannissement temporaire',
     Nuke = 'Nettoyage de salon',
-    Demote = 'Destitution'
+    Demote = 'Destitution',
+    DeleteReward = 'Suppression de récompense de niveau'
 }
 
 export type modlogs = {
@@ -205,7 +206,8 @@ export enum DatabaseTables {
     Plugboards = 'plugboards',
     Tasks = 'tasks',
     RoleReacts = 'roleReacts',
-    LevelsList = 'levellists'
+    LevelsList = 'levellists',
+    LevelsRewards = 'levelsrewards'
 }
 export type coupons = {
     guild_id: string;
@@ -323,5 +325,13 @@ export type tasks<Raw extends boolean = false> = {
     deadline: If<Raw, string, number | null>;
     channel_id: string;
     message_id: string;
+    id: number;
+};
+export type levelRewardType = 'role' | 'coins';
+export type levelRewards = {
+    guild_id: string;
+    type: levelRewardType;
+    level: number;
+    value: string;
     id: number;
 };

@@ -1,4 +1,4 @@
-import { waitForInteraction } from 'amethystjs';
+import { log4js, waitForInteraction } from 'amethystjs';
 import {
     APIMessageComponentEmoji,
     ActionRowBuilder,
@@ -641,6 +641,12 @@ export const paginatorize = <T extends any[], K extends ElementType<T>>({
         mapper(embeds[embeds.length - 1], v);
     });
 
+    if (array.length === 1) {
+        systemReply(interaction, {
+            embeds: embeds
+        }).catch(log4js.trace);
+        return;
+    }
     pagination({
         interaction,
         time,

@@ -80,3 +80,8 @@ export enum ChannelMoveSens {
     Up = 'channel.move.up',
     Down = 'channel.move.down'
 }
+export enum RewardsFilter {
+    All = 'cmd.rewards.level.filter.all',
+    Coins = 'cmd.rewards.level.filter.coins',
+    Role = 'cmd.rewards.level.filter.role'
+}

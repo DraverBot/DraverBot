@@ -47,13 +47,12 @@ export default new Process(
                     return resolve('cancel');
                 }
 
-                const channel =
-                    message.mentions?.channels?.first() ??
+                const channel = (message.mentions?.channels?.first() ??
                     message.guild.channels.cache.find((x) => x?.name.toLowerCase() === message.content.toLowerCase()) ??
                     message.guild.channels.cache.get(message.content) ??
-                    /\d{16,18}/.test(message.content)
+                    (/^\d{16,18}$/.test(message.content)
                         ? await message.guild.channels.fetch(message.content).catch(log4js.trace)
-                        : null;
+                        : null)) as GuildBasedChannel;
 
                 if (!channel)
                     return SendAndDelete.process(

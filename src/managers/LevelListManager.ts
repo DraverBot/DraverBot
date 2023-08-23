@@ -73,7 +73,8 @@ export class LevelsListManager {
         const data = this.getLists(guild);
 
         if (data.bl.length > 0) return 'bl';
-        return 'wl';
+        if (data.wl.length > 0) return 'wl';
+        return null;
     }
 
     private buildQuery(id: string) {

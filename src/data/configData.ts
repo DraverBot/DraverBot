@@ -19,6 +19,7 @@ export type configKeys = {
     mention_message: boolean;
     task_channel: string;
     task_enable: boolean;
+    level_rewards: boolean;
 };
 export type configType = {
     description: string;
@@ -177,6 +178,13 @@ export const configsData: Record<keyof configKeys, configType> = {
         name: 'Tâches activées',
         description: 'Définit si les tâches sont utilisables sur le serveur',
         value: 'task_enable',
+        default: false,
+        type: 'boolean'
+    },
+    level_rewards: {
+        name: 'Récompenses de niveau',
+        description: 'Active les récompenses de niveaux',
+        value: 'level_rewards',
         default: false,
         type: 'boolean'
     }

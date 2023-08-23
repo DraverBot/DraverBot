@@ -1,5 +1,6 @@
 import { Guild, If, TextChannel, User } from 'discord.js';
 import { commandName } from './functions';
+import { levelRewardType } from './database';
 
 export type IfNot<Condition extends boolean, A, B = null> = Condition extends false
     ? A
@@ -105,4 +106,11 @@ export type levelsList<Raw extends boolean = false> = {
     guild_id: string;
     wl: If<Raw, string, string[]>;
     bl: If<Raw, string, string[]>;
+};
+export type levelReward<T extends levelRewardType> = {
+    guild_id: string;
+    level: number;
+    value: T extends 'coins' ? number : string;
+    type: T;
+    id: number;
 };
