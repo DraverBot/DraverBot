@@ -207,7 +207,8 @@ export enum DatabaseTables {
     Tasks = 'tasks',
     RoleReacts = 'roleReacts',
     LevelsList = 'levellists',
-    LevelsRewards = 'levelsrewards'
+    LevelsRewards = 'levelsrewards',
+    TempChannels = 'temp_channels'
 }
 export type coupons = {
     guild_id: string;
@@ -334,4 +335,14 @@ export type levelRewards = {
     level: number;
     value: string;
     id: number;
+};
+export type tempChannelType = 'panel' | 'channel';
+export type tempChannels = {
+    guild_id: string;
+    id: number;
+    user_id: string;
+    channel_id: string;
+    type: tempChannelType;
+    parent: string;
+    name: string;
 };

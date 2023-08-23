@@ -57,5 +57,6 @@
     "autorole": "administration",
     "statistiques": "fun",
     "météo": "utils",
-    "récompenses": "config"
+    "récompenses": "config",
+    "salons-temporaires": "config"
 }

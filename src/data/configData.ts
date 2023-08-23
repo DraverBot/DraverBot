@@ -22,6 +22,7 @@ export type configKeys = {
     level_rewards: boolean;
     voice_role: string;
     voice_role_enabled: boolean;
+    temp_channels: boolean;
 };
 export type configType = {
     description: string;
@@ -207,5 +208,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: false,
         type: 'boolean',
         value: 'voice_role_enabled'
+    },
+    temp_channels: {
+        name: 'Salons temporaires',
+        description: 'Active les salons temporaires',
+        default: false,
+        type: 'boolean',
+        value: 'temp_channels'
     }
 };
