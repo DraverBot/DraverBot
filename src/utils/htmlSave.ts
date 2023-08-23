@@ -186,11 +186,11 @@ export default function save(messages: Collection<string, Message<true>>, custom
                             ? message.guild.members?.me?.displayHexColor
                             : message.member?.displayHexColor ?? '#ffffff'
                     }">${message.member?.nickname ?? message.author.username}</span>${
-            message.author.bot
-                ? `
+                        message.author.bot
+                            ? `
                     <span class="botTag"> <span class="botText">BOT</span></span>`
-                : ''
-        }
+                            : ''
+                    }
                     <span class="timestamp_header">${moment(message.createdTimestamp).calendar()}</span>
                 </h2>
                 <div class="messageContent">${messageContent}</div>

@@ -20,7 +20,7 @@ export class PasswordManager {
                 const shiftIndex = this.chars.indexOf(key[j]);
                 const shiftedChar =
                     // eslint-disable-next-line prettier/prettier
-                    this.chars[(charIndex + (shiftIndex * this.calculatePropreties(key).valueSens)) % this.chars.length];
+                    this.chars[(charIndex + shiftIndex * this.calculatePropreties(key).valueSens) % this.chars.length];
                 crypted += shiftedChar;
             }
 
@@ -56,7 +56,7 @@ export class PasswordManager {
                 const shiftedChar =
                     this.chars[
                         // eslint-disable-next-line prettier/prettier
-                        (charIndex - (shiftIndex * this.calculatePropreties(key).valueSens) + this.chars.length) %
+                        (charIndex - shiftIndex * this.calculatePropreties(key).valueSens + this.chars.length) %
                             this.chars.length
                     ];
                 crypted += shiftedChar;

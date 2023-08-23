@@ -71,7 +71,7 @@ export default new AmethystCommand({
 
         const value = res[0];
 
-        const base = (datas: typeof value['current'] | typeof value['forecast'][0]) =>
+        const base = (datas: (typeof value)['current'] | (typeof value)['forecast'][0]) =>
             basicEmbed(interaction.user, { draverColor: true })
                 .setTitle(`Météo - ${value.location.name}`)
                 .setDescription(`Prévisions pour le ${datas.day} ${datas.date.split('-')[2]}`);
@@ -91,7 +91,7 @@ export default new AmethystCommand({
             ...value.forecast
                 .slice(0, 3)
                 .map((x) =>
-                    base(x as typeof value['forecast'][0]).setDescription(
+                    base(x as (typeof value)['forecast'][0]).setDescription(
                         `${base(x as any).data.description}\n\n**Temps :** ${x.skytextday}\n**Maximum :** ${
                             x.high
                         } °${degrees}\n**Minimum :** ${x.low} °${degrees}\n**Précipitations :** ${x.precip}%`
