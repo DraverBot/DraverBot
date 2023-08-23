@@ -72,7 +72,7 @@ export class ConfigsManager {
     private buildColomn(key: keyof configKeys) {
         const data = configsData[key];
 
-        if (data.type === 'channel') return `${data.value} VARCHAR(255) NOT NULL DEFAULT ''`;
+        if (data.type === 'channel' || data.type === 'role') return `${data.value} VARCHAR(255) NOT NULL DEFAULT ''`;
         if (data.type === 'boolean')
             return `${data.value} TINYINT(1) NOT NULL DEFAULT '${boolDb(data.default as boolean)}'`;
         if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;

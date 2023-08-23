@@ -7,6 +7,7 @@ import {
     Message,
     ModalBuilder,
     ModalSubmitInteraction,
+    Role,
     TextChannel,
     TextInputBuilder,
     TextInputStyle
@@ -18,11 +19,13 @@ import {
     basicEmbed,
     buildButton,
     capitalize,
+    checkRolePosition,
     confirm,
     evokerColor,
     notNull,
     numerize,
     pingChan,
+    pingRole,
     plurial,
     row,
     subcmd
@@ -301,6 +304,84 @@ export default new AmethystCommand({
                     .catch(() => {});
 
             value = channel.id;
+        } else if (parameter.type === 'role') {
+            (await interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user)
+                            .setTitle('Rôle')
+                            .setDescription(
+                                `Vous êtes en train de configurer le paramètre **${parameter.name}**.\nQuel est le rôle que vous souhaiter assigner à ce paramètre ?\n\n> Répondez par un nom, un identifiant ou une mention\n> Répondez par \`cancel\` pour annuler`
+                            )
+                            .setColor('Grey')
+                    ],
+                    fetchReply: true
+                })
+                .catch(() => {})) as Message<true>;
+
+            const reply = await waitForMessage({
+                channel: interaction.channel as TextChannel,
+                user: interaction.user
+            }).catch(() => {});
+
+            if (!reply || reply.content.toLowerCase() === 'cancel')
+                return interaction
+                    .editReply({
+                        embeds: [replies.cancel()]
+                    })
+                    .catch(() => {});
+
+            const role = (reply.mentions.roles?.first() ??
+                interaction.guild.roles.cache.get(reply.content.split(' ')[0]) ??
+                interaction.guild.roles.cache.find((x) =>
+                    x.name.toLowerCase().includes(reply.content.toLowerCase())
+                )) as Role;
+
+            reply.delete().catch(() => {});
+
+            if (!role)
+                return interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Rôle invalide')
+                                .setDescription(
+                                    `Aucun rôle n'a été trouvé, réessayez avec un identifiant, un nom ou une mention`
+                                )
+                                .setColor(evokerColor(interaction.guild))
+                        ]
+                    })
+                    .catch(() => {});
+            if (
+                !checkRolePosition({
+                    respond: true,
+                    interaction,
+                    ephemeral: false,
+                    role,
+                    member: interaction.member as GuildMember
+                })
+            )
+                return;
+
+            const confirmation = (await confirm({
+                interaction,
+                user: interaction.user,
+                embed: basicEmbed(interaction.user)
+                    .setTitle('Confirmation')
+                    .setDescription(
+                        `Vous allez configurer le paramètre **${parameter.name}** sur le rôle ${pingRole(role)}`
+                    )
+            }).catch(() => {})) as confirmReturn;
+
+            if (confirmation === 'cancel' || !confirmation?.value)
+                return interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(() => {});
+
+            value = role.id;
         } else {
             throw new Error('Unhandled class: ' + parameter.type);
         }
@@ -319,6 +400,8 @@ export default new AmethystCommand({
                             `Le paramètre **${parameter.name}** a été configuré sur ${
                                 parameter.type === 'channel'
                                     ? pingChan(value as string)
+                                    : parameter.type === 'role'
+                                    ? pingRole(value as string)
                                     : parameter.type === 'boolean'
                                     ? value
                                         ? 'activé'
@@ -365,6 +448,7 @@ export default new AmethystCommand({
                 const mapping: Record<configOptionType, number> = {
                     boolean: 0,
                     channel: 1,
+                    role: 1,
                     number: 2,
                     string: -1
                 };

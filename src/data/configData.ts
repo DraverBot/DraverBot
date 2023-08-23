@@ -1,4 +1,4 @@
-export type configOptionType = 'string' | 'number' | 'channel' | 'boolean';
+export type configOptionType = 'string' | 'number' | 'channel' | 'boolean' | 'role';
 export type configKeys = {
     logs_enable: boolean;
     logs_channel: string;
@@ -20,6 +20,8 @@ export type configKeys = {
     task_channel: string;
     task_enable: boolean;
     level_rewards: boolean;
+    voice_role: string;
+    voice_role_enabled: boolean;
 };
 export type configType = {
     description: string;
@@ -45,6 +47,10 @@ export const configsTypeData: Record<configOptionType, { name: string; descripti
     channel: {
         name: 'salon',
         description: 'Salon'
+    },
+    role: {
+        name: 'rôle',
+        description: 'Rôle du serveur'
     }
 };
 export const configsData: Record<keyof configKeys, configType> = {
@@ -187,5 +193,19 @@ export const configsData: Record<keyof configKeys, configType> = {
         value: 'level_rewards',
         default: false,
         type: 'boolean'
+    },
+    voice_role: {
+        name: 'Rôle vocal',
+        description: 'Rôle attribué aux membres en vocal',
+        default: null,
+        value: 'voice_role',
+        type: 'role'
+    },
+    voice_role_enabled: {
+        name: 'Système de rôle vocal',
+        description: 'Active les rôles vocaux',
+        default: false,
+        type: 'boolean',
+        value: 'voice_role_enabled'
     }
 };
