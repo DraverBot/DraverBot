@@ -10,6 +10,7 @@
 		"amethystjs": "^1.6.1",
 		"axios": "^1.4.0",
 		"blagues-api": "^2.1.0",
+		"canvas": "^2.11.2",
 		"coins-manager": "^1.0.7",
 		"discord.js": "^14.11.0",
 		"discordjs-giveaways": "^1.4.2",

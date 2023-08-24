@@ -1,9 +1,10 @@
-import { AmethystEvent } from 'amethystjs';
+import { AmethystEvent, log4js } from 'amethystjs';
 import { replaceFluxVariables } from '../utils/vars';
-import { TextChannel } from 'discord.js';
+import { AttachmentBuilder, TextChannel } from 'discord.js';
 import query from '../utils/query';
 import { DatabaseTables, joinRoles } from '../typings/database';
 import { addModLog, basicEmbed, evokerColor, sendError } from '../utils/toolbox';
+import { createCanvas, loadImage } from 'canvas';
 
 export default new AmethystEvent('guildMemberAdd', async (member) => {
     const guild = member.guild;
@@ -75,6 +76,51 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
         member,
         guild
     });
+    const attachments = [];
+    const img = guild.client.configsManager.getValue(guild.id, 'welcome_image') as Buffer;
+    if (!!img) {
+        const image = await loadImage(img).catch(log4js.trace);
+        const pp = await loadImage(
+            member.user.displayAvatarURL({ forceStatic: true, extension: 'jpg', size: 4096 })
+        ).catch(log4js.trace);
 
-    (channel as TextChannel).send(msg).catch(sendError);
+        if (!!image && !!pp) {
+            const canvas = createCanvas(image.width, image.height);
+            const ctx = canvas.getContext('2d');
+
+            ctx.drawImage(image, 0, 0);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const avatarSize = (guild.client.configsManager.getValue(guild.id, 'welcome_image_radius') as number) - 2;
+
+            if (avatarSize > 0) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, avatarSize + 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, avatarSize, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+
+                const ppX = centerX - avatarSize;
+                const ppY = centerY - avatarSize;
+                const ppDiameter = avatarSize * 2;
+
+                ctx.drawImage(pp, ppX, ppY, ppDiameter, ppDiameter);
+
+                attachments.push(new AttachmentBuilder(canvas.toBuffer(), { name: 'welcome.png' }));
+            }
+        }
+    }
+
+    (channel as TextChannel)
+        .send({
+            content: msg,
+            files: attachments
+        })
+        .catch(sendError);
 });

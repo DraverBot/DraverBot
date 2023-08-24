@@ -10,7 +10,7 @@ export class ConfigsManager {
     constructor() {
         this.start();
     }
-    public getValue<T extends string | number | boolean = string | number | boolean>(
+    public getValue<T extends string | number | boolean | Buffer = string | number | boolean | Buffer>(
         guild_id: string,
         config: keyof configs
     ): T {
@@ -23,15 +23,20 @@ export class ConfigsManager {
         config: T,
         value: configKeys[T]
     ): Promise<configs> {
+        const exists = this._cache.has(guild_id);
         const data = this._cache.get(guild_id) ?? this.getDefaultValue(guild_id);
         data[config] = value as string;
 
         this._cache.set(data.guild_id, data);
-        await query(this.buildQuery(guild_id));
+        await query(this.buildQuery({ guild_id, value, key: config, exists }), this.isBlob(config) ? [value] : []);
 
         return data;
     }
 
+    private isBlob(key: keyof configKeys) {
+        const blobs = Object.keys(configsData).filter((x: keyof typeof configsData) => configsData[x].type === 'image');
+        return blobs.includes(key);
+    }
     private getDefaultValue(id: string): configs {
         const datas = {} as configs;
         Object.keys(configsData).forEach((key: keyof configKeys) => {
@@ -41,15 +46,44 @@ export class ConfigsManager {
         datas.guild_id = id;
         return datas;
     }
-    private buildQuery(guild_id: string) {
+    private buildQuery({
+        guild_id,
+        value,
+        key,
+        exists
+    }: {
+        guild_id: string;
+        value: Buffer | string | number | boolean;
+        key: keyof configKeys;
+        exists: boolean;
+    }) {
+        const transform = (x: Buffer | string | number | boolean) =>
+            typeof x === 'boolean'
+                ? `'${boolDb(x)}'`
+                : typeof x === 'object'
+                ? `"${sqliseString((x as Buffer).toString())}"`
+                : `"${sqliseString(x as string)}"`;
         const datas = this._cache.get(guild_id);
+
+        if (exists) {
+            return `UPDATE configs SET ${key}=${
+                this.isBlob(key) ? '?' : transform(value)
+            } WHERE guild_id='${guild_id}'`;
+        }
+
+        const process = this.isBlob(key);
+        let targetIndex: number;
 
         return `REPLACE INTO configs (${Object.keys(datas)
             .filter((x) => notNull(datas[x]))
+            .map((x, i) => {
+                if (x === key) targetIndex = i;
+                return x;
+            })
             .join(', ')}) VALUES (${Object.keys(datas)
             .map((x) => datas[x])
             .filter((x) => notNull(x))
-            .map((x) => `"${typeof x === 'boolean' ? boolDb(x) : `${sqliseString(x)}`}"`)
+            .map((x, i) => (process && i === targetIndex ? '?' : transform(x)))
             .join(', ')})`;
     }
     private async start() {
@@ -63,8 +97,20 @@ export class ConfigsManager {
             const datas = await query<configs>(`SELECT * FROM configs`);
             this._cache.clear();
 
+            const blobs = Object.keys(configsData).filter(
+                (x: keyof typeof configsData) => configsData[x].type === 'image'
+            );
+
             for (const data of datas) {
-                this._cache.set(data.guild_id, data);
+                const treats = {};
+                blobs.forEach((x) => {
+                    treats[x] = data[x];
+                });
+
+                this._cache.set(data.guild_id, {
+                    ...data,
+                    ...treats
+                });
             }
             resolve(true);
         });
@@ -76,6 +122,7 @@ export class ConfigsManager {
         if (data.type === 'boolean')
             return `${data.value} TINYINT(1) NOT NULL DEFAULT '${boolDb(data.default as boolean)}'`;
         if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;
+        if (data.type === 'image') return `${data.value} MEDIUMBLOB NOT NULL DEFAULT ''`;
         if (data.type === 'string')
             return `${data.value} VARCHAR(255) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
     }

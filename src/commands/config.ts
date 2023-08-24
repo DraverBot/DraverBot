@@ -1,6 +1,7 @@
-import { AmethystCommand, preconditions, waitForMessage } from 'amethystjs';
+import { AmethystCommand, log4js, preconditions, waitForMessage } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
+    AttachmentBuilder,
     BaseChannel,
     ChannelType,
     GuildMember,
@@ -31,6 +32,7 @@ import {
     subcmd
 } from '../utils/toolbox';
 import { variableName, variablesData, variablesGroupNames } from '../data/vars';
+import GetImage from '../process/GetImage';
 
 export default new AmethystCommand({
     name: 'configurer',
@@ -121,7 +123,7 @@ export default new AmethystCommand({
     if (subcommand === 'paramètre') {
         const parameter = configsData[options.getString('paramètre') as keyof configKeys] as configType;
 
-        let value: string | number | boolean = '';
+        let value: string | number | boolean | Buffer = '';
 
         if (parameter.type === 'boolean') {
             const reply = (await confirm({
@@ -382,6 +384,42 @@ export default new AmethystCommand({
                     .catch(() => {});
 
             value = role.id;
+        } else if (parameter.type === 'image') {
+            const image = await GetImage.process({
+                user: interaction.user,
+                interaction,
+                embed: basicEmbed(interaction.user, { questionMark: true })
+                    .setTitle(`Image`)
+                    .setDescription(
+                        `Vous configurez **${parameter.name}**.\nEnvoyez une image dans le salon, dont les dimensions sont, au maximum, **1100 par 700 pixels**, et elle ne doit pas dépasser 1Mo\n\n> Vous avez deux minutes\n> Répondez par \`cancel\` pour annuler`
+                    )
+            }).catch(log4js.trace);
+
+            if (!image || image === 'cancel')
+                return interaction
+                    .editReply({
+                        embeds: [replies.cancel()]
+                    })
+                    .catch(log4js.trace);
+
+            const confirmation = (await confirm({
+                interaction,
+                user: interaction.user,
+                embed: basicEmbed(interaction.user)
+                    .setTitle('Confirmation')
+                    .setDescription(`Vous allez configurer le paramètre **${parameter.name}** sur cette image`)
+                    .setImage(image.url)
+            }).catch(() => {})) as confirmReturn;
+
+            if (confirmation === 'cancel' || !confirmation?.value)
+                return interaction
+                    .editReply({
+                        embeds: [replies.cancel()],
+                        components: []
+                    })
+                    .catch(() => {});
+
+            value = image.buffer;
         } else {
             throw new Error('Unhandled class: ' + parameter.type);
         }
@@ -389,8 +427,12 @@ export default new AmethystCommand({
         interaction.client.configsManager.setValue(
             interaction.guild.id,
             parameter.value,
-            typeof value === 'boolean' ? value : value.toString()
+            typeof ['boolean', 'image'].includes(parameter.type) ? value : value.toString()
         );
+        const attachments = [parameter.type === 'image' ? new AttachmentBuilder(value as Buffer) : null].filter(
+            notNull
+        );
+
         interaction
             .editReply({
                 embeds: [
@@ -402,15 +444,22 @@ export default new AmethystCommand({
                                     ? pingChan(value as string)
                                     : parameter.type === 'role'
                                     ? pingRole(value as string)
+                                    : parameter.type === 'image'
+                                    ? 'cette image'
                                     : parameter.type === 'boolean'
                                     ? value
                                         ? 'activé'
                                         : 'désactivé'
                                     : '```' + value + '```'
+                            }${
+                                parameter.value.includes('radius')
+                                    ? `\n⚠️\n> Si le rayon que vous avez définit est trop grand, l'image ne sera pas envoyée`
+                                    : ''
                             }`
                         )
                 ],
-                components: []
+                components: [],
+                files: attachments
             })
             .catch(() => {});
     }
@@ -419,6 +468,25 @@ export default new AmethystCommand({
 
         if (parameter) {
             const value = interaction.client.configsManager.getValue(interaction.guild.id, parameter.value);
+            if (parameter.type === 'image') {
+                if (!value)
+                    return interaction
+                        .reply({
+                            embeds: [
+                                basicEmbed(interaction.user, { evoker: interaction.guild })
+                                    .setTitle('Image non configurée')
+                                    .setDescription(`Ce paramètre n'est pas configuré`)
+                            ],
+                            ephemeral: true
+                        })
+                        .catch(log4js.trace);
+
+                return interaction
+                    .reply({
+                        files: [new AttachmentBuilder(value as Buffer)]
+                    })
+                    .catch(log4js.trace);
+            }
             return interaction.reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
@@ -444,13 +512,15 @@ export default new AmethystCommand({
 
         const embeds = [embed()];
         Object.keys(configsData)
+            .filter((x: keyof configKeys) => configsData[x].type !== 'image')
             .sort((a: keyof configKeys, b: keyof configKeys) => {
                 const mapping: Record<configOptionType, number> = {
                     boolean: 0,
                     channel: 1,
                     role: 1,
                     number: 2,
-                    string: -1
+                    string: -1,
+                    image: -2
                 };
 
                 return mapping[a] - mapping[b];

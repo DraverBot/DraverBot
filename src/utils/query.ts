@@ -1,4 +1,4 @@
-import { createConnection } from 'mysql';
+import { MysqlError, createConnection } from 'mysql';
 import { config } from 'dotenv';
 import { DefaultQueryResult, QueryResult } from '../typings/database';
 import { EmbedBuilder, WebhookClient } from 'discord.js';
@@ -17,7 +17,7 @@ database.connect((error) => {
     }
 });
 
-export default function <T = DefaultQueryResult>(query: string): Promise<QueryResult<T>> {
+export default function <T = DefaultQueryResult>(query: string, parameters?: any[]): Promise<QueryResult<T>> {
     const id = logs.length;
     logs.push({
         id: id,
@@ -27,7 +27,7 @@ export default function <T = DefaultQueryResult>(query: string): Promise<QueryRe
     writeFileSync(`./dist/data/sqllogs.json`, JSON.stringify(logs));
 
     return new Promise((resolve, reject) => {
-        database.query(query, (error, request) => {
+        const callback = (error: MysqlError, request: QueryResult<T>) => {
             const data = {
                 ...(logs as sqlLog<false>[]).find((x) => x.id === id),
                 endate: Date.now(),
@@ -64,6 +64,11 @@ export default function <T = DefaultQueryResult>(query: string): Promise<QueryRe
                 }
             }
             resolve(request);
-        });
+        };
+        if (!!parameters && parameters.length > 0) {
+            database.query(query, parameters, callback);
+        } else {
+            database.query(query, callback);
+        }
     });
 }

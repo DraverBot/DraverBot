@@ -1,4 +1,4 @@
-export type configOptionType = 'string' | 'number' | 'channel' | 'boolean' | 'role';
+export type configOptionType = 'string' | 'number' | 'channel' | 'boolean' | 'role' | 'image';
 export type configKeys = {
     logs_enable: boolean;
     logs_channel: string;
@@ -23,6 +23,10 @@ export type configKeys = {
     voice_role: string;
     voice_role_enabled: boolean;
     temp_channels: boolean;
+    welcome_image: Buffer;
+    welcome_image_radius: number;
+    leave_image: Buffer;
+    leave_image_radius: number;
 };
 export type configType = {
     description: string;
@@ -52,6 +56,10 @@ export const configsTypeData: Record<configOptionType, { name: string; descripti
     role: {
         name: 'rôle',
         description: 'Rôle du serveur'
+    },
+    image: {
+        name: 'image',
+        description: 'Une image'
     }
 };
 export const configsData: Record<keyof configKeys, configType> = {
@@ -215,5 +223,33 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: false,
         type: 'boolean',
         value: 'temp_channels'
+    },
+    welcome_image: {
+        name: 'Image de bienvenue',
+        description: "L'image de bienvenue du serveur",
+        default: null,
+        type: 'image',
+        value: 'welcome_image'
+    },
+    welcome_image_radius: {
+        name: "Rayon avatar de l'image de bienvenue",
+        description: "Rayon de l'avatar de la photo de profil de l'image de bienvenue",
+        default: 100,
+        type: 'number',
+        value: 'welcome_image_radius'
+    },
+    leave_image: {
+        name: 'Image de départ',
+        description: "L'image de départ du serveur",
+        default: null,
+        type: 'image',
+        value: 'leave_image'
+    },
+    leave_image_radius: {
+        name: "Rayon avatar de l'image de départ",
+        description: "Rayon de l'avatar de la photo de profil de l'image de départ",
+        default: 100,
+        type: 'number',
+        value: 'leave_image_radius'
     }
 };

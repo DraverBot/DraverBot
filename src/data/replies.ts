@@ -553,7 +553,21 @@ const replies = {
                 } contient des caractères que je peux pas chiffrer.\nAssurez-vous que ${
                     opts?.test === 'key' ? 'la clé' : 'votre message'
                 } contienne uniquement ces caractères :\n\`\`\`${opts?.letters ?? inputLetters()}\`\`\``
-            )
+            ),
+    askImage: (user: User, dimens: { height: number; width: number }) =>
+        basic(user, { questionMark: true })
+            .setTitle('Image')
+            .setDescription(
+                `Envoyez une image dans le chat, de dimensions au maximum de ${dimens.width} par ${dimens.height} pixels et de 1Mo au maximum\nRépondez par \`cancel\` pour annuler`
+            ),
+    noImage: (user: anyUser) =>
+        userMember(user).setTitle("Pas d'image").setDescription(`Vous n'avez pas envoyé d'image dans votre message`),
+    invalidDimens: (user: anyUser, { width, height }: { height: number; width: number }) =>
+        userMember(user)
+            .setTitle('Image invalide')
+            .setDescription(`Veuillez envoyer une image au maximum de ${width} par ${height} pixels`),
+    imageToLarge: (user: anyUser) =>
+        userMember(user).setTitle('Image trop grande').setDescription(`Votre image ne doit pas dépasser **1 Mo**`)
 };
 
 export type replyKey = keyof typeof replies;
