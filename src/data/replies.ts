@@ -26,6 +26,7 @@ import {
     random,
     resizeString
 } from '../utils/toolbox';
+import { inputLetters } from '../utils/ciphers';
 import { color } from '../utils/functions';
 import modules from '../maps/modules';
 import { configKeys, configsData } from './configData';
@@ -542,7 +543,17 @@ const replies = {
     configDisabled: (user: anyUser, config: keyof configKeys) =>
         userMember(user)
             .setTitle('Paramètre désactivé')
-            .setDescription(`Le paramètre **${configsData[config].name}** est désactivé`)
+            .setDescription(`Le paramètre **${configsData[config].name}** est désactivé`),
+    invalidInput: (user: anyUser, opts?: { test?: 'key'; letters?: string }) =>
+        userMember(user)
+            .setTitle(`${opts?.test === 'key' ? 'Clé' : 'Message'} invalide`)
+            .setDescription(
+                `Je ne peux pas chiffrer ce message, car ${
+                    opts?.test === 'key' ? 'la clé' : 'il'
+                } contient des caractères que je peux pas chiffrer.\nAssurez-vous que ${
+                    opts?.test === 'key' ? 'la clé' : 'votre message'
+                } contienne uniquement ces caractères :\n\`\`\`${opts?.letters ?? inputLetters()}\`\`\``
+            )
 };
 
 export type replyKey = keyof typeof replies;
