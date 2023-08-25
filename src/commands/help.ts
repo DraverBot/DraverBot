@@ -308,7 +308,9 @@ export default new AmethystCommand({
                         },
                         {
                             name: 'Projets associés',
-                            value: `[Lofi Girl](${util('lofiGirl')})`,
+                            value: `[Lofi Girl](${util('lofiGirl')})\n[Bender Protect](${util(
+                                'benderProtect'
+                            )})\n[Audioli](${util('audioli')})`,
                             inline: true
                         },
                         {
