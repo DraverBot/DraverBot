@@ -33,3 +33,9 @@ export enum ButtonIds {
     LevelPurgeList = 'cmd.level.list.purge',
     LevelListSwap = 'cmd.level.list.swap'
 }
+import { ButtonBuilder } from 'discord.js';
+
+export type buttonsInputData = {
+    participate?: (customId: string) => ButtonBuilder;
+    cancelParticipation?: (customId: string) => ButtonBuilder;
+};

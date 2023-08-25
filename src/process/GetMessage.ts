@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, MessageCreateOptions, TextChannel, User } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, Message, MessageCreateOptions, TextChannel, User } from 'discord.js';
 import { Process } from '../structures/Process';
 import { basicEmbed } from '../utils/toolbox';
 import { log4js } from 'amethystjs';
@@ -13,7 +13,7 @@ export default new Process(
         time = 300000,
         checks = { channel: [], message: [] }
     }: {
-        interaction: CommandInteraction;
+        interaction: CommandInteraction | ButtonInteraction;
         user: User;
         allowCancel?: boolean;
         time?: number;

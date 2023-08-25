@@ -1,7 +1,8 @@
-import { buttonsInputData, embedsInputData } from 'discordjs-giveaways';
 import { buildButton, displayDate, numerize, pingRole, pingUser, plurial } from '../utils/toolbox';
 import { EmbedBuilder } from 'discord.js';
 import { util } from '../utils/functions';
+import { embedsInputData } from '../typings/embeds';
+import { buttonsInputData } from '../typings/buttons';
 
 const thisGw = (url: string) => `[**ce giveaway**](${url})`;
 
@@ -23,6 +24,20 @@ export const giveawayEmbeds: embedsInputData = {
             .setTimestamp()
             .setColor(util('accentColor'));
 
+        if (data.required_invitations && data.required_invitations > 0) {
+            embed.addFields({
+                name: 'Invitations',
+                value: `${numerize(data.required_invitations)} invitation${plurial(data.required_invitations)}`,
+                inline: true
+            });
+        }
+        if (data.required_level && data.required_level > 0) {
+            embed.addFields({
+                name: 'Niveau',
+                value: `Niveau ${numerize(data.required_level)} minimum`,
+                inline: true
+            });
+        }
         if (data.bonus_roles && data.bonus_roles.length > 0) {
             embed.addFields({
                 name: 'Rôles bonus',
@@ -128,6 +143,26 @@ export const giveawayEmbeds: embedsInputData = {
                               plurial: 's sont'
                           })} ${winners.map(pingUser).join(' ')}`
                         : "Il n'y a pas de gagnants")
+            )
+            .setColor('#ff0000');
+    },
+    notEnoughInvitations: (invitations: number, url: string) => {
+        return new EmbedBuilder()
+            .setTitle('Invitations')
+            .setDescription(
+                `Vous ne pouvez pas participer à ${thisGw(url)}, car vous n'avez pas assez d'invitations ( **${numerize(
+                    invitations
+                )}** nécessaire${plurial(invitations)} )`
+            )
+            .setColor('#ff0000');
+    },
+    notEnoughLevel: (level: number, url: string) => {
+        return new EmbedBuilder()
+            .setTitle('Niveau')
+            .setDescription(
+                `Vous ne pouvez pas participer à ${thisGw(url)}, car vous n'avez pas assez de niveaux ( **${numerize(
+                    level
+                )}** nécessaire${plurial(level)} )`
             )
             .setColor('#ff0000');
     }

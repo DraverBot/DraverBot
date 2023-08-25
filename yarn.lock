@@ -1009,7 +1009,7 @@ discord-api-types@0.37.50:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.50.tgz#6059eb8c0b784ad8194655a8b8b7f540fcfac428"
   integrity sha512-X4CDiMnDbA3s3RaUXWXmgAIbY1uxab3fqe3qwzg5XutR3wjqi7M3IkgQbsIBzpqBN2YWr/Qdv7JrFRqSgb4TFg==
 
-discord.js@^14.11.0, discord.js@^14.8.0, discord.js@^14.9.0:
+discord.js@^14.11.0, discord.js@^14.8.0:
   version "14.13.0"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-14.13.0.tgz#e7a00bdba70adb9e266a06884ca1acaf9a0b5c20"
   integrity sha512-Kufdvg7fpyTEwANGy9x7i4od4yu5c6gVddGi5CKm4Y5a6sF0VBODObI3o0Bh7TGCj0LfNT8Qp8z04wnLFzgnbA==
@@ -1028,16 +1028,6 @@ discord.js@^14.11.0, discord.js@^14.8.0, discord.js@^14.9.0:
     tslib "^2.6.1"
     undici "5.22.1"
     ws "^8.13.0"
-
-discordjs-giveaways@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/discordjs-giveaways/-/discordjs-giveaways-1.4.2.tgz#a0cc664117b554cb084cfa7c1fa1b60defd555ac"
-  integrity sha512-+l9u5wBTuYKIFHoPQdJgSYgdxhKWm1mhlI2Ixi6RiZ/JrN8FzwuygK91SV92untHqez1+qUDsn4JFf3wMbY9pg==
-  dependencies:
-    discord.js "^14.9.0"
-    easy-json-database "^1.5.0"
-    fs "^0.0.1-security"
-    mysql "^2.18.1"
 
 doctrine@^3.0.0:
   version "3.0.0"
@@ -1062,11 +1052,6 @@ eastasianwidth@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
-
-easy-json-database@^1.5.0:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/easy-json-database/-/easy-json-database-1.5.1.tgz#47d8aec6d05d4715f60c7dc1de33ade180c9fd7f"
-  integrity sha512-6w+DUmOPT6l+jhq8pxyjlDYtYpl8Ni80sNcESiu4TjzL8YB75s65dBk1j+XP4RbRRZn3z0U4/seWoDRQC+GRLA==
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"

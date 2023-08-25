@@ -33,12 +33,13 @@ import {
     subcmd
 } from '../utils/toolbox';
 import ms from 'ms';
-import { Giveaway, giveawayInput } from 'discordjs-giveaways';
 import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
 import { getRolePerm, util } from '../utils/functions';
 import { GWListType } from '../typings/commands';
 import { confirmReturn } from '../typings/functions';
+import { giveaway, giveawayInput } from '../typings/giveaway';
+import SendAndDelete from '../process/SendAndDelete';
 
 export default new AmethystCommand({
     name: 'giveaway',
@@ -94,6 +95,20 @@ export default new AmethystCommand({
                     description: 'Identifiants des rôles interdits (séparés par des espaces)',
                     required: false,
                     type: ApplicationCommandOptionType.String
+                },
+                {
+                    name: 'niveau',
+                    description: 'Niveau minimum pour participer',
+                    required: false,
+                    type: ApplicationCommandOptionType.Integer,
+                    minValue: 1
+                },
+                {
+                    name: 'invitations',
+                    description: "Nombre d'invitations minimum pour participer",
+                    required: false,
+                    type: ApplicationCommandOptionType.Integer,
+                    minValue: 1
                 }
             ]
         },
@@ -182,7 +197,7 @@ export default new AmethystCommand({
             ]
         }
     ]
-}).setChatInputRun(async ({ interaction, options }) => {
+}).setChatInputRun(async ({ interaction, options, client }) => {
     const cmd = subcmd(options);
 
     if (cmd === 'démarrer') {
@@ -195,6 +210,8 @@ export default new AmethystCommand({
         const required = (options.getString('requis') ?? '').split(/ +/g).filter(roleFilter);
         const denied = (options.getString('interdits') ?? '').split(/ +/g).filter(roleFilter);
         const winnerCount = options.getInteger('gagnants');
+        const level = options.getInteger('niveau') ?? 0;
+        const invites = options.getInteger('invitations') ?? 0;
 
         await interaction.deferReply();
 
@@ -208,9 +225,11 @@ export default new AmethystCommand({
                 required_roles: required.length > 0 ? required : [],
                 denied_roles: denied.length > 0 ? denied : [],
                 hoster_id: interaction.user.id,
-                time: time
+                time: time,
+                required_level: level,
+                required_invitations: invites
             })
-            .catch(console.log)) as Giveaway;
+            .catch(console.log)) as giveaway;
 
         if (!gw)
             return interaction
@@ -254,7 +273,9 @@ export default new AmethystCommand({
             time: 3600000,
             hoster_id: interaction.user.id,
             guild_id: interaction.guild.id,
-            channel: interaction.channel as TextChannel
+            channel: interaction.channel as TextChannel,
+            required_level: 0,
+            required_invitations: 0
         };
 
         let hasCurrentAction = false;
@@ -309,6 +330,18 @@ export default new AmethystCommand({
                 ),
                 row(
                     buildButton({
+                        label: 'Niveau',
+                        id: 'level',
+                        style: 'Secondary',
+                        disabled: !client.modulesManager.enabled(interaction.guild.id, 'level') || currentAction
+                    }),
+                    buildButton({
+                        label: 'Invitations',
+                        id: 'invitations',
+                        style: 'Secondary',
+                        disabled: !client.modulesManager.enabled(interaction.guild.id, 'invitations') || currentAction
+                    }),
+                    buildButton({
                         label: 'Valider',
                         id: 'validate',
                         style: 'Success',
@@ -324,50 +357,79 @@ export default new AmethystCommand({
                         .setTitle('Création de giveaway')
                         .setDescription(`Appuyez sur les boutons ci-dessous pour configurer votre giveaway`)
                         .setFields(
-                            {
-                                name: 'Récompense',
-                                value: data.reward,
-                                inline: true
-                            },
-                            {
-                                name: 'Gagnants',
-                                value: numerize(data.winnerCount),
-                                inline: true
-                            },
-                            {
-                                name: 'Prendra fin',
-                                value: displayDate(Date.now() + data.time),
-                                inline: true
-                            },
-                            {
-                                name: 'Salon',
-                                value: pingChan(data.channel),
-                                inline: false
-                            },
-                            {
-                                name: 'Rôles bonus',
-                                value:
-                                    data.bonus_roles?.length > 0
-                                        ? data.bonus_roles.map(pingRole).join(' ')
-                                        : 'Pas de rôles bonus',
-                                inline: true
-                            },
-                            {
-                                name: 'Rôles requis',
-                                value:
-                                    data.required_roles?.length > 0
-                                        ? data.required_roles.map(pingRole).join(' ')
-                                        : 'Pas de rôles requis',
-                                inline: true
-                            },
-                            {
-                                name: 'Rôles interdits',
-                                value:
-                                    data.denied_roles?.length > 0
-                                        ? data.denied_roles?.map(pingRole).join(' ')
-                                        : 'Pas de rôles intedits',
-                                inline: true
-                            }
+                            ...[
+                                {
+                                    name: 'Récompense',
+                                    value: data.reward,
+                                    inline: true
+                                },
+                                {
+                                    name: 'Gagnants',
+                                    value: numerize(data.winnerCount),
+                                    inline: true
+                                },
+                                {
+                                    name: 'Prendra fin',
+                                    value: displayDate(Date.now() + data.time),
+                                    inline: true
+                                },
+                                {
+                                    name: 'Salon',
+                                    value: pingChan(data.channel),
+                                    inline: false
+                                },
+                                {
+                                    name: 'Rôles bonus',
+                                    value:
+                                        data.bonus_roles?.length > 0
+                                            ? data.bonus_roles.map(pingRole).join(' ')
+                                            : 'Pas de rôles bonus',
+                                    inline: true
+                                },
+                                {
+                                    name: 'Rôles requis',
+                                    value:
+                                        data.required_roles?.length > 0
+                                            ? data.required_roles.map(pingRole).join(' ')
+                                            : 'Pas de rôles requis',
+                                    inline: true
+                                },
+                                {
+                                    name: 'Rôles interdits',
+                                    value:
+                                        data.denied_roles?.length > 0
+                                            ? data.denied_roles?.map(pingRole).join(' ')
+                                            : 'Pas de rôles intedits',
+                                    inline: true
+                                },
+                                {
+                                    name: '\u200b',
+                                    value: '\u200b',
+                                    inline: false
+                                },
+                                client.modulesManager.enabled(interaction.guild.id, 'invitations')
+                                    ? {
+                                          name: 'Invitations',
+                                          value:
+                                              data.required_invitations === 0
+                                                  ? 'Aucune limite'
+                                                  : `**${numerize(data.required_invitations)}** invitation${plurial(
+                                                        data.required_invitations
+                                                    )}`,
+                                          inline: true
+                                      }
+                                    : null,
+                                client.modulesManager.enabled(interaction.guild.id, 'level')
+                                    ? {
+                                          name: 'Niveaux',
+                                          value:
+                                              data.required_level === 0
+                                                  ? 'Aucune limite'
+                                                  : `Niveau ${numerize(data.required_level)}`,
+                                          inline: true
+                                      }
+                                    : null
+                            ].filter(notNull)
                         )
                 ],
                 components: components,
@@ -408,7 +470,7 @@ export default new AmethystCommand({
                     })
                     .catch(() => {});
 
-                const gw = (await interaction.client.giveaways.createGiveaway(data).catch(() => {})) as Giveaway;
+                const gw = (await interaction.client.giveaways.createGiveaway(data).catch(() => {})) as giveaway;
                 if (!gw) {
                     interaction
                         .editReply({
@@ -751,6 +813,100 @@ export default new AmethystCommand({
                 ctx.deleteReply(rep).catch(() => {});
                 reedit();
             }
+            if (ctx.customId === 'level') {
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Niveau')
+                                .setDescription(
+                                    `Quel est le niveau minimum pour participer au giveaway ? ?\nRépondez dans le chat\n${util(
+                                        'cancelMsg'
+                                    )}`
+                                )
+                                .setColor('Grey')
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
+
+                reedit();
+                const reply = (await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {})) as Message<true>;
+                hasCurrentAction = false;
+
+                if (reply.deletable) reply.delete().catch(() => {});
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({
+                        embeds: [replies.cancel()]
+                    }).catch(() => {});
+                    reedit();
+                    setDeleteTmst();
+                    return;
+                }
+
+                const int = parseInt(reply?.content);
+                if (!int || isNaN(int) || int < 0) {
+                    reedit();
+                    SendAndDelete.process(
+                        { embeds: [replies.invalidNumber(interaction.member as GuildMember)] },
+                        interaction.channel as TextChannel
+                    );
+                    return;
+                }
+                data.required_level = int;
+                ctx.deleteReply(rep).catch(() => {});
+                reedit();
+            }
+            if (ctx.customId === 'invitations') {
+                const rep = (await ctx
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user)
+                                .setTitle('Niveau')
+                                .setDescription(
+                                    `Combien d'invitations sont nécessaires pour participer au giveaway ? ?\nRépondez dans le chat\n${util(
+                                        'cancelMsg'
+                                    )}`
+                                )
+                                .setColor('Grey')
+                        ],
+                        fetchReply: true
+                    })
+                    .catch(() => {})) as Message<true>;
+
+                reedit();
+                const reply = (await waitForMessage({
+                    channel: interaction.channel as TextChannel,
+                    user: interaction.user
+                }).catch(() => {})) as Message<true>;
+                hasCurrentAction = false;
+
+                if (reply.deletable) reply.delete().catch(() => {});
+                if (!reply || reply.content.toLowerCase() === 'cancel') {
+                    ctx.editReply({
+                        embeds: [replies.cancel()]
+                    }).catch(() => {});
+                    reedit();
+                    setDeleteTmst();
+                    return;
+                }
+
+                const int = parseInt(reply?.content);
+                if (!int || isNaN(int) || int < 0) {
+                    reedit();
+                    SendAndDelete.process(
+                        { embeds: [replies.invalidNumber(interaction.member as GuildMember)] },
+                        interaction.channel as TextChannel
+                    );
+                    return;
+                }
+                data.required_invitations = int;
+                ctx.deleteReply(rep).catch(() => {});
+                reedit();
+            }
         });
         collector.on('end', (_ctx, reason) => {
             if (!['sent', 'canceled'].includes(reason)) {
@@ -795,7 +951,7 @@ export default new AmethystCommand({
                 .setTitle('Giveaways')
                 .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`);
         };
-        const mapField = (embed: EmbedBuilder, gw: Giveaway) => {
+        const mapField = (embed: EmbedBuilder, gw: giveaway) => {
             return embed.addFields({
                 name: gw.reward,
                 value: `Par ${pingUser(gw.hoster_id)} ( \`${gw.hoster_id}\` ) dans ${pingChan(
@@ -928,7 +1084,7 @@ export default new AmethystCommand({
     }
     if (cmd === 'reroll') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
-        const gw = interaction.client.giveaways.fetchGiveaway(id, true) as Giveaway;
+        const gw = interaction.client.giveaways.fetchGiveaway(id, true) as giveaway;
 
         if (!gw || gw.guild_id !== interaction.guild.id)
             return interaction

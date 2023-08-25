@@ -7,7 +7,7 @@ import { LevelsManager } from '../managers/levelsManager';
 import { ModulesManager } from '../managers/modulesManager';
 import { checkDatabase, util } from '../utils/functions';
 import { database } from '../utils/query';
-import { GiveawayManager } from 'discordjs-giveaways';
+import { GiveawayManager } from '../managers/GiveawayManager';
 import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { TicketsManager } from '../managers/ticketsManager';
