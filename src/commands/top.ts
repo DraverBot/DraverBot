@@ -3,9 +3,8 @@ import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
-import { levels } from '../typings/managers';
 import { util } from '../utils/functions';
-import { basicEmbed, evokerColor, numerize, pagination, subcmd } from '../utils/toolbox';
+import { basicEmbed, evokerColor, numerize, pagination, plurial, subcmd } from '../utils/toolbox';
 
 export default new AmethystCommand({
     name: 'classement',
@@ -20,19 +19,26 @@ export default new AmethystCommand({
             name: 'niveaux',
             description: 'Affiche le classement des niveaux du serveur',
             type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: 'invitations',
+            description: 'Affiche le classement des invitations',
+            type: ApplicationCommandOptionType.Subcommand
         }
     ],
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction, options }) => {
-    const top = subcmd(options) as 'monnaie' | 'niveaux';
+    const top = subcmd(options) as 'monnaie' | 'niveaux' | 'invitations';
 
     const types: Record<typeof top, moduleType> = {
         monnaie: 'economy',
-        niveaux: 'level'
+        niveaux: 'level',
+        invitations: 'invitations'
     };
     const lbT: Record<typeof top, string> = {
         monnaie: util('coins'),
-        niveaux: 'niveaux'
+        niveaux: 'niveaux',
+        invitations: 'invitations'
     };
 
     if (!interaction.client.modulesManager.enabled(interaction.guild.id, types[top]))
@@ -46,18 +52,22 @@ export default new AmethystCommand({
     const leaderboard =
         top === 'monnaie'
             ? interaction.client.coinsManager.getLeaderboard(interaction.guild.id)
+            : top === 'invitations'
+            ? interaction.client.invitesManager.getLeaderboard(interaction.guild.id).toJSON()
             : interaction.client.levelsManager.leaderboard(interaction.guild.id).toJSON();
 
     const map = (embed: EmbedBuilder, data: any) => {
         const index = leaderboard.indexOf(data as any);
-        const isLevel = (data as levels)?.level !== undefined;
-
         const dt = data as any;
 
         return embed.addFields({
             name: `${numerize(index + 1)}°`,
             value: `<@${data.user_id}>\n> ${
-                isLevel ? `Niveau ${numerize(dt.level)}` : `${numerize(dt.coins + dt.bank)} ${util('coins')}`
+                top === 'niveaux'
+                    ? `Niveau ${numerize(dt.level)}`
+                    : top === 'monnaie'
+                    ? `${numerize(dt.coins + dt.bank)} ${util('coins')}`
+                    : `${dt.total - (dt.fakes + dt.leaves)} invitation${plurial(dt.total - (dt.fakes + dt.leaves))}`
             }`,
             inline: false
         });

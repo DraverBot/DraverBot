@@ -7,6 +7,11 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
+"@androz2091/discord-invites-tracker@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@androz2091/discord-invites-tracker/-/discord-invites-tracker-1.2.3.tgz#f38391de0faded593316c304952b75e6b2dae63d"
+  integrity sha512-V48BHCSLyJo1gCZRsarm9cJ9L2n+qlVn7+OFceEDPGbGqQHgqvk43RRf9hK4BGsWZFBEs9+Km86GcrLb/ER3xQ==
+
 "@discordjs/builders@^1.6.5":
   version "1.6.5"
   resolved "https://registry.yarnpkg.com/@discordjs/builders/-/builders-1.6.5.tgz#3e23912eaab1d542b61ca0fa7202e5aaef2b7200"

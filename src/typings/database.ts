@@ -110,7 +110,8 @@ export type moduleType =
     | 'interchat'
     | 'level'
     | 'information'
-    | 'tickets';
+    | 'tickets'
+    | 'invitations';
 
 export type modules = {
     /**
@@ -208,7 +209,8 @@ export enum DatabaseTables {
     RoleReacts = 'roleReacts',
     LevelsList = 'levellists',
     LevelsRewards = 'levelsrewards',
-    TempChannels = 'temp_channels'
+    TempChannels = 'temp_channels',
+    Invites = 'invitations'
 }
 export type coupons = {
     guild_id: string;
@@ -345,4 +347,13 @@ export type tempChannels = {
     type: tempChannelType;
     parent: string;
     name: string;
+};
+export type invitations<Raw extends boolean = false> = {
+    guild_id: string;
+    user_id: string;
+    invited: If<Raw, string, string[]>;
+    total: If<Raw, string, number>;
+    leaves: If<Raw, string, number>;
+    fakes: If<Raw, string, number>;
+    bonus: If<Raw, string, number>;
 };

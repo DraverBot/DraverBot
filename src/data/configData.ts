@@ -27,6 +27,12 @@ export type configKeys = {
     welcome_image_radius: number;
     leave_image: Buffer;
     leave_image_radius: number;
+    invite_channel: string;
+    invite_normal_message_join: string;
+    invite_vanity_message_join: string;
+    invite_unknown_message_join: string;
+    invite_normal_message_leave: string;
+    invite_unknown_message_leave: string;
 };
 export type configType = {
     description: string;
@@ -251,5 +257,49 @@ export const configsData: Record<keyof configKeys, configType> = {
         default: 100,
         type: 'number',
         value: 'leave_image_radius'
+    },
+    invite_channel: {
+        name: 'Salon des invitations',
+        description: "Le salon dans lequel les messages d'invitations seront envoyés",
+        default: null,
+        type: 'channel',
+        value: 'invite_channel'
+    },
+    invite_normal_message_join: {
+        name: "Message d'invitation",
+        description: "Le message d'invitation",
+        default:
+            '{user.mention} a été invité par {inviter.name}, il a maintenant {inviter.invites} invitations !\nNous sommes dorénavant {guild.count} dans le serveur',
+        type: 'string',
+        value: 'invite_normal_message_join'
+    },
+    invite_unknown_message_join: {
+        name: "Message d'invitation inconnu",
+        description: "Message d'invitations quand l'inviteur est inconnu",
+        default: '{user.mention} est arrivé, mais je ne sais pas grâce à qui',
+        type: 'string',
+        value: 'invite_unknown_message_join'
+    },
+    invite_vanity_message_join: {
+        name: "Message d'invitation personnalisé",
+        description: "Message d'invitation quand le membre rejoint via l'url customisé du serveur",
+        default: "{user.mention} vient d'arriver en utilisant le lien du serveur",
+        type: 'string',
+        value: 'invite_vanity_message_join'
+    },
+    invite_normal_message_leave: {
+        name: "Message d'invitation de départ",
+        description: "Message d'invitation quand un membre quitte le serveur",
+        default: '{user.name} est partit, il avait été invité par {inviter.name}',
+        type: 'string',
+        value: 'invite_normal_message_leave'
+    },
+    invite_unknown_message_leave: {
+        name: "Message d'invitation de départ inconnu",
+        description:
+            "Message d'invitation de départ quand un membre quitte le serveur et que la personne qui l'a invité est inconnue",
+        type: 'string',
+        value: 'invite_unknown_message_leave',
+        default: "{user.name} vient de partir, mais je ne sais pas qui l'a invité"
     }
 };

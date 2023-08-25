@@ -84,5 +84,12 @@ export const modulesData: Record<moduleType, moduleDataType> = {
         default: false,
         emoji: '💬',
         id: 'interchat'
+    },
+    invitations: {
+        name: 'invitations',
+        editable: true,
+        default: false,
+        emoji: '✉️',
+        id: 'invitations'
     }
 };

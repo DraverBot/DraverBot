@@ -59,5 +59,7 @@
     "statistiques": "fun",
     "météo": "utils",
     "récompenses": "config",
-    "salons-temporaires": "config"
+    "salons-temporaires": "config",
+    "invitations": "invitations",
+    "admininvitations": "administration"
 }

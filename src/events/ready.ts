@@ -27,6 +27,7 @@ import { RolesReactManager } from '../managers/RoleReactsManager';
 import { LevelsListManager } from '../managers/LevelListManager';
 import { LevelsRewards } from '../managers/LevelsRewards';
 import { TempChannelsManager } from '../managers/TempChannelsManager';
+import { InvitesManager } from '../managers/InvitesManager';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
@@ -70,6 +71,7 @@ export default new AmethystEvent('ready', async (client) => {
     client.levelsChannels = new LevelsListManager();
     client.rewards = new LevelsRewards(client);
     client.tempChannels = new TempChannelsManager(client);
+    client.invitesManager = new InvitesManager(client);
 
     // Start managers
     client.coinsManager.start();
@@ -201,5 +203,6 @@ declare module 'discord.js' {
         levelsChannels: LevelsListManager;
         rewards: LevelsRewards;
         tempChannels: TempChannelsManager;
+        invitesManager: InvitesManager;
     }
 }
