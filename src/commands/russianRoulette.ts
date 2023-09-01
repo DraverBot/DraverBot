@@ -3,9 +3,10 @@ import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } fro
 import { yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
 import { basicEmbed, evokerColor, random, systemReply, waitForReplies } from '../utils/toolbox';
+import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new AmethystCommand({
-    name: 'roulette-russse',
+    name: 'roulette-russe',
     description: 'Joue à la roulette russe sur Discord',
     options: [
         {
@@ -14,7 +15,8 @@ export default new AmethystCommand({
             required: false,
             type: ApplicationCommandOptionType.Boolean
         }
-    ]
+    ],
+    preconditions: [moduleEnabled]
 }).setChatInputRun(async ({ interaction, options }) => {
     const kick = options.getBoolean('expulsion');
 
