@@ -61,5 +61,6 @@
     "récompenses": "config",
     "salons-temporaires": "config",
     "invitations": "invitations",
-    "admininvitations": "administration"
+    "admininvitations": "administration",
+    "modlogs": "moderation"
 }

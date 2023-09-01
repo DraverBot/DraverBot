@@ -22,11 +22,12 @@ import {
     updateLog,
     waitForReplies
 } from '../utils/toolbox';
+import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new AmethystCommand({
     name: 'modlogs',
     description: 'Affiche les logs du serveur',
-    preconditions: [preconditions.GuildOnly, validProof],
+    preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     permissions: ['ViewAuditLog', 'ManageGuild'],
     options: [
         {
