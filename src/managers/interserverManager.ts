@@ -3,7 +3,7 @@ import { replyKey } from '../data/replies';
 import { interserver } from '../typings/managers';
 import query from '../utils/query';
 import { WordGenerator } from './Generator';
-import { basicEmbed, evokerColor, sendError } from '../utils/toolbox';
+import { sendError } from '../utils/toolbox';
 
 export class InterserverManager {
     private _cache: Collection<string, interserver> = new Collection();
@@ -130,23 +130,6 @@ export class InterserverManager {
                 message.mentions.everyone
             )
                 return;
-            if (/<@((\!)?)\d+>/.test(message.content) || /<@&\!?\d+>/.test(message.content)) {
-                message.channel
-                    .send({
-                        embeds: [
-                            basicEmbed(message.author)
-                                .setTitle('Message non-envoyé')
-                                .setDescription(
-                                    `Votre message n'a pas été envoyé, car il contient des mentions d'utilisateurs ou de rôles.\nVeuillez vous assurer d'envoyer des messages sans mentions`
-                                )
-                                .setColor(evokerColor(message.guild))
-                        ],
-                        reply: {
-                            messageReference: message
-                        }
-                    })
-                    .catch(sendError);
-            }
 
             const sendTo = this._cache.filter(
                 (x) =>
@@ -184,7 +167,13 @@ export class InterserverManager {
                     .send({
                         username: message.author.username,
                         avatarURL: message.author.avatarURL({ forceStatic: false }),
-                        content: message.content
+                        content: message.content,
+                        allowedMentions: {
+                            roles: [],
+                            repliedUser: false,
+                            users: [],
+                            parse: []
+                        }
                     })
                     .catch(sendError);
             });
