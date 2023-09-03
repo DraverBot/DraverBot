@@ -82,7 +82,7 @@ export default new AmethystCommand({
                         return {
                             name: ModuleName(m, true),
                             value: boolEmoji(modules[m]),
-                            inline: index % 3 === 0 ? false : true
+                            inline: index % 4 === 0 ? false : true
                         };
                     })
             );
