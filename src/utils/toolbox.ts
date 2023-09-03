@@ -188,7 +188,8 @@ export const row = <T extends AnyComponentBuilder = ButtonBuilder>(...components
         components
     }) as ActionRowBuilder<T>;
 };
-export const boolEmoji = (b: boolean) => (b ? '✅' : '❌');
+export const bool = (x: boolean, array = ['faux', 'vrai']) => array[+x];
+export const boolEmoji = (b: boolean) => bool(b, ['❌', '✅']);
 
 export const checkPerms = ({
     member,
