@@ -302,9 +302,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "20.5.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.5.7.tgz#4b8ecac87fbefbc92f431d09c30e176fc0a7c377"
-  integrity sha512-dP7f3LdZIysZnmvP3ANJYTSwg+wLLl8p7RqniVlV7j+oXSXAbt9h0WIBFmJy5inWZoX9wZN6eXx+YXd9Rh3RBA==
+  version "20.6.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.6.0.tgz#9d7daa855d33d4efec8aea88cd66db1c2f0ebe16"
+  integrity sha512-najjVq5KN2vsH2U/xyh2opaSEz6cZMR2SetLIlxlj08nOcmPOemJmUK2o4kUzfLqfrWE0PIrNeE16XhYDd3nqg==
 
 "@types/semver@^7.5.0":
   version "7.5.1"
@@ -456,9 +456,9 @@ ajv@^6.12.3, ajv@^6.12.4:
     uri-js "^4.2.2"
 
 amethystjs@^1.6.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.7.1.tgz#21f4889549bc58dac331432da23fc6563eadd694"
-  integrity sha512-qDIFVhVseQOCyv6RII59TJijrsAOIPfNMtDJDab1XaR5b/Tq1eupWBfheh4niynfnP8ooO58eW/WROpwVjJ5PQ==
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/amethystjs/-/amethystjs-1.7.2.tgz#71dcf476d084fff90ca550cf5a90955053f1c1b3"
+  integrity sha512-JT6l54iF6DT04BBue6HSYi4Jbw/aYyrJSBLfgpGZR21tZ5zW9wLtQLoNIqKjg9BduQ3J7zmUOJTnpcJ0qbtylw==
   dependencies:
     discord.js "^14.8.0"
     dsc-pagination "^1.0.3"
@@ -1999,9 +1999,9 @@ lru-cache@^6.0.0:
     yallist "^4.0.0"
 
 magic-bytes.js@^1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/magic-bytes.js/-/magic-bytes.js-1.0.15.tgz#3c9d2b7d45bb8432482646b5f74bbf6725274616"
-  integrity sha512-bpRmwbRHqongRhA+mXzbLWjVy7ylqmfMBYaQkSs6pac0z6hBTvsgrH0r4FBYd/UYVJBmS6Rp/O+oCCQVLzKV1g==
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/magic-bytes.js/-/magic-bytes.js-1.0.17.tgz#6265d568df98c02b523c0defdd18b86cb2cae883"
+  integrity sha512-PEDpPzHpKe5AxkVmQrNPHFRvPN2ELkkj3eIg4IZO9JdhBiAY3aU53lgYXs9j8B7lpza+QiW0UA4QHCH7EskSeg==
 
 make-dir@^3.1.0:
   version "3.1.0"
@@ -3228,9 +3228,9 @@ ws@^7.0.0:
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
 ws@^8.13.0:
-  version "8.13.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
-  integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
+  version "8.14.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.1.tgz#4b9586b4f70f9e6534c7bb1d3dc0baa8b8cf01e0"
+  integrity sha512-4OOseMUq8AzRBI/7SLMUwO+FEDnguetSk7KMb1sHwvF2w2Wv5Hoj0nlifx8vtGsftE/jWHojPy8sMMzYLJ2G/A==
 
 ws@~7.4.0:
   version "7.4.6"
