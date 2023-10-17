@@ -1,5 +1,5 @@
-import { AmethystCommand, log4js } from 'amethystjs';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { AmethystCommand, log4js, wait } from 'amethystjs';
+import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { buildButton, row } from '../utils/toolbox';
 
@@ -23,28 +23,61 @@ export default new AmethystCommand({
             type: ApplicationCommandOptionType.Integer,
             required: false,
             choices: sizes.map((size) => ({ name: `${size}x${size}`, value: size }))
+        },
+        {
+            name: 'bannière',
+            description: 'Taille de la bannière',
+            type: ApplicationCommandOptionType.Integer,
+            required: false,
+            choices: sizes.map((size) => ({ name: `${size}x${size}`, value: size }))
         }
     ]
 })
-    .setChatInputRun(({ interaction, options }) => {
+    .setChatInputRun(async ({ interaction, options }) => {
+        const started = Date.now();
+        await interaction.deferReply().catch(log4js.trace);
+
         const user = options.getUser('membre') ?? interaction.user;
+        if (!user.banner) await user.fetch(true).catch(log4js.trace);
+
+        if (Date.now() < started + 2000) await wait(2000 - Date.now() + started, 'ms');
+
         const size = (options.getInteger('taille', false) ?? 2048) as allowedImageSizes;
+        const bannerSize = (options.getInteger('bannière', false) ?? 2048) as allowedImageSizes;
 
         const avatar = user.displayAvatarURL({ size, forceStatic: false });
+        const banner = user.banner ? user.bannerURL({ size: bannerSize, forceStatic: false }) : null;
+
+        const files = banner ? [new AttachmentBuilder(banner)] : [];
 
         const button = buildButton({ label: 'Ouvrir', style: 'Link', url: avatar });
         interaction
-            .reply({
-                content: `Voici l'avatar de ${user.username} :\n${avatar}`,
-                components: [row(button)]
+            .editReply({
+                content: `Voici [l'avatar](${avatar}) de ${user.username}`,
+                components: [row(button)],
+                files
             })
             .catch(() => {});
     })
-    .setUserContextRun(({ interaction, user }) => {
-        const avatar = user.displayAvatarURL({ forceStatic: false, size: 2048 });
+    .setUserContextRun(async ({ interaction, user }) => {
+        const started = Date.now();
+        await interaction.deferReply().catch(log4js.trace);
+
+        if (!user.banner) await user.fetch(true).catch(log4js.trace);
+
+        if (Date.now() < started + 2000) await wait(2000 - Date.now() + started, 'ms');
+
+        const avatar = user.displayAvatarURL({ size: 2048, forceStatic: false });
+        const banner = user.banner ? user.bannerURL({ size: 2048, forceStatic: false }) : null;
+
+        const files = banner ? [new AttachmentBuilder(banner)] : [];
 
         const button = buildButton({ label: 'Ouvrir', style: 'Link', url: avatar });
         interaction
-            .reply({ content: `Voici l'avatar de ${user.username} :\n${avatar}`, components: [row(button)] })
-            .catch(log4js.trace);
+            .editReply({
+                content: `Voici [l'avatar](${avatar}) de ${user.username}`,
+                components: [row(button)],
+                files
+            })
+            .catch(() => {});
     });
