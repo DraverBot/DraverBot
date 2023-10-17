@@ -31,7 +31,7 @@ export class AnonymousValue {
         if (
             !this.webhook ||
             this.data.webhook_url ===
-                'https://discord.com/api/webhooks/1071478746462306416/invalid-webhook-authentication-completly-impossible-with-this-absurdly-long-message-5691-1139A-0761732670'
+                'https://discord.com/api/webhooks/1071478746462306416/invalid-webhook-authentication-completly-impossible-with-this-absurdly-long-message'
         ) {
             const web = (await this.channel
                 .createWebhook({

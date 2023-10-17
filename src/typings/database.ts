@@ -210,7 +210,8 @@ export enum DatabaseTables {
     LevelsList = 'levellists',
     LevelsRewards = 'levelsrewards',
     TempChannels = 'temp_channels',
-    Invites = 'invitations'
+    Invites = 'invitations',
+    AFK = 'afks'
 }
 export type coupons = {
     guild_id: string;
@@ -356,4 +357,9 @@ export type invitations<Raw extends boolean = false> = {
     leaves: If<Raw, string, number>;
     fakes: If<Raw, string, number>;
     bonus: If<Raw, string, number>;
+};
+export type afk<Raw extends boolean = false> = {
+    user_id: string;
+    reason: string;
+    afkat: If<Raw, string, number>;
 };

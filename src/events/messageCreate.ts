@@ -1,7 +1,7 @@
-import { AmethystEvent } from 'amethystjs';
+import { AmethystEvent, log4js } from 'amethystjs';
 import splashes from '../data/splash.json';
 import { util } from '../utils/functions';
-import { basicEmbed, random, sendError } from '../utils/toolbox';
+import { basicEmbed, pingUser, random, sendError } from '../utils/toolbox';
 
 export default new AmethystEvent('messageCreate', (message) => {
     if (message.author.bot || message.webhookId) return;
@@ -83,7 +83,7 @@ export default new AmethystEvent('messageCreate', (message) => {
         ['Dinnerbone', 'Grumm'].includes(message.guild.members.me?.nickname) &&
         random({ max: 200 }) === 26
     ) {
-        const reverse = (str) => {
+        const reverse = (str: string) => {
             let x = '';
             for (const c of str) {
                 x = c + x;
@@ -92,5 +92,40 @@ export default new AmethystEvent('messageCreate', (message) => {
         };
 
         message.reply(reverse(`C'est le monde à l'envers 🙃`)).catch(sendError);
+    }
+
+    if (message.client.afk.isAFK(message.author.id)[0]) {
+        message.client.afk.removeAFK(message.author.id);
+
+        message.reply(`Bon retour parmi nous, j'ai retiré ton afk !`).catch(log4js.trace);
+    }
+    if (message.mentions.users.size) {
+        const afk = message.mentions.users
+            .filter((x) => x.id !== message.author.id && message.client.afk.isAFK(x.id)[0])
+            .map((x) => message.client.afk.isAFK(x.id));
+
+        if (afk.length) {
+            if (afk.length > 1) {
+                message
+                    .reply({
+                        content: `${afk.map((x) => pingUser(x[1].user_id)).join(', ')} sont afk`,
+                        allowedMentions: {
+                            users: []
+                        }
+                    })
+                    .catch(log4js.trace);
+            } else {
+                const data = afk[0][1];
+                message
+                    .reply({
+                        content: `${pingUser(data.user_id)} est afk pour la raison **${data.reason}**`,
+                        allowedMentions: {
+                            users: [],
+                            roles: []
+                        }
+                    })
+                    .catch(log4js.trace);
+            }
+        }
     }
 });
