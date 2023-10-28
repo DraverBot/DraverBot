@@ -1,10 +1,12 @@
 import { AmethystCommand, log4js } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, AttachmentBuilder, GuildMember } from 'discord.js';
-import { basicEmbed } from '../utils/toolbox';
+import { basicEmbed, chunkArray } from '../utils/toolbox';
 import { IsValidInput, caesarCryptor, caesarDecryptor, vigenereCipher, vigenereDecipher } from '../utils/ciphers';
 import replies from '../data/replies';
 import { rmSync, writeFileSync } from 'fs';
+import { rotors, plugboard as defaultPlugboard, reflector } from '../data/enigmaConfig.json';
+import { Enigma, Plugboard, Reflector, Rotor } from 'enigma-machine';
 
 export default new AmethystCommand({
     name: 'chiffrage',
@@ -87,6 +89,57 @@ export default new AmethystCommand({
                                     value: 'reversed'
                                 }
                             ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            name: 'draver',
+            description: 'Chiffre un message en utilisant la méthode Draver',
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: 'chiffrer',
+                    description: 'Chiffre un message',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'message',
+                            description: 'Message à chiffrer',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            maxLength: 3850
+                        },
+                        {
+                            name: 'clé',
+                            description: 'Clé de chiffrement',
+                            required: true,
+                            maxLength: 50,
+                            minLength: 5,
+                            type: ApplicationCommandOptionType.String
+                        }
+                    ]
+                },
+                {
+                    name: 'déchiffrer',
+                    description: 'Déchiffre un message',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'message',
+                            description: 'Message à déchiffrer',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            maxLength: 3850
+                        },
+                        {
+                            name: 'clé',
+                            description: 'Clé du chiffrement',
+                            required: true,
+                            maxLength: 50,
+                            minLength: 5,
+                            type: ApplicationCommandOptionType.String
                         }
                     ]
                 }
@@ -437,6 +490,146 @@ export default new AmethystCommand({
                             .setTitle(`Chiffre de Vigenère`)
                             .setDescription(
                                 `Voici votre message ${vocabulary[cmd].adj} selon le chiffre de Vigenère avec la clé \`${key}\`\n\`\`\`${ciphered}\`\`\``
+                            )
+                    ],
+                    ephemeral: true
+                })
+                .catch(log4js.trace);
+        }
+        if (group === 'draver') {
+            const msg = options.getString('message')?.toLowerCase();
+            const seed = options.getString('clé')?.toLowerCase();
+
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz ';
+            if ([msg, seed].some((x) => x.split('').some((y) => !alphabet.includes(y))))
+                return interaction
+                    .reply({
+                        embeds: [
+                            basicEmbed(interaction.user, { evoker: interaction.guild })
+                                .setTitle('Textes invalides')
+                                .setDescription(
+                                    `Les textes (clé et message) ne peuvent être constitués uniquement de lettres et d'espaces, sans accent`
+                                )
+                        ],
+                        ephemeral: true
+                    })
+                    .catch(log4js.trace);
+
+            const caesarFirstGap = Math.ceil((alphabet.indexOf(seed[0]) + 1) * 1.2);
+            const caesarAlphabetic = alphabet.indexOf(seed[1]) > alphabet.length / 2;
+            const vigenereKey = seed.slice(2);
+            const rotorEven = alphabet.indexOf(seed[seed.length - 1]) % 2;
+            const switchedKey = chunkArray(seed.split(''), 2)
+                .map(([a, b]) => (!!a && !!b ? `${b}${a}` : a))
+                .join('');
+            const caesarSecondGap = Math.abs(Math.floor((alphabet.indexOf(vigenereKey[0]) - 1) * 0.9));
+            const secondVigenereSpawn =
+                (Math.abs(
+                    seed
+                        .split('')
+                        .map((x) => alphabet.indexOf(x))
+                        .reduce((a, b) => a + b, 0) *
+                        (alphabet.indexOf(seed[0]) + alphabet.indexOf(seed[seed.length - 1]))
+                ) %
+                    alphabet.indexOf(
+                        seed[
+                            rotorEven +
+                                (alphabet.indexOf(seed[Math.abs(rotorEven - alphabet.length)]) % alphabet.length)
+                        ]
+                    )) %
+                    3 >
+                1;
+            const secondVigenereKey = seed
+                .split('')
+                .map(
+                    (l, i) =>
+                        alphabet[
+                            Math.abs(
+                                alphabet.indexOf(l) +
+                                    ((alphabet.indexOf(seed[Math.abs(alphabet.length - i)]) * alphabet.indexOf(l)) %
+                                        2 ===
+                                    0
+                                        ? -1
+                                        : 1)
+                            ) % alphabet.length
+                        ]
+                )
+                .join('');
+
+            let output = msg;
+            if (cmd === 'chiffrer') {
+                output = caesarCryptor({
+                    input: output,
+                    sens: caesarAlphabetic ? 'alphabetic' : 'reversed',
+                    alphabet,
+                    gap: caesarFirstGap
+                });
+
+                if (secondVigenereSpawn) output = vigenereCipher({ input: output, key: secondVigenereKey, alphabet });
+
+                const machineRotors: [Rotor, Rotor, Rotor] = [
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 0 : 1].config))),
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 2 : 3].config))),
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 3 : 4].config)))
+                ];
+                const machineReflector = new Reflector(JSON.parse(JSON.stringify(reflector)));
+                const machinePlugboard = new Plugboard(JSON.parse(JSON.stringify(defaultPlugboard)));
+
+                const machine = new Enigma(machineRotors, machineReflector, machinePlugboard);
+
+                output = output
+                    .split(' ')
+                    .map((v) => machine.calculateString(v))
+                    .join(' ');
+
+                output = caesarCryptor({
+                    sens: caesarAlphabetic ? 'reversed' : 'alphabetic',
+                    alphabet,
+                    gap: caesarSecondGap,
+                    input: output
+                });
+                output = vigenereCipher({ input: output, key: switchedKey, alphabet });
+            } else {
+                output = vigenereDecipher({ input: output, key: switchedKey, alphabet });
+
+                output = caesarDecryptor({
+                    sens: caesarAlphabetic ? 'reversed' : 'alphabetic',
+                    alphabet,
+                    gap: caesarSecondGap,
+                    input: output
+                });
+
+                const machineRotors: [Rotor, Rotor, Rotor] = [
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 0 : 1].config))),
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 2 : 3].config))),
+                    new Rotor(JSON.parse(JSON.stringify(rotors[rotorEven ? 3 : 4].config)))
+                ];
+                const machineReflector = new Reflector(JSON.parse(JSON.stringify(reflector)));
+                const machinePlugboard = new Plugboard(JSON.parse(JSON.stringify(defaultPlugboard)));
+
+                const machine = new Enigma(machineRotors, machineReflector, machinePlugboard);
+
+                output = output
+                    .split(' ')
+                    .map((v) => machine.calculateString(v))
+                    .join(' ');
+                if (secondVigenereSpawn) output = vigenereDecipher({ input: output, key: secondVigenereKey, alphabet });
+
+                output = caesarDecryptor({
+                    input: output,
+                    sens: caesarAlphabetic ? 'alphabetic' : 'reversed',
+                    alphabet,
+                    gap: caesarFirstGap
+                });
+            }
+
+            interaction
+                .reply({
+                    embeds: [
+                        basicEmbed(interaction.user, { draverColor: true })
+                            .setTitle('Chiffre de Draver')
+                            .setDescription(
+                                `Voici votre message ${vocabulary[cmd].adj} selon l'algorithme de Draver : \`\`\`${output}\`\`\``
                             )
                     ],
                     ephemeral: true

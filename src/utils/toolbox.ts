@@ -683,3 +683,15 @@ export const getItemsFromArray = <T>(array: T[], count: number): T[] => {
 
     return res;
 };
+export const chunkArray = <T>(array: T[], chunkSize: number): T[][] => {
+    const result = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        result.push(array.slice(i, i + chunkSize));
+    }
+    return result;
+};
+export const longest = <T extends string | number>(array: T[]): [number, T] => {
+    const item = array.sort((a, b) => b.toString().length - a.toString().length)[0];
+
+    return [item.toString().length, item];
+};
