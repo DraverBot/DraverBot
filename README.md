@@ -17,6 +17,8 @@ If you want to use Draver, follow these steps
 
 If you want to contribute to Draver, you can fork this repo and create pull requests, we will review them all
 
+Please use conventional commits for your commits ([VSCode extension](https://marketplace.visualstudio.com/items?itemName=vivaxy.vscode-conventional-commits))
+
 # Contributors
 
 <a href="https://github.com/DraverBot/Documentation/graphs/contributors">
