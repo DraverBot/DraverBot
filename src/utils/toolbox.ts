@@ -695,3 +695,12 @@ export const longest = <T extends string | number>(array: T[]): [number, T] => {
 
     return [item.toString().length, item];
 };
+export const filterArray = <O extends object>(array: O[], key: keyof O): O[] => {
+    const map = new Map(array.map((x) => [x[key], x])).values();
+    return Array.from(map);
+};
+export const shuffleArray = <T>(array: T[]): T[] => {
+    return (array.map((x) => [x, random({ max: 1, min: 0 })]) as [T, number][])
+        .sort((a, b) => a[1] - b[1])
+        .map((x) => x[0]);
+};
