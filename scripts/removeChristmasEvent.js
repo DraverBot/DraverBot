@@ -4,9 +4,11 @@ console.log(`\x1b[33mDeleting christmas event files\x1b[0m`);
 
 const files = [
     './src/structures/Calendar.ts',
-    './src/typings/calendar.ts',
+    './src/typings/christmas.ts',
     './src/commands/calendar.ts',
-    './src/cache/christmas.ts'
+    './src/cache/christmas.ts',
+    './src/commands/christmascard.ts',
+    './src/utils/christmas.ts'
 ];
 const folders = ['./images/christmas/sorted'];
 

@@ -17,3 +17,14 @@ export enum CalendarTables {
 }
 export type openReturn = 'ok' | 'no day' | 'already claimed';
 export type importReturn = 'not array' | 'not 24' | 'duplicate entries' | 'already defined' | 'ok';
+export enum cardAvatarPos {
+    TopLeft = 'top left',
+    TopRight = 'top right',
+    TopCenter = 'top middle',
+    CenterLeft = 'middle left',
+    CenterRight = 'middle right',
+    Center = 'middle middle',
+    BottomLeft = 'bottom left',
+    BottomRight = 'bottom right',
+    BottomCenter = 'bottom middle'
+}

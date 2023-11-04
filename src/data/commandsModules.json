@@ -62,5 +62,7 @@
     "salons-temporaires": "config",
     "invitations": "invitations",
     "admininvitations": "administration",
-    "modlogs": "moderation"
+    "modlogs": "moderation",
+    "calendrier": "fun",
+    "christmascard": "fun"
 }

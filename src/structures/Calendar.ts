@@ -8,7 +8,7 @@ import {
     calendarUser,
     importReturn,
     openReturn
-} from '../typings/calendar';
+} from '../typings/christmas';
 import query from '../utils/query';
 import { Collection } from 'discord.js';
 import { filterArray, notNull, sqliseString } from '../utils/toolbox';
