@@ -8,7 +8,12 @@ const files = [
     './src/commands/calendar.ts',
     './src/cache/christmas.ts'
 ];
+const folders = ['./images/christmas/sorted'];
 
+folders.forEach((folder) => {
+    console.log(`\x1b[2mDeleting ${folder} and its content\x1b[0m`);
+    rmSync(folder, { force: true, recursive: true });
+});
 files.forEach((file) => {
     console.log(`\x1b[2mDeleting ${file}\x1b[0m`);
     rmSync(file);
