@@ -4,19 +4,19 @@ import query from '../utils/query';
 import { random, sqliseString } from '../utils/toolbox';
 
 export class Gallery {
-    private cache: Collection<string, galleryArt>;
+    private _cache: Collection<string, galleryArt>;
 
     constructor() {
         this.init();
     }
 
     public get random() {
-        return this.cache.toJSON()[random({ max: this.cache.size })];
+        return this._cache.toJSON()[random({ max: this._cache.size })];
     }
     public add(art: galleryArt) {
         if (this.get(art.url)) return false;
 
-        this.cache.set(art.url, art);
+        this._cache.set(art.url, art);
         query(
             `INSERT INTO ${ChristmasTables.gallery} ( url, user, when, name ) VALUES ("${art.url}", "${sqliseString(
                 art.user
@@ -27,13 +27,16 @@ export class Gallery {
     public remove(url: string) {
         if (!this.get(url)) return false;
 
-        this.cache.delete(url);
+        this._cache.delete(url);
         query(`DELETE FROM ${ChristmasTables.gallery} WHERE url="${url}"`);
 
         return true;
     }
     public get(url: string) {
-        return this.cache.get(url);
+        return this._cache.get(url);
+    }
+    public get cache() {
+        return this._cache;
     }
 
     private async checkDb() {
@@ -46,7 +49,7 @@ export class Gallery {
         const datas = await query<galleryArt<true>>(`SELECT * FROM ${ChristmasTables.gallery}`);
         if (!datas) return console.log('No data in gallery art');
 
-        this.cache = new Collection(datas.map((x) => [x.url, { ...x, when: parseInt(x.when) }]));
+        this._cache = new Collection(datas.map((x) => [x.url, { ...x, when: parseInt(x.when) }]));
     }
     private async init() {
         await this.checkDb();
