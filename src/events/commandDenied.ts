@@ -2,6 +2,7 @@ import { AmethystEvent, commandDeniedCode } from 'amethystjs';
 import { EmbedBuilder, User } from 'discord.js';
 import replies, { replyKey } from '../data/replies';
 import { sendError, systemReply } from '../utils/toolbox';
+import SetRandomComponent from '../process/SetRandomComponent';
 
 export default new AmethystEvent('commandDenied', (command, reason) => {
     if (!command?.interaction) return;
@@ -27,7 +28,8 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
                     reason.metadata
                 )
             ],
-            ephemeral: true
+            ephemeral: true,
+            components: SetRandomComponent.process()
         }).catch(sendError);
         return;
     }
@@ -35,6 +37,7 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
     const reply = replies[reason.metadata?.replyKey](command.interaction?.user, reason.metadata ?? {});
     systemReply(command.interaction, {
         embeds: [reply],
-        ephemeral: true
+        ephemeral: true,
+        components: SetRandomComponent.process()
     }).catch(sendError);
 });
