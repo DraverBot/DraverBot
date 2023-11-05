@@ -109,8 +109,6 @@ export default new AmethystCommand({
     ctx.drawImage(image, 0, 0);
 
     const determinePosition = (): [number, number] => {
-        if (imgType.split('/')[0] === imgType.split('/')[1]) return [image.width / 2, image.height / 2];
-
         const map = {
             left: (radius * 2) / image.width,
             right: (image.width - radius * 2) / image.width,
@@ -124,8 +122,6 @@ export default new AmethystCommand({
             .reverse() as [number, number];
     };
     const determineTextPosition = (): [number, number] => {
-        if (imgType.split('/')[0] === imgType.split('/')[1]) return [image.width / 2, image.height / 2 + radius * 2];
-
         const multiplicator = 2.3;
         const map = {
             left: image.width - radius * multiplicator,
