@@ -1,5 +1,5 @@
 import { AmethystCommand, log4js } from 'amethystjs';
-import christmas from '../cache/christmas';
+import { calendar } from '../cache/christmas';
 import dev from '../preconditions/dev';
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ export default new AmethystCommand({
     preconditions: [dev]
 })
     .setChatInputRun(async ({ interaction }) => {
-        const rep = christmas.open(interaction.user.id);
+        const rep = calendar.open(interaction.user.id);
 
         if (rep === 'no day')
             return interaction
@@ -29,7 +29,7 @@ export default new AmethystCommand({
 
         interaction
             .reply({
-                content: `🎁 | Vous avez récupéré **${christmas.today?.reward}**`,
+                content: `🎁 | Vous avez récupéré **${calendar.today?.reward}**`,
                 ephemeral: true
             })
             .catch(log4js.trace);
@@ -43,7 +43,7 @@ export default new AmethystCommand({
         if (!content)
             return message.reply(`:x: | Je n'ai pas pu télécharger le contenu de votre fichier`).catch(log4js.trace);
 
-        const rep = christmas.importFrom(content.data);
+        const rep = calendar.importFrom(content.data);
         if (rep === 'already defined') return message.reply(`:x: | Les jours sont déjà définis`).catch(log4js.trace);
         if (rep === 'not array') return message.reply(`:x: | Ce n'est pas un tableau JSON valide`).catch(log4js.trace);
         if (rep === 'not 24')

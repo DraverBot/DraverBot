@@ -12,8 +12,9 @@ export type calendarDatabase<Raw extends boolean> = {
     days: If<Raw, string, calendarCache>;
     storage: If<Raw, string, calendarStorage>;
 };
-export enum CalendarTables {
-    storage = 'calendar_storage'
+export enum ChristmasTables {
+    storage = 'calendar_storage',
+    gallery = 'christmas_gallery'
 }
 export type openReturn = 'ok' | 'no day' | 'already claimed';
 export type importReturn = 'not array' | 'not 24' | 'duplicate entries' | 'already defined' | 'ok';
@@ -28,3 +29,9 @@ export enum cardAvatarPos {
     BottomRight = 'bottom right',
     BottomCenter = 'bottom middle'
 }
+export type galleryArt<R extends boolean = false> = {
+    url: string;
+    user: string;
+    when: If<R, string, number>;
+    name: string;
+};

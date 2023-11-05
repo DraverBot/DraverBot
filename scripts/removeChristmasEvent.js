@@ -8,7 +8,9 @@ const files = [
     './src/commands/calendar.ts',
     './src/cache/christmas.ts',
     './src/commands/christmascard.ts',
-    './src/utils/christmas.ts'
+    './src/utils/christmas.ts',
+    './src/commands/christmasart.ts',
+    './src/structures/Gallery.ts'
 ];
 const folders = ['./images/christmas/sorted'];
 

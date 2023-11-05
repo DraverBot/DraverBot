@@ -1,6 +1,6 @@
 import { log4js } from 'amethystjs';
 import {
-    CalendarTables,
+    ChristmasTables,
     calendarCache,
     calendarDatabase,
     calendarDay,
@@ -149,14 +149,14 @@ export class Calendar {
 
         if (!this.hasRow) {
             const res = await query(
-                `INSERT INTO ${CalendarTables.storage} ( days, storage ) VALUES ( "${days}", "${storage}" )`
+                `INSERT INTO ${ChristmasTables.storage} ( days, storage ) VALUES ( "${days}", "${storage}" )`
             ).catch(log4js.trace);
 
             const ok = !!res && res?.affectedRows > 0;
             if (ok) this.hasRow = true;
             return ok;
         } else {
-            const res = await query(`UPDATE ${CalendarTables.storage} SET days="${days}", storage="${storage}"`).catch(
+            const res = await query(`UPDATE ${ChristmasTables.storage} SET days="${days}", storage="${storage}"`).catch(
                 log4js.trace
             );
 
@@ -164,12 +164,12 @@ export class Calendar {
         }
     }
     private async checkDb() {
-        await query(`CREATE TABLE IF NOT EXISTS ${CalendarTables.storage} ( days LONGTEXT, storage LONGTEXT )`);
+        await query(`CREATE TABLE IF NOT EXISTS ${ChristmasTables.storage} ( days LONGTEXT, storage LONGTEXT )`);
         return true;
     }
     private async init() {
         await this.checkDb();
-        const datas = await query<calendarDatabase<true>>(`SELECT * FROM ${CalendarTables.storage}`).catch(
+        const datas = await query<calendarDatabase<true>>(`SELECT * FROM ${ChristmasTables.storage}`).catch(
             log4js.trace
         );
         if (!datas) return console.log(`No data for calendar`);

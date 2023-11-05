@@ -1,3 +1,5 @@
 import { Calendar } from '../structures/Calendar';
+import { Gallery } from '../structures/Gallery';
 
-export default new Calendar();
+export const calendar = new Calendar();
+export const gallery = new Gallery();
