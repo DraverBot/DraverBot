@@ -290,14 +290,14 @@
     moment "*"
 
 "@types/ms@^0.7.31":
-  version "0.7.33"
-  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.33.tgz#80bf1da64b15f21fd8c1dc387c31929317d99ee9"
-  integrity sha512-AuHIyzR5Hea7ij0P9q7vx7xu4z0C28ucwjAZC0ja7JhINyCnOw8/DnvAPQQ9TfOlCtZAmCERKQX9+o1mgQhuOQ==
+  version "0.7.34"
+  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
+  integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
 
 "@types/mysql@^2.15.21":
-  version "2.15.23"
-  resolved "https://registry.yarnpkg.com/@types/mysql/-/mysql-2.15.23.tgz#67d6a8d6a806427b13bbc9579b66006986fe76bd"
-  integrity sha512-l3mEJpU1VNkt7uJP2vYWZrfjxlzQtwJNKSWe+7sgChuDjFoyRfu263f9pBDlhFPmyda23o8GNGq6FL5CHSd/QA==
+  version "2.15.24"
+  resolved "https://registry.yarnpkg.com/@types/mysql/-/mysql-2.15.24.tgz#ccdb7de49567d4bb5029b6f13a49342167b0370a"
+  integrity sha512-I0qULi8JBEg0oso69Fe4H4QPR+IdE0yRhZLu3uRhGwQ92m2Epz1cSD5jnXY0nMeZQKd61U8EvnOVMbNE74o3Kw==
   dependencies:
     "@types/node" "*"
 
