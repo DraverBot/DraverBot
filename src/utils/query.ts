@@ -7,6 +7,7 @@ import { boolEmoji, codeBox } from './toolbox';
 import logs from '../data/sqllogs.json';
 import { sqlLog } from '../typings/functions';
 import { writeFileSync } from 'fs';
+import pools from '../cache/pools';
 config();
 
 export const database = createConnection(process.env);
@@ -66,9 +67,10 @@ export default function <T = DefaultQueryResult>(query: string, parameters?: any
             resolve(request);
         };
         if (!!parameters && parameters.length > 0) {
-            database.query(query, parameters, callback);
+            pools.pool.pool.query(query, parameters, callback);
         } else {
-            database.query(query, callback);
+            pools.pool.pool.query(query, callback);
         }
+        pools.increaseIndex();
     });
 }

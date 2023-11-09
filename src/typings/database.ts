@@ -363,3 +363,4 @@ export type afk<Raw extends boolean = false> = {
     reason: string;
     afkat: If<Raw, string, number>;
 };
+export type poolOptions = { pools?: number };
