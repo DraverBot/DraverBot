@@ -19,8 +19,8 @@ import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, r
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
 export default new DraverCommand({
-    name: "help",
-    module: "utils",
+    name: 'help',
+    module: 'utils',
     description: "Affiche la page d'aide des commandes",
     preconditions: [moduleEnabled],
     options: [

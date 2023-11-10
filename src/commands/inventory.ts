@@ -9,8 +9,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "inventaire",
-    module: "economy",
+    name: 'inventaire',
+    module: 'economy',
     description: 'Gère votre inventaire',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

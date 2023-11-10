@@ -6,8 +6,8 @@ import { basicEmbed, hexToRgb, isValidHexColor, random } from '../utils/toolbox'
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "couleur",
-    module: "utils",
+    name: 'couleur',
+    module: 'utils',
     description: 'Montre une couleur',
     options: [
         {

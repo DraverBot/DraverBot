@@ -36,8 +36,8 @@ import {
 } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "interserver",
-    module: "interchat",
+    name: 'interserver',
+    module: 'interchat',
     description: "Gère le système d'interserveur sur le serveur",
     options: [
         {

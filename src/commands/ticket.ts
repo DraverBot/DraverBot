@@ -7,8 +7,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "ticket",
-    module: "tickets",
+    name: 'ticket',
+    module: 'tickets',
     description: 'Interagissez avec le système de tickets',
     options: [
         {

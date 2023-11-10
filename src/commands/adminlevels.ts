@@ -23,8 +23,8 @@ import { ButtonIds } from '../typings/buttons';
 import GetChannel from '../process/GetChannel';
 
 export default new DraverCommand({
-    name: "adminlevel",
-    module: "administration",
+    name: 'adminlevel',
+    module: 'administration',
     description: 'Gère les niveaux du serveur',
     permissions: ['ManageGuild', 'ManageMessages'],
     preconditions: [preconditions.GuildOnly, moduleEnabled, economyCheck],

@@ -10,8 +10,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "ban",
-    module: "moderation",
+    name: 'ban',
+    module: 'moderation',
     description: 'Banni un membre du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     options: [

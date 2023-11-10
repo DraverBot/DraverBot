@@ -5,8 +5,8 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import GenerateMinesweeperBoard from '../process/GenerateMinesweeperBoard';
 
 export default new DraverCommand({
-    name: "démineur",
-    module: "fun",
+    name: 'démineur',
+    module: 'fun',
     description: 'Joue au démineur sur Discord',
     preconditions: [moduleEnabled],
     options: [

@@ -10,8 +10,8 @@ import { getRolePerm, reportToBender } from '../utils/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "censurer",
-    module: "moderation",
+    name: 'censurer',
+    module: 'moderation',
     description: "Censure le pseudo d'un membre",
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     permissions: ['ManageNicknames'],

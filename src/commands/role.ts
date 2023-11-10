@@ -18,8 +18,8 @@ import { permType } from '../typings/functions';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "role",
-    module: "administration",
+    name: 'role',
+    module: 'administration',
     description: 'Gère les rôles du serveur',
     permissions: ['ManageRoles'],
     clientPermissions: ['ManageRoles'],

@@ -8,8 +8,8 @@ import replies from '../data/replies';
 import { getRolePerm } from '../utils/functions';
 
 export default new DraverCommand({
-    name: "clear",
-    module: "moderation",
+    name: 'clear',
+    module: 'moderation',
     description: 'Supprime des messages',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     clientPermissions: ['ManageMessages'],

@@ -19,8 +19,8 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "énigma",
-    module: "fun",
+    name: 'énigma',
+    module: 'fun',
     description: 'Chiffre un code avec énigma',
     preconditions: [moduleEnabled],
     options: [

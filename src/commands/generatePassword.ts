@@ -8,8 +8,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "password",
-    module: "misc",
+    name: 'password',
+    module: 'misc',
     description: 'Gère vos mots de passe',
     options: [
         {

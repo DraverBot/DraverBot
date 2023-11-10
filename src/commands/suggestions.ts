@@ -6,8 +6,8 @@ import { basicEmbed, codeBox, evokerColor, hint, pingChan } from '../utils/toolb
 import { util } from '../utils/functions';
 
 export default new DraverCommand({
-    name: "suggestion",
-    module: "utils",
+    name: 'suggestion',
+    module: 'utils',
     description: 'Fait une suggestion sur le serveur',
     options: [
         {

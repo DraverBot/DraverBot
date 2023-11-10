@@ -8,8 +8,8 @@ import { weatherJS } from '../typings/apis';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "météo",
-    module: "utils",
+    name: 'météo',
+    module: 'utils',
     description: "Affiche la météo d'une ville",
     options: [
         {

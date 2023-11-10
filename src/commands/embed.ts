@@ -40,8 +40,8 @@ import {
 } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "embed",
-    module: "utils",
+    name: 'embed',
+    module: 'utils',
     description: 'Fabrique un embed',
     permissions: ['ManageMessages'],
     clientPermissions: ['ManageMessages'],

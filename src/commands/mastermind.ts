@@ -7,8 +7,8 @@ import masterminds from '../maps/masterminds';
 import { basicEmbed, buildButton, row } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "mastermind",
-    module: "fun",
+    name: 'mastermind',
+    module: 'fun',
     description: 'Lance une partie de Mastermind',
     options: [
         {

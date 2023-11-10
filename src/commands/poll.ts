@@ -21,8 +21,8 @@ import time from '../preconditions/time';
 import ms from 'ms';
 
 export default new DraverCommand({
-    name: "sondage",
-    module: "utils",
+    name: 'sondage',
+    module: 'utils',
     description: 'Fait un sondage sur le serveur',
     options: [
         {

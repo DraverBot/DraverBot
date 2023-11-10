@@ -7,8 +7,8 @@ import { util } from '../utils/functions';
 import { basicEmbed, numerize, plurial, subcmd } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "banque",
-    module: "economy",
+    name: 'banque',
+    module: 'economy',
     description: 'Gère votre banque',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

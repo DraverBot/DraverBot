@@ -8,8 +8,8 @@ import { yesNoRow } from '../data/buttons';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "shifumi",
-    module: "fun",
+    name: 'shifumi',
+    module: 'fun',
     description: 'Joue au shifumi',
     options: [
         {

@@ -24,8 +24,8 @@ import { taskState } from '../typings/database';
 import { color } from '../utils/functions';
 
 export default new DraverCommand({
-    name: "tache",
-    module: "administration",
+    name: 'tache',
+    module: 'administration',
     description: 'Gère les tâches sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, time],
     permissions: ['ManageGuild'],

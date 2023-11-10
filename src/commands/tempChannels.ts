@@ -6,8 +6,8 @@ import replies from '../data/replies';
 import { basicEmbed, confirm, pingChan, plurial } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "salons-temporaires",
-    module: "config",
+    name: 'salons-temporaires',
+    module: 'config',
     description: 'Gère les salons temporaires',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

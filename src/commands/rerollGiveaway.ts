@@ -6,8 +6,8 @@ import replies from '../data/replies';
 import { GuildMember } from 'discord.js';
 
 export default new DraverCommand({
-    name: "Reroll le giveaway",
-    module: "giveaways",
+    name: 'Reroll le giveaway',
+    module: 'giveaways',
     description: 'Reroll le giveaway',
     permissions: ['ManageGuild'],
     preconditions: [preconditions.GuildOnly, moduleEnabled]

@@ -11,8 +11,8 @@ enum Pof {
 }
 
 export default new DraverCommand({
-    name: "pile-ou-face",
-    module: "fun",
+    name: 'pile-ou-face',
+    module: 'fun',
     description: 'Joue à pile ou face',
     options: [
         {

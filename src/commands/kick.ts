@@ -10,8 +10,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "kick",
-    module: "moderation",
+    name: 'kick',
+    module: 'moderation',
     description: 'Expulse un membre du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     options: [

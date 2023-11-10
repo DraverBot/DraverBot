@@ -5,8 +5,8 @@ import query from '../utils/query';
 import { resizeString } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "sql",
-    module: "undefined",
+    name: 'sql',
+    module: 'undefined',
     preconditions: [dev],
     description: 'Fait une requête SQL'
 }).setMessageRun(async ({ message, options }) => {

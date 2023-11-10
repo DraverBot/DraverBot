@@ -8,8 +8,8 @@ import { ChessPlayer, ChessStats, LichessStats } from '../typings/apis';
 import { basicEmbed, displayDate, numerize, plurial } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "statistiques",
-    module: "fun",
+    name: 'statistiques',
+    module: 'fun',
     description: "Envoie les statistiques d'un joueur d'un jeu",
     preconditions: [moduleEnabled],
     options: [

@@ -7,8 +7,8 @@ import { basicEmbed, evokerColor, random, systemReply, waitForReplies } from '..
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "roulette-russe",
-    module: "fun",
+    name: 'roulette-russe',
+    module: 'fun',
     description: 'Joue à la roulette russe sur Discord',
     options: [
         {

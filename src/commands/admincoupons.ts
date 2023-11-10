@@ -23,8 +23,8 @@ import { util } from '../utils/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "admincoupons",
-    module: "administration",
+    name: 'admincoupons',
+    module: 'administration',
     description: 'Gère les coupons sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],

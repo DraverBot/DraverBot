@@ -6,8 +6,8 @@ import { basicEmbed, checkPerms, confirm, numerize, pingUser, plurial } from '..
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "admininvitations",
-    module: "administration",
+    name: 'admininvitations',
+    module: 'administration',
     description: 'Gère les invitations du serveur',
     options: [
         {

@@ -20,8 +20,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "rappel",
-    module: "misc",
+    name: 'rappel',
+    module: 'misc',
     description: 'Gère les rappels',
     options: [
         {

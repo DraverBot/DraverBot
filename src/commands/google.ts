@@ -7,8 +7,8 @@ import NSFWwords from '../data/NSFWwords.json';
 import { util } from '../utils/functions';
 
 export default new DraverCommand({
-    name: "google",
-    module: "misc",
+    name: 'google',
+    module: 'misc',
     description: 'Fait une recherche google',
     options: [
         {

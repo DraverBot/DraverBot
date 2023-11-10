@@ -8,8 +8,8 @@ type allowedImageSizes = 2048 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 4096;
 const sizes = [256, 512, 1024, 2048, 4096];
 
 export default new DraverCommand({
-    name: "avatar",
-    module: "information",
+    name: 'avatar',
+    module: 'information',
     description: "Affiche l'avatar d'un membre du serveur",
     preconditions: [moduleEnabled],
     options: [

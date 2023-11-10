@@ -10,8 +10,8 @@ import GetMessage from '../process/GetMessage';
 import masterminds from '../maps/masterminds';
 
 export default new DraverCommand({
-    name: "autorole",
-    module: "administration",
+    name: 'autorole',
+    module: 'administration',
     description: 'Gère les rôles à réaction',
     options: [
         {

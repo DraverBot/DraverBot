@@ -9,8 +9,8 @@ import query from '../utils/query';
 import { basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "adminblague",
-    module: "administration",
+    name: 'adminblague',
+    module: 'administration',
     description: 'Gère les blagues sur le serveur',
     options: [
         {

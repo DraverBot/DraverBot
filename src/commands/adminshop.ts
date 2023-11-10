@@ -37,8 +37,8 @@ import replies from '../data/replies';
 import { confirmReturn } from '../typings/functions';
 
 export default new DraverCommand({
-    name: "adminmagasin",
-    module: "economy",
+    name: 'adminmagasin',
+    module: 'economy',
     description: 'Configure le magasin du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validRole],
     permissions: ['ManageGuild'],

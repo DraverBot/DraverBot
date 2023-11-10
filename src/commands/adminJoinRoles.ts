@@ -7,8 +7,8 @@ import query from '../utils/query';
 import { DatabaseTables, joinRoles } from '../typings/database';
 
 export default new DraverCommand({
-    name: "adminjoinroles",
-    module: "administration",
+    name: 'adminjoinroles',
+    module: 'administration',
     description: "Configure les rôles d'arrivée sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild', 'ManageRoles'],

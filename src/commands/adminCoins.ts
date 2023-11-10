@@ -10,8 +10,8 @@ import query from '../utils/query';
 import { addModLog, basicEmbed, confirm, numerize, row, subcmd, waitForReplies } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "admincoins",
-    module: "administration",
+    name: 'admincoins',
+    module: 'administration',
     description: `Gère les ${util('coins')} sur le serveur`,
     preconditions: [preconditions.GuildOnly, moduleEnabled, economyCheck],
     options: [

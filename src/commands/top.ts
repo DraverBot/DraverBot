@@ -8,8 +8,8 @@ import { util } from '../utils/functions';
 import { basicEmbed, evokerColor, numerize, pagination, plurial, subcmd } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "classement",
-    module: "information",
+    name: 'classement',
+    module: 'information',
     description: 'Affiche les classements du serveur',
     options: [
         {

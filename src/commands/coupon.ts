@@ -17,8 +17,8 @@ import { util } from '../utils/functions';
 import { yesNoRow } from '../data/buttons';
 
 export default new DraverCommand({
-    name: "coupon",
-    module: "economy",
+    name: 'coupon',
+    module: 'economy',
     description: 'Réclame un coupon',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

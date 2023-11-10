@@ -32,8 +32,8 @@ import replies from '../data/replies';
 import { confirmReturn } from '../typings/functions';
 
 export default new DraverCommand({
-    name: "adminanonymat",
-    module: "config",
+    name: 'adminanonymat',
+    module: 'config',
     description: 'Configure les salons anonymes du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],

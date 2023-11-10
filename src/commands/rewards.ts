@@ -10,8 +10,8 @@ import replies from '../data/replies';
 import { levelRewardType } from '../typings/database';
 
 export default new DraverCommand({
-    name: "récompenses",
-    module: "config",
+    name: 'récompenses',
+    module: 'config',
     description: 'Gère les récompenses du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],

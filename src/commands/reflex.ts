@@ -6,8 +6,8 @@ import { ComponentType, GuildMember, Message } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "réflexe",
-    module: "fun",
+    name: 'réflexe',
+    module: 'fun',
     description: 'Testez vos réflexes',
     preconditions: [moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

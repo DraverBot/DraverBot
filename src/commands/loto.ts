@@ -9,8 +9,8 @@ import replies from '../data/replies';
 import { basicEmbed, confirm, displayDate, numerize, plurial } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "loto",
-    module: "economy",
+    name: 'loto',
+    module: 'economy',
     description: 'Joue au loto sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, time],
     options: [

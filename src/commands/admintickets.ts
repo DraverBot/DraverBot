@@ -21,8 +21,8 @@ import { ticketChannels } from '../typings/database';
 import { confirmReturn } from '../typings/functions';
 
 export default new DraverCommand({
-    name: "admintickets",
-    module: "administration",
+    name: 'admintickets',
+    module: 'administration',
     description: 'Gère les tickets sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],

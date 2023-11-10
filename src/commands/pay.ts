@@ -7,8 +7,8 @@ import { util } from '../utils/functions';
 import { basicEmbed, confirm, evokerColor, numerize, random } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "pay",
-    module: "economy",
+    name: 'pay',
+    module: 'economy',
     description: "Envoie de l'argent à quelqu'un sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

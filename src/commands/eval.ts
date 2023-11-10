@@ -4,8 +4,8 @@ import dev from '../preconditions/dev';
 import { codeBox } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "eval",
-    module: "undefined",
+    name: 'eval',
+    module: 'undefined',
     preconditions: [dev],
     description: 'Eval'
 }).setMessageRun(async ({ message, options }) => {

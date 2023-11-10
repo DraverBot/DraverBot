@@ -36,8 +36,8 @@ import { variableName, variablesData, variablesGroupNames } from '../data/vars';
 import GetImage from '../process/GetImage';
 
 export default new DraverCommand({
-    name: "configurer",
-    module: "config",
+    name: 'configurer',
+    module: 'config',
     description: 'Configure un paramètre de Draver',
     preconditions: [preconditions.GuildOnly],
     permissions: ['Administrator'],

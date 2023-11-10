@@ -5,8 +5,8 @@ import { util } from '../utils/functions';
 import { basicEmbed, evokerColor, numerize, random } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "portefeuille",
-    module: "economy",
+    name: 'portefeuille',
+    module: 'economy',
     description: 'Affiche votre portefeuille sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

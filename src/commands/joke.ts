@@ -10,8 +10,8 @@ import { basicEmbed, capitalize, dbBool, evokerColor, notNull } from '../utils/t
 import { Category } from 'blagues-api/dist/types/types';
 
 export default new DraverCommand({
-    name: "blague",
-    module: "fun",
+    name: 'blague',
+    module: 'fun',
     description: 'Affiche une blague',
     options: [
         {

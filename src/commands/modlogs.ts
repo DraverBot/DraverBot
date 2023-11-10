@@ -26,8 +26,8 @@ import {
 import moduleEnabled from '../preconditions/moduleEnabled';
 
 export default new DraverCommand({
-    name: "modlogs",
-    module: "moderation",
+    name: 'modlogs',
+    module: 'moderation',
     description: 'Affiche les logs du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     permissions: ['ViewAuditLog', 'ManageGuild'],

@@ -8,8 +8,8 @@ import { reportToBender, util } from '../utils/functions';
 import { addModLog, basicEmbed } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "pseudo",
-    module: "moderation",
+    name: 'pseudo',
+    module: 'moderation',
     description: "Change le pseudo d'un membre",
     options: [
         {

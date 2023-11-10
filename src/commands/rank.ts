@@ -8,8 +8,8 @@ import { basicEmbed, numerize, plurial } from '../utils/toolbox';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "rank",
-    module: "level",
+    name: 'rank',
+    module: 'level',
     description: 'Affiche les informations de niveaux',
     options: [
         {

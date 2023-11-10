@@ -23,8 +23,8 @@ import query from '../utils/query';
 import { ButtonIds } from '../typings/buttons';
 
 export default new DraverCommand({
-    name: "note",
-    module: "moderation",
+    name: 'note',
+    module: 'moderation',
     description: 'Ajoute une note à un membre',
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     permissions: ['ManageGuild'],

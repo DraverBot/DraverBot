@@ -28,8 +28,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "avertissement",
-    module: "moderation",
+    name: 'avertissement',
+    module: 'moderation',
     description: "Gère les avertissements d'un membre",
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     permissions: ['ManageGuild'],

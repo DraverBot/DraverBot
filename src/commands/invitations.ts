@@ -5,8 +5,8 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { basicEmbed, numerize, pingUser, plurial } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "invitations",
-    module: "invitations",
+    name: 'invitations',
+    module: 'invitations',
     description: "Affiche les invitations d'un membre",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

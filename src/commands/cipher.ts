@@ -10,8 +10,8 @@ import { rotors, plugboard as defaultPlugboard, reflector } from '../data/enigma
 import { Enigma, Plugboard, Reflector, Rotor } from 'enigma-machine';
 
 export default new DraverCommand({
-    name: "chiffrage",
-    module: "fun",
+    name: 'chiffrage',
+    module: 'fun',
     description: 'Chiffre des messages',
     preconditions: [moduleEnabled],
     options: [

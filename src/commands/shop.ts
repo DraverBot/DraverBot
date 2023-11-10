@@ -9,8 +9,8 @@ import replies from '../data/replies';
 import { ShopManagerErrorReturns } from '../typings/managers';
 
 export default new DraverCommand({
-    name: "magasin",
-    module: "economy",
+    name: 'magasin',
+    module: 'economy',
     description: 'Interagit avec le magasin',
     options: [
         {

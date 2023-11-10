@@ -33,8 +33,8 @@ import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
 export default new DraverCommand({
-    name: "salon",
-    module: "administration",
+    name: 'salon',
+    module: 'administration',
     description: 'Gère un salon',
     permissions: ['ManageChannels'],
     clientPermissions: ['ManageChannels'],

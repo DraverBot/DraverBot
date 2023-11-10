@@ -6,8 +6,8 @@ import { moduleName as ModuleName } from '../utils/functions';
 import { basicEmbed, boolEmoji } from '../utils/toolbox';
 
 export default new DraverCommand({
-    name: "module",
-    module: "config",
+    name: 'module',
+    module: 'config',
     description: 'Affiche et configure les modules du serveur',
     options: [
         {
