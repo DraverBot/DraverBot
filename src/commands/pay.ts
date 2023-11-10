@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import replies from '../data/replies';
@@ -5,8 +6,9 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import { util } from '../utils/functions';
 import { basicEmbed, confirm, evokerColor, numerize, random } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'pay',
+export default new DraverCommand({
+    name: "pay",
+    module: "economy",
     description: "Envoie de l'argent à quelqu'un sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

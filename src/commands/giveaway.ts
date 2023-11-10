@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
@@ -41,8 +42,9 @@ import { confirmReturn } from '../typings/functions';
 import { giveaway, giveawayInput } from '../typings/giveaway';
 import SendAndDelete from '../process/SendAndDelete';
 
-export default new AmethystCommand({
-    name: 'giveaway',
+export default new DraverCommand({
+    name: "giveaway",
+    module: "giveaways",
     description: 'Gère les giveaways sur le serveur',
     permissions: ['ManageChannels', 'ManageGuild'],
     preconditions: [preconditions.GuildOnly, moduleEnabled, timePrecondition],

@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
@@ -31,8 +32,9 @@ import { ChannelCreateChannelTypeOptions, ChannelMoveSens } from '../typings/com
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
-    name: 'salon',
+export default new DraverCommand({
+    name: "salon",
+    module: "administration",
     description: 'Gère un salon',
     permissions: ['ManageChannels'],
     clientPermissions: ['ManageChannels'],

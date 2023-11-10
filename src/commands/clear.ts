@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, ChannelType, Collection, GuildMember, Message, TextChannel } from 'discord.js';
@@ -6,8 +7,9 @@ import { addModLog, basicEmbed, checkPerms, notNull, pingChan, pingUser, plurial
 import replies from '../data/replies';
 import { getRolePerm } from '../utils/functions';
 
-export default new AmethystCommand({
-    name: 'clear',
+export default new DraverCommand({
+    name: "clear",
+    module: "moderation",
     description: 'Supprime des messages',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     clientPermissions: ['ManageMessages'],

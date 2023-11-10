@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
@@ -24,8 +25,9 @@ import {
 } from '../utils/toolbox';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
-    name: 'modlogs',
+export default new DraverCommand({
+    name: "modlogs",
+    module: "moderation",
     description: 'Affiche les logs du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     permissions: ['ViewAuditLog', 'ManageGuild'],

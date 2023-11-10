@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
@@ -35,8 +36,9 @@ import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
 import { confirmReturn } from '../typings/functions';
 
-export default new AmethystCommand({
-    name: 'adminmagasin',
+export default new DraverCommand({
+    name: "adminmagasin",
+    module: "economy",
     description: 'Configure le magasin du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validRole],
     permissions: ['ManageGuild'],

@@ -1,11 +1,13 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, confirm } from '../utils/toolbox';
 import replies from '../data/replies';
 import { GuildMember } from 'discord.js';
 
-export default new AmethystCommand({
-    name: 'Supprimer le giveaway',
+export default new DraverCommand({
+    name: "Supprimer le giveaway",
+    module: "giveaways",
     description: 'Supprime le giveaway',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild']

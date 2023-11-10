@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import { WordGenerator } from '../managers/Generator';
@@ -6,8 +7,9 @@ import { basicEmbed, confirm, evokerColor, paginatorize, subcmd, systemReply } f
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
-    name: 'password',
+export default new DraverCommand({
+    name: "password",
+    module: "misc",
     description: 'Gère vos mots de passe',
     options: [
         {

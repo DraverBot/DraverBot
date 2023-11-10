@@ -1,11 +1,13 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, checkPerms, confirm, numerize, pingUser, plurial } from '../utils/toolbox';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
-    name: 'admininvitations',
+export default new DraverCommand({
+    name: "admininvitations",
+    module: "administration",
     description: 'Gère les invitations du serveur',
     options: [
         {

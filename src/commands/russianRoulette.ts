@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
@@ -5,8 +6,9 @@ import replies from '../data/replies';
 import { basicEmbed, evokerColor, random, systemReply, waitForReplies } from '../utils/toolbox';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
-    name: 'roulette-russe',
+export default new DraverCommand({
+    name: "roulette-russe",
+    module: "fun",
     description: 'Joue à la roulette russe sur Discord',
     options: [
         {

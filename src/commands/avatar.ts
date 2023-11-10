@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, wait } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -6,8 +7,9 @@ import { buildButton, row } from '../utils/toolbox';
 type allowedImageSizes = 2048 | 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 4096;
 const sizes = [256, 512, 1024, 2048, 4096];
 
-export default new AmethystCommand({
-    name: 'avatar',
+export default new DraverCommand({
+    name: "avatar",
+    module: "information",
     description: "Affiche l'avatar d'un membre du serveur",
     preconditions: [moduleEnabled],
     options: [

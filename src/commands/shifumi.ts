@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
@@ -6,8 +7,9 @@ import { basicEmbed, buildButton, nickname, pingUser, random, row, waitForReplie
 import { yesNoRow } from '../data/buttons';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
-    name: 'shifumi',
+export default new DraverCommand({
+    name: "shifumi",
+    module: "fun",
     description: 'Joue au shifumi',
     options: [
         {

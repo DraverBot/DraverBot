@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
@@ -30,8 +31,9 @@ import { cancelButton } from '../data/buttons';
 import replies from '../data/replies';
 import { confirmReturn } from '../typings/functions';
 
-export default new AmethystCommand({
-    name: 'adminanonymat',
+export default new DraverCommand({
+    name: "adminanonymat",
+    module: "config",
     description: 'Configure les salons anonymes du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],

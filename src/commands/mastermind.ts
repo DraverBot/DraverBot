@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -5,8 +6,9 @@ import { Mastermind } from '../structures/Mastermind';
 import masterminds from '../maps/masterminds';
 import { basicEmbed, buildButton, row } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'mastermind',
+export default new DraverCommand({
+    name: "mastermind",
+    module: "fun",
     description: 'Lance une partie de Mastermind',
     options: [
         {

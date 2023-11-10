@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -6,8 +7,9 @@ import replies from '../data/replies';
 import { ChessPlayer, ChessStats, LichessStats } from '../typings/apis';
 import { basicEmbed, displayDate, numerize, plurial } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'statistiques',
+export default new DraverCommand({
+    name: "statistiques",
+    module: "fun",
     description: "Envoie les statistiques d'un joueur d'un jeu",
     preconditions: [moduleEnabled],
     options: [

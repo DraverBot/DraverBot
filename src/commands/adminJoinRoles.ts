@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, GuildMember, Role } from 'discord.js';
@@ -5,8 +6,9 @@ import { basicEmbed, evokerColor, hint, numerize, pingRole, plurial, sqliseStrin
 import query from '../utils/query';
 import { DatabaseTables, joinRoles } from '../typings/database';
 
-export default new AmethystCommand({
-    name: 'adminjoinroles',
+export default new DraverCommand({
+    name: "adminjoinroles",
+    module: "administration",
     description: "Configure les rôles d'arrivée sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild', 'ManageRoles'],

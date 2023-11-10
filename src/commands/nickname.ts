@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
@@ -6,8 +7,9 @@ import validProof from '../preconditions/validProof';
 import { reportToBender, util } from '../utils/functions';
 import { addModLog, basicEmbed } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'pseudo',
+export default new DraverCommand({
+    name: "pseudo",
+    module: "moderation",
     description: "Change le pseudo d'un membre",
     options: [
         {

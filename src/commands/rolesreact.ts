@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, GuildMember, Message, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -8,8 +9,9 @@ import RoleReactConfigPanel from '../process/RoleReactConfigPanel';
 import GetMessage from '../process/GetMessage';
 import masterminds from '../maps/masterminds';
 
-export default new AmethystCommand({
-    name: 'autorole',
+export default new DraverCommand({
+    name: "autorole",
+    module: "administration",
     description: 'Gère les rôles à réaction',
     options: [
         {

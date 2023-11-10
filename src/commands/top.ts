@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import replies from '../data/replies';
@@ -6,8 +7,9 @@ import { moduleType } from '../typings/database';
 import { util } from '../utils/functions';
 import { basicEmbed, evokerColor, numerize, pagination, plurial, subcmd } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'classement',
+export default new DraverCommand({
+    name: "classement",
+    module: "information",
     description: 'Affiche les classements du serveur',
     options: [
         {

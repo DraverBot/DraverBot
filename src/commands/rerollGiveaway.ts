@@ -1,11 +1,13 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed } from '../utils/toolbox';
 import replies from '../data/replies';
 import { GuildMember } from 'discord.js';
 
-export default new AmethystCommand({
-    name: 'Reroll le giveaway',
+export default new DraverCommand({
+    name: "Reroll le giveaway",
+    module: "giveaways",
     description: 'Reroll le giveaway',
     permissions: ['ManageGuild'],
     preconditions: [preconditions.GuildOnly, moduleEnabled]

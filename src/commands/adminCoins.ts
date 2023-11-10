@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
 import { inBank, inPocket, yesNoRow } from '../data/buttons';
@@ -8,8 +9,9 @@ import { util } from '../utils/functions';
 import query from '../utils/query';
 import { addModLog, basicEmbed, confirm, numerize, row, subcmd, waitForReplies } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'admincoins',
+export default new DraverCommand({
+    name: "admincoins",
+    module: "administration",
     description: `Gère les ${util('coins')} sur le serveur`,
     preconditions: [preconditions.GuildOnly, moduleEnabled, economyCheck],
     options: [

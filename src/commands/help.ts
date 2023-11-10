@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, log4js, preconditions } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
@@ -17,8 +18,9 @@ import { getRolePerm, Module, moduleName, util } from '../utils/functions';
 import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
-export default new AmethystCommand({
-    name: 'help',
+export default new DraverCommand({
+    name: "help",
+    module: "utils",
     description: "Affiche la page d'aide des commandes",
     preconditions: [moduleEnabled],
     options: [

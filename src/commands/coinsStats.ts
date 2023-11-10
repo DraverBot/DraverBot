@@ -1,10 +1,12 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { util } from '../utils/functions';
 import { basicEmbed, evokerColor, numerize, random } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'portefeuille',
+export default new DraverCommand({
+    name: "portefeuille",
+    module: "economy",
     description: 'Affiche votre portefeuille sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

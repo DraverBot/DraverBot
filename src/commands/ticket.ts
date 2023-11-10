@@ -1,3 +1,4 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -5,8 +6,9 @@ import { basicEmbed, confirm, subcmd, systemReply } from '../utils/toolbox';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
-    name: 'ticket',
+export default new DraverCommand({
+    name: "ticket",
+    module: "tickets",
     description: 'Interagissez avec le système de tickets',
     options: [
         {

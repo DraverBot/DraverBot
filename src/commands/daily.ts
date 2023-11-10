@@ -1,10 +1,12 @@
+import { DraverCommand } from '../structures/DraverCommand';
 import { AmethystCommand, preconditions } from 'amethystjs';
 import { util } from '../utils/functions';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, evokerColor, numerize, random, secondsToWeeks } from '../utils/toolbox';
 
-export default new AmethystCommand({
-    name: 'quotidien',
+export default new DraverCommand({
+    name: "quotidien",
+    module: "economy",
     description: 'Récupère votre récompense de ' + util('coins') + ' quotidienne',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
