@@ -28,9 +28,6 @@ declare module 'amethystjs' {
     interface AmethystCommand {
         module: string;
     }
-    interface commandOptions {
-        module: string;
-    }
 }
 
 if (process.env.password?.length > 1) {
