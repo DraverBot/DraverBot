@@ -15,3 +15,8 @@ export class DraverCommand extends AmethystCommand {
         return this._module;
     }
 }
+declare module 'amethystjs' {
+    interface AmethystCommand {
+        module: moduleType | 'dev';
+    }
+}

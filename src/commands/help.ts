@@ -13,8 +13,8 @@ import { modulesData } from '../data/modulesData';
 import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { moduleType } from '../typings/database';
-import { commandName, permType } from '../typings/functions';
-import { getRolePerm, Module, moduleName, util } from '../utils/functions';
+import { permType } from '../typings/functions';
+import { getRolePerm, moduleName, util } from '../utils/functions';
 import { basicEmbed, boolEmoji, buildButton, capitalize, checkCtx, inviteLink, row } from '../utils/toolbox';
 import { moduleEnabled as moduleEnabledButton } from '../data/buttons';
 
@@ -33,13 +33,11 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    const commands: (AmethystCommand & { module: moduleType })[] = interaction.client.chatInputCommands.map((x) =>
-        Object.assign(x, { module: Module(x.options.name as commandName) })
-    );
+    const commands = interaction.client.chatInputCommands as DraverCommand[];
 
     const command = options.getString('commande');
     if (command) {
-        const cmd = commands.find((x) => x.options.name === command) as AmethystCommand & { module: moduleType };
+        const cmd = commands.find((x) => x.options.name === command);
 
         const cmdOptions = () => {
             if (cmd.options.options?.length < 1) return "Pas d'options";
@@ -154,7 +152,7 @@ export default new DraverCommand({
                         },
                         {
                             name: 'Module',
-                            value: moduleName(Module(cmd.options.name as commandName), true),
+                            value: moduleName(cmd.module as moduleType, true),
                             inline: true
                         },
                         {
@@ -209,7 +207,7 @@ export default new DraverCommand({
                             },
                             {
                                 name: 'Module',
-                                value: Module(cmd.options.name as commandName),
+                                value: modulesData[cmd.module as moduleType]?.name ?? 'N/A',
                                 inline: true
                             }
                         )
