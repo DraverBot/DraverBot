@@ -1,12 +1,14 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { log4js } from 'amethystjs';
 import { calendar } from '../cache/christmas';
 import dev from '../preconditions/dev';
 import axios from 'axios';
+import { DraverCommand } from '../structures/DraverCommand';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'calendrier',
     description: 'Ouvre le calendrier',
-    preconditions: [dev]
+    preconditions: [dev],
+    module: 'fun'
 })
     .setChatInputRun(async ({ interaction }) => {
         const rep = calendar.open(interaction.user.id);

@@ -1,14 +1,16 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder, ImageSize } from 'discord.js';
 import replies from '../data/replies';
 import { cardAvatarList, getRandomImagePath } from '../utils/christmas';
 import { cardAvatarPos } from '../typings/christmas';
 import { createCanvas, loadImage } from 'canvas';
 import { basicEmbed } from '../utils/toolbox';
+import { DraverCommand } from '../structures/DraverCommand';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'carte',
     description: 'Fabrique une carte de noël',
+    module: 'fun',
     options: [
         {
             name: 'image',

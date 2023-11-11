@@ -1,14 +1,16 @@
-import { AmethystCommand, log4js, waitForInteraction } from 'amethystjs';
+import { log4js, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message, StringSelectMenuBuilder } from 'discord.js';
 import dev from '../preconditions/dev';
 import { gallery } from '../cache/christmas';
 import { basicEmbed, displayDate, row, secondsToWeeks, waitForReplies } from '../utils/toolbox';
 import replies from '../data/replies';
 import { yesNoRow } from '../data/buttons';
+import { DraverCommand } from '../structures/DraverCommand';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'galerie',
     description: "Consultez la gallerie d'art de noël",
+    module: 'fun',
     options: [
         {
             name: 'consulter',
