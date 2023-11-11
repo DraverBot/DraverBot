@@ -6,7 +6,7 @@ import { log4js } from 'amethystjs';
 
 export default new DraverCommand({
     name: 'afk',
-    module: 'undefined',
+    module: 'utils',
     description: 'Vous met en mode AFK',
     options: [
         {

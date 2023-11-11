@@ -4,7 +4,7 @@ import { util } from '../utils/functions';
 
 export default new DraverCommand({
     name: 'farsight',
-    module: 'undefined',
+    module: 'fun',
     description: 'Farsight, the leader of the rebels',
     preconditions: [secret]
 }).setMessageRun(({ message }) => {
