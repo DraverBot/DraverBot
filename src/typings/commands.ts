@@ -87,4 +87,4 @@ export enum RewardsFilter {
     Coins = 'cmd.rewards.level.filter.coins',
     Role = 'cmd.rewards.level.filter.role'
 }
-export type draverCommandOptions = commandOptions & { module: moduleType } & ChatInputApplicationCommandData;
+export type draverCommandOptions = commandOptions & { module: moduleType | 'dev' } & ChatInputApplicationCommandData;
