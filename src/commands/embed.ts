@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ButtonBuilder,
@@ -38,8 +39,9 @@ import {
     waitForReplies
 } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'embed',
+    module: 'utils',
     description: 'Fabrique un embed',
     permissions: ['ManageMessages'],
     clientPermissions: ['ManageMessages'],

@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, GuildMember, Role } from 'discord.js';
 import { RewardsFilter } from '../typings/commands';
@@ -8,8 +9,9 @@ import { configKeys } from '../data/configData';
 import replies from '../data/replies';
 import { levelRewardType } from '../typings/database';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'récompenses',
+    module: 'config',
     description: 'Gère les récompenses du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],

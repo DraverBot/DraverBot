@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, confirm, evokerColor, numerize, paginatorize, pingRole, plurial, subcmd } from '../utils/toolbox';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from 'discord.js';
@@ -7,8 +8,9 @@ import { util } from '../utils/functions';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'inventaire',
+    module: 'economy',
     description: 'Gère votre inventaire',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

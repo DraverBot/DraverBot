@@ -2,7 +2,6 @@ import { Collection } from 'discord.js';
 import { DatabaseTables, cooldowns } from '../typings/database';
 import query from '../utils/query';
 import { CooldownsInputOptions } from '../typings/managers';
-import { commandName } from '../typings/functions';
 
 export class CooldownsManager {
     private cache: Collection<string, cooldowns> = new Collection();
@@ -21,17 +20,7 @@ export class CooldownsManager {
     public getRemainingTime(opts: CooldownsInputOptions) {
         return this.cache.get(this.getCode(opts))?.endsAt - Date.now();
     }
-    public set({
-        guild_id,
-        user_id,
-        cmd,
-        time
-    }: {
-        guild_id: string;
-        user_id: string;
-        cmd: commandName;
-        time: number;
-    }) {
+    public set({ guild_id, user_id, cmd, time }: { guild_id: string; user_id: string; cmd: string; time: number }) {
         const code = this.getCode({ guild_id, user_id, commandName: cmd });
         this.cache.set(code, {
             guild_id,

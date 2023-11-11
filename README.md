@@ -11,7 +11,7 @@ If you want to use Draver, follow these steps
 1. Clone the project ( `git clone https://github.com/DraverBot/DraverBot && cd DraverBot` )
 1. Install dependencies ( `yarn install` )
 1. Create a mysql database and fill the [.env](./.env.example) file, like in [.env.example](./.env.example)
-.1 Launch the bot ( `yarn launch` )
+1. Launch the bot ( `yarn launch` )
 
 ## Contributions
 

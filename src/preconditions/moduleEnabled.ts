@@ -1,5 +1,6 @@
 import { Precondition } from 'amethystjs';
-import { Module } from '../utils/functions';
+import { DraverCommand } from '../structures/DraverCommand';
+import { moduleType } from '../typings/database';
 
 export default new Precondition('moduleEnabled')
     .setChatInputRun(({ command, interaction }) => {
@@ -10,11 +11,9 @@ export default new Precondition('moduleEnabled')
                 type: 'chatInput'
             };
         }
+        const module = (command as DraverCommand).module as moduleType;
 
-        const state = interaction.client.modulesManager.enabled(
-            interaction.guildId,
-            Module(command.options.name as any)
-        );
+        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
         if (!state) {
             return {
                 ok: false,
@@ -23,7 +22,7 @@ export default new Precondition('moduleEnabled')
                 metadata: {
                     replyKey: 'moduleDisabled',
                     guild: interaction.guild,
-                    module: Module(command.options.name as any)
+                    module: module
                 }
             };
         }
@@ -36,10 +35,9 @@ export default new Precondition('moduleEnabled')
     .setUserContextMenuRun(({ command, interaction }) => {
         if (!interaction.guild) return { ok: true, contextMenu: interaction, type: 'userContextMenu' };
 
-        const state = interaction.client.modulesManager.enabled(
-            interaction.guildId,
-            Module(command.options.name as any)
-        );
+        const module = (command as DraverCommand).module as moduleType;
+
+        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
         if (!state)
             return {
                 ok: false,
@@ -48,7 +46,7 @@ export default new Precondition('moduleEnabled')
                 metadata: {
                     replyKey: 'moduleDisabled',
                     guild: interaction.guild,
-                    module: Module(command.options.name as any)
+                    module: module
                 }
             };
         return {
@@ -60,10 +58,9 @@ export default new Precondition('moduleEnabled')
     .setMessageContextMenuRun(({ command, interaction }) => {
         if (!interaction.guild) return { ok: true, contextMenu: interaction, type: 'userContextMenu' };
 
-        const state = interaction.client.modulesManager.enabled(
-            interaction.guildId,
-            Module(command.options.name as any)
-        );
+        const module = (command as DraverCommand).module as moduleType;
+
+        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
         if (!state)
             return {
                 ok: false,
@@ -72,7 +69,7 @@ export default new Precondition('moduleEnabled')
                 metadata: {
                     replyKey: 'moduleDisabled',
                     guild: interaction.guild,
-                    module: Module(command.options.name as any)
+                    module: module
                 }
             };
         return {

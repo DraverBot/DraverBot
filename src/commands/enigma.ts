@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ComponentType,
@@ -17,8 +18,9 @@ import { Paginator } from '../managers/Paginator';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'énigma',
+    module: 'fun',
     description: 'Chiffre un code avec énigma',
     preconditions: [moduleEnabled],
     options: [

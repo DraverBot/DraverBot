@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import validProof from '../preconditions/validProof';
@@ -21,8 +22,9 @@ import { DatabaseTables } from '../typings/database';
 import query from '../utils/query';
 import { ButtonIds } from '../typings/buttons';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'note',
+    module: 'moderation',
     description: 'Ajoute une note à un membre',
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     permissions: ['ManageGuild'],

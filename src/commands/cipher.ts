@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, AttachmentBuilder, GuildMember } from 'discord.js';
 import { basicEmbed, chunkArray } from '../utils/toolbox';
@@ -8,8 +9,9 @@ import { rmSync, writeFileSync } from 'fs';
 import { rotors, plugboard as defaultPlugboard, reflector } from '../data/enigmaConfig.json';
 import { Enigma, Plugboard, Reflector, Rotor } from 'enigma-machine';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'chiffrage',
+    module: 'fun',
     description: 'Chiffre des messages',
     preconditions: [moduleEnabled],
     options: [

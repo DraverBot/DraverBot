@@ -1,10 +1,11 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import GenerateMinesweeperBoard from '../process/GenerateMinesweeperBoard';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'démineur',
+    module: 'fun',
     description: 'Joue au démineur sur Discord',
     preconditions: [moduleEnabled],
     options: [

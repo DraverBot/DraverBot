@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { levels } from '../typings/managers';
@@ -6,8 +7,9 @@ import { util } from '../utils/functions';
 import { basicEmbed, numerize, plurial } from '../utils/toolbox';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'rank',
+    module: 'level',
     description: 'Affiche les informations de niveaux',
     options: [
         {

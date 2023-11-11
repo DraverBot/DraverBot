@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions, waitForMessage } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions, waitForMessage } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     AttachmentBuilder,
@@ -34,8 +35,9 @@ import {
 import { variableName, variablesData, variablesGroupNames } from '../data/vars';
 import GetImage from '../process/GetImage';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'configurer',
+    module: 'config',
     description: 'Configure un paramètre de Draver',
     preconditions: [preconditions.GuildOnly],
     permissions: ['Administrator'],

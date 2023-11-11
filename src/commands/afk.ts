@@ -1,10 +1,12 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { basicEmbed } from '../utils/toolbox';
 import { log4js } from 'amethystjs';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'afk',
+    module: 'utils',
     description: 'Vous met en mode AFK',
     options: [
         {

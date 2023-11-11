@@ -1,9 +1,10 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import secret from '../preconditions/secret';
 import { util } from '../utils/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'farsight',
+    module: 'fun',
     description: 'Farsight, the leader of the rebels',
     preconditions: [secret]
 }).setMessageRun(({ message }) => {

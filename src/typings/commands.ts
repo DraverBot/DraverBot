@@ -1,4 +1,6 @@
-import { ChannelType } from 'discord.js';
+import { ChannelType, ChatInputApplicationCommandData } from 'discord.js';
+import { moduleType } from './database';
+import { commandOptions } from 'amethystjs';
 
 export enum AdminLevelAddType {
     Messages = 'messages',
@@ -85,3 +87,4 @@ export enum RewardsFilter {
     Coins = 'cmd.rewards.level.filter.coins',
     Role = 'cmd.rewards.level.filter.role'
 }
+export type draverCommandOptions = commandOptions & { module: moduleType | 'dev' } & ChatInputApplicationCommandData;

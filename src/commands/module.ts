@@ -1,11 +1,13 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { moduleType } from '../typings/database';
 import { moduleName as ModuleName } from '../utils/functions';
 import { basicEmbed, boolEmoji } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'module',
+    module: 'config',
     description: 'Affiche et configure les modules du serveur',
     options: [
         {

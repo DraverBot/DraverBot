@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions, wait } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions, wait } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import economyCheck from '../preconditions/economyCheck';
@@ -21,8 +22,9 @@ import { cancelButton } from '../data/buttons';
 import { ButtonIds } from '../typings/buttons';
 import GetChannel from '../process/GetChannel';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'adminlevel',
+    module: 'administration',
     description: 'Gère les niveaux du serveur',
     permissions: ['ManageGuild', 'ManageMessages'],
     preconditions: [preconditions.GuildOnly, moduleEnabled, economyCheck],

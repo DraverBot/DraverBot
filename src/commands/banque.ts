@@ -1,12 +1,14 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import replies from '../data/replies';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { util } from '../utils/functions';
 import { basicEmbed, numerize, plurial, subcmd } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'banque',
+    module: 'economy',
     description: 'Gère votre banque',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

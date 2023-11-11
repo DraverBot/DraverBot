@@ -1,4 +1,4 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { random } from '../utils/toolbox';
@@ -9,8 +9,9 @@ enum Pof {
     Middle = 'la tranche'
 }
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'pile-ou-face',
+    module: 'fun',
     description: 'Joue à pile ou face',
     options: [
         {

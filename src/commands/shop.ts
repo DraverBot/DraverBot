@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from 'discord.js';
 import { basicEmbed, evokerColor, hint, numerize, pagination, pingRole, plurial, subcmd } from '../utils/toolbox';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -7,8 +8,9 @@ import { util } from '../utils/functions';
 import replies from '../data/replies';
 import { ShopManagerErrorReturns } from '../typings/managers';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'magasin',
+    module: 'economy',
     description: 'Interagit avec le magasin',
     options: [
         {

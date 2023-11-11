@@ -1,12 +1,14 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, hint, resizeString } from '../utils/toolbox';
 import NSFWwords from '../data/NSFWwords.json';
 import { util } from '../utils/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'google',
+    module: 'misc',
     description: 'Fait une recherche google',
     options: [
         {

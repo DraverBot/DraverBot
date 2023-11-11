@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { jokeNames } from '../data/jokesName';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -7,8 +8,9 @@ import { getDefaultJokeConfigs } from '../utils/functions';
 import query from '../utils/query';
 import { basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'adminblague',
+    module: 'administration',
     description: 'Gère les blagues sur le serveur',
     options: [
         {

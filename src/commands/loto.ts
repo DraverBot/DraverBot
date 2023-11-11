@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, GuildMember, TextChannel } from 'discord.js';
 import time from '../preconditions/time';
 import { util } from '../utils/functions';
@@ -7,8 +8,9 @@ import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
 import { basicEmbed, confirm, displayDate, numerize, plurial } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'loto',
+    module: 'economy',
     description: 'Joue au loto sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, time],
     options: [

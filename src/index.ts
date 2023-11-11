@@ -24,15 +24,6 @@ const client = new AmethystClient(
 
 client.start({});
 
-declare module 'amethystjs' {
-    interface AmethystCommand {
-        module: string;
-    }
-    interface commandOptions {
-        module: string;
-    }
-}
-
 if (process.env.password?.length > 1) {
     process.on('uncaughtException', (error, listener) => {
         console.log(`Error: ${error} at ${listener} listener`);

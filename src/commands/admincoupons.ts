@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import {
@@ -21,8 +22,9 @@ import couponsErrors from '../maps/couponsErrors';
 import { util } from '../utils/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'admincoupons',
+    module: 'administration',
     description: 'Gère les coupons sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],

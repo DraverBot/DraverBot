@@ -1,6 +1,5 @@
 import { If } from 'discord.js';
 import { configKeys } from '../data/configData';
-import { commandName } from './functions';
 import { ConnectionMap } from 'enigma-machine/build/typings/types';
 
 export type DefaultQueryResult = {
@@ -224,7 +223,7 @@ export type coupons = {
 export type cooldowns = {
     guild_id: string;
     user_id: string;
-    commandName: commandName;
+    commandName: string;
     endsAt: number;
 };
 export type joinRoles = {
@@ -363,3 +362,4 @@ export type afk<Raw extends boolean = false> = {
     reason: string;
     afkat: If<Raw, string, number>;
 };
+export type poolOptions = { pools?: number };

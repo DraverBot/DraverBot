@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import time from '../preconditions/time';
@@ -18,8 +19,9 @@ import { RemindsPlaceType, reminds } from '../typings/managers';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'rappel',
+    module: 'misc',
     description: 'Gère les rappels',
     options: [
         {

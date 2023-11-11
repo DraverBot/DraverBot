@@ -567,7 +567,11 @@ const replies = {
             .setTitle('Image invalide')
             .setDescription(`Veuillez envoyer une image au maximum de ${width} par ${height} pixels`),
     imageToLarge: (user: anyUser) =>
-        userMember(user).setTitle('Image trop grande').setDescription(`Votre image ne doit pas dépasser **1 Mo**`)
+        userMember(user).setTitle('Image trop grande').setDescription(`Votre image ne doit pas dépasser **1 Mo**`),
+    noEmoji: (user: anyUser, query?: string) =>
+        userMember(user)
+            .setTitle('Aucun émoji')
+            .setDescription(`Aucun émoji n'a été trouvé${!!query ? ` pour \`${query}\`` : ''}`)
 };
 
 export type replyKey = keyof typeof replies;

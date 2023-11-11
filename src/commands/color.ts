@@ -1,11 +1,13 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, ColorResolvable, GuildMember } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, hexToRgb, isValidHexColor, random } from '../utils/toolbox';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'couleur',
+    module: 'utils',
     description: 'Montre une couleur',
     options: [
         {

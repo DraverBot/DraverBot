@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ColorResolvable, GuildMember, Role } from 'discord.js';
 import {
     addModLog,
@@ -16,8 +17,9 @@ import { getRolePerm, reportToBender, util } from '../utils/functions';
 import { permType } from '../typings/functions';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'role',
+    module: 'administration',
     description: 'Gère les rôles du serveur',
     permissions: ['ManageRoles'],
     clientPermissions: ['ManageRoles'],

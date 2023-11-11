@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions, waitForInteraction } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
     ComponentType,
@@ -15,8 +16,9 @@ import { DatabaseTables, coupons } from '../typings/database';
 import { util } from '../utils/functions';
 import { yesNoRow } from '../data/buttons';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'coupon',
+    module: 'economy',
     description: 'Réclame un coupon',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

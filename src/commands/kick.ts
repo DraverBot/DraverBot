@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -8,8 +9,9 @@ import { addModLog, addProof, basicEmbed, codeBox, confirm, modFields } from '..
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'kick',
+    module: 'moderation',
     description: 'Expulse un membre du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     options: [

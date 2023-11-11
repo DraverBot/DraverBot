@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember, TextChannel } from 'discord.js';
 import time from '../preconditions/time';
@@ -22,8 +23,9 @@ import { Task } from '../structures/Task';
 import { taskState } from '../typings/database';
 import { color } from '../utils/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'tache',
+    module: 'administration',
     description: 'Gère les tâches sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, time],
     permissions: ['ManageGuild'],

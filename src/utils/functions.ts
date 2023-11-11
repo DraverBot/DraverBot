@@ -1,11 +1,10 @@
 import { ChannelType, ColorResolvable } from 'discord.js';
-import commandModules from '../data/commandsModules.json';
 import emojis from '../data/emojis.json';
 import { modulesData } from '../data/modulesData';
 import perms from '../data/perms.json';
 import utils from '../data/utils.json';
 import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
-import { commandName, permType } from '../typings/functions';
+import { permType } from '../typings/functions';
 import query from './query';
 import { boolDb, capitalize } from './toolbox';
 import { channelTypeNames } from '../data/channelTypeNames';
@@ -21,9 +20,6 @@ export const getChannelPerm = (key: permType<'channel'>) => {
 };
 export const util = <T>(key: keyof typeof utils) => {
     return utils[key] as T;
-};
-export const Module = (key: commandName) => {
-    return commandModules[key] as moduleType;
 };
 export const checkDatabase = (): Promise<void> => {
     return new Promise(async (resolve) => {

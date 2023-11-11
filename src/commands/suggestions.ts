@@ -1,11 +1,13 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, codeBox, evokerColor, hint, pingChan } from '../utils/toolbox';
 import { util } from '../utils/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'suggestion',
+    module: 'utils',
     description: 'Fait une suggestion sur le serveur',
     options: [
         {

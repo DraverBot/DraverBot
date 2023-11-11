@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions, waitForInteraction } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ChannelType,
@@ -34,8 +35,9 @@ import {
     waitForReplies
 } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'interserver',
+    module: 'interchat',
     description: "Gère le système d'interserveur sur le serveur",
     options: [
         {

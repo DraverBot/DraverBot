@@ -1,4 +1,5 @@
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, GuildMember, TextChannel, User } from 'discord.js';
 import {
@@ -19,8 +20,9 @@ import replies from '../data/replies';
 import { ticketChannels } from '../typings/database';
 import { confirmReturn } from '../typings/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'admintickets',
+    module: 'administration',
     description: 'Gère les tickets sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],

@@ -1,10 +1,11 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import dev from '../preconditions/dev';
 import query from '../utils/query';
 import { resizeString } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'sql',
+    module: 'dev',
     preconditions: [dev],
     description: 'Fait une requête SQL'
 }).setMessageRun(async ({ message, options }) => {

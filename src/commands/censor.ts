@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -8,8 +9,9 @@ import { addModLog, basicEmbed, pingUser } from '../utils/toolbox';
 import { getRolePerm, reportToBender } from '../utils/functions';
 import replies from '../data/replies';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'censurer',
+    module: 'moderation',
     description: "Censure le pseudo d'un membre",
     preconditions: [preconditions.GuildOnly, moduleEnabled, modPermsCheck, validProof],
     permissions: ['ManageNicknames'],

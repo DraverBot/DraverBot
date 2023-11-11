@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import weather from 'weather-js';
@@ -6,8 +7,9 @@ import { basicEmbed, buildButton, row, sendError } from '../utils/toolbox';
 import { weatherJS } from '../typings/apis';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'météo',
+    module: 'utils',
     description: "Affiche la météo d'une ville",
     options: [
         {

@@ -1,11 +1,13 @@
-import { AmethystCommand, log4js, waitForInteraction } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, waitForInteraction } from 'amethystjs';
 import { basicEmbed, buildButton, random, row, waitForReplies } from '../utils/toolbox';
 import replies from '../data/replies';
 import { ComponentType, GuildMember, Message } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'réflexe',
+    module: 'fun',
     description: 'Testez vos réflexes',
     preconditions: [moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {

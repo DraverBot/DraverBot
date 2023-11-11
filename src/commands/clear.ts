@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, ChannelType, Collection, GuildMember, Message, TextChannel } from 'discord.js';
 import validProof from '../preconditions/validProof';
@@ -6,8 +7,9 @@ import { addModLog, basicEmbed, checkPerms, notNull, pingChan, pingUser, plurial
 import replies from '../data/replies';
 import { getRolePerm } from '../utils/functions';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'clear',
+    module: 'moderation',
     description: 'Supprime des messages',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validProof],
     clientPermissions: ['ManageMessages'],
@@ -89,12 +91,12 @@ export default new AmethystCommand({
     const messages = channel.messages.cache.filter(
         (x) => (notNull(member) ? x.author.id === member.id : true) && x.id !== rep.id
     );
-    const toDelete = new Collection<string, Message>();
-
-    messages
-        .toJSON()
-        .slice(0, amount)
-        .map((x) => toDelete.set(x.id, x));
+    const toDelete = new Collection<string, Message>(
+        messages
+            .toJSON()
+            .slice(0, amount)
+            .map((x) => [x.id, x])
+    );
 
     const res = await channel.bulkDelete(toDelete).catch(log4js.trace);
     if (!res)

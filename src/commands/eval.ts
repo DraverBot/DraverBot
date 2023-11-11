@@ -1,9 +1,10 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import dev from '../preconditions/dev';
 import { codeBox } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'eval',
+    module: 'dev',
     preconditions: [dev],
     description: 'Eval'
 }).setMessageRun(async ({ message, options }) => {

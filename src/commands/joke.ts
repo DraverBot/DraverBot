@@ -1,4 +1,4 @@
-import { AmethystCommand } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { jokeNames } from '../data/jokesName';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -8,8 +8,9 @@ import query from '../utils/query';
 import { basicEmbed, capitalize, dbBool, evokerColor, notNull } from '../utils/toolbox';
 import { Category } from 'blagues-api/dist/types/types';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'blague',
+    module: 'fun',
     description: 'Affiche une blague',
     options: [
         {

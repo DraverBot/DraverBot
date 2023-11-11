@@ -1,11 +1,13 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, CategoryChannel, ChannelType, GuildMember, VoiceChannel } from 'discord.js';
 import replies from '../data/replies';
 import { basicEmbed, confirm, pingChan, plurial } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'salons-temporaires',
+    module: 'config',
     description: 'Gère les salons temporaires',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [

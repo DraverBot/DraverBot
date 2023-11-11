@@ -1,4 +1,5 @@
-import { AmethystCommand, log4js, preconditions, waitForInteraction } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions, waitForInteraction } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ChannelType,
@@ -19,8 +20,9 @@ import replies from '../data/replies';
 import time from '../preconditions/time';
 import ms from 'ms';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'sondage',
+    module: 'utils',
     description: 'Fait un sondage sur le serveur',
     options: [
         {

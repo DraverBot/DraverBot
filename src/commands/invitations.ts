@@ -1,10 +1,12 @@
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { DraverCommand } from '../structures/DraverCommand';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { basicEmbed, numerize, pingUser, plurial } from '../utils/toolbox';
 
-export default new AmethystCommand({
+export default new DraverCommand({
     name: 'invitations',
+    module: 'invitations',
     description: "Affiche les invitations d'un membre",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
