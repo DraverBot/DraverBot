@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, confirm, evokerColor, numerize, paginatorize, pingRole, plurial, subcmd } from '../utils/toolbox';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from 'discord.js';

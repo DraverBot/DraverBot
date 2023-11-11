@@ -1,5 +1,4 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import { WordGenerator } from '../managers/Generator';
 import moduleEnabled from '../preconditions/moduleEnabled';

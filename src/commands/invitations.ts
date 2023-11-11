@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { basicEmbed, numerize, pingUser, plurial } from '../utils/toolbox';

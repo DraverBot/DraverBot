@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import modPermsCheck from '../preconditions/modPermsCheck';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';

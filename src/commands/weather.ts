@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js } from 'amethystjs';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import weather from 'weather-js';

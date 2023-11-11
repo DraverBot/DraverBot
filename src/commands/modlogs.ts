@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
+import { preconditions, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from 'discord.js';
 import { yesNoRow } from '../data/buttons';
 import replies from '../data/replies';

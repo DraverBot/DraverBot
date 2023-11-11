@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, wait } from 'amethystjs';
+import { log4js, wait } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { buildButton, row } from '../utils/toolbox';

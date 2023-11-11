@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions } from 'amethystjs';
+import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { basicEmbed, confirm, subcmd, systemReply } from '../utils/toolbox';

@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions, waitForMessage } from 'amethystjs';
+import { preconditions, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
     ApplicationCommandOptionType,

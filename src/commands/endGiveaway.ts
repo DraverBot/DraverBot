@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import replies from '../data/replies';
 import { basicEmbed } from '../utils/toolbox';

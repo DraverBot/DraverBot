@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions, waitForMessage } from 'amethystjs';
+import { log4js, preconditions, waitForMessage } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     AttachmentBuilder,

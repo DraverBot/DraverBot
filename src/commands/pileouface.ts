@@ -1,5 +1,4 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { random } from '../utils/toolbox';

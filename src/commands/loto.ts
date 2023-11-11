@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, GuildMember, TextChannel } from 'discord.js';
 import time from '../preconditions/time';
 import { util } from '../utils/functions';

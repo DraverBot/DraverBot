@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions } from 'amethystjs';
+import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ColorResolvable, GuildMember, Role } from 'discord.js';
 import {
     addModLog,

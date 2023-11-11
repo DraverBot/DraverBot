@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js } from 'amethystjs';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import { Mastermind } from '../structures/Mastermind';

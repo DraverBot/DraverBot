@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, waitForInteraction } from 'amethystjs';
+import { waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import { shifumiSign, ShifumiSigns, shifumiSigns } from '../typings/commands';

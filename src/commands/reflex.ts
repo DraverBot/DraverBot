@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, waitForInteraction } from 'amethystjs';
+import { log4js, waitForInteraction } from 'amethystjs';
 import { basicEmbed, buildButton, random, row, waitForReplies } from '../utils/toolbox';
 import replies from '../data/replies';
 import { ComponentType, GuildMember, Message } from 'discord.js';

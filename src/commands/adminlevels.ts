@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js, preconditions, wait } from 'amethystjs';
+import { log4js, preconditions, wait } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, Message } from 'discord.js';
 import replies from '../data/replies';
 import economyCheck from '../preconditions/economyCheck';

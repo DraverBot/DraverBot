@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, log4js } from 'amethystjs';
+import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, TextChannel } from 'discord.js';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import time from '../preconditions/time';

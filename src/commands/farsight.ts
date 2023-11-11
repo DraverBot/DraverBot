@@ -1,5 +1,4 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand } from 'amethystjs';
 import secret from '../preconditions/secret';
 import { util } from '../utils/functions';
 

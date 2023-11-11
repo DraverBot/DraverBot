@@ -1,5 +1,5 @@
 import { DraverCommand } from '../structures/DraverCommand';
-import { AmethystCommand, preconditions, waitForInteraction } from 'amethystjs';
+import { preconditions, waitForInteraction } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
 import {
     ComponentType,
