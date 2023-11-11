@@ -1,5 +1,4 @@
 import { Guild, If, TextChannel, User } from 'discord.js';
-import { commandName } from './functions';
 import { levelRewardType } from './database';
 
 export type IfNot<Condition extends boolean, A, B = null> = Condition extends false
@@ -64,7 +63,7 @@ export type deletePanelOptions = {
 export type CooldownsInputOptions = {
     guild_id: string;
     user_id: string;
-    commandName: commandName;
+    commandName: string;
 };
 
 export type RemindsPlaceType = 'mp' | 'achannel';
