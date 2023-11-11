@@ -595,7 +595,7 @@ export const checkRolePosition = ({
         });
     return true;
 };
-export const sendError = (error: unknown) => {
+export const sendError = (error: unknown, url?: string) => {
     const web = new WebhookClient({
         url: util('errorWebhook')
     });
@@ -609,7 +609,8 @@ export const sendError = (error: unknown) => {
                 .setFooter({
                     text: process.env.password?.length > 1 ? 'Draver' : 'Draver developpement'
                 })
-        ]
+        ],
+        ...(!!url ? { avatarURL: url } : {})
     }).catch(() => {});
 };
 export const removeKey = <T, K extends keyof T>(obj: T, key: K): Omit<T, K> => {
