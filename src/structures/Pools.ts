@@ -108,7 +108,7 @@ export class DatabasePools {
         this.pools.push(pool);
     }
     private start() {
-        for (let i = 0; i > this.options.pools; i++) {
+        for (let i = 0; i < this.options.pools; i++) {
             this.createPool(i);
         }
     }
