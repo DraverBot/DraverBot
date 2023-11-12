@@ -12,7 +12,7 @@ export class DatabasePool {
     private timer: NodeJS.Timeout;
     private waiter: NodeJS.Timeout;
 
-    constructor(options: ConnectionConfig, timeout = 43200000, delay = 3600000) {
+    constructor(options: ConnectionConfig, timeout = 21600000, delay = 3600000) {
         this.options = options;
         this.timeout = timeout;
         this.delay = delay;
@@ -24,19 +24,20 @@ export class DatabasePool {
         return this._pool;
     }
 
+    private setTimeout() {
+        this.timer = setTimeout(() => {
+            this.restart();
+            this.loadTimer(false);
+        }, this.timeout);
+        return this;
+    }
     private loadTimer(wait: boolean) {
         if (wait) {
             this.waiter = setTimeout(() => {
-                this.timer = setTimeout(() => {
-                    this.restart();
-                    this.loadTimer(false);
-                }, this.timeout);
+                this.setTimeout();
             }, this.delay);
         } else {
-            this.timer = setTimeout(() => {
-                this.restart();
-                this.loadTimer(false);
-            });
+            this.setTimeout();
         }
     }
     private cleanTimers() {
