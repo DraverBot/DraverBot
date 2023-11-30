@@ -32,6 +32,6 @@ export enum cardAvatarPos {
 export type galleryArt<R extends boolean = false> = {
     url: string;
     user: string;
-    when: If<R, string, number>;
+    post_date: If<R, string, number>;
     name: string;
 };

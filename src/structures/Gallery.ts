@@ -18,9 +18,9 @@ export class Gallery {
 
         this._cache.set(art.url, art);
         query(
-            `INSERT INTO ${ChristmasTables.gallery} ( url, user, when, name ) VALUES ("${art.url}", "${sqliseString(
-                art.user
-            )}", "${art.when}", "${sqliseString(art.name)}")`
+            `INSERT INTO ${ChristmasTables.gallery} ( url, user, post_date, name ) VALUES ("${
+                art.url
+            }", "${sqliseString(art.user)}", "${art.post_date}", "${sqliseString(art.name)}")`
         );
         return true;
     }
@@ -41,7 +41,7 @@ export class Gallery {
 
     private async checkDb() {
         await query(
-            `CREATE TABLE IF NOT EXISTS ${ChristmasTables.gallery} ( url VARCHAR(255) NOT NULL PRIMARY KEY, user VARCHAR(255), when VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL )`
+            `CREATE TABLE IF NOT EXISTS ${ChristmasTables.gallery} ( url VARCHAR(255) NOT NULL PRIMARY KEY, user VARCHAR(255), post_date VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL )`
         );
         return true;
     }
@@ -49,7 +49,7 @@ export class Gallery {
         const datas = await query<galleryArt<true>>(`SELECT * FROM ${ChristmasTables.gallery}`);
         if (!datas) return console.log('No data in gallery art');
 
-        this._cache = new Collection(datas.map((x) => [x.url, { ...x, when: parseInt(x.when) }]));
+        this._cache = new Collection(datas.map((x) => [x.url, { ...x, post_date: parseInt(x.post_date) }]));
     }
     private async init() {
         await this.checkDb();

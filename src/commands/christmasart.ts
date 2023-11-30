@@ -59,7 +59,7 @@ export default new DraverCommand({
                         basicEmbed(interaction.user, { draverColor: true })
                             .setTitle(img.name)
                             .setImage(img.url)
-                            .setTimestamp(img.when)
+                            .setTimestamp(img.post_date)
                             .setFooter({ text: img.user, iconURL: img.url })
                     ]
                 })
@@ -95,7 +95,7 @@ export default new DraverCommand({
             gallery.add({
                 user: interaction.user.username,
                 url: img.url,
-                when: Date.now(),
+                post_date: Date.now(),
                 name
             });
 
@@ -132,7 +132,7 @@ export default new DraverCommand({
                     .slice(0, 24)
                     .map((x) => ({
                         label: x.name,
-                        description: `Par ${x.user} ${secondsToWeeks(Math.round(x.when / 1000))}`,
+                        description: `Par ${x.user} ${secondsToWeeks(Math.round(x.post_date / 1000))}`,
                         value: x.url
                     }))
             );
@@ -171,7 +171,7 @@ export default new DraverCommand({
         const embed = basicEmbed(message.author, { questionMark: true })
             .setTitle('Suppression')
             .setDescription(
-                `Êtes-vous sûr de vouloir supprimer **${art.name}** de ${art.user} ( ${displayDate(art.when)} )`
+                `Êtes-vous sûr de vouloir supprimer **${art.name}** de ${art.user} ( ${displayDate(art.post_date)} )`
             )
             .setImage(art.url);
 
