@@ -11,7 +11,9 @@ import {
 } from '../typings/christmas';
 import query from '../utils/query';
 import { Collection } from 'discord.js';
-import { filterArray, notNull, sqliseString } from '../utils/toolbox';
+import { filterArray, notNull, random, sqliseString } from '../utils/toolbox';
+import splashes from '../data/splash.json';
+import { writeFileSync } from 'node:fs';
 
 class CalendarStats {
     private input: calendarUser;
@@ -96,7 +98,7 @@ export class Calendar {
 
         return removed;
     }
-    public open(user: string): openReturn {
+    public open(user: string, username?: string): openReturn {
         const day = new Date().getDate();
         if (!this.hasDay(day)) return 'no day';
 
@@ -107,6 +109,25 @@ export class Calendar {
 
         if (!this.hasUser(user)) this.storage.push(stats.toJSON());
         else this.storage = this.storage.map((x) => (x.id === user ? stats.toJSON() : x));
+
+        if (day === 24) {
+            const texts = [
+                `Happy christmas ${username}`,
+                `${username} reached the 24th day`,
+                `${username}, you're in legend now`,
+                `${username} survived to the 24th level of December`,
+                `*${username} got the December big boss down*`,
+                `Woah ${username}, you made it here!`,
+                `We wish you a merry christmas ${username}`,
+                `And a happy new year ${username}`,
+                `Here you go ${username}, got your splash text`
+            ];
+
+            const text = texts[random({ max: texts.length })].replace(/"/g, '\\"');
+
+            splashes.push(text);
+            writeFileSync('./dist/data/splashes.json', JSON.stringify(text, null, 4));
+        }
 
         this.update();
         return 'ok';

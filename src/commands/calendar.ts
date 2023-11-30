@@ -11,7 +11,7 @@ export default new DraverCommand({
     module: 'fun'
 })
     .setChatInputRun(async ({ interaction }) => {
-        const rep = calendar.open(interaction.user.id);
+        const rep = calendar.open(interaction.user.id, interaction.user.username);
 
         if (rep === 'no day')
             return interaction
