@@ -5,7 +5,15 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, GuildMember, Role } from 'discord.js';
 import { RewardsFilter } from '../../typings/commands';
 import { util } from '../../utils/functions';
-import { addModLog, basicEmbed, checkRolePosition, numerize, paginatorize, pingRole, plurial } from '../../utils/toolbox';
+import {
+    addModLog,
+    basicEmbed,
+    checkRolePosition,
+    numerize,
+    paginatorize,
+    pingRole,
+    plurial
+} from '../../utils/toolbox';
 import { configKeys } from '../../data/configData';
 import replies from '../../data/replies';
 import { levelRewardType } from '../../typings/database';

@@ -38,8 +38,15 @@ export class GBanSystem {
         return this._cache;
     }
 
-    private start() {
+    private async start() {
+        await this.checkDb();
         this.fillCache();
+    }
+    private async checkDb() {
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.GBan} ( user_id VARCHAR(255) NOT NULL PRIMARY KEY, reason VARCHAR(255) NOT NULL, date VARCHAR(255) NOT NULL )`
+        );
+        return true;
     }
     private async fillCache() {
         this._cache = await query<GBan>(`SELECT * FROM ${DatabaseTables.GBan}`);

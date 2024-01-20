@@ -61,7 +61,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
     })
-    .setUserContextRun(async ({ interaction, user, client }) => {
+    .setUserContextRun(async ({ interaction, user }) => {
         if (user.bot)
             return interaction
                 .reply({

@@ -16,5 +16,6 @@ export const channelTypeNames: Record<keyof typeof ChannelType, string> = {
     GuildText: 'textuel',
     GuildVoice: 'vocal',
     PrivateThread: 'fil privé',
-    PublicThread: 'fil public'
+    PublicThread: 'fil public',
+    GuildMedia: 'Fichiers de serveur'
 };

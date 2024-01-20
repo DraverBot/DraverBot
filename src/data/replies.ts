@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
     ChannelType,
     ColorResolvable,
@@ -529,7 +530,8 @@ const replies = {
             11: 'fil public',
             13: 'conférences',
             0: 'textuel',
-            2: 'vocal'
+            2: 'vocal',
+            16: 'médiatique'
         };
 
         return userMember(user)

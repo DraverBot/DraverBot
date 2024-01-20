@@ -143,11 +143,10 @@ export class AnonymousManager {
             }
             value.webhook
                 .send({
-                    content: message.content
-                        .replace(/\@everyone/g, '@ everyone')
-                        .replace(/\@here/g, '@ here')
-                        .replace(/<@&\!?\d+>/, '@role')
-                        .replace(/<@\!?\d+>/, '@utilisateur')
+                    content: message.content,
+                    allowedMentions: {
+                        parse: []
+                    }
                 })
                 .catch((error) => {
                     sendError(error);
@@ -156,7 +155,7 @@ export class AnonymousManager {
                         new AnonymousValue(this.client, {
                             ...value.data,
                             webhook_url:
-                                'https://discord.com/api/webhooks/1071478746462306416/invalid-webhook-authentication-completly-impossible-with-this-absurdly-long-message-5691-1139A-0761732670'
+                                'https://discord.com/api/webhooks/1071478746462306416/invalid-webhook-authentication-completly-impossible-with-this-absurdly-long-message'
                         })
                     );
                 });
@@ -169,7 +168,14 @@ export class AnonymousManager {
 
         return value;
     }
+    private async checkDB() {
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Anonymous} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, webhook_url VARCHAR(255) NOT NULL, banned_roles LONGTEXT, banned_users LONGTEXT, id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) )`
+        );
+        return true;
+    }
     private async start() {
+        await this.checkDB();
         await this.fillCache();
         this.event();
     }

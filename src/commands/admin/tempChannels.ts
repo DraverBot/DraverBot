@@ -61,7 +61,7 @@ export default new DraverCommand({
     ],
     permissions: ['Administrator'],
     clientPermissions: ['ManageChannels']
-}).setChatInputRun(async ({ interaction, client, options }) => {
+}).setChatInputRun(async ({ interaction, options }) => {
     if (!configsManager.getValue(interaction.guild.id, 'temp_channels'))
         return interaction
             .reply({

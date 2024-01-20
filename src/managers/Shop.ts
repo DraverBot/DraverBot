@@ -231,7 +231,19 @@ export class ShopManager {
         );
     }
     private async start() {
+        await this.checkDb();
         await this.fillCache();
+    }
+    private async checkDb() {
+        await Promise.all([
+            query(
+                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Shop} ( guild_id VARCHAR(255) NOT NULL, itemType VARCHAR(255) NOT NULL, itemName VARCHAR(255) NOT NULL, price BIGINT NOT NULL, quantity BIGINT NOT NULL, roleId VARCHAR(255), id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT )`
+            ),
+            query(
+                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Inventories} ( user_id VARCHAR(255) NOT NULL, guild_id VARCHAR(255) NOT NULL, inventory LONGTEXT )`
+            )
+        ]);
+        return true;
     }
     private async fillCache() {
         const shops = await query<ShopItem>(`SELECT * FROM ${DatabaseTables.Shop}`);

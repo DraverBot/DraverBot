@@ -60,8 +60,17 @@ export class ModulesManager {
         return obj as Record<moduleType, boolean>;
     }
 
-    public start() {
+    public async start() {
+        this.checkDb();
         this.fillCache();
+    }
+    private async checkDb() {
+        await query(
+            `CREATE TABLE IF NOT EXISTS modules ( ${Object.keys(modulesData)
+                .map((k) => `${k} TINYINT(1) NOT NULL DEFAULT '${modulesData[k].default ? '1' : '0'}'`)
+                .join(', ')}, guild_id VARCHAR(255) NOT NULL PRIMARY KEY )`
+        );
+        return true;
     }
     private makeQuery(guild_id: string) {
         const dt = this.cache.get(guild_id);

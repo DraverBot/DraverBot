@@ -100,10 +100,17 @@ export class PasswordManager {
         }).letters;
     }
 
-    private start() {
+    private async start() {
+        await this.checkDb();
         this.fillCache();
     }
 
+    private async checkDb() {
+        await query(
+            `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Passwords} ( user_id VARCHAR(255) NOT NULL, input VARCHAR(255) NOT NULL, value VARCHAR(255) NOT NULL )`
+        );
+        return true;
+    }
     private async fillCache() {
         const datas = await query<passwords>(`SELECT * FROM ${DatabaseTables.Passwords}`);
 
