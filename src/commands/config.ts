@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions, waitForMessage } from 'amethystjs';
 import {
@@ -207,7 +208,7 @@ export default new DraverCommand({
                 value = reply.fields.getTextInputValue('value');
             }
 
-            interaction.client.configsManager.setValue(
+            configsManager.setValue(
                 interaction.guild.id,
                 parameter.value,
                 typeof value === 'boolean' ? value : value.toString()
@@ -426,7 +427,7 @@ export default new DraverCommand({
             throw new Error('Unhandled class: ' + parameter.type);
         }
 
-        interaction.client.configsManager.setValue(
+        configsManager.setValue(
             interaction.guild.id,
             parameter.value,
             typeof ['boolean', 'image'].includes(parameter.type) ? value : value.toString()
@@ -469,7 +470,7 @@ export default new DraverCommand({
         const parameter = configsData[options.getString('paramètre')] as configType;
 
         if (parameter) {
-            const value = interaction.client.configsManager.getValue(interaction.guild.id, parameter.value);
+            const value = configsManager.getValue(interaction.guild.id, parameter.value);
             if (parameter.type === 'image') {
                 if (!value)
                     return interaction
@@ -530,7 +531,7 @@ export default new DraverCommand({
             .forEach((key: keyof configKeys, i) => {
                 if (i % 19 === 0 && i > 0) embeds.push(embed());
                 const parameter = configsData[key] as configType;
-                const value = interaction.client.configsManager.getValue(interaction.guild.id, key);
+                const value = configsManager.getValue(interaction.guild.id, key);
 
                 embeds[embeds.length - 1].addFields([
                     {

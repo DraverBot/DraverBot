@@ -1,3 +1,4 @@
+import { interserver } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForInteraction } from 'amethystjs';
 import {
@@ -17,7 +18,7 @@ import { frequenceBtn, yesNoRow } from '../data/buttons';
 import replies from '../data/replies';
 import { WordGenerator } from '../managers/Generator';
 import moduleEnabled from '../preconditions/moduleEnabled';
-import { interserver } from '../typings/managers';
+import { interserver as interserverType } from '../typings/managers';
 import { confirmReturn } from '../typings/functions';
 import {
     basicEmbed,
@@ -190,7 +191,7 @@ export default new DraverCommand({
                 embeds: [replies.wait(interaction.user)]
             })
             .catch(() => {});
-        const res = await interaction.client.interserver.createInterserver({
+        const res = await interserver.createInterserver({
             channel: channel,
             frequence,
             guild_id: interaction.guild.id
@@ -220,11 +221,7 @@ export default new DraverCommand({
     if (subcommand === 'supprimer') {
         const channel = options.getChannel('salon') as TextChannel;
 
-        if (
-            !interaction.client.interserver.cache.find(
-                (x) => x.guild_id === interaction.guild.id && x.channel_id === channel.id
-            )
-        )
+        if (!interserver.cache.find((x) => x.guild_id === interaction.guild.id && x.channel_id === channel.id))
             return interaction
                 .reply({
                     embeds: [replies.interserverNotChannel(interaction.user, { channel })]
@@ -256,7 +253,7 @@ export default new DraverCommand({
             components: []
         });
 
-        await interaction.client.interserver
+        await interserver
             .removeInterserver({
                 guild_id: interaction.guild.id,
                 channel
@@ -273,7 +270,7 @@ export default new DraverCommand({
             .catch(() => {});
     }
     if (subcommand === 'afficher') {
-        const list = interaction.client.interserver.cache.filter((x) => x.guild_id === interaction.guild.id).toJSON();
+        const list = interserver.cache.filter((x) => x.guild_id === interaction.guild.id).toJSON();
         if (list.length === 0)
             return interaction
                 .reply({
@@ -288,7 +285,7 @@ export default new DraverCommand({
 
         const channel = options.getChannel('salon', false) as TextChannel;
         if (channel) {
-            const data = list.find((x) => x.channel_id === channel.id) as interserver;
+            const data = list.find((x) => x.channel_id === channel.id) as interserverType;
             if (!data)
                 return interaction
                     .reply({
@@ -296,9 +293,9 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            const shared = interaction.client.interserver.cache
+            const shared = interserver.cache
                 .filter((x) => x.frequence === data.frequence)
-                .toJSON() as interserver[];
+                .toJSON() as interserverType[];
 
             return interaction
                 .reply({
@@ -320,7 +317,7 @@ export default new DraverCommand({
                 .catch(() => {});
         }
 
-        const map = (embed: EmbedBuilder, data: interserver) => {
+        const map = (embed: EmbedBuilder, data: interserverType) => {
             const index = list.indexOf(data);
             return embed.addFields({
                 name: `Salon numéro ${numerize(index + 1)}`,
@@ -380,11 +377,7 @@ export default new DraverCommand({
                 length: 18
             }).generate();
 
-        if (
-            !interaction.client.interserver.cache.find(
-                (x) => x.channel_id === channel.id && x.guild_id === interaction.guild.id
-            )
-        )
+        if (!interserver.cache.find((x) => x.channel_id === channel.id && x.guild_id === interaction.guild.id))
             return interaction
                 .reply({
                     embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel })]
@@ -392,7 +385,7 @@ export default new DraverCommand({
                 .catch(() => {});
 
         await interaction.deferReply();
-        const res = await interaction.client.interserver
+        const res = await interserver
             .editFrequence({
                 guild_id: interaction.guild.id,
                 channel_id: channel.id,

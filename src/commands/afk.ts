@@ -1,3 +1,4 @@
+import { afk } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -21,7 +22,7 @@ export default new DraverCommand({
 }).setChatInputRun(async ({ interaction, options, client }) => {
     const reason = options.getString('raison');
 
-    client.afk.setAFK(interaction.user.id, reason);
+    afk.setAFK(interaction.user.id, reason);
 
     interaction
         .reply({

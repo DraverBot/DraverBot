@@ -1,3 +1,4 @@
+import { coinsManager, cooldownsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { util } from '../utils/functions';
@@ -11,7 +12,7 @@ export default new DraverCommand({
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
     if (
-        interaction.client.cooldownsManager.has({
+        cooldownsManager.has({
             guild_id: interaction.guild.id,
             user_id: interaction.user.id,
             commandName: 'hebdomadaire'
@@ -24,7 +25,7 @@ export default new DraverCommand({
                     .setDescription(
                         `Vous avez déjà utilisé cette commande pendant les 7 derniers jours.\nMerci de patienter encore **${secondsToWeeks(
                             Math.floor(
-                                interaction.client.cooldownsManager.getRemainingTime({
+                                cooldownsManager.getRemainingTime({
                                     guild_id: interaction.guild.id,
                                     user_id: interaction.user.id,
                                     commandName: 'hebdomadaire'
@@ -38,7 +39,7 @@ export default new DraverCommand({
         });
     const coins = random({ max: 11391, min: 7000 });
 
-    interaction.client.coinsManager.addCoins({
+    coinsManager.addCoins({
         guild_id: interaction.guild.id,
         user_id: interaction.user.id,
         coins
@@ -52,7 +53,7 @@ export default new DraverCommand({
             ]
         })
         .catch(() => {});
-    interaction.client.cooldownsManager.set({
+    cooldownsManager.set({
         guild_id: interaction.guild.id,
         user_id: interaction.user.id,
         time: 604800000,

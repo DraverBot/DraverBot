@@ -1,3 +1,4 @@
+import { plugboardsManager } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 
 export default new AutocompleteListener({
@@ -7,7 +8,7 @@ export default new AutocompleteListener({
     ],
     listenerName: 'énigma plugboards',
     run: ({ focusedValue, interaction }) => {
-        const boards = interaction.client.plugboardsManager.getUserPlugs(interaction.user.id);
+        const boards = plugboardsManager.getUserPlugs(interaction.user.id);
 
         return boards
             .filter(

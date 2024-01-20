@@ -1,3 +1,4 @@
+import { plugboardsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js } from 'amethystjs';
 import {
@@ -121,8 +122,7 @@ export default new DraverCommand({
                 .catch(log4js.trace);
 
         const selectorRotors = rotorsInput.split('').map((r) => rotors.find((x) => x.id === parseInt(r)));
-        const plugboard =
-            interaction.client.plugboardsManager.getPlugboard(parseInt(plugboardInput))?.plugboard ?? defaultPlugboard;
+        const plugboard = plugboardsManager.getPlugboard(parseInt(plugboardInput))?.plugboard ?? defaultPlugboard;
 
         const spaces = [];
         for (let i = 0; i < message.length; i++) {
@@ -180,7 +180,7 @@ export default new DraverCommand({
 
     if (cmd === 'liste') {
         const plugboard = options.getString('tableau');
-        const board = plugboard ? interaction.client.plugboardsManager.getPlugboard(parseInt(plugboard)) : undefined;
+        const board = plugboard ? plugboardsManager.getPlugboard(parseInt(plugboard)) : undefined;
 
         if (board) {
             return interaction.reply({
@@ -197,7 +197,7 @@ export default new DraverCommand({
             });
         }
 
-        const boards = interaction.client.plugboardsManager.getUserPlugs(interaction.user.id);
+        const boards = plugboardsManager.getUserPlugs(interaction.user.id);
         if (boards.length === 0)
             return interaction
                 .reply({
@@ -254,7 +254,7 @@ export default new DraverCommand({
         }
     }
     if (cmd === 'supprimer') {
-        const board = interaction.client.plugboardsManager.getPlugboard(parseInt(options.getString('tableau')));
+        const board = plugboardsManager.getPlugboard(parseInt(options.getString('tableau')));
 
         if (!board)
             return interaction
@@ -282,7 +282,7 @@ export default new DraverCommand({
 
         await Promise.all([
             interaction.editReply({ embeds: [replies.wait(interaction.user)], components: [] }).catch(log4js.trace),
-            interaction.client.plugboardsManager.deletePlugboard(board.id)
+            plugboardsManager.deletePlugboard(board.id)
         ]);
 
         interaction
@@ -297,7 +297,7 @@ export default new DraverCommand({
     }
     if (cmd == 'créer') {
         const name = options.getString('nom');
-        if (interaction.client.plugboardsManager.getUserPlugs(interaction.user.id).find((x) => x.name === name))
+        if (plugboardsManager.getUserPlugs(interaction.user.id).find((x) => x.name === name))
             return interaction
                 .reply({
                     embeds: [
@@ -385,7 +385,7 @@ export default new DraverCommand({
                 await interaction
                     .editReply({ embeds: [replies.wait(interaction.user)], components: [] })
                     .catch(log4js.trace);
-                await interaction.client.plugboardsManager
+                await plugboardsManager
                     .addPlugboard({ userId: interaction.user.id, name, connections })
                     .catch(log4js.trace);
 

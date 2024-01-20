@@ -1,3 +1,4 @@
+import { modulesManager, levelsManager, invitesManager } from '../cache/managers';
 import { ButtonInteraction, Client, Collection, Guild, Message, TextChannel } from 'discord.js';
 import { giveaway as gwT, giveawayInput, giveaway } from '../typings/giveaway';
 import { giveawayEmbeds as embeds, giveawayButtons as buttons } from '../data/giveaway';
@@ -342,8 +343,8 @@ export class GiveawayManager<DatabaseMode extends databaseMode> {
                     })
                     .catch(() => {});
         }
-        if (this.client.modulesManager.enabled(interaction.guild.id, 'invitations') && gw.required_invitations > 0) {
-            const stats = this.client.invitesManager.getStats(interaction.guild.id, interaction.user.id);
+        if (modulesManager.enabled(interaction.guild.id, 'invitations') && gw.required_invitations > 0) {
+            const stats = invitesManager.getStats(interaction.guild.id, interaction.user.id);
             if (stats.total - (stats.fakes + stats.leaves) < gw.required_invitations) {
                 return interaction
                     .reply({
@@ -353,8 +354,8 @@ export class GiveawayManager<DatabaseMode extends databaseMode> {
                     .catch(log4js.trace);
             }
         }
-        if (this.client.modulesManager.enabled(interaction.guild.id, 'level') && gw.required_level > 0) {
-            const stats = this.client.levelsManager.userData({
+        if (modulesManager.enabled(interaction.guild.id, 'level') && gw.required_level > 0) {
+            const stats = levelsManager.userData({
                 guild_id: interaction.guild.id,
                 user_id: interaction.user.id
             });

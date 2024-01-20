@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember, TextChannel } from 'discord.js';
@@ -20,9 +21,9 @@ export default new DraverCommand({
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction, options }) => {
     const channel = interaction.guild.channels.cache.get(
-        interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_channel')
+        configsManager.getValue(interaction.guild.id, 'suggest_channel')
     ) as TextChannel;
-    if (!interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_enable') || !channel)
+    if (!configsManager.getValue(interaction.guild.id, 'suggest_enable') || !channel)
         return interaction
             .reply({
                 embeds: [
@@ -75,7 +76,7 @@ export default new DraverCommand({
         }
         if (
             interaction.guild.members.me.permissions.has('CreatePublicThreads') &&
-            interaction.client.configsManager.getValue(interaction.guild.id, 'suggest_thread')
+            configsManager.getValue(interaction.guild.id, 'suggest_thread')
         ) {
             res.startThread({
                 name: options.getString('suggestion')

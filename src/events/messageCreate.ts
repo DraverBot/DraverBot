@@ -1,3 +1,4 @@
+import { configsManager, afk } from '../cache/managers';
 import { AmethystEvent, log4js } from 'amethystjs';
 import splashes from '../data/splash.json';
 import { util } from '../utils/functions';
@@ -8,7 +9,7 @@ export default new AmethystEvent('messageCreate', (message) => {
 
     if (
         message.mentions.has(message.client.user.id) &&
-        (!!message.guild ? !!message.client.configsManager.getValue(message.guild.id, 'mention_message') : true)
+        (!!message.guild ? !!configsManager.getValue(message.guild.id, 'mention_message') : true)
     ) {
         if (message.content.length < 100) {
             let available = splashes.filter(
@@ -94,15 +95,15 @@ export default new AmethystEvent('messageCreate', (message) => {
         message.reply(reverse(`C'est le monde à l'envers 🙃`)).catch(sendError);
     }
 
-    if (message.client.afk.isAFK(message.author.id)[0]) {
-        message.client.afk.removeAFK(message.author.id);
+    if (afk.isAFK(message.author.id)[0]) {
+        afk.removeAFK(message.author.id);
 
         message.reply(`Bon retour parmi nous, j'ai retiré ton afk !`).catch(log4js.trace);
     }
     if (message.mentions.users.size) {
         const afk = message.mentions.users
-            .filter((x) => x.id !== message.author.id && message.client.afk.isAFK(x.id)[0])
-            .map((x) => message.client.afk.isAFK(x.id));
+            .filter((x) => x.id !== message.author.id && afk.isAFK(x.id)[0])
+            .map((x) => afk.isAFK(x.id));
 
         if (afk.length) {
             if (afk.length > 1) {

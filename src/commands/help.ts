@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import {
@@ -351,9 +352,9 @@ export default new DraverCommand({
         }
 
         const mod = modulesData[ctx.customId as moduleType];
-        const state = interaction.client.modulesManager.enabled(interaction.guild.id, mod.id);
+        const state = modulesManager.enabled(interaction.guild.id, mod.id);
 
-        interaction.client.modulesManager.setState({
+        modulesManager.setState({
             guild_id: interaction.guild.id,
             module: mod.id,
             state: !state
@@ -404,7 +405,7 @@ export default new DraverCommand({
                 row<StringSelectMenuBuilder>(selector),
                 row(
                     moduleEnabledButton(
-                        interaction.client.modulesManager.enabled(interaction.guild.id, ctx.values[0] as moduleType),
+                        modulesManager.enabled(interaction.guild.id, ctx.values[0] as moduleType),
                         ctx.values[0]
                     )
                 )

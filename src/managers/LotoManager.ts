@@ -1,3 +1,4 @@
+import { coinsManager } from '../cache/managers';
 import { Client, Collection, TextChannel } from 'discord.js';
 import query from '../utils/query';
 import { DatabaseTables, lotos } from '../typings/database';
@@ -166,7 +167,7 @@ class Loto {
         });
 
         winners.forEach((winner) => {
-            this.client.coinsManager.addCoins({
+            coinsManager.addCoins({
                 coins: winner.reward,
                 guild_id: this._guildId,
                 user_id: winner.userId

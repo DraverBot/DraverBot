@@ -1,3 +1,4 @@
+import { configsManager, GBan } from '../cache/managers';
 import { AmethystEvent, log4js } from 'amethystjs';
 import { replaceFluxVariables } from '../utils/vars';
 import { AttachmentBuilder, TextChannel } from 'discord.js';
@@ -10,15 +11,15 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
     const guild = member.guild;
 
     const configs = {
-        msg: guild.client.configsManager.getValue(guild.id, 'join_message'),
-        enabled: guild.client.configsManager.getValue(guild.id, 'join_active'),
-        channel: guild.client.configsManager.getValue(guild.id, 'join_channel'),
-        roles: guild.client.configsManager.getValue(member.guild.id, 'join_roles'),
-        gban: guild.client.configsManager.getValue(guild.id, 'gban'),
-        gbanAction: guild.client.configsManager.getValue(guild.id, 'gban_ban') ? 'ban' : 'kick'
+        msg: configsManager.getValue(guild.id, 'join_message'),
+        enabled: configsManager.getValue(guild.id, 'join_active'),
+        channel: configsManager.getValue(guild.id, 'join_channel'),
+        roles: configsManager.getValue(member.guild.id, 'join_roles'),
+        gban: configsManager.getValue(guild.id, 'gban'),
+        gbanAction: configsManager.getValue(guild.id, 'gban_ban') ? 'ban' : 'kick'
     };
 
-    if (configs.gban && member.client.GBan.isGbanned(member.id)) {
+    if (configs.gban && GBan.isGbanned(member.id)) {
         await member
             .send({
                 embeds: [
@@ -77,7 +78,7 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
         guild
     });
     const attachments = [];
-    const img = guild.client.configsManager.getValue(guild.id, 'welcome_image') as Buffer;
+    const img = configsManager.getValue(guild.id, 'welcome_image') as Buffer;
     if (!!img) {
         const image = await loadImage(img).catch(log4js.trace);
         const pp = await loadImage(
@@ -92,7 +93,7 @@ export default new AmethystEvent('guildMemberAdd', async (member) => {
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const avatarSize = (guild.client.configsManager.getValue(guild.id, 'welcome_image_radius') as number) - 2;
+            const avatarSize = (configsManager.getValue(guild.id, 'welcome_image_radius') as number) - 2;
 
             if (avatarSize > 0) {
                 ctx.beginPath();

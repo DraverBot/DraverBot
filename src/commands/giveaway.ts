@@ -1,3 +1,4 @@
+import { modulesManager, giveaways } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -217,7 +218,7 @@ export default new DraverCommand({
 
         await interaction.deferReply();
 
-        const gw = (await interaction.client.giveaways
+        const gw = (await giveaways
             .createGiveaway({
                 guild_id: interaction.guild.id,
                 channel,
@@ -335,13 +336,13 @@ export default new DraverCommand({
                         label: 'Niveau',
                         id: 'level',
                         style: 'Secondary',
-                        disabled: !client.modulesManager.enabled(interaction.guild.id, 'level') || currentAction
+                        disabled: !modulesManager.enabled(interaction.guild.id, 'level') || currentAction
                     }),
                     buildButton({
                         label: 'Invitations',
                         id: 'invitations',
                         style: 'Secondary',
-                        disabled: !client.modulesManager.enabled(interaction.guild.id, 'invitations') || currentAction
+                        disabled: !modulesManager.enabled(interaction.guild.id, 'invitations') || currentAction
                     }),
                     buildButton({
                         label: 'Valider',
@@ -409,7 +410,7 @@ export default new DraverCommand({
                                     value: '\u200b',
                                     inline: false
                                 },
-                                client.modulesManager.enabled(interaction.guild.id, 'invitations')
+                                modulesManager.enabled(interaction.guild.id, 'invitations')
                                     ? {
                                           name: 'Invitations',
                                           value:
@@ -421,7 +422,7 @@ export default new DraverCommand({
                                           inline: true
                                       }
                                     : null,
-                                client.modulesManager.enabled(interaction.guild.id, 'level')
+                                modulesManager.enabled(interaction.guild.id, 'level')
                                     ? {
                                           name: 'Niveaux',
                                           value:
@@ -472,7 +473,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-                const gw = (await interaction.client.giveaways.createGiveaway(data).catch(() => {})) as giveaway;
+                const gw = (await giveaways.createGiveaway(data).catch(() => {})) as giveaway;
                 if (!gw) {
                     interaction
                         .editReply({
@@ -923,7 +924,7 @@ export default new DraverCommand({
     }
     if (cmd === 'liste') {
         const type = (options.getString('giveaways') as GWListType) ?? GWListType.Current;
-        const list = interaction.client.giveaways.list.ended.concat(interaction.client.giveaways.list.giveaways);
+        const list = giveaways.list.ended.concat(giveaways.list.giveaways);
 
         console.log(type);
         const gws = list
@@ -993,7 +994,7 @@ export default new DraverCommand({
     }
     if (cmd === 'analyser') {
         const id = options.getString('identifiant');
-        const gw = interaction.client.giveaways.fetchGiveaway(id, true);
+        const gw = giveaways.fetchGiveaway(id, true);
 
         if (!gw || gw.guild_id !== interaction.guild.id)
             return interaction
@@ -1086,7 +1087,7 @@ export default new DraverCommand({
     }
     if (cmd === 'reroll') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
-        const gw = interaction.client.giveaways.fetchGiveaway(id, true) as giveaway;
+        const gw = giveaways.fetchGiveaway(id, true) as giveaway;
 
         if (!gw || gw.guild_id !== interaction.guild.id)
             return interaction
@@ -1135,7 +1136,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const result = await interaction.client.giveaways.reroll(gw.message_id);
+        const result = await giveaways.reroll(gw.message_id);
         if (!result || typeof result === 'string')
             return interaction
                 .editReply({
@@ -1162,7 +1163,7 @@ export default new DraverCommand({
     }
     if (cmd === 'terminer') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
-        const gw = interaction.client.giveaways.fetchGiveaway(id);
+        const gw = giveaways.fetchGiveaway(id);
 
         if (!gw || gw.guild_id !== interaction.guild.id)
             return interaction
@@ -1223,7 +1224,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
 
-        const result = await interaction.client.giveaways.endGiveaway(gw.message_id);
+        const result = await giveaways.endGiveaway(gw.message_id);
         if (!result || typeof result === 'string')
             return interaction
                 .editReply({
@@ -1247,7 +1248,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const id = options.getString('identifiant') ?? interaction.channel.id;
-        const gw = interaction.client.giveaways.fetchGiveaway(id, true);
+        const gw = giveaways.fetchGiveaway(id, true);
 
         if (!gw || gw.guild_id !== interaction.guild.id)
             return interaction
@@ -1294,7 +1295,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
 
-        const result = await interaction.client.giveaways.deleteGiveaway(gw.message_id);
+        const result = await giveaways.deleteGiveaway(gw.message_id);
         if (!result || typeof result === 'string')
             return interaction
                 .editReply({

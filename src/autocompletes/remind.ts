@@ -1,3 +1,4 @@
+import { RemindsManager } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 import { resizeString } from '../utils/toolbox';
 
@@ -5,7 +6,7 @@ export default new AutocompleteListener({
     commandName: [{ commandName: 'rappel', optionName: 'rappel' }],
     listenerName: 'rappel',
     run: ({ focusedValue, interaction }) => {
-        const list = interaction.client.RemindsManager.getUserReminds(interaction.user.id)
+        const list = RemindsManager.getUserReminds(interaction.user.id)
             .toJSON()
             .filter(
                 (x) =>

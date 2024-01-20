@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import { Client, Collection, TextChannel, WebhookClient } from 'discord.js';
 import { replyKey } from '../data/replies';
 import { interserver } from '../typings/managers';
@@ -123,7 +124,7 @@ export class InterserverManager {
             const data = this._cache.get(message.channel.id);
             if (
                 !data ||
-                !message.client.modulesManager.enabled(message.guild.id, 'interchat') ||
+                !modulesManager.enabled(message.guild.id, 'interchat') ||
                 message.author.bot ||
                 message.webhookId ||
                 message.system ||
@@ -134,7 +135,7 @@ export class InterserverManager {
             const sendTo = this._cache.filter(
                 (x) =>
                     x.frequence === data.frequence &&
-                    message.client.modulesManager.enabled(x.guild_id, 'interchat') &&
+                    modulesManager.enabled(x.guild_id, 'interchat') &&
                     x.guild_id !== message.guild.id
             );
 

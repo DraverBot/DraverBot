@@ -1,3 +1,4 @@
+import { tasksManager } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 import { resizeString } from '../utils/toolbox';
 
@@ -5,7 +6,7 @@ export default new AutocompleteListener({
     commandName: [{ commandName: 'tache' }],
     listenerName: 'task',
     run: ({ focusedValue, interaction }) => {
-        const list = interaction.client.tasksManager.getServer(interaction.guild?.id);
+        const list = tasksManager.getServer(interaction.guild?.id);
         return list
             .filter(
                 (x) =>

@@ -1,3 +1,4 @@
+import { pollsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions, waitForInteraction } from 'amethystjs';
 import {
@@ -262,7 +263,7 @@ export default new DraverCommand({
                 collector.stop('validate');
                 await builder.edit({ embeds: [replies.wait(interaction.user)], components: [] }).catch(log4js.trace);
 
-                const creation = await interaction.client.pollsManager.create({
+                const creation = await pollsManager.create({
                     question: options.getString('question'),
                     by: interaction.user,
                     choices: choices,
@@ -353,7 +354,7 @@ export default new DraverCommand({
 
     if (cmd === 'terminer') {
         const pollId = options.getInteger('sondage');
-        const poll = interaction.client.pollsManager.getPoll(pollId);
+        const poll = pollsManager.getPoll(pollId);
 
         if (!poll)
             return interaction
@@ -398,7 +399,7 @@ export default new DraverCommand({
                 embeds: [replies.wait(interaction.user)]
             })
             .catch(log4js.trace);
-        interaction.client.pollsManager.end(poll.data.poll_id);
+        pollsManager.end(poll.data.poll_id);
 
         interaction
             .editReply({

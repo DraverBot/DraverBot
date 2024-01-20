@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { AmethystEvent, log4js } from 'amethystjs';
 import { replaceFluxVariables } from '../utils/vars';
 import { AttachmentBuilder, GuildMember, TextChannel } from 'discord.js';
@@ -8,9 +9,9 @@ export default new AmethystEvent('guildMemberRemove', async (member) => {
     const guild = member.guild;
 
     const configs = {
-        msg: guild.client.configsManager.getValue(guild.id, 'leave_message'),
-        enabled: boolDb(guild.client.configsManager.getValue(guild.id, 'leave_active')),
-        channel: guild.client.configsManager.getValue(guild.id, 'leave_channel')
+        msg: configsManager.getValue(guild.id, 'leave_message'),
+        enabled: boolDb(configsManager.getValue(guild.id, 'leave_active')),
+        channel: configsManager.getValue(guild.id, 'leave_channel')
     };
 
     if (!configs.enabled) return;
@@ -25,7 +26,7 @@ export default new AmethystEvent('guildMemberRemove', async (member) => {
     });
 
     const attachments = [];
-    const img = guild.client.configsManager.getValue(guild.id, 'leave_image') as Buffer;
+    const img = configsManager.getValue(guild.id, 'leave_image') as Buffer;
     if (!!img) {
         const image = await loadImage(img).catch(log4js.trace);
         const pp = await loadImage(
@@ -40,7 +41,7 @@ export default new AmethystEvent('guildMemberRemove', async (member) => {
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const avatarSize = (guild.client.configsManager.getValue(guild.id, 'leave_image_radius') as number) - 2;
+            const avatarSize = (configsManager.getValue(guild.id, 'leave_image_radius') as number) - 2;
 
             if (avatarSize > 0) {
                 ctx.beginPath();

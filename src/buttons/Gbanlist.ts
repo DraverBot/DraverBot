@@ -1,15 +1,16 @@
+import { GBan } from '../cache/managers';
 import { ButtonHandler } from 'amethystjs';
 import dev from '../preconditions/dev';
 import { ButtonIds } from '../typings/buttons';
 import { basicEmbed, displayDate, numerize, pagination, plurial } from '../utils/toolbox';
 import { EmbedBuilder } from 'discord.js';
-import { GBan } from '../typings/database';
+import { GBan as GBanType } from '../typings/database';
 
 export default new ButtonHandler({
     preconditions: [dev],
     customId: ButtonIds.GBanList
 }).setRun(async ({ button, user }) => {
-    const list = user.client.GBan.cache;
+    const list = GBan.cache;
 
     if (list.length === 0)
         return button
@@ -29,7 +30,7 @@ export default new ButtonHandler({
                 })}`
             );
     };
-    const map = (embed: EmbedBuilder, data: GBan) => {
+    const map = (embed: EmbedBuilder, data: GBanType) => {
         return embed.addFields({
             name: data.user_id,
             value: `\`${data.user_id}\` ( <@${data.user_id}> )\nGBanni ${displayDate(parseInt(data.date))}\nRaison : ${

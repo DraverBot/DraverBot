@@ -1,3 +1,4 @@
+import { configsManager, tempChannels } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -61,7 +62,7 @@ export default new DraverCommand({
     permissions: ['Administrator'],
     clientPermissions: ['ManageChannels']
 }).setChatInputRun(async ({ interaction, client, options }) => {
-    if (!client.configsManager.getValue(interaction.guild.id, 'temp_channels'))
+    if (!configsManager.getValue(interaction.guild.id, 'temp_channels'))
         return interaction
             .reply({
                 embeds: [replies.configDisabled(interaction.member as GuildMember, 'temp_channels')],
@@ -71,7 +72,7 @@ export default new DraverCommand({
 
     const cmd = options.getSubcommand();
     if (cmd === 'liste') {
-        const list = client.tempChannels.getPanels(interaction.guild.id);
+        const list = tempChannels.getPanels(interaction.guild.id);
         if (!list.length)
             return interaction
                 .reply({
@@ -103,7 +104,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const channel = options.getChannel('salon');
-        const panel = client.tempChannels.getPanels(interaction.guild.id).find((x) => x.channel_id === channel.id);
+        const panel = tempChannels.getPanels(interaction.guild.id).find((x) => x.channel_id === channel.id);
 
         if (!panel)
             return interaction
@@ -133,7 +134,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        client.tempChannels.deletePanel(panel.id);
+        tempChannels.deletePanel(panel.id);
 
         interaction
             .editReply({
@@ -147,7 +148,7 @@ export default new DraverCommand({
             .catch(log4js.trace);
     }
     if (cmd === 'créer') {
-        const list = client.tempChannels.getPanels(interaction.guild.id);
+        const list = tempChannels.getPanels(interaction.guild.id);
 
         if (list.length === 3)
             return interaction
@@ -178,7 +179,7 @@ export default new DraverCommand({
                     ephemeral: true
                 })
                 .catch(log4js.trace);
-        if (client.tempChannels.getInstances(interaction.guild.id).find((x) => x.options.channel_id === channel.id))
+        if (tempChannels.getInstances(interaction.guild.id).find((x) => x.options.channel_id === channel.id))
             return interaction
                 .reply({
                     embeds: [
@@ -190,7 +191,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
         await interaction.deferReply().catch(log4js.trace);
-        const creation = await client.tempChannels
+        const creation = await tempChannels
             .createPanel({
                 guild: interaction.guild,
                 name,

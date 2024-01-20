@@ -1,12 +1,12 @@
+import { passwords } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 
 export default new AutocompleteListener({
     listenerName: 'password',
     commandName: [{ commandName: 'password' }],
     run: ({ interaction, focusedValue }) => {
-        const passwords = interaction.client.passwords.getPasswords(interaction.user.id);
-
         return passwords
+            .getPasswords(interaction.user.id)
             .filter(
                 (x) =>
                     x.name.toLowerCase().includes(focusedValue.toLowerCase()) ||

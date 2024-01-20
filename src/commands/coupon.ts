@@ -1,3 +1,4 @@
+import { coinsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForInteraction } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -99,7 +100,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
 
-    interaction.client.coinsManager.addCoins({
+    coinsManager.addCoins({
         guild_id: interaction.guild.id,
         user_id: interaction.user.id,
         coins: coupon[0].amount

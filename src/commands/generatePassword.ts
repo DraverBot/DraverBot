@@ -1,3 +1,4 @@
+import { passwords } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
 import { WordGenerator } from '../managers/Generator';
@@ -116,7 +117,7 @@ export default new DraverCommand({
         const add = options.getString('additionels') ?? '';
         const name = options.getString('nom');
 
-        if (name && interaction.client.passwords.getPassword(interaction.user.id, name))
+        if (name && passwords.getPassword(interaction.user.id, name))
             return interaction
                 .reply({
                     embeds: [
@@ -138,7 +139,7 @@ export default new DraverCommand({
             capitals: majuscules
         }).generate();
 
-        if (name) interaction.client.passwords.printPassword(interaction.user.id, name, password);
+        if (name) passwords.printPassword(interaction.user.id, name, password);
 
         interaction
             .reply({
@@ -153,7 +154,7 @@ export default new DraverCommand({
         const name = options.getString('nom');
         const value = options.getString('password');
 
-        if (interaction.client.passwords.getPassword(interaction.user.id, name)) {
+        if (passwords.getPassword(interaction.user.id, name)) {
             const confirmation = (await confirm({
                 interaction,
                 user: interaction.user,
@@ -174,7 +175,7 @@ export default new DraverCommand({
                     .catch(() => {});
         }
 
-        interaction.client.passwords.printPassword(interaction.user.id, name, value);
+        passwords.printPassword(interaction.user.id, name, value);
 
         systemReply(interaction, {
             ephemeral: true,
@@ -188,7 +189,7 @@ export default new DraverCommand({
     }
     if (cmd === 'voir') {
         const password = options.getString('password');
-        const value = interaction.client.passwords.getPassword(interaction.user.id, password);
+        const value = passwords.getPassword(interaction.user.id, password);
 
         if (value) {
             interaction
@@ -202,7 +203,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
         } else {
-            const list = interaction.client.passwords.getPasswords(interaction.user.id);
+            const list = passwords.getPasswords(interaction.user.id);
 
             const mapper = (embed: EmbedBuilder, item: { name: string; password: string }) => {
                 if (embed.data?.fields?.length === 2)
@@ -269,7 +270,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        interaction.client.passwords.deletePassword(interaction.user.id, password);
+        passwords.deletePassword(interaction.user.id, password);
         interaction
             .editReply({
                 embeds: [

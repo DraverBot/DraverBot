@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import {
     AttachmentBuilder,
     ChannelType,
@@ -805,7 +806,7 @@ export class TicketsManager {
     private setEvent() {
         this.client.on('buttonInteraction', async (button) => {
             if (arrayfy(ticketButtonIds).includes(button.customId)) {
-                if (!button.client.modulesManager.enabled(button.guild.id, 'tickets')) {
+                if (!modulesManager.enabled(button.guild.id, 'tickets')) {
                     button
                         .reply({
                             embeds: [replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets' })],

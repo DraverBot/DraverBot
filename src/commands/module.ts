@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -55,7 +56,7 @@ export default new DraverCommand({
         const state = options.getBoolean('état');
 
         await interaction.deferReply();
-        await interaction.client.modulesManager.setState({
+        await modulesManager.setState({
             guild_id: interaction.guild.id,
             module: moduleName,
             state
@@ -69,9 +70,7 @@ export default new DraverCommand({
     }
     if (subcommand === 'afficher') {
         const moduleName = options.getString('module') as moduleType | undefined;
-        const modules =
-            interaction.client.modulesManager.getServerDatas(interaction.guild.id) ??
-            interaction.client.modulesManager.defaultObject;
+        const modules = modulesManager.getServerDatas(interaction.guild.id) ?? modulesManager.defaultObject;
         const em = basicEmbed(interaction.user)
             .setColor(interaction.guild.members.me.displayHexColor)
             .setTitle('Modules');

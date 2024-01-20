@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -46,7 +47,7 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.configsManager.getValue(interaction.guild.id, 'join_roles'))
+    if (!configsManager.getValue(interaction.guild.id, 'join_roles'))
         return interaction
             .reply({
                 embeds: [

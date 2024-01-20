@@ -1,3 +1,4 @@
+import { coinsManager, shop as shopManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from 'discord.js';
@@ -38,7 +39,7 @@ export default new DraverCommand({
     const cmd = subcmd(options);
 
     if (cmd === 'afficher') {
-        const shop = interaction.client.shop.getShop(interaction.guild.id);
+        const shop = shopManager.getShop(interaction.guild.id);
 
         if (shop.length === 0)
             return interaction
@@ -106,15 +107,11 @@ export default new DraverCommand({
         }
     }
     if (cmd === 'acheter') {
-        const shop = interaction.client.shop.getShop(interaction.guild.id);
+        const shop = shopManager.getShop(interaction.guild.id);
         const itemId = parseInt(options.getString('item'));
 
         const item = shop.find((x) => x.id === itemId);
-        if (
-            item.price >
-            interaction.client.coinsManager.getData({ user_id: interaction.user.id, guild_id: interaction.guild.id })
-                .coins
-        )
+        if (item.price > coinsManager.getData({ user_id: interaction.user.id, guild_id: interaction.guild.id }).coins)
             return interaction
                 .reply({
                     embeds: [replies.notEnoughCoins(interaction.member as GuildMember)],
@@ -122,7 +119,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const result = interaction.client.shop.buyItem({
+        const result = shopManager.buyItem({
             guild_id: interaction.guild.id,
             user_id: interaction.user.id,
             itemId

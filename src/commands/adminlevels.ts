@@ -1,3 +1,4 @@
+import { modulesManager, levelsManager, levelsChannels } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions, wait } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, ComponentType, GuildMember, Message } from 'discord.js';
@@ -97,7 +98,7 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options, client }) => {
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'level'))
+    if (!modulesManager.enabled(interaction.guild.id, 'level'))
         return interaction
             .reply({
                 embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
@@ -109,8 +110,8 @@ export default new DraverCommand({
 
     if (cmd === 'configurer') {
         // eslint-disable-next-line prefer-const
-        let configured: 'bl' | 'wl' = client.levelsChannels.getConfigured(interaction) ?? 'wl';
-        let data = client.levelsChannels.getLists(interaction)[configured];
+        let configured: 'bl' | 'wl' = levelsChannels.getConfigured(interaction) ?? 'wl';
+        let data = levelsChannels.getLists(interaction)[configured];
 
         const embed = () => {
             return basicEmbed(interaction.user, { draverColor: true })
@@ -294,11 +295,11 @@ export default new DraverCommand({
 
         collector.on('end', async (_c, reason) => {
             if (reason === 'apply') {
-                if (configured !== client.levelsChannels.getConfigured(interaction)) {
-                    client.levelsChannels.swap(interaction);
+                if (configured !== levelsChannels.getConfigured(interaction)) {
+                    levelsChannels.swap(interaction);
                     await wait(500);
                 }
-                client.levelsChannels.setList(interaction.guild, data);
+                levelsChannels.setList(interaction.guild, data);
             } else if (reason !== 'cancel') {
                 interaction
                     .editReply({
@@ -310,8 +311,8 @@ export default new DraverCommand({
         });
     }
     if (cmd === 'liste') {
-        const configured = client.levelsChannels.getConfigured(interaction);
-        const list = client.levelsChannels.getLists(interaction)[configured];
+        const configured = levelsChannels.getConfigured(interaction);
+        const list = levelsChannels.getLists(interaction)[configured];
 
         if (list.length === 0)
             return interaction
@@ -365,7 +366,7 @@ export default new DraverCommand({
             embeds: [replies.wait(interaction.user)],
             components: []
         });
-        await interaction.client.levelsManager.reset(interaction.guild.id, user?.id);
+        await levelsManager.reset(interaction.guild.id, user?.id);
 
         await addModLog({
             guild: interaction.guild,
@@ -424,7 +425,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
 
-        await interaction.client.levelsManager.addXp({
+        await levelsManager.addXp({
             amount,
             user_id: user.id,
             type,

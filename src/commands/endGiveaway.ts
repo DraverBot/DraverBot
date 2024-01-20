@@ -1,3 +1,4 @@
+import { giveaways } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -12,7 +13,7 @@ export default new DraverCommand({
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild']
 }).setMessageContextRun(async ({ interaction, message, client }) => {
-    if (!client.giveaways.fetchGiveaway(message.id))
+    if (!giveaways.fetchGiveaway(message.id))
         return interaction
             .reply({
                 embeds: [
@@ -25,7 +26,7 @@ export default new DraverCommand({
             .catch(log4js.trace);
 
     await interaction.deferReply({ ephemeral: true }).catch(log4js.trace);
-    const gw = await client.giveaways.endGiveaway(message.id);
+    const gw = await giveaways.endGiveaway(message.id);
 
     if (typeof gw === 'string')
         return interaction

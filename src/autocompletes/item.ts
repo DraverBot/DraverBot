@@ -1,3 +1,4 @@
+import { shop } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 
 export default new AutocompleteListener({
@@ -7,9 +8,8 @@ export default new AutocompleteListener({
     ],
     listenerName: 'item',
     run: ({ focusedValue, interaction }) => {
-        const shop = interaction.client.shop.getShop(interaction.guild.id);
-
         return shop
+            .getShop(interaction.guild.id)
             .filter(
                 (x) =>
                     x.itemName.toLowerCase().includes(focusedValue.toLowerCase()) ||

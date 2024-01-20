@@ -1,3 +1,4 @@
+import { AnonymousManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -113,7 +114,7 @@ export default new DraverCommand({
         const channel = options.getChannel('salon') as TextChannel;
         const name = options.getString('nom') ?? 'Anonyme';
 
-        if (interaction.client.AnonymousManager.isConfigured(channel))
+        if (AnonymousManager.isConfigured(channel))
             return interaction
                 .reply({
                     embeds: [
@@ -126,7 +127,7 @@ export default new DraverCommand({
                 .catch(() => {});
 
         await interaction.deferReply().catch(() => {});
-        const result = await interaction.client.AnonymousManager.create({
+        const result = await AnonymousManager.create({
             guild: interaction.guild,
             channel,
             name
@@ -155,9 +156,7 @@ export default new DraverCommand({
             .catch(() => {});
     }
     if (cmd === 'liste') {
-        const list = interaction.client.AnonymousManager.values
-            .filter((x) => x.data.guild_id === interaction.guild.id)
-            .toJSON();
+        const list = AnonymousManager.values.filter((x) => x.data.guild_id === interaction.guild.id).toJSON();
         if (list.length === 0)
             return interaction
                 .reply({
@@ -222,7 +221,7 @@ export default new DraverCommand({
     }
     if (cmd === 'salon') {
         const channel = options.getChannel('salon') as TextChannel;
-        if (!interaction.client.AnonymousManager.isConfigured(channel))
+        if (!AnonymousManager.isConfigured(channel))
             return interaction
                 .reply({
                     embeds: [
@@ -234,7 +233,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const data = interaction.client.AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
+        const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
         interaction
             .reply({
@@ -260,7 +259,7 @@ export default new DraverCommand({
     }
     if (cmd === 'bannissements') {
         const channel = options.getChannel('salon') as TextChannel;
-        if (!interaction.client.AnonymousManager.isConfigured(channel))
+        if (!AnonymousManager.isConfigured(channel))
             return interaction
                 .reply({
                     embeds: [
@@ -272,7 +271,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const data = interaction.client.AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
+        const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
         const msg = (await interaction.reply({
             embeds: [
@@ -365,7 +364,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.AnonymousManager.addBannedUser(data.data.id.toString(), user.id);
+            AnonymousManager.addBannedUser(data.data.id.toString(), user.id);
             interaction
                 .editReply({
                     embeds: [
@@ -422,7 +421,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.AnonymousManager.addBannedRole(data.data.id.toString(), role.id);
+            AnonymousManager.addBannedRole(data.data.id.toString(), role.id);
             interaction
                 .editReply({
                     embeds: [
@@ -479,7 +478,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.AnonymousManager.removeBannedUser(data.data.id.toString(), user.id);
+            AnonymousManager.removeBannedUser(data.data.id.toString(), user.id);
             interaction
                 .editReply({
                     embeds: [
@@ -534,7 +533,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.AnonymousManager.removeBannedRole(data.data.id.toString(), role.id);
+            AnonymousManager.removeBannedRole(data.data.id.toString(), role.id);
             interaction
                 .editReply({
                     embeds: [
@@ -548,7 +547,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const channel = options.getChannel('salon') as TextChannel;
-        if (!interaction.client.AnonymousManager.isConfigured(channel))
+        if (!AnonymousManager.isConfigured(channel))
             return interaction
                 .reply({
                     embeds: [
@@ -560,7 +559,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const data = interaction.client.AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
+        const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
         const confirmation = (await confirm({
             interaction: interaction,
             embed: basicEmbed(interaction.user)
@@ -591,6 +590,6 @@ export default new DraverCommand({
                 components: []
             })
             .catch(() => {});
-        interaction.client.AnonymousManager.delete(data.data.id.toString()).catch(() => {});
+        AnonymousManager.delete(data.data.id.toString()).catch(() => {});
     }
 });

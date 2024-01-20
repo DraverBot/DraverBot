@@ -1,3 +1,4 @@
+import { RemindsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder, TextChannel } from 'discord.js';
@@ -111,7 +112,7 @@ export default new DraverCommand({
 
         await interaction.deferReply().catch(() => {});
 
-        await interaction.client.RemindsManager.setRemind({
+        await RemindsManager.setRemind({
             user_id: interaction.user.id,
             place,
             channel: interaction.channel as TextChannel,
@@ -127,7 +128,7 @@ export default new DraverCommand({
             .catch(() => {});
     }
     if (cmd === 'liste') {
-        const list = interaction.client.RemindsManager.getUserReminds(interaction.user.id).toJSON();
+        const list = RemindsManager.getUserReminds(interaction.user.id).toJSON();
         if (list.length === 0)
             return interaction
                 .reply({
@@ -184,7 +185,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const id = options.getString('rappel');
-        const rmd = interaction.client.RemindsManager.cache.get(parseInt(id));
+        const rmd = RemindsManager.cache.get(parseInt(id));
 
         const confirmation = (await confirm({
             user: interaction.user,
@@ -212,6 +213,6 @@ export default new DraverCommand({
                 components: []
             })
             .catch(() => {});
-        interaction.client.RemindsManager.deleteRemind(parseInt(id)).catch(() => {});
+        RemindsManager.deleteRemind(parseInt(id)).catch(() => {});
     }
 });

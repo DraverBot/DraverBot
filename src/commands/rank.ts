@@ -1,3 +1,4 @@
+import { levelsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -24,7 +25,7 @@ export default new DraverCommand({
     .setChatInputRun(async ({ interaction, options }) => {
         const user = options.getUser('membre') ?? interaction.user;
 
-        const data: levels<number> = interaction.client.levelsManager.userData({
+        const data: levels<number> = levelsManager.userData({
             guild_id: interaction.guild.id,
             user_id: user.id
         }) ?? { guild_id: interaction.guild.id, user_id: user.id, level: 0, messages: 0, required: 255 };
@@ -46,8 +47,8 @@ export default new DraverCommand({
                 {
                     name: 'Place dans le classement',
                     value:
-                        (interaction.client.levelsManager.leaderboard(interaction.guild.id).toJSON().indexOf(data) ??
-                            interaction.client.levelsManager.leaderboard().size - 1) +
+                        (levelsManager.leaderboard(interaction.guild.id).toJSON().indexOf(data) ??
+                            levelsManager.leaderboard().size - 1) +
                         1 +
                         `°`,
                     inline: false
@@ -69,7 +70,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        const stats = client.levelsManager.userData({ user_id: user.id, guild_id: interaction.guild.id });
+        const stats = levelsManager.userData({ user_id: user.id, guild_id: interaction.guild.id });
         const embed = basicEmbed(interaction.user)
             .setTitle('Niveaux')
             .setThumbnail(user.displayAvatarURL())
@@ -87,8 +88,8 @@ export default new DraverCommand({
                 {
                     name: 'Place dans le classement',
                     value:
-                        (interaction.client.levelsManager.leaderboard(interaction.guild.id).toJSON().indexOf(stats) ??
-                            interaction.client.levelsManager.leaderboard().size - 1) +
+                        (levelsManager.leaderboard(interaction.guild.id).toJSON().indexOf(stats) ??
+                            levelsManager.leaderboard().size - 1) +
                         1 +
                         `°`,
                     inline: false

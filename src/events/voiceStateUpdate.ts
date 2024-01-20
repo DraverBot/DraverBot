@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { AmethystEvent, log4js } from 'amethystjs';
 
 export default new AmethystEvent('voiceStateUpdate', (bef, aft) => {
@@ -5,8 +6,8 @@ export default new AmethystEvent('voiceStateUpdate', (bef, aft) => {
     const client = bef.client;
 
     const role = (method: 'add' | 'remove') => {
-        if (!client.configsManager.getValue(aft.guild.id, 'voice_role_enabled')) return;
-        const id = client.configsManager.getValue<string>(aft.guild.id, 'voice_role');
+        if (!configsManager.getValue(aft.guild.id, 'voice_role_enabled')) return;
+        const id = configsManager.getValue<string>(aft.guild.id, 'voice_role');
 
         if (id.length === 0) return;
 

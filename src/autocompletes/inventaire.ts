@@ -1,10 +1,11 @@
+import { shop } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 
 export default new AutocompleteListener({
     commandName: [{ commandName: 'magasin', optionName: 'objet' }],
     listenerName: 'inventaire',
     run: ({ focusedValue, interaction }) => {
-        const inventory = interaction.client.shop.getInventory({
+        const inventory = shop.getInventory({
             user_id: interaction.user.id,
             guild_id: interaction.guild.id
         });

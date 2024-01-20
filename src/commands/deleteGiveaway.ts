@@ -1,3 +1,4 @@
+import { giveaways } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -12,7 +13,7 @@ export default new DraverCommand({
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild']
 }).setMessageContextRun(async ({ interaction, message, client }) => {
-    if (!client.giveaways.fetchGiveaway(message.id))
+    if (!giveaways.fetchGiveaway(message.id))
         return interaction
             .reply({
                 ephemeral: true,
@@ -37,7 +38,7 @@ export default new DraverCommand({
         return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
     await confirmation.interaction.deferUpdate().catch(log4js.trace);
 
-    const deletion = client.giveaways.deleteGiveaway(message.id).catch(log4js.trace);
+    const deletion = giveaways.deleteGiveaway(message.id).catch(log4js.trace);
     if (typeof deletion === 'string')
         return interaction
             .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })

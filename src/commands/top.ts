@@ -1,3 +1,4 @@
+import { modulesManager, coinsManager, levelsManager, invitesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js';
@@ -43,7 +44,7 @@ export default new DraverCommand({
         invitations: 'invitations'
     };
 
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, types[top]))
+    if (!modulesManager.enabled(interaction.guild.id, types[top]))
         return interaction
             .reply({
                 embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: types[top] })],
@@ -53,10 +54,10 @@ export default new DraverCommand({
 
     const leaderboard =
         top === 'monnaie'
-            ? interaction.client.coinsManager.getLeaderboard(interaction.guild.id)
+            ? coinsManager.getLeaderboard(interaction.guild.id)
             : top === 'invitations'
-            ? interaction.client.invitesManager.getLeaderboard(interaction.guild.id).toJSON()
-            : interaction.client.levelsManager.leaderboard(interaction.guild.id).toJSON();
+            ? invitesManager.getLeaderboard(interaction.guild.id).toJSON()
+            : levelsManager.leaderboard(interaction.guild.id).toJSON();
 
     const map = (embed: EmbedBuilder, data: any) => {
         const index = leaderboard.indexOf(data as any);

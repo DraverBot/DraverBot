@@ -1,3 +1,4 @@
+import { modulesManager, configsManager, rewards as rewardsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -108,11 +109,11 @@ export default new DraverCommand({
             ]
         }
     ]
-}).setChatInputRun(async ({ interaction, options, client }) => {
+}).setChatInputRun(async ({ interaction, options }) => {
     const cmd = options.getSubcommand();
 
     const check = (parameter: keyof configKeys) => {
-        if (!client.configsManager.getValue(interaction.guild.id, parameter)) {
+        if (!configsManager.getValue(interaction.guild.id, parameter)) {
             interaction
                 .reply({
                     ephemeral: true,
@@ -125,7 +126,7 @@ export default new DraverCommand({
     };
     if (cmd === 'supprimer') {
         if (!check('level_rewards')) return;
-        if (!client.modulesManager.enabled(interaction.guild.id, 'level'))
+        if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
                     embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
@@ -133,7 +134,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        const reward = client.rewards.getReward(parseInt(options.getString('récompense')));
+        const reward = rewardsManager.getReward(parseInt(options.getString('récompense')));
         if (!reward)
             return interaction
                 .reply({
@@ -146,7 +147,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        client.rewards.removeReward(reward.id);
+        rewardsManager.removeReward(reward.id);
 
         addModLog({
             guild: interaction.guild,
@@ -176,7 +177,7 @@ export default new DraverCommand({
     }
     if (cmd === 'liste') {
         if (!check('level_rewards')) return;
-        if (!client.modulesManager.enabled(interaction.guild.id, 'level'))
+        if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
                     embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
@@ -185,7 +186,7 @@ export default new DraverCommand({
                 .catch(log4js.trace);
 
         const filter = (options.getString('filtre') ?? RewardsFilter.All) as RewardsFilter;
-        const rewards = client.rewards
+        const rewards = rewardsManager
             .getRewards(interaction.guild)
             .filter((x) =>
                 filter === RewardsFilter.All ? true : x.type === (filter === RewardsFilter.Coins ? 'coins' : 'role')
@@ -233,7 +234,7 @@ export default new DraverCommand({
     }
     if (cmd === 'ajouter') {
         if (!check('level_rewards')) return;
-        if (!client.modulesManager.enabled(interaction.guild.id, 'level'))
+        if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
                     embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
@@ -247,7 +248,7 @@ export default new DraverCommand({
         const role = options.getRole('rôle');
         const coins = options.getInteger(util<string>('coins').toLowerCase());
 
-        const rewards = client.rewards.getRewards(interaction);
+        const rewards = rewardsManager.getRewards(interaction);
 
         if (rewards.find((x) => x.level === level && x.type === type))
             return interaction
@@ -286,7 +287,7 @@ export default new DraverCommand({
             )
                 return;
         } else {
-            if (!client.modulesManager.enabled(interaction.guild.id, 'economy'))
+            if (!modulesManager.enabled(interaction.guild.id, 'economy'))
                 return interaction
                     .reply({
                         embeds: [
@@ -314,7 +315,7 @@ export default new DraverCommand({
             })
             .catch(log4js.trace);
 
-        const res = await client.rewards.addReward({
+        const res = await rewardsManager.addReward({
             guild: interaction.guild,
             type,
             value: type === 'coins' ? coins : role.id,

@@ -1,3 +1,4 @@
+import { coinsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -58,7 +59,7 @@ export default new DraverCommand({
             .catch(() => {});
 
     if (
-        interaction.client.coinsManager.getData({
+        coinsManager.getData({
             guild_id: interaction.guild.id,
             user_id: interaction.user.id
         }).coins < amount
@@ -87,12 +88,12 @@ export default new DraverCommand({
             components: []
         });
 
-    interaction.client.coinsManager.addCoins({
+    coinsManager.addCoins({
         guild_id: interaction.guild.id,
         user_id: user.id,
         coins: amount
     });
-    interaction.client.coinsManager.removeCoins({
+    coinsManager.removeCoins({
         guild_id: interaction.guild.id,
         user_id: user.id,
         coins: amount

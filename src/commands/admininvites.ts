@@ -1,3 +1,4 @@
+import { modulesManager, invitesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -78,7 +79,7 @@ export default new DraverCommand({
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator']
 }).setChatInputRun(async ({ interaction, options, client }) => {
-    if (!client.modulesManager.enabled(interaction.guild.id, 'invitations'))
+    if (!modulesManager.enabled(interaction.guild.id, 'invitations'))
         return interaction
             .reply({
                 embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'invitations' })],
@@ -128,9 +129,9 @@ export default new DraverCommand({
                 .catch(log4js.trace);
 
         if (cmd === 'serveur') {
-            client.invitesManager.resetGuild(interaction.guild.id, { resetInvitations: true });
+            invitesManager.resetGuild(interaction.guild.id, { resetInvitations: true });
         } else {
-            client.invitesManager.resetUser(interaction.guild.id, interaction.user.id, { resetInvitations: true });
+            invitesManager.resetUser(interaction.guild.id, interaction.user.id, { resetInvitations: true });
         }
 
         interaction
@@ -166,7 +167,7 @@ export default new DraverCommand({
             return;
 
         if (cmd === 'ajouter') {
-            client.invitesManager.addInvites(
+            invitesManager.addInvites(
                 interaction.guild.id,
                 user.id,
                 { type: 'bonus', amount },
@@ -187,7 +188,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
         } else {
-            const quantity = Math.min(client.invitesManager.getStats(interaction.guild.id, user.id).bonus, amount) * -1;
+            const quantity = Math.min(invitesManager.getStats(interaction.guild.id, user.id).bonus, amount) * -1;
             if (quantity === 0)
                 return interaction.reply({
                     embeds: [
@@ -201,7 +202,7 @@ export default new DraverCommand({
                     ]
                 });
 
-            client.invitesManager.addInvites(
+            invitesManager.addInvites(
                 interaction.guild.id,
                 user.id,
                 { type: 'bonus', amount: quantity },

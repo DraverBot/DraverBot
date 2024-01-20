@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -64,7 +65,7 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'economy'))
+    if (!modulesManager.enabled(interaction.guild.id, 'economy'))
         return interaction
             .reply({
                 embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' })],

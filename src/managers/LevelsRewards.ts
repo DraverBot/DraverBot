@@ -1,3 +1,4 @@
+import { modulesManager, coinsManager, configsManager } from '../cache/managers';
 import { BaseInteraction, Client, Guild, GuildMember } from 'discord.js';
 import query from '../utils/query';
 import { DatabaseTables, levelRewardType, levelRewards } from '../typings/database';
@@ -63,18 +64,15 @@ export class LevelsRewards {
     }
     private event() {
         this.client.on('levelUp', (member, levels) => {
-            if (!member.client.configsManager.getValue(member.guild.id, 'level_rewards')) return;
+            if (!configsManager.getValue(member.guild.id, 'level_rewards')) return;
 
             const rewards = this.getRewards(member);
             rewards
                 .filter((x) => x.level === levels.level)
                 .forEach((reward) => {
                     if (reward) {
-                        if (
-                            reward.type === 'coins' &&
-                            member.client.modulesManager.enabled(member.guild.id, 'economy')
-                        ) {
-                            this.client.coinsManager.addCoins({
+                        if (reward.type === 'coins' && modulesManager.enabled(member.guild.id, 'economy')) {
+                            coinsManager.addCoins({
                                 coins: reward.value as number,
                                 guild_id: member.guild.id,
                                 user_id: member.id

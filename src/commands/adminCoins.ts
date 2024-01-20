@@ -1,3 +1,4 @@
+import { modulesManager, coinsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, GuildMember, Message } from 'discord.js';
@@ -84,7 +85,7 @@ export default new DraverCommand({
     ],
     permissions: ['ManageGuild']
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'economy'))
+    if (!modulesManager.enabled(interaction.guild.id, 'economy'))
         return interaction
             .reply({
                 ephemeral: true,
@@ -147,7 +148,7 @@ export default new DraverCommand({
             reason: 'Pas de raison'
         }).catch(() => {});
 
-        interaction.client.coinsManager.start();
+        coinsManager.start();
         interaction
             .editReply({
                 embeds: [
@@ -213,13 +214,13 @@ export default new DraverCommand({
             });
 
         if (reply.customId === 'coins.pocket') {
-            interaction.client.coinsManager.addCoins({
+            coinsManager.addCoins({
                 guild_id: interaction.guild.id,
                 user_id: user.id,
                 coins: amount
             });
         } else {
-            interaction.client.coinsManager.addBank({
+            coinsManager.addBank({
                 guild_id: interaction.guild.id,
                 user_id: user.id,
                 bank: amount
@@ -300,7 +301,7 @@ export default new DraverCommand({
                 components: []
             });
 
-        const selected = interaction.client.coinsManager.getData({
+        const selected = coinsManager.getData({
             guild_id: interaction.guild.id,
             user_id: interaction.user.id
         })[reply.customId === 'coins.pocket' ? 'coins' : 'bank'];
@@ -319,13 +320,13 @@ export default new DraverCommand({
                 .catch(() => {});
 
         if (reply.customId === 'coins.pocket') {
-            interaction.client.coinsManager.removeCoins({
+            coinsManager.removeCoins({
                 guild_id: interaction.guild.id,
                 user_id: user.id,
                 coins: amount
             });
         } else {
-            interaction.client.coinsManager.removeBank({
+            coinsManager.removeBank({
                 guild_id: interaction.guild.id,
                 user_id: user.id,
                 bank: amount
@@ -357,7 +358,7 @@ export default new DraverCommand({
     }
     if (subcommand === 'voir') {
         const user = options.getUser('personne');
-        const stats = interaction.client.coinsManager.getData({
+        const stats = coinsManager.getData({
             guild_id: interaction.guild.id,
             user_id: user.id
         });

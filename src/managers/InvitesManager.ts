@@ -1,3 +1,4 @@
+import { modulesManager, configsManager } from '../cache/managers';
 import { Client, Collection, TextChannel } from 'discord.js';
 import { init } from '@androz2091/discord-invites-tracker';
 import { DatabaseTables, invitations } from '../typings/database';
@@ -157,21 +158,18 @@ export class InvitesManager {
     private event() {
         this.client.on('guildMemberRemove', async (member) => {
             const guild = member.guild;
-            if (!guild.client.modulesManager.enabled(guild.id, 'invitations') || member.user.bot) return;
+            if (!modulesManager.enabled(guild.id, 'invitations') || member.user.bot) return;
 
             const inviterID = this.getGuild(guild.id).find((x) => x.invited.includes(member.id));
             const unknownCase = async () => {
-                const channelId = guild.client.configsManager.getValue(guild.id, 'invite_channel') as string;
+                const channelId = configsManager.getValue(guild.id, 'invite_channel') as string;
                 if (!channelId) return;
 
                 const channel = (guild.channels.cache.get(channelId) ??
                     (await guild.channels.fetch(channelId).catch(log4js.trace))) as TextChannel;
                 if (!channel) return;
 
-                const template = guild.client.configsManager.getValue(
-                    guild.id,
-                    'invite_unknown_message_leave'
-                ) as string;
+                const template = configsManager.getValue(guild.id, 'invite_unknown_message_leave') as string;
                 if (!template) return;
                 const message = replaceInvitesVariables({
                     member,
@@ -194,14 +192,14 @@ export class InvitesManager {
                 (await guild.members.fetch(inviterID.user_id)?.catch(log4js.trace));
             if (!inviter) return unknownCase();
 
-            const channelId = guild.client.configsManager.getValue(guild.id, 'invite_channel') as string;
+            const channelId = configsManager.getValue(guild.id, 'invite_channel') as string;
             if (!channelId) return;
 
             const channel = (guild.channels.cache.get(channelId) ??
                 (await guild.channels.fetch(channelId).catch(log4js.trace))) as TextChannel;
             if (!channel) return;
 
-            const template = guild.client.configsManager.getValue(guild.id, 'invite_normal_message_leave') as string;
+            const template = configsManager.getValue(guild.id, 'invite_normal_message_leave') as string;
             if (!template) return;
             const message = replaceInvitesVariables({
                 member,
@@ -216,12 +214,7 @@ export class InvitesManager {
         });
         this.tracker.on('guildMemberAdd', async (member, type, invite) => {
             const guild = member.guild;
-            if (
-                !guild.client.modulesManager.enabled(guild.id, 'invitations') ||
-                type === 'permissions' ||
-                member.user.bot
-            )
-                return;
+            if (!modulesManager.enabled(guild.id, 'invitations') || type === 'permissions' || member.user.bot) return;
 
             if (type === 'normal') {
                 if (this.isInvitedBy(guild.id, invite.inviter.id, member.id)) {
@@ -237,14 +230,14 @@ export class InvitesManager {
                 await this.addInvited(guild.id, invite.inviter.id, member.id);
             }
 
-            const id = guild.client.configsManager.getValue(guild.id, 'invite_channel') as string;
+            const id = configsManager.getValue(guild.id, 'invite_channel') as string;
             if (!id) return;
             const channel = (guild.channels.cache.get(id) ??
                 (await guild.channels.fetch(id).catch(log4js.trace))) as TextChannel;
             if (!channel) return;
 
             if (type === 'vanity' || type === 'unknown' || (type === 'normal' && !invite.inviter)) {
-                const template = guild.client.configsManager.getValue(
+                const template = configsManager.getValue(
                     guild.id,
                     type === 'vanity' ? 'invite_vanity_message_join' : 'invite_unknown_message_join'
                 ) as string;
@@ -264,7 +257,7 @@ export class InvitesManager {
 
             const userData = this.getStats(guild.id, invite?.inviter?.id);
 
-            const template = guild.client.configsManager.getValue(guild.id, 'invite_normal_message_join') as string;
+            const template = configsManager.getValue(guild.id, 'invite_normal_message_join') as string;
             if (!template) return;
             const msg = replaceInvitesVariables({
                 member,

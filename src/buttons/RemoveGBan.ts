@@ -1,3 +1,4 @@
+import { GBan } from '../cache/managers';
 import { ButtonHandler } from 'amethystjs';
 import { ButtonIds } from '../typings/buttons';
 import dev from '../preconditions/dev';
@@ -34,7 +35,7 @@ export default new ButtonHandler({
     if (!modal) return;
     const id = modal.fields.getTextInputValue('gban.id');
 
-    if (!user.client.GBan.isGbanned(id))
+    if (!GBan.isGbanned(id))
         return modal
             .reply({
                 embeds: [
@@ -46,7 +47,7 @@ export default new ButtonHandler({
                 ephemeral: true
             })
             .catch(() => {});
-    user.client.GBan.remove(id);
+    GBan.remove(id);
     modal
         .reply({
             embeds: [

@@ -1,3 +1,4 @@
+import { invitesManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -20,7 +21,7 @@ export default new DraverCommand({
 }).setChatInputRun(async ({ interaction, options, client }) => {
     const user = options.getUser('utilisateur') ?? interaction.user;
 
-    const stats = client.invitesManager.getStats(interaction.guild.id, user.id);
+    const stats = invitesManager.getStats(interaction.guild.id, user.id);
 
     const fakes = stats.fakes;
     const leave = stats.leaves;

@@ -1,9 +1,10 @@
+import { modulesManager } from '../cache/managers';
 import { AmethystEvent } from 'amethystjs';
 import { getMsgUrl, pingUser, sendError } from '../utils/toolbox';
 import { giveawayEmbeds } from '../data/giveaway';
 
 export default new AmethystEvent('giveawayEnded', (giveaway, channel, winners) => {
-    if (!channel.client.modulesManager.enabled(giveaway.guild_id, 'giveaways')) return;
+    if (!modulesManager.enabled(giveaway.guild_id, 'giveaways')) return;
 
     channel
         .send({

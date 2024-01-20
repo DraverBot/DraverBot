@@ -3,6 +3,8 @@ import { EmbedBuilder } from 'discord.js';
 import { util } from '../utils/functions';
 import { embedsInputData } from '../typings/embeds';
 import { buttonsInputData } from '../typings/buttons';
+import { giveaways } from '../cache/managers';
+import { giveawayInput } from '../typings/giveaway';
 
 const thisGw = (url: string) => `[**ce giveaway**](${url})`;
 
@@ -10,10 +12,9 @@ type customInput = giveawayInput & {
     endsAt: number;
 };
 
-
 export const giveawayEmbeds: embedsInputData = {
     giveaway: (data: customInput & { participants: string[] }) => {
-        const full = database.giveaways.fetchGiveaway(data.channel.id, false);
+        const full = giveaways.fetchGiveaway(data.channel.id, false);
         const date = parseInt((full?.endsAt ?? data.time + Date.now()).toString());
         data.participants = data.participants ?? [];
 
@@ -26,7 +27,7 @@ export const giveawayEmbeds: embedsInputData = {
                     data.winnerCount
                 )} gagnant${plurial(data.winnerCount, {})}\n\nAppuyez sur le bouton pour tenter de gagner : __${
                     data.reward
-                }__\nLe giveaway prendra fin ${displayDate(data.time + Date.now())}`
+                }__\nLe giveaway prendra fin ${displayDate(Math.floor(date / 1000))}`
             )
             .setTimestamp()
             .setColor(util('accentColor'));

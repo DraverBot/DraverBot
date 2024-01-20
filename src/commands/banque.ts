@@ -1,3 +1,4 @@
+import { coinsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
@@ -47,7 +48,7 @@ export default new DraverCommand({
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
     const sub = subcmd(options);
-    const manager = interaction.client.coinsManager;
+    const manager = coinsManager;
 
     const data = manager.getData({
         guild_id: interaction.guild.id,

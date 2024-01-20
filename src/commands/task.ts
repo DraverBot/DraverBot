@@ -1,3 +1,4 @@
+import { configsManager, tasksManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -182,7 +183,7 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.configsManager.getValue(interaction.guild.id, 'task_enable'))
+    if (!configsManager.getValue(interaction.guild.id, 'task_enable'))
         return interaction
             .reply({
                 embeds: [
@@ -214,7 +215,7 @@ export default new DraverCommand({
                     ephemeral: true
                 })
                 .catch(log4js.trace);
-        const channelId = interaction.client.configsManager.getValue<string>(interaction.guild.id, 'task_channel');
+        const channelId = configsManager.getValue<string>(interaction.guild.id, 'task_channel');
 
         if (!channelId || channelId === '')
             return interaction
@@ -251,7 +252,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        const res = await interaction.client.tasksManager
+        const res = await tasksManager
             .create({
                 name,
                 description,
@@ -279,7 +280,7 @@ export default new DraverCommand({
             .catch(log4js.trace);
     }
     const getTask = () => {
-        return interaction.client.tasksManager.getTask(parseInt(options.getString('tâche')));
+        return tasksManager.getTask(parseInt(options.getString('tâche')));
     };
     if (cmd === 'fermer') {
         const task = getTask();
@@ -301,7 +302,7 @@ export default new DraverCommand({
 
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
-        interaction.client.tasksManager.close(task.data.id);
+        tasksManager.close(task.data.id);
 
         interaction
             .editReply({
@@ -334,7 +335,7 @@ export default new DraverCommand({
 
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
-        interaction.client.tasksManager.done(task.data.id);
+        tasksManager.done(task.data.id);
 
         interaction
             .editReply({
@@ -420,7 +421,7 @@ export default new DraverCommand({
                     .catch(log4js.trace);
         }
 
-        interaction.client.tasksManager.assign({ userId: user.id, taskId: task.data.id });
+        tasksManager.assign({ userId: user.id, taskId: task.data.id });
         systemReply(interaction, {
             components: [],
             embeds: [
@@ -504,7 +505,7 @@ export default new DraverCommand({
                     .catch(log4js.trace);
         }
 
-        interaction.client.tasksManager.unAssign({ userId: user.id, taskId: task.data.id });
+        tasksManager.unAssign({ userId: user.id, taskId: task.data.id });
         systemReply(interaction, {
             components: [],
             embeds: [
@@ -536,7 +537,7 @@ export default new DraverCommand({
         const pending = getCondition('attente', true);
         const working = getCondition('travail', true);
 
-        const list = interaction.client.tasksManager.getServer(interaction.guild.id).filter((x) => {
+        const list = tasksManager.getServer(interaction.guild.id).filter((x) => {
             if (x.ended) return ended;
             if (x.data.state === 'pending') return pending;
             if (x.data.state === 'working') return working;

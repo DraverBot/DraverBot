@@ -1,3 +1,4 @@
+import { pollsManager } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 import { resizeString } from '../utils/toolbox';
 
@@ -5,9 +6,7 @@ export default new AutocompleteListener({
     commandName: [{ commandName: 'sondage', optionName: 'sondage' }],
     listenerName: 'poll',
     run: ({ interaction, focusedValue }) => {
-        const list = interaction.client.pollsManager
-            .getPollsList(interaction.guild?.id)
-            .filter((x) => x.ended === false);
+        const list = pollsManager.getPollsList(interaction.guild?.id).filter((x) => x.ended === false);
 
         return list
             .filter(

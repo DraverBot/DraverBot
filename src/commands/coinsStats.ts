@@ -1,3 +1,4 @@
+import { coinsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -10,7 +11,7 @@ export default new DraverCommand({
     description: 'Affiche votre portefeuille sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
-    const { coins, bank } = interaction.client.coinsManager.getData({
+    const { coins, bank } = coinsManager.getData({
         guild_id: interaction.guild.id,
         user_id: interaction.user.id
     });

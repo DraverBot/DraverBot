@@ -1,3 +1,4 @@
+import { rolesReact } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 import { resizeString } from '../utils/toolbox';
 
@@ -5,7 +6,7 @@ export default new AutocompleteListener({
     listenerName: 'role react panels',
     commandName: [{ commandName: 'autorole', optionName: 'panneau' }],
     run: ({ focusedValue, interaction }) => {
-        return interaction.client.rolesReact
+        return rolesReact
             .getList(interaction.guild?.id)
             .filter(
                 (x) =>

@@ -1,3 +1,4 @@
+import { modulesManager } from '../cache/managers';
 import { Precondition } from 'amethystjs';
 import { DraverCommand } from '../structures/DraverCommand';
 import { moduleType } from '../typings/database';
@@ -13,7 +14,7 @@ export default new Precondition('moduleEnabled')
         }
         const module = (command as DraverCommand).module as moduleType;
 
-        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
+        const state = modulesManager.enabled(interaction.guildId, module);
         if (!state) {
             return {
                 ok: false,
@@ -37,7 +38,7 @@ export default new Precondition('moduleEnabled')
 
         const module = (command as DraverCommand).module as moduleType;
 
-        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
+        const state = modulesManager.enabled(interaction.guildId, module);
         if (!state)
             return {
                 ok: false,
@@ -60,7 +61,7 @@ export default new Precondition('moduleEnabled')
 
         const module = (command as DraverCommand).module as moduleType;
 
-        const state = interaction.client.modulesManager.enabled(interaction.guildId, module);
+        const state = modulesManager.enabled(interaction.guildId, module);
         if (!state)
             return {
                 ok: false,

@@ -1,3 +1,4 @@
+import { ticketsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, AttachmentBuilder } from 'discord.js';
@@ -76,7 +77,7 @@ export default new DraverCommand({
     const cmd = subcmd(options);
     const checkTicket = () => {
         if (
-            !interaction.client.ticketsManager.tickets.find(
+            !ticketsManager.tickets.find(
                 (x) => x.guild_id === interaction.guild.id && x.channel_id === interaction.channel.id
             )
         ) {
@@ -101,7 +102,7 @@ export default new DraverCommand({
             })
             .catch(() => {});
 
-        const res = await interaction.client.ticketsManager.createTicket<false>({
+        const res = await ticketsManager.createTicket<false>({
             guild: interaction.guild,
             user: interaction.user,
             subject: sujet
@@ -118,7 +119,7 @@ export default new DraverCommand({
         const user = options.getUser('utilisateur');
         await interaction.deferReply().catch(() => {});
 
-        const res = await interaction.client.ticketsManager.addOrRemoveUser({
+        const res = await ticketsManager.addOrRemoveUser({
             channel_id: interaction.channel.id,
             user,
             guild: interaction.guild,
@@ -136,7 +137,7 @@ export default new DraverCommand({
         const user = options.getUser('utilisateur');
         await interaction.deferReply().catch(() => {});
 
-        const res = await interaction.client.ticketsManager.addOrRemoveUser({
+        const res = await ticketsManager.addOrRemoveUser({
             guild: interaction.guild,
             user,
             channel_id: interaction.channel.id,
@@ -173,11 +174,11 @@ export default new DraverCommand({
                 components: []
             })
             .catch(() => {});
-        const ticket = interaction.client.ticketsManager
+        const ticket = ticketsManager
             .getTicketsList(interaction.guild.id)
             .find((x) => x.channel_id === interaction.channel.id);
 
-        const res = await interaction.client.ticketsManager.closeTicket({
+        const res = await ticketsManager.closeTicket({
             guild: interaction.guild,
             message_id: ticket.message_id,
             user: interaction.user
@@ -211,11 +212,11 @@ export default new DraverCommand({
                 components: []
             })
             .catch(() => {});
-        const ticket = interaction.client.ticketsManager
+        const ticket = ticketsManager
             .getTicketsList(interaction.guild.id)
             .find((x) => x.channel_id === interaction.channel.id);
 
-        const res = await interaction.client.ticketsManager.reopenTicket({
+        const res = await ticketsManager.reopenTicket({
             guild: interaction.guild,
             message_id: ticket.message_id,
             user: interaction.user
@@ -251,11 +252,11 @@ export default new DraverCommand({
                 components: []
             })
             .catch(() => {});
-        const ticket = interaction.client.ticketsManager
+        const ticket = ticketsManager
             .getTicketsList(interaction.guild.id)
             .find((x) => x.channel_id === interaction.channel.id);
 
-        const res = await interaction.client.ticketsManager.deleteTicket({
+        const res = await ticketsManager.deleteTicket({
             guild: interaction.guild,
             message_id: ticket.message_id,
             user: interaction.user
@@ -273,7 +274,7 @@ export default new DraverCommand({
 
         await interaction.deferReply();
 
-        const res = await interaction.client.ticketsManager.saveTicket({
+        const res = await ticketsManager.saveTicket({
             channel_id: interaction.channel.id,
             user: interaction.user,
             guild: interaction.guild

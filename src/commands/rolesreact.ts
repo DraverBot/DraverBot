@@ -1,3 +1,4 @@
+import { ticketsManager, giveaways, tasksManager, rolesReact } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, GuildMember, Message, TextChannel } from 'discord.js';
@@ -133,7 +134,7 @@ export default new DraverCommand({
         if (res === 'cancel') return;
         res.button.deferUpdate().catch(() => {});
 
-        const creation = await interaction.client.rolesReact.create({
+        const creation = await rolesReact.create({
             title,
             description,
             image: img?.url ?? '',
@@ -168,7 +169,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const panelId = options.getInteger('panneau');
-        const panel = client.rolesReact.getPanel(panelId);
+        const panel = rolesReact.getPanel(panelId);
 
         const confirmation = await confirm({
             interaction,
@@ -190,7 +191,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        client.rolesReact.delete(panel.id);
+        rolesReact.delete(panel.id);
         interaction
             .editReply({
                 embeds: [
@@ -204,8 +205,8 @@ export default new DraverCommand({
     }
     if (cmd === 'liste') {
         const panelId = options.getInteger('panneau');
-        if (client.rolesReact.exists(panelId)) {
-            const panel = client.rolesReact.getPanel(panelId);
+        if (rolesReact.exists(panelId)) {
+            const panel = rolesReact.getPanel(panelId);
 
             const roles = {
                 button: panel.ids.filter((x) => x.type === 'buttons'),
@@ -241,7 +242,7 @@ export default new DraverCommand({
                 .catch(log4js.trace);
         }
 
-        const list = client.rolesReact.getList(interaction.guild.id);
+        const list = rolesReact.getList(interaction.guild.id);
         const embed = () =>
             basicEmbed(interaction.user, { draverColor: true })
                 .setTitle('Rôles à réaction')
@@ -315,7 +316,7 @@ export default new DraverCommand({
                         }
                     },
                     {
-                        check: (m) => !client.ticketsManager.isTicket(m.id) && !client.ticketsManager.panels.get(m.id),
+                        check: (m) => !ticketsManager.isTicket(m.id) && !ticketsManager.panels.get(m.id),
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
@@ -327,8 +328,7 @@ export default new DraverCommand({
                         }
                     },
                     {
-                        check: (m) =>
-                            !client.giveaways.map.giveaways.has(m.id) && !client.giveaways.map.ended.has(m.id),
+                        check: (m) => !giveaways.map.giveaways.has(m.id) && !giveaways.map.ended.has(m.id),
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
@@ -340,7 +340,7 @@ export default new DraverCommand({
                         }
                     },
                     {
-                        check: (m) => !client.tasksManager.cache.find((x) => x.data.message_id === m.id),
+                        check: (m) => !tasksManager.cache.find((x) => x.data.message_id === m.id),
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
@@ -352,7 +352,7 @@ export default new DraverCommand({
                         }
                     },
                     {
-                        check: (m) => !client.rolesReact.cache.find((x) => x.message_id === m.id),
+                        check: (m) => !rolesReact.cache.find((x) => x.message_id === m.id),
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
@@ -400,7 +400,7 @@ export default new DraverCommand({
             return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
         roles.button.deferUpdate().catch(() => {});
 
-        await client.rolesReact
+        await rolesReact
             .fromMessage({
                 message: message as Message<true>,
                 roles: roles.roles,

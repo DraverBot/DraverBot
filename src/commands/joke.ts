@@ -1,3 +1,4 @@
+import { blagues } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { jokeNames } from '../data/jokesName';
@@ -46,12 +47,12 @@ export default new DraverCommand({
             .catch(() => {});
 
     const joke = isRandom
-        ? await interaction.client.blagues.random({
+        ? await blagues.random({
               disallow: Object.keys(configs)
                   .filter((x) => !x.includes('_'))
                   .filter((k) => !dbBool(configs[k])) as Category[]
           })
-        : await interaction.client.blagues.randomCategorized(category);
+        : await blagues.randomCategorized(category);
 
     if (!joke || (joke as unknown as { status: number }).status === 404)
         return interaction

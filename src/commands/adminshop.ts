@@ -1,3 +1,4 @@
+import { shop } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions, waitForInteraction, waitForMessage } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -133,7 +134,7 @@ export default new DraverCommand({
 
         await interaction.deferReply().catch(() => {});
 
-        const result = await interaction.client.shop.addItem(interaction.guild.id, {
+        const result = await shop.addItem(interaction.guild.id, {
             name,
             price,
             type,
@@ -175,7 +176,7 @@ export default new DraverCommand({
     }
     if (cmd === 'modifier') {
         const itemId = parseInt(options.getString('item'));
-        const item = interaction.client.shop.getShop(interaction.guild.id).find((x) => x.id === itemId);
+        const item = shop.getShop(interaction.guild.id).find((x) => x.id === itemId);
 
         const before = item;
         let changes = 0;
@@ -554,7 +555,7 @@ export default new DraverCommand({
             if (reason === 'valider') {
                 if (item.itemType !== 'role') item.roleId = '';
 
-                interaction.client.shop.updateItem(interaction.guild.id, {
+                shop.updateItem(interaction.guild.id, {
                     id: item.id,
                     name: item.itemName,
                     quantity: item.quantity,
@@ -586,7 +587,7 @@ export default new DraverCommand({
     }
     if (cmd === 'supprimer') {
         const id = parseInt(options.getString('item'));
-        const item = interaction.client.shop.getShop(interaction.guild.id).find((x) => x.id === id);
+        const item = shop.getShop(interaction.guild.id).find((x) => x.id === id);
 
         const confirmation = (await confirm({
             interaction,
@@ -604,7 +605,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        interaction.client.shop.removeItem(interaction.guild.id, id);
+        shop.removeItem(interaction.guild.id, id);
 
         interaction
             .editReply({

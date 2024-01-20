@@ -1,3 +1,4 @@
+import { modulesManager, levelsChannels } from '../cache/managers';
 import { Client, Collection, GuildChannel, GuildMember, TextChannel } from 'discord.js';
 import { levels } from '../typings/managers';
 import query from '../utils/query';
@@ -109,12 +110,12 @@ export class LevelsManager {
                 message.author.bot ||
                 message.webhookId ||
                 !message.guild ||
-                !this.client.modulesManager.enabled(message.guild.id, 'level')
+                !modulesManager.enabled(message.guild.id, 'level')
             )
                 return;
 
-            const list = this.client.levelsChannels.getLists(message.guild);
-            const active = this.client.levelsChannels.getConfigured(message.guild);
+            const list = levelsChannels.getLists(message.guild);
+            const active = levelsChannels.getConfigured(message.guild);
 
             const parentId = (message.channel as GuildChannel)?.parentId;
             if (!!active && active === 'bl' && list[active].some((x) => x === message.channel.id || x === parentId))

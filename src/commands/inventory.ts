@@ -1,3 +1,4 @@
+import { shop } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -38,7 +39,7 @@ export default new DraverCommand({
     const cmd = subcmd(options);
 
     if (cmd === 'voir') {
-        const inventory = interaction.client.shop.getInventory({
+        const inventory = shop.getInventory({
             user_id: interaction.user.id,
             guild_id: interaction.guild.id
         });
@@ -95,7 +96,7 @@ export default new DraverCommand({
         }
     }
     if (cmd === 'utiliser') {
-        const inventory = interaction.client.shop.getInventory({
+        const inventory = shop.getInventory({
             guild_id: interaction.guild.id,
             user_id: interaction.user.id
         });
@@ -143,7 +144,7 @@ export default new DraverCommand({
             .catch(() => {});
 
         await (interaction.member as GuildMember).roles.add(item.roleId).catch(() => {});
-        interaction.client.shop.removeFromInventory({
+        shop.removeFromInventory({
             user_id: interaction.user.id,
             guild_id: interaction.guild.id,
             itemId: item.id

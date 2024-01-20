@@ -1,3 +1,4 @@
+import { lotoManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import { ApplicationCommandOptionType, ChannelType, GuildMember, TextChannel } from 'discord.js';
@@ -125,7 +126,7 @@ export default new DraverCommand({
         const endsAt = startedAt + time;
 
         await interaction.deferReply().catch(log4js.trace);
-        const loto = await interaction.client.lotoManager
+        const loto = await lotoManager
             .create({
                 time,
                 numbers,
@@ -175,13 +176,13 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
                 .catch(log4js.trace);
 
-        const results = interaction.client.lotoManager.end(loto.id);
+        const results = lotoManager.end(loto.id);
         if (results == 'unexisting loto')
             return interaction
                 .reply({
@@ -209,13 +210,13 @@ export default new DraverCommand({
                 .filter((x) => !isNaN(x) && x <= 100 && x > 0)
         };
 
-        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        const loto = lotoManager.getGuildLoto(interaction.guild.id);
 
         if (!loto || !loto.availableForJoin)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
                 .catch(log4js.trace);
-        const registration = interaction.client.lotoManager.registerParticipation(loto.id, {
+        const registration = lotoManager.registerParticipation(loto.id, {
             userId: interaction.user.id,
             numbers: formatting.gagnants,
             complementaries: formatting.complementaries
@@ -251,7 +252,7 @@ export default new DraverCommand({
             .catch(log4js.trace);
     }
     if (cmd == 'abandonner') {
-        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto || loto.ended)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
@@ -272,7 +273,7 @@ export default new DraverCommand({
 
         if (!confirmation || confirmation == 'cancel' || !confirmation.value)
             return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
-        const annulation = interaction.client.lotoManager.unregisterParticipation(loto.id, interaction.user.id);
+        const annulation = lotoManager.unregisterParticipation(loto.id, interaction.user.id);
 
         // This should never be called
         if (annulation == 'unexisting loto')
@@ -309,7 +310,7 @@ export default new DraverCommand({
                     ephemeral: true
                 })
                 .catch(log4js.trace);
-        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
@@ -330,7 +331,7 @@ export default new DraverCommand({
                 })
                 .catch(log4js.trace);
 
-        interaction.client.lotoManager.cancelLoto(loto.id);
+        lotoManager.cancelLoto(loto.id);
 
         interaction
             .editReply({
@@ -344,7 +345,7 @@ export default new DraverCommand({
             .catch(log4js.trace);
     }
     if (cmd == 'afficher') {
-        const loto = interaction.client.lotoManager.getGuildLoto(interaction.guild.id);
+        const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
                 .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })

@@ -1,83 +1,14 @@
 import { AmethystEvent } from 'amethystjs';
-import BlaguesAPI from 'blagues-api';
-import { CoinsManager } from 'coins-manager';
-import { ConfigsManager } from '../managers/configsManager';
-import { InterserverManager } from '../managers/interserverManager';
-import { LevelsManager } from '../managers/levelsManager';
-import { ModulesManager } from '../managers/modulesManager';
 import { checkDatabase, util } from '../utils/functions';
-import { database } from '../utils/query';
-import { GiveawayManager } from '../managers/GiveawayManager';
-import { giveawayButtons, giveawayEmbeds } from '../data/giveaway';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { TicketsManager } from '../managers/ticketsManager';
 import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
 import { basicEmbed, buildButton, numerize, random, row, sendError } from '../utils/toolbox';
-import { CooldownsManager } from '../managers/cooldownsManager';
-import { RemindsManager } from '../managers/remindsManager';
-import { AnonymousManager } from '../managers/Anonymous';
-import { GBanSystem } from '../managers/GBanSystem';
-import { ShopManager } from '../managers/Shop';
-import { PasswordManager } from '../managers/PasswordManager';
-import { LotoManager } from '../managers/LotoManager';
-import { PollsManager } from '../managers/pollsManager';
-import { PlugboardsManager } from '../managers/PlugboardManager';
-import { TaskManager } from '../managers/TaskManager';
-import { RolesReactManager } from '../managers/RoleReactsManager';
-import { LevelsListManager } from '../managers/LevelListManager';
-import { LevelsRewards } from '../managers/LevelsRewards';
-import { TempChannelsManager } from '../managers/TempChannelsManager';
-import { InvitesManager } from '../managers/InvitesManager';
-import { AFKManager } from '../managers/AFK';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
     if (!existsSync(`./dist/data/sqllogs.json`)) writeFileSync(`./dist/data/sqllogs.json`, JSON.stringify([]));
 
     await checkDatabase();
-
-    client.modulesManager = new ModulesManager();
-
-    client.coinsManager = new CoinsManager(database, {
-        type: 'multiguild'
-    });
-    client.levelsManager = new LevelsManager(client);
-    client.interserver = new InterserverManager(client);
-    client.configsManager = new ConfigsManager();
-    client.ticketsManager = new TicketsManager(client);
-    client.blagues = new BlaguesAPI(process.env.BLAGUES_API_TOKEN);
-    client.giveaways = new GiveawayManager(
-        client,
-        {
-            connection: database,
-            mode: 'mysql'
-        },
-        {
-            sendMessages: false,
-            embeds: giveawayEmbeds,
-            buttons: giveawayButtons
-        }
-    );
-    client.cooldownsManager = new CooldownsManager();
-    client.RemindsManager = new RemindsManager(client);
-    client.AnonymousManager = new AnonymousManager(client);
-    client.GBan = new GBanSystem();
-    client.shop = new ShopManager(client.coinsManager);
-    client.passwords = new PasswordManager();
-    client.lotoManager = new LotoManager(client);
-    client.pollsManager = new PollsManager(client);
-    client.plugboardsManager = new PlugboardsManager();
-    client.tasksManager = new TaskManager(client);
-    client.rolesReact = new RolesReactManager(client);
-    client.levelsChannels = new LevelsListManager();
-    client.rewards = new LevelsRewards(client);
-    client.tempChannels = new TempChannelsManager(client);
-    client.invitesManager = new InvitesManager(client);
-    client.afk = new AFKManager();
-
-    // Start managers
-    client.coinsManager.start();
-    client.giveaways.start();
 
     const activities: (() => Promise<ActivityOptions>)[] = [
         async () => {
@@ -180,32 +111,3 @@ export default new AmethystEvent('ready', async (client) => {
 
     setInterval(updateActivity, 20000);
 });
-
-declare module 'discord.js' {
-    interface Client {
-        modulesManager: ModulesManager;
-        coinsManager: CoinsManager<'multiguild'>;
-        interserver: InterserverManager;
-        levelsManager: LevelsManager;
-        configsManager: ConfigsManager;
-        blagues: BlaguesAPI;
-        giveaways: GiveawayManager<'mysql'>;
-        ticketsManager: TicketsManager;
-        cooldownsManager: CooldownsManager;
-        RemindsManager: RemindsManager;
-        AnonymousManager: AnonymousManager;
-        GBan: GBanSystem;
-        shop: ShopManager;
-        passwords: PasswordManager;
-        lotoManager: LotoManager;
-        pollsManager: PollsManager;
-        plugboardsManager: PlugboardsManager;
-        tasksManager: TaskManager;
-        rolesReact: RolesReactManager;
-        levelsChannels: LevelsListManager;
-        rewards: LevelsRewards;
-        tempChannels: TempChannelsManager;
-        invitesManager: InvitesManager;
-        afk: AFKManager;
-    }
-}

@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { ChannelType, Client, Collection, Guild, GuildMember, VoiceState } from 'discord.js';
 import { TempChannel } from '../structures/TempChannel';
 import query from '../utils/query';
@@ -143,7 +144,7 @@ export class TempChannelsManager {
             if (member.user.bot) return;
 
             if ((!bef.channel && aft.channel) || bef.channelId !== aft.channelId) {
-                if (!this.client.configsManager.getValue(guild.id, 'temp_channels')) return;
+                if (!configsManager.getValue(guild.id, 'temp_channels')) return;
                 const createData = this.findPanel(guild, aft.channel?.id);
                 if (createData) {
                     this.createCustom(guild, member, aft);

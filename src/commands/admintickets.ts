@@ -1,3 +1,4 @@
+import { modulesManager, ticketsManager } from '../cache/managers';
 import { DraverCommand } from '../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../preconditions/moduleEnabled';
@@ -125,7 +126,7 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    if (!interaction.client.modulesManager.enabled(interaction.guild.id, 'tickets'))
+    if (!modulesManager.enabled(interaction.guild.id, 'tickets'))
         return interaction
             .reply({
                 embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'tickets' })],
@@ -137,7 +138,7 @@ export default new DraverCommand({
 
     if (options.data.filter((x) => x.type === ApplicationCommandOptionType.SubcommandGroup).length === 0) {
         if (cmd === 'liste') {
-            const list = interaction.client.ticketsManager.getTicketsList(interaction.guild.id).toJSON();
+            const list = ticketsManager.getTicketsList(interaction.guild.id).toJSON();
 
             if (list.length === 0)
                 return interaction
@@ -290,7 +291,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-            const rep = (await interaction.client.ticketsManager
+            const rep = (await ticketsManager
                 .createPanel({
                     guild: interaction.guild,
                     channel,
@@ -310,7 +311,7 @@ export default new DraverCommand({
         if (cmd === 'supprimer') {
             const id = options.getString('identifiant');
 
-            const panel = interaction.client.ticketsManager
+            const panel = ticketsManager
                 .getPanelsList(interaction.guild.id)
                 .toJSON()
                 .find((x) => x.message_id === id);
@@ -348,7 +349,7 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-            const res = await interaction.client.ticketsManager.deletePanel({
+            const res = await ticketsManager.deletePanel({
                 guild: interaction.guild,
                 user: interaction.user,
                 message_id: id
@@ -361,7 +362,7 @@ export default new DraverCommand({
         }
     } else {
         if (cmd === 'liste') {
-            const { roles } = interaction.client.ticketsManager.getServerModroles(interaction.guild.id);
+            const { roles } = ticketsManager.getServerModroles(interaction.guild.id);
 
             if (roles.length === 0)
                 return interaction
@@ -405,7 +406,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.ticketsManager.addModRole({
+            ticketsManager.addModRole({
                 guild_id: interaction.guild.id,
                 role_id: role.id
             });
@@ -439,7 +440,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
 
-            interaction.client.ticketsManager.addModRole({
+            ticketsManager.addModRole({
                 guild_id: interaction.guild.id,
                 role_id: role.id
             });

@@ -1,3 +1,4 @@
+import { configsManager } from '../cache/managers';
 import { log4js, waitForInteraction } from 'amethystjs';
 import {
     APIMessageComponentEmoji,
@@ -87,7 +88,7 @@ export const systemReply = (
 export const boolDb = (bool: boolean): '0' | '1' => (bool ? '1' : '0');
 export const dbBool = (str: string | number) => ['1', 1].includes(str);
 export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof = undefined }: sendLogOpts) => {
-    const activated = dbBool(guild.client.configsManager.getValue(guild.id, 'logs_enable')) as boolean;
+    const activated = dbBool(configsManager.getValue(guild.id, 'logs_enable')) as boolean;
     if (!activated) return false;
 
     const embed = new EmbedBuilder()
@@ -113,9 +114,7 @@ export const sendLog = async ({ guild, mod_id, member_id, reason, action, proof 
         });
     if (proof) embed.setImage(proof);
 
-    const channel = guild.channels.cache.get(
-        guild.client.configsManager.getValue(guild.id, 'logs_channel')
-    ) as TextChannel;
+    const channel = guild.channels.cache.get(configsManager.getValue(guild.id, 'logs_channel')) as TextChannel;
     if (!channel) return false;
 
     const res = await channel
