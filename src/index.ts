@@ -35,3 +35,4 @@ if (process.env.password?.length > 1) {
         console.log(`Error: ${error} at ${promise}`);
     });
 }
+export { client };

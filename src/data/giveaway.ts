@@ -6,8 +6,15 @@ import { buttonsInputData } from '../typings/buttons';
 
 const thisGw = (url: string) => `[**ce giveaway**](${url})`;
 
+type customInput = giveawayInput & {
+    endsAt: number;
+};
+
+
 export const giveawayEmbeds: embedsInputData = {
-    giveaway: (data) => {
+    giveaway: (data: customInput & { participants: string[] }) => {
+        const full = database.giveaways.fetchGiveaway(data.channel.id, false);
+        const date = parseInt((full?.endsAt ?? data.time + Date.now()).toString());
         data.participants = data.participants ?? [];
 
         const embed = new EmbedBuilder()
@@ -136,7 +143,7 @@ export const giveawayEmbeds: embedsInputData = {
         return new EmbedBuilder()
             .setTitle('Gagnants')
             .setDescription(
-                `[**Le giveaway**](${url}) a prit fin.\n` +
+                `[**Le giveaway**](${url}) a pris fin.\n` +
                     (winners.length > 0
                         ? `Le${plurial(winners.length)} gagnant${plurial(winners.length, {
                               singular: ' est',
