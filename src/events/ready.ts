@@ -3,6 +3,7 @@ import { checkDatabase, util } from '../utils/functions';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
 import { basicEmbed, buildButton, numerize, random, row, sendError } from '../utils/toolbox';
+import {} from '../cache/managers';
 
 export default new AmethystEvent('ready', async (client) => {
     if (!existsSync('./saves/')) mkdirSync('./saves');
