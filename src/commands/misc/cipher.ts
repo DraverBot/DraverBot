@@ -517,9 +517,22 @@ export default new DraverCommand({
                     })
                     .catch(log4js.trace);
 
-            const caesarFirstGap = Math.ceil((alphabet.indexOf(seed[0]) + 1) * 1.2);
+            const caesarFirstGap = Math[
+                seed
+                    .split('')
+                    .map((s) => alphabet.indexOf(s))
+                    .reduce((a, b) => a + b) %
+                    17 >=
+                5
+                    ? 'ceil'
+                    : 'floor'
+            ]((alphabet.indexOf(seed[0]) + 1) * 1.2);
             const caesarAlphabetic = alphabet.indexOf(seed[1]) > alphabet.length / 2;
-            const vigenereKey = seed.slice(2);
+            const vigenereKey = seed.slice(
+                alphabet.indexOf(seed[0]) + alphabet.indexOf(seed[1]) + alphabet.indexOf(seed[seed.length - 1]) === 1
+                    ? 2
+                    : 3
+            );
             const rotorEven = alphabet.indexOf(seed[seed.length - 1]) % 2;
             const switchedKey = chunkArray(seed.split(''), 2)
                 .map(([a, b]) => (!!a && !!b ? `${b}${a}` : a))
