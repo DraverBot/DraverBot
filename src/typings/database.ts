@@ -49,7 +49,8 @@ export enum modActionType {
     Tempban = 'Bannissement temporaire',
     Nuke = 'Nettoyage de salon',
     Demote = 'Destitution',
-    DeleteReward = 'Suppression de récompense de niveau'
+    DeleteReward = 'Suppression de récompense de niveau',
+    GhostPing = 'Notification fantôme'
 }
 
 export type modlogs = {

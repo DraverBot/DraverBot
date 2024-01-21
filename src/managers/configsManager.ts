@@ -61,8 +61,8 @@ export class ConfigsManager {
             typeof x === 'boolean'
                 ? `'${boolDb(x)}'`
                 : typeof x === 'object'
-                ? `"${sqliseString((x as Buffer).toString())}"`
-                : `"${sqliseString(x as string)}"`;
+                  ? `"${sqliseString((x as Buffer).toString())}"`
+                  : `"${sqliseString(x as string)}"`;
         const datas = this._cache.get(guild_id);
 
         if (exists) {

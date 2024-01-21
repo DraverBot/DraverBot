@@ -33,6 +33,7 @@ export type configKeys = {
     invite_unknown_message_join: string;
     invite_normal_message_leave: string;
     invite_unknown_message_leave: string;
+    ghost_monitor: boolean;
 };
 export type configType = {
     description: string;
@@ -301,5 +302,12 @@ export const configsData: Record<keyof configKeys, configType> = {
         type: 'string',
         value: 'invite_unknown_message_leave',
         default: "{user.name} vient de partir, mais je ne sais pas qui l'a invité"
+    },
+    ghost_monitor: {
+        name: 'Surveillance des ghost pings',
+        description: "Envoie un log lors d'une mention fantôme",
+        type: 'boolean',
+        value: 'ghost_monitor',
+        default: false
     }
 };
