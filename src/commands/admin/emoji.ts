@@ -32,6 +32,19 @@ export default new DraverCommand({
                     type: ApplicationCommandOptionType.Attachment
                 }
             ]
+        },
+        {
+            name: 'supprimer',
+            description: 'Supprime un émoji',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'nom',
+                    description: "Nom de l'émoji à supprimer",
+                    type: ApplicationCommandOptionType.String,
+                    required: true
+                }
+            ]
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
@@ -98,6 +111,52 @@ export default new DraverCommand({
                         .setDescription(
                             `L'émoji \`${name}\` <${res.animated ? 'a' : ''}:${res.name}:${res.id}> a été ajouté`
                         )
+                ]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd === 'supprimer') {
+        const name = options.getString('nom');
+
+        await Promise.all([
+            interaction
+                .reply({
+                    embeds: [replies.wait(interaction.user)]
+                })
+                .catch(log4js.trace),
+            interaction.guild.emojis.fetch().catch(log4js.trace)
+        ]).catch(log4js.trace);
+
+        const emoji = interaction.guild.emojis.cache.find((x) => x.name === name);
+        if (!emoji)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Émoji inexistant')
+                            .setDescription(`Cet émoji n'existe pas`)
+                    ]
+                })
+                .catch(log4js.trace);
+
+        const res = await emoji.delete().catch(log4js.trace);
+        if (!res)
+            return interaction
+                .editReply({
+                    embeds: [
+                        basicEmbed(interaction.user, { evoker: interaction.guild })
+                            .setTitle('Suppression échouée')
+                            .setDescription(`L'émoji n'a pas pu être supprimé`)
+                    ]
+                })
+                .catch(log4js.trace);
+
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle('Émoji supprimé')
+                        .setDescription(`L'émoji ${res.name} a été supprimé`)
                 ]
             })
             .catch(log4js.trace);
