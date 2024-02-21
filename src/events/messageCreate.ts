@@ -101,22 +101,22 @@ export default new AmethystEvent('messageCreate', (message) => {
         message.reply(`Bon retour parmi nous, j'ai retiré ton afk !`).catch(log4js.trace);
     }
     if (message.mentions.users.size) {
-        const afk = message.mentions.users
+        const afks = message.mentions.users
             .filter((x) => x.id !== message.author.id && afk.isAFK(x.id)[0])
             .map((x) => afk.isAFK(x.id));
 
-        if (afk.length) {
-            if (afk.length > 1) {
+        if (afks.length) {
+            if (afks.length > 1) {
                 message
                     .reply({
-                        content: `${afk.map((x) => pingUser(x[1].user_id)).join(', ')} sont afk`,
+                        content: `${afks.map((x) => pingUser(x[1].user_id)).join(', ')} sont afk`,
                         allowedMentions: {
                             users: []
                         }
                     })
                     .catch(log4js.trace);
             } else {
-                const data = afk[0][1];
+                const data = afks[0][1];
                 message
                     .reply({
                         content: `${pingUser(data.user_id)} est afk pour la raison **${data.reason}**`,
