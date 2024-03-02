@@ -20,6 +20,7 @@ import {
     CommandInteractionOptionResolver,
     ComponentType,
     ContextMenuCommandInteraction,
+    DateResolvable,
     EmbedBuilder,
     EmbedField,
     Emoji,
@@ -53,6 +54,7 @@ import time from '../maps/time';
 import { modActionType } from '../typings/database';
 import { ButtonIds } from '../typings/buttons';
 import SetRandomComponent from '../process/SetRandomComponent';
+import { dateResolvable } from '../typings/core';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -250,8 +252,9 @@ export const mapEmbedsPaginator = (embeds: EmbedBuilder[]) => {
         })
     );
 };
-export const displayDate = (date?: number) => {
-    const x = Math.floor((date ?? Date.now()) / 1000);
+export const displayDate = (date?: dateResolvable) => {
+    const time = resolveDate(date).getTime();
+    const x = Math.floor((time ?? Date.now()) / 1000);
 
     return `<t:${x}:R> ( <t:${x}:F> )`;
 };
@@ -704,3 +707,6 @@ export const shuffleArray = <T>(array: T[]): T[] => {
         .sort((a, b) => a[1] - b[1])
         .map((x) => x[0]);
 };
+export const resolveDate = (resolvable: dateResolvable | DateResolvable) =>
+    !notNull(resolvable) ? null : new Date(parseInt(resolvable?.valueOf()?.toString()));
+export const emptyField = (inline = false) => ({ name: '\u200b', value: '\u200b', inline });

@@ -1,10 +1,29 @@
-import { ApplicationCommandOptionType, GuildEmoji, GuildMember } from 'discord.js';
+import {
+    ApplicationCommandOptionType,
+    CategoryChannel,
+    ChannelType,
+    GuildChannel,
+    GuildEmoji,
+    GuildMember,
+    PermissionsString
+} from 'discord.js';
 import { DraverCommand } from '../../structures/DraverCommand';
 import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import replies from '../../data/replies';
 import { compareTwoStrings, findBestMatch } from 'string-similarity';
-import { basicEmbed, boolEmoji, displayDate } from '../../utils/toolbox';
+import {
+    basicEmbed,
+    boolEmoji,
+    capitalize,
+    displayDate,
+    emptyField,
+    notNull,
+    pingRole,
+    resizeString
+} from '../../utils/toolbox';
+import { channelTypeNames } from '../../data/channelTypeNames';
+import { getRolePerm } from '../../utils/functions';
 
 export default new DraverCommand({
     name: 'info',
@@ -21,6 +40,32 @@ export default new DraverCommand({
                     description: 'Émoji que vous voulez voir',
                     required: true,
                     type: ApplicationCommandOptionType.String
+                }
+            ]
+        },
+        {
+            name: 'salon',
+            description: "Affiche les informations d'un salon",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'salon',
+                    description: 'Salon dont vous voulez voir les informations',
+                    required: false,
+                    type: ApplicationCommandOptionType.Channel
+                }
+            ]
+        },
+        {
+            name: 'utilisateur',
+            description: "Affiche les informations d'un utilisateur",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'utilisateur',
+                    description: 'Utilisateur dont vous voulez voir les informations',
+                    required: false,
+                    type: ApplicationCommandOptionType.User
                 }
             ]
         }
@@ -104,5 +149,100 @@ export default new DraverCommand({
                 ]
             })
             .catch(log4js.trace);
+    }
+    if (cmd === 'salon') {
+        const channel = (options.getChannel('salon') ?? interaction.channel) as GuildChannel;
+
+        const embed = replies
+            .basicGuild(interaction.user, interaction.guild)
+            .setTitle('Salon')
+            .setThumbnail(
+                interaction.guild?.iconURL({ forceStatic: false }) ??
+                    interaction.client.user.avatarURL({ forceStatic: false })
+            )
+            .setFields(
+                {
+                    name: 'Nom',
+                    value: resizeString({ str: channel.name, length: 1024 }),
+                    inline: true
+                },
+                {
+                    name: 'Création',
+                    value: displayDate(channel.createdTimestamp),
+                    inline: true
+                },
+                {
+                    name: 'Type',
+                    value: capitalize(channelTypeNames[ChannelType[channel.type]] ?? 'No type name'),
+                    inline: true
+                },
+                emptyField(),
+                {
+                    name: 'Identifiant',
+                    value: `\`${channel.id}\``,
+                    inline: true
+                },
+                (() => {
+                    if (channel.type === ChannelType.GuildCategory)
+                        return {
+                            name: 'Nombre de salons',
+                            value: (channel as CategoryChannel).children.cache.size.toLocaleString(interaction.locale),
+                            inline: true
+                        };
+                    return {
+                        name: 'Catégorie',
+                        value: !channel.parent ? 'Pas de catégorie' : `${channel.parent.name}`,
+                        inline: true
+                    };
+                })()
+            );
+        interaction
+            .reply({
+                embeds: [embed]
+            })
+            .catch(log4js.trace);
+    }
+    if (cmd === 'utilisateur') {
+        const member = (options.getMember('utilisateur') ?? interaction.member) as GuildMember;
+        const user = member.user;
+
+        const roles = member.roles.cache.filter((x) => x.id !== interaction.guild.id);
+
+        const embed = basicEmbed(interaction.user)
+            .setColor(member.displayHexColor)
+            .setTitle('Utilisateur')
+            .setFields(
+                {
+                    name: 'Création du compte',
+                    value: displayDate(user.createdAt),
+                    inline: true
+                },
+                {
+                    name: "Date d'arrivée",
+                    value: displayDate(member.joinedAt),
+                    inline: true
+                },
+                {
+                    name: 'Pseudo',
+                    value: !!member.nickname && member.nickname !== user.username ? `\`${member.nickname}\`` : 'Aucun',
+                    inline: true
+                },
+                {
+                    name: `Rôles ( ${roles.size.toLocaleString()} )`,
+                    value: roles.map(pingRole).slice(0, 15).join(', '),
+                    inline: false
+                },
+                {
+                    name: 'Permissions',
+                    value: member.permissions.has('Administrator')
+                        ? 'Administrateur'
+                        : Object.entries(member.permissions.serialize())
+                              .map(([p, h]) => (!h ? null : getRolePerm(p as PermissionsString)))
+                              .filter(notNull)
+                              .join(', ')
+                }
+            );
+
+        interaction.reply({ embeds: [embed] }).catch(log4js.trace);
     }
 });

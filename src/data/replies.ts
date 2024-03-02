@@ -573,7 +573,8 @@ const replies = {
     noEmoji: (user: anyUser, query?: string) =>
         userMember(user)
             .setTitle('Aucun émoji')
-            .setDescription(`Aucun émoji n'a été trouvé${!!query ? ` pour \`${query}\`` : ''}`)
+            .setDescription(`Aucun émoji n'a été trouvé${!!query ? ` pour \`${query}\`` : ''}`),
+    basicGuild: (user: anyUser, guild: Guild) => userMember(user).setColor(guild?.members?.me?.displayHexColor)
 };
 
 export type replyKey = keyof typeof replies;
