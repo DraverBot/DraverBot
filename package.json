@@ -8,7 +8,7 @@
 	"dependencies": {
 		"@androz2091/discord-invites-tracker": "^1.2.3",
 		"@types/string-similarity": "^4.0.0",
-		"amethystjs": "^1.6.1",
+		"amethystjs": "^1.7.4",
 		"axios": "^1.4.0",
 		"blagues-api": "^2.1.0",
 		"canvas": "^2.11.2",
