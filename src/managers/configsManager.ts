@@ -123,7 +123,7 @@ export class ConfigsManager {
         if (data.type === 'boolean')
             return `${data.value} TINYINT(1) NOT NULL DEFAULT '${boolDb(data.default as boolean)}'`;
         if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;
-        if (data.type === 'image') return `${data.value} MEDIUMBLOB NOT NULL DEFAULT ''`;
+        if (data.type === 'image') return `${data.value} MEDIUMBLOB`;
         if (data.type === 'string')
             return `${data.value} VARCHAR(255) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
     }
