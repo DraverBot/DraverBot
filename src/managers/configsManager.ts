@@ -3,6 +3,7 @@ import { configKeys, configsData } from '../data/configData';
 import { configs } from '../typings/database';
 import query from '../utils/query';
 import { boolDb, notNull, sqliseString } from '../utils/toolbox';
+import { log4js } from 'amethystjs';
 
 export class ConfigsManager {
     private _cache: Collection<string, configs> = new Collection();
@@ -128,13 +129,33 @@ export class ConfigsManager {
     }
     private queryDatabase(): Promise<boolean> {
         return new Promise(async (resolve) => {
-            await query(
-                `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
-                    configsData
-                )
-                    .map((key: keyof configKeys) => this.buildColomn(key))
-                    .join(', ')} )`
-            );
+            const tables = await query<{ Tables_in_draver: string }>(`SHOW TABLES`).catch(log4js.trace);
+
+            if (tables && !tables.some((x) => x['Tables_in_draver'])) {
+                await query(
+                    `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
+                        configsData
+                    )
+                        .map((key: keyof configKeys) => this.buildColomn(key))
+                        .join(', ')} )`
+                );
+            } else {
+                const description = await query<{
+                    Field: string;
+                    Type: string;
+                    Null: string;
+                    Key: string;
+                    Default: string;
+                    Extra: string;
+                }>(`DESCRIBE configs`);
+                const missing = Object.keys(configsData).filter((x) => !description.some((y) => y.Field === x));
+
+                if (missing.length > 0) {
+                    await query(
+                        `ALTER TABLE configs ${missing.map((x) => `ADD ${this.buildColomn(x as keyof configKeys)}`).join(', ')}`
+                    );
+                }
+            }
             resolve(true);
         });
     }
