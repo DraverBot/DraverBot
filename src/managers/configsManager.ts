@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Collection } from 'discord.js';
 import { configKeys, configsData } from '../data/configData';
 import { configs } from '../typings/database';
@@ -49,9 +50,9 @@ export class ConfigsManager {
     }
     private buildQuery({
         guild_id,
-        value,
+        _value,
         key,
-        exists
+        _exists
     }: {
         guild_id: string;
         value: Buffer | string | number | boolean;
@@ -65,12 +66,6 @@ export class ConfigsManager {
                   ? `"${sqliseString((x as Buffer).toString())}"`
                   : `"${sqliseString(x as string)}"`;
         const datas = this._cache.get(guild_id);
-
-        if (exists) {
-            return `UPDATE configs SET ${key}=${
-                this.isBlob(key) ? '?' : transform(value)
-            } WHERE guild_id='${guild_id}'`;
-        }
 
         const process = this.isBlob(key);
         let targetIndex: number;
