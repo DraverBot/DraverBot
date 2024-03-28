@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Collection } from 'discord.js';
 import { configKeys, configsData } from '../data/configData';
 import { configs } from '../typings/database';
@@ -50,9 +49,7 @@ export class ConfigsManager {
     }
     private buildQuery({
         guild_id,
-        _value,
-        key,
-        _exists
+        key
     }: {
         guild_id: string;
         value: Buffer | string | number | boolean;
