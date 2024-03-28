@@ -31,7 +31,8 @@ export enum ButtonIds {
     LevelAddChannel = 'cmd.level.list.add',
     LevelRemoveChannel = 'cmd.level.list.remove',
     LevelPurgeList = 'cmd.level.list.purge',
-    LevelListSwap = 'cmd.level.list.swap'
+    LevelListSwap = 'cmd.level.list.swap',
+    SaveDatabase = 'bot-admin.database.dump'
 }
 import { ButtonBuilder } from 'discord.js';
 
