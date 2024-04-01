@@ -16,6 +16,9 @@ export class LevelsManager {
     public userData(opts: { user_id: string; guild_id: string }) {
         return this.cache.get(this.getCode(opts));
     }
+    public computeRequiredMessages(level: number) {
+        return 255 + (4 / 3) * level;
+    }
 
     private async start() {
         await query(
