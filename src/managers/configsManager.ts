@@ -3,6 +3,7 @@ import { configKeys, configsData } from '../data/configData';
 import { configs } from '../typings/database';
 import query from '../utils/query';
 import { boolDb, notNull, sqliseString } from '../utils/toolbox';
+import { log4js } from 'amethystjs';
 
 export class ConfigsManager {
     private _cache: Collection<string, configs> = new Collection();
@@ -48,9 +49,7 @@ export class ConfigsManager {
     }
     private buildQuery({
         guild_id,
-        value,
-        key,
-        exists
+        key
     }: {
         guild_id: string;
         value: Buffer | string | number | boolean;
@@ -64,12 +63,6 @@ export class ConfigsManager {
                   ? `"${sqliseString((x as Buffer).toString())}"`
                   : `"${sqliseString(x as string)}"`;
         const datas = this._cache.get(guild_id);
-
-        if (exists) {
-            return `UPDATE configs SET ${key}=${
-                this.isBlob(key) ? '?' : transform(value)
-            } WHERE guild_id='${guild_id}'`;
-        }
 
         const process = this.isBlob(key);
         let targetIndex: number;
@@ -122,19 +115,39 @@ export class ConfigsManager {
         if (data.type === 'boolean')
             return `${data.value} TINYINT(1) NOT NULL DEFAULT '${boolDb(data.default as boolean)}'`;
         if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;
-        if (data.type === 'image') return `${data.value} MEDIUMBLOB NOT NULL DEFAULT ''`;
+        if (data.type === 'image') return `${data.value} MEDIUMBLOB`;
         if (data.type === 'string')
             return `${data.value} VARCHAR(255) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
     }
     private queryDatabase(): Promise<boolean> {
         return new Promise(async (resolve) => {
-            await query(
-                `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
-                    configsData
-                )
-                    .map((key: keyof configKeys) => this.buildColomn(key))
-                    .join(', ')} )`
-            );
+            const tables = await query<{ Tables_in_draver: string }>(`SHOW TABLES`).catch(log4js.trace);
+
+            if (tables && !tables.some((x) => x['Tables_in_draver'])) {
+                await query(
+                    `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
+                        configsData
+                    )
+                        .map((key: keyof configKeys) => this.buildColomn(key))
+                        .join(', ')} )`
+                );
+            } else {
+                const description = await query<{
+                    Field: string;
+                    Type: string;
+                    Null: string;
+                    Key: string;
+                    Default: string;
+                    Extra: string;
+                }>(`DESCRIBE configs`);
+                const missing = Object.keys(configsData).filter((x) => !description.some((y) => y.Field === x));
+
+                if (missing.length > 0) {
+                    await query(
+                        `ALTER TABLE configs ${missing.map((x) => `ADD ${this.buildColomn(x as keyof configKeys)}`).join(', ')}`
+                    );
+                }
+            }
             resolve(true);
         });
     }

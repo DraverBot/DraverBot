@@ -1,5 +1,5 @@
 import { AmethystEvent } from 'amethystjs';
-import { checkDatabase, util } from '../utils/functions';
+import { checkDatabase, setDumpClock, util } from '../utils/functions';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { ActivityOptions, ActivityType, TextChannel } from 'discord.js';
 import { basicEmbed, buildButton, numerize, random, row, sendError } from '../utils/toolbox';
@@ -101,6 +101,13 @@ export default new AmethystEvent('ready', async (client) => {
                             buttonId: 'UnGBanUser',
                             style: 'Danger'
                         })
+                    ),
+                    row(
+                        buildButton({
+                            label: 'Sauvegarder la base de données',
+                            buttonId: 'SaveDatabase',
+                            style: 'Primary'
+                        })
                     )
                 ],
                 files: ['./images/banner.png']
@@ -110,5 +117,6 @@ export default new AmethystEvent('ready', async (client) => {
     };
     loadpanel();
 
+    setDumpClock();
     setInterval(updateActivity, 20000);
 });

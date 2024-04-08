@@ -1,11 +1,12 @@
 import { configsManager } from '../cache/managers';
-import { log4js, waitForInteraction } from 'amethystjs';
+import { AmethystClient, DebugImportance, log4js, waitForInteraction } from 'amethystjs';
 import {
     APIMessageComponentEmoji,
     ActionRowBuilder,
     AnyComponentBuilder,
     AnySelectMenuInteraction,
     Attachment,
+    AttachmentBuilder,
     BaseChannel,
     BaseInteraction,
     ButtonBuilder,
@@ -55,6 +56,9 @@ import { modActionType } from '../typings/database';
 import { ButtonIds } from '../typings/buttons';
 import SetRandomComponent from '../process/SetRandomComponent';
 import { dateResolvable } from '../typings/core';
+import mysqldump from 'mysqldump';
+import { client } from '..';
+import { rmSync, existsSync } from 'node:fs';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -710,3 +714,42 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 export const resolveDate = (resolvable: dateResolvable | DateResolvable) =>
     !notNull(resolvable) ? null : new Date(parseInt(resolvable?.valueOf()?.toString()));
 export const emptyField = (inline = false) => ({ name: '\u200b', value: '\u200b', inline });
+export const dumpDatabase = async () => {
+    const channel = (await client.channels.fetch(util('databaseDumpChannel')).catch(log4js.trace)) as TextChannel;
+    if (!channel) return log4js.trace(`Dump channel not found`);
+
+    await mysqldump({
+        connection: {
+            host: process.env.host,
+            database: process.env.database,
+            user: process.env.user,
+            password: process.env.password
+        },
+        dumpToFile: './save.sql'
+    }).catch(log4js.trace);
+
+    if (!existsSync('./save.sql'))
+        return channel
+            .send({
+                embeds: [replies.internalError(client.user)]
+            })
+            .catch(log4js.trace);
+
+    const now = new Date();
+    const date = `${now.getFullYear()}/${now.getMonth()}/${now.getDate()}:${now.getHours()}:${now.getMinutes()}`;
+    const attachment = new AttachmentBuilder('./save.sql', {
+        name: `${date}.sql`
+    });
+    await channel
+        .send({
+            content: `✅ | Sauvegarde MySQL.\nDate : ${date}`,
+            files: [attachment]
+        })
+        .catch(log4js.trace);
+
+    rmSync('./save.sql');
+};
+export const hardLog = (client: AmethystClient, message: string, importance: keyof typeof DebugImportance) => {
+    log4js.trace(message);
+    client.debug(message, DebugImportance[importance]);
+};

@@ -45,6 +45,20 @@ export default new DraverCommand({
                     inline: true
                 },
                 {
+                    name: 'Messages totaux',
+                    value: numerize(
+                        (() => {
+                            let total = data.messages;
+
+                            for (let i = 0; i < data.level - 1; i++) {
+                                total += levelsManager.computeRequiredMessages(i + 1);
+                            }
+                            return total;
+                        })()
+                    ),
+                    inline: true
+                },
+                {
                     name: 'Place dans le classement',
                     value:
                         (levelsManager.leaderboard(interaction.guild.id).toJSON().indexOf(data) ??

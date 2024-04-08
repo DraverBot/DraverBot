@@ -31,7 +31,21 @@ export enum ButtonIds {
     LevelAddChannel = 'cmd.level.list.add',
     LevelRemoveChannel = 'cmd.level.list.remove',
     LevelPurgeList = 'cmd.level.list.purge',
-    LevelListSwap = 'cmd.level.list.swap'
+    LevelListSwap = 'cmd.level.list.swap',
+    SaveDatabase = 'bot-admin.database.dump',
+    SelectCategory = 'processes.counters.category.select',
+    AutoCategory = 'processes.counters.category.auto',
+    CategorySelection = 'processes.counters.category.selector',
+    SelectCounters = 'processes.counters.selectActivated',
+    NameCounters = 'processes.counters.name',
+    NameCountersModal = 'processes.counters.name.modal',
+    CountersText = 'processes.counters.type.text',
+    CountersVoice = 'processes.counters.type.voice',
+    EditActiveCounters = 'cmd.counters.edit-actives',
+    EditActiveCountersModal = 'cmd.counters.edit-actives.modal',
+    EditCounterNames = 'cmd.counters.edit-names',
+    EditCounterNamesModal = 'cmd.counters.edit-names.modal',
+    EditCounterNamesButton = 'cmd.counters.edit-names.trigger'
 }
 import { ButtonBuilder } from 'discord.js';
 

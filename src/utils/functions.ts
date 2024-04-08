@@ -6,7 +6,7 @@ import utils from '../data/utils.json';
 import { DatabaseTables, defaultJokesTypes, jokes, modActionType, moduleType } from '../typings/database';
 import { permType } from '../typings/functions';
 import query from './query';
-import { boolDb, capitalize } from './toolbox';
+import { boolDb, capitalize, dumpDatabase } from './toolbox';
 import { channelTypeNames } from '../data/channelTypeNames';
 import colors from '../data/colors.json';
 import { BenderAPIOptions, BenderAPIType } from '../typings/apis';
@@ -137,4 +137,16 @@ export const reportToBender = async <T extends BenderAPIType>({ type, guild, use
             data
         })
         .catch(() => {});
+};
+export const setDumpClock = () => {
+    const midnight = new Date(new Date().setHours(0, 0, 0, 0) + 86400000);
+    const diff = midnight.getTime() - Date.now();
+
+    setTimeout(() => {
+        dumpDatabase();
+
+        setInterval(() => {
+            dumpDatabase();
+        }, 86400000);
+    }, diff);
 };
