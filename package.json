@@ -33,7 +33,7 @@
 		"@types/mysql": "^2.15.21",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
-		"eslint": "^8.24.0",
+		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.0",
 		"eslint-plugin-typescript": "^0.14.0",
