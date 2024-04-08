@@ -1,0 +1,6 @@
+{
+    "copyLogId": "L'identifiant du log est {id}",
+    "notes": {
+        "noNotes": "{user} n'a pas de note"
+    }
+}

@@ -2,17 +2,27 @@ import { rewards } from '../cache/managers';
 import { AutocompleteListener } from 'amethystjs';
 import { levelReward } from '../typings/managers';
 import { levelRewardType } from '../typings/database';
-import { numerize, resizeString } from '../utils/toolbox';
-import { util } from '../utils/functions';
+import { resizeString } from '../utils/toolbox';
+import { translator } from '../translate/translate';
 
 export default new AutocompleteListener({
     commandName: [{ commandName: 'récompenses', optionName: 'récompense' }],
     listenerName: 'Rewards',
     run: ({ interaction, focusedValue }) => {
-        const name = (x: levelReward<levelRewardType>) =>
-            `Niveau ${x.level}${x.type === 'role' ? '' : `, ${numerize(x.value as number)} ${util('coins')}`} - ${
-                x.type === 'coins' ? util('coins') : 'rôle'
-            }`;
+        const name = (x: levelReward<levelRewardType>) => {
+            const type = translator.translate(`extern.autocompletes.content.reward.types.${x.type}`, interaction);
+
+            return x.type === 'role'
+                ? translator.translate('extern.autocompletes.content.reward.namingRole', interaction, {
+                      level: x.level,
+                      value: x.value,
+                      type
+                  })
+                : translator.translate(`extern.autocompletes.content.reward.namingBasic`, interaction, {
+                      level: x.level,
+                      type
+                  });
+        };
 
         return rewards
             .getRewards(interaction)

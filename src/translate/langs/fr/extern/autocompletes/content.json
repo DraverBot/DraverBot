@@ -1,0 +1,10 @@
+{
+    "reward": {
+        "namingBasic": "Niveau {level} {coin} - {type}",
+        "namingRole": "Niveau {level}, {value} {coin} - {type}",
+        "types": {
+            "coins": "{coin}",
+            "role": "rôle"
+        }
+    }
+}

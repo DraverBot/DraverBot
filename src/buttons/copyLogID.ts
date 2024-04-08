@@ -1,4 +1,5 @@
 import { ButtonHandler } from 'amethystjs';
+import { translator } from '../translate/translate';
 
 export default new ButtonHandler({
     customId: 'copyLogID'
@@ -7,7 +8,7 @@ export default new ButtonHandler({
 
     button
         .reply({
-            content: `L'identifiant du log est ${id}`,
+            content: translator.translate('extern.buttons.logs.copyLogId', button, { id }),
             ephemeral: true
         })
         .catch(() => {});

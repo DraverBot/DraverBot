@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { langResolvable } from '../../typings/core';
 import { BaseInteraction, Message } from 'discord.js';
+import { util } from '../../utils/functions';
 
 export class Translator {
     private defaultLang: string;
@@ -17,7 +18,7 @@ export class Translator {
         if (resolvable instanceof BaseInteraction) return resolvable?.locale;
         return resolvable;
     }
-    public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}) {
+    public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
         const translation = this.resolveLang(lang);
 
         const path = key.split('.');
@@ -33,7 +34,9 @@ export class Translator {
         if (!value || value instanceof Object) return null;
 
         const content = ((input: string) => {
-            const regexes = Object.entries(opts).map(([k, v]) => [new RegExp(`{${k}}`, 'g'), v]) as [RegExp, string][];
+            const regexes = Object.entries(opts)
+                .map(([k, v]) => [new RegExp(`{${k}}`, 'g'), typeof v === 'number' ? v.toLocaleString(translation) : v])
+                .concat([[/{coins}/g, util('coins')]]) as [RegExp, string][];
             regexes.forEach(([r, v]) => {
                 input = input.replace(r, v);
             });

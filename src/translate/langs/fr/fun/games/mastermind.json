@@ -1,0 +1,21 @@
+{
+    "running": {
+        "title": "Partie en cours",
+        "description": "Vous avez déjà une partie en cours.\nSi vous ne la retrouvez plus, abandonnez la."
+    },
+    "resign": {
+        "label": "Abandonner"
+    },
+    "notRunning": {
+        "title": "Pas de partie",
+        "description": "Vous n'avez pas de partie en cours"
+    },
+    "confirmation": {
+        "title": "Abandon",
+        "description": "Êtes-vous sûr de vouloir abandonner votre partie en cours ?"
+    },
+    "resigned": {
+        "title": "Abandonnée",
+        "description": "Votre partie a été abandonnée"
+    }
+}

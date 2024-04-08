@@ -3,6 +3,7 @@ import { ButtonIds } from '../typings/buttons';
 import { Mastermind } from '../structures/Mastermind';
 import { basicEmbed, buildButton, row } from '../utils/toolbox';
 import masterminds from '../maps/masterminds';
+import { translator } from '../translate/translate';
 
 export default new ButtonHandler({
     customId: ButtonIds.PlayMastermindEasy,
@@ -13,14 +14,14 @@ export default new ButtonHandler({
             .reply({
                 embeds: [
                     basicEmbed(user, { evoker: button.guild })
-                        .setTitle('Partie en cours')
+                        .setTitle(translator.translate('fun.games.mastermind.running.title', button))
                         .setDescription(
-                            `Vous avez déjà une partie en cours\nSi vous ne la retrouvez plus, abandonnez la`
+                            translator.translate('fun.games.mastermind.running.description', button)
                         )
                 ],
                 ephemeral: true,
                 components: [
-                    row(buildButton({ label: 'Abandonner', style: 'Danger', buttonId: 'ResignToCurrentMastermind' }))
+                    row(buildButton({ label: translator.translate('fun.games.mastermind.resign.label', button), style: 'Danger', buttonId: 'ResignToCurrentMastermind' }))
                 ]
             })
             .catch(log4js.trace);

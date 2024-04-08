@@ -2,6 +2,7 @@ import { ButtonHandler, log4js } from 'amethystjs';
 import { ButtonIds } from '../typings/buttons';
 import masterminds from '../maps/masterminds';
 import { basicEmbed, confirm } from '../utils/toolbox';
+import { translator } from '../translate/translate';
 
 export default new ButtonHandler({
     customId: ButtonIds.ResignToCurrentMastermind
@@ -12,8 +13,8 @@ export default new ButtonHandler({
                 .reply({
                     embeds: [
                         basicEmbed(user, { evoker: button.guild })
-                            .setTitle('Pas de partie')
-                            .setDescription(`Vous n'avez aucune partie en cours`)
+                            .setTitle(translator.translate('fun.games.mastermind.notRunning.title', button))
+                            .setDescription(translator.translate('fun.games.mastermind.notRunning.description', button))
                     ],
                     ephemeral: true
                 })
@@ -25,8 +26,8 @@ export default new ButtonHandler({
         user,
         ephemeral: true,
         embed: basicEmbed(user)
-            .setTitle('Abandon')
-            .setTitle('Êtes-vous sûr de vouloir abandonner votre partie en cours ?')
+            .setTitle(translator.translate('fun.games.mastermind.confirmation.title', button))
+            .setTitle(translator.translate('fun.games.mastermind.confirmation.description', button))
     }).catch(log4js.trace);
 
     if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
@@ -43,8 +44,8 @@ export default new ButtonHandler({
         .editReply({
             embeds: [
                 basicEmbed(user, { draverColor: true })
-                    .setTitle('Abandonnée')
-                    .setDescription(`Votre partie en cours a été abandonnée`)
+                    .setTitle(translator.translate('fun.games.mastermind.resigned.title', button))
+                    .setDescription(translator.translate('fun.games.mastermind.resigned.description', button))
             ],
             components: []
         })

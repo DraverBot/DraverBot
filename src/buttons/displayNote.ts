@@ -3,6 +3,7 @@ import { ButtonIds } from '../typings/buttons';
 import query from '../utils/query';
 import { DatabaseTables } from '../typings/database';
 import { codeBox, pingUser } from '../utils/toolbox';
+import { translator } from '../translate/translate';
 
 export default new ButtonHandler({
     customId: ButtonIds.DisplayNote,
@@ -23,7 +24,7 @@ export default new ButtonHandler({
     if (notes.length === 0)
         return button
             .editReply({
-                content: `${pingUser(id)} n'a pas de note`
+                content: translator.translate('extern.buttons.logs.notes.noNotes', button, { user: pingUser(id) })
             })
             .catch(() => {});
 

@@ -1,5 +1,6 @@
 import { interserver } from '../cache/managers';
 import { ButtonHandler } from 'amethystjs';
+import { translator } from '../translate/translate';
 
 export default new ButtonHandler({
     customId: 'interchat.see-frequence',
@@ -9,7 +10,7 @@ export default new ButtonHandler({
         interserver.cache.get(message.embeds[0].description.split('<#')[1].split('>')[0])?.frequence ?? 'missingno';
 
     button.reply({
-        content: `La fréquence du salon est \`\`\`${frequence}\`\`\``,
+        content: translator.translate('extern.buttons.interchat.copyFrequence', button, { frequence }),
         ephemeral: true
     });
 });
