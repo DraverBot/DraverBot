@@ -27,6 +27,7 @@ import { InvitesManager } from '../managers/InvitesManager';
 import { AFKManager } from '../managers/AFK';
 import { LevelsRewards } from '../managers/LevelsRewards';
 import { CountersManager } from '../managers/Counters';
+import {} from '../translate/translate';
 
 const cl = client as unknown as Client;
 
