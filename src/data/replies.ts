@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+    APIInteractionGuildMember,
     ChannelType,
     ColorResolvable,
     EmbedBuilder,
@@ -574,7 +575,13 @@ const replies = {
         userMember(user)
             .setTitle('Aucun émoji')
             .setDescription(`Aucun émoji n'a été trouvé${!!query ? ` pour \`${query}\`` : ''}`),
-    basicGuild: (user: anyUser, guild: Guild) => userMember(user).setColor(guild?.members?.me?.displayHexColor)
+    basicGuild: (user: anyUser, guild: Guild) => userMember(user).setColor(guild?.members?.me?.displayHexColor),
+    noCounter: (user: anyUser) =>
+        userMember(user)
+            .setTitle('Compteurs désactivés')
+            .setDescription(
+                `Les compteurs n'ont pas été activés.\nUtilisez la commande \`/compteurs activer\` pour les mettre en place`
+            )
 };
 
 export type replyKey = keyof typeof replies;
