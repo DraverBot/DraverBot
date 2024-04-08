@@ -26,6 +26,7 @@ import { TempChannelsManager } from '../managers/TempChannelsManager';
 import { InvitesManager } from '../managers/InvitesManager';
 import { AFKManager } from '../managers/AFK';
 import { LevelsRewards } from '../managers/LevelsRewards';
+import { CountersManager } from '../managers/Counters';
 
 const cl = client as unknown as Client;
 
@@ -66,6 +67,7 @@ const rewards = new LevelsRewards(cl);
 const tempChannels = new TempChannelsManager(cl);
 const invitesManager = new InvitesManager(cl);
 const afk = new AFKManager();
+const countersManager = new CountersManager(client);
 
 giveaways.start();
 coinsManager.start();
@@ -94,5 +96,6 @@ export {
     rewards,
     tempChannels,
     invitesManager,
-    afk
+    afk,
+    countersManager
 };

@@ -1,4 +1,4 @@
-import { AmethystClient } from 'amethystjs';
+import { AmethystClient, DebugImportance, log4js } from 'amethystjs';
 import { Partials } from 'discord.js';
 import { config } from 'dotenv';
 
@@ -24,6 +24,7 @@ const client = new AmethystClient(
 );
 
 client.start({});
+log4js.config('onLog', () => client.debug('Got a Log4JS log', DebugImportance.Unexpected));
 
 if (process.env.password?.length > 1) {
     process.on('uncaughtException', (error, listener) => {

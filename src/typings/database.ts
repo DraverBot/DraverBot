@@ -1,4 +1,4 @@
-import { If } from 'discord.js';
+import { ChannelType, If } from 'discord.js';
 import { configKeys } from '../data/configData';
 import { ConnectionMap } from 'enigma-machine/build/typings/types';
 
@@ -111,7 +111,8 @@ export type moduleType =
     | 'level'
     | 'information'
     | 'tickets'
-    | 'invitations';
+    | 'invitations'
+    | 'counters';
 
 export type modules = {
     /**
@@ -211,7 +212,8 @@ export enum DatabaseTables {
     LevelsRewards = 'levelsrewards',
     TempChannels = 'temp_channels',
     Invites = 'invitations',
-    AFK = 'afks'
+    AFK = 'afks',
+    Counters = 'counters'
 }
 export type coupons = {
     guild_id: string;
@@ -364,3 +366,24 @@ export type afk<Raw extends boolean = false> = {
     afkat: If<Raw, string, number>;
 };
 export type poolOptions = { pools?: number };
+export enum CounterId {
+    All = 0,
+    Humans = 1,
+    Bots = 2
+}
+export type counters<Raw extends boolean = false> = {
+    guild_id: string;
+    channels: If<
+        Raw,
+        string,
+        {
+            id: CounterId;
+            channel: string;
+            name: string;
+            enabled: boolean;
+        }[]
+    >;
+    category: string;
+    id: number;
+    channelType: ChannelType.GuildVoice | ChannelType.GuildText;
+};

@@ -1,5 +1,5 @@
 import { configsManager } from '../cache/managers';
-import { log4js, waitForInteraction } from 'amethystjs';
+import { AmethystClient, DebugImportance, log4js, waitForInteraction } from 'amethystjs';
 import {
     APIMessageComponentEmoji,
     ActionRowBuilder,
@@ -748,4 +748,8 @@ export const dumpDatabase = async () => {
         .catch(log4js.trace);
 
     rmSync('./save.sql');
+};
+export const hardLog = (client: AmethystClient, message: string, importance: keyof typeof DebugImportance) => {
+    log4js.trace(message);
+    client.debug(message, DebugImportance[importance]);
 };

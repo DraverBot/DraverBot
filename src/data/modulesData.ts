@@ -91,5 +91,12 @@ export const modulesData: Record<moduleType, moduleDataType> = {
         default: false,
         emoji: '✉️',
         id: 'invitations'
+    },
+    counters: {
+        name: 'compteurs',
+        editable: true,
+        default: false,
+        emoji: '📊',
+        id: 'counters'
     }
 };
