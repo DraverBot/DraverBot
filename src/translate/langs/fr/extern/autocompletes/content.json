@@ -1,9 +1,9 @@
 {
     "reward": {
-        "namingBasic": "Niveau {level} {coin} - {type}",
-        "namingRole": "Niveau {level}, {value} {coin} - {type}",
+        "namingBasic": "Niveau {level} {coins} - {type}",
+        "namingRole": "Niveau {level}, {value} {coins} - {type}",
         "types": {
-            "coins": "{coin}",
+            "coins": "{coins}",
             "role": "rôle"
         }
     }

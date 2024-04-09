@@ -21,8 +21,13 @@ export class Translator {
         for (const section of path) {
             if (value[section]) value = value[section];
             else {
-                value = null;
-                break;
+                throw new TranslateError('Invalid path', {
+                    full: key,
+                    lang,
+                    erroring: section
+                })
+                value = null
+                break
             }
         }
 
@@ -58,14 +63,15 @@ export class Translator {
         if (!value || value instanceof Object) {
             throw new TranslateError("Invalid path", {
                 full: key,
-                erroring: 'Unknown'
+                erroring: 'Unknown',
+                lang: translation
             })
         };
 
         const content = ((input: string) => {
             const regexes = Object.entries(opts)
                 .map(([k, v]) => [new RegExp(`{${k}}`, 'g'), typeof v === 'number' ? v.toLocaleString(translation) : v])
-                .concat([[/{coins}/g, util('coins')]]) as [RegExp, string][];
+                .concat(this.includedRegexes) as [RegExp, string][];
             regexes.forEach(([r, v]) => {
                 input = input.replace(r, v);
             });
@@ -73,6 +79,9 @@ export class Translator {
             return input;
         })(value as string);
         return content;
+    }
+    private get includedRegexes(): [RegExp, string][] {
+        return [[/{coins}/g, util('coins')]]
     }
 
     private start() {

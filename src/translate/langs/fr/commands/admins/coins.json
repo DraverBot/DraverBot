@@ -1,0 +1,116 @@
+{
+    "name": "admincoins",
+    "description": "Gère les {coins} sur le serveur",
+    "options": {
+        "reset": {
+            "name": "réinitialiser",
+            "description": "Réinitialise les {coins}",
+            "options": {
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur que vous voulez réinitialiser"
+                }
+            },
+            "replies": {
+                "confirm": {
+                    "title": "Réinitialisation",
+                    "server": "Êtes-vous sûr de vouloir réinitialiser les {coins} du serveur ?",
+                    "user": "Êtes-vous sûr de vouloir réinitialiser les {coins} de {user} ?"
+                },
+                "resetted": {
+                    "title": "Réinitialisation",
+                    "server": "Les {coins} du serveur ont été réinitialisés",
+                    "user": "Les {coins} de {user} ont été réinitialisés"
+                }
+            }
+        },
+        "add": {
+            "name": "ajouter",
+            "description": "Ajoute des {coins} à un utilisateur",
+            "options": {
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur auquel vous voulez rajouter des {coins}"
+                },
+                "amount": {
+                    "name": "montant",
+                    "description": "Montant de {coins} que vous voulez attribuer"
+                }
+            },
+            "replies": {
+                "place": {
+                    "title": "Endroit",
+                    "description": "Dans quelle partie voulez-vous ajouter des {coins} ?"
+                },
+                "confirm": {
+                    "title": "Ajout de {coins}",
+                    "description": "Vous êtes sur le point d'ajouter **{amount} {coins}** à {user} dans sa {place}.\nVoulez-vous continuer ?"
+                },
+                "added": {
+                    "title": "{coins} ajouté",
+                    "description": "**{amount} {coins}** ont été ajoutés à {user} par {author}"
+                }
+            }
+        },
+        "remove": {
+            "name": "retirer",
+            "description": "Retire des {coins} à un utilisateur",
+            "options": {
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur auquel vous voulez retirer des {coins}"
+                },
+                "amount": {
+                    "name" :"montant",
+                    "description": "Montant de {coins} que vous voulez retirer"
+                }
+            },
+            "replies": {
+                "place": {
+                    "title": "Endroit",
+                    "description": "Dans quelle partie voulez-vous retirer des {coins} ?"
+                },
+                "confirm": {
+                    "title": "Retrait de {coins}",
+                    "description": "Vous êtes sur le point de retirer **{amount} {coins}** à {user} de sa {place}.\nVoulez-vous continuer ?"
+                },
+                "removed": {
+                    "title": "{coins} retirés",
+                    "description": "**{amount} {coins}** ont été retirés à {user} par {author}"
+                }
+            }
+        },
+        "voir": {
+            "name": "voir",
+            "description": "Voir les statistiques d'un membre",
+            "options": {
+                "member": {
+                    "name": "personne",
+                    "description": "Utilisateur que vous voulez voir"
+                }
+            },
+            "info": {
+                "title": "Statistiques",
+                "description": "Voici les statistiques de {user}",
+                "fields": {
+                    "pocket": {
+                        "name": "En poche",
+                        "value": "{count}"
+                    },
+                    "bank": {
+                        "name": "En banque",
+                        "value": "{count}"
+                    },
+                    "total": {
+                        "name": "Total",
+                        "value": "{count} {coins}"
+                    }
+                }
+            }
+        }
+    },
+    "places": {
+        "bank": "banque",
+        "pocket": "poche"
+    }
+}
