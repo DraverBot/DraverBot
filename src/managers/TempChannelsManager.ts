@@ -55,7 +55,7 @@ export class TempChannelsManager {
                 id: res.insertId
             });
 
-            return this.findPanel(guild, channel);
+            return resolve(this.findPanel(guild, channel));
         });
     }
     public getPanelById(id: number) {
