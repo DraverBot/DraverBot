@@ -2,6 +2,7 @@ import { Client, Collection, Guild, TextChannel, Webhook, WebhookClient } from '
 import { Anonymous as AnonymousDataType, DatabaseTables } from '../typings/database';
 import { basicEmbed, evokerColor, hint, notNull, pingChan, sendError, sendLog, sqliseString } from '../utils/toolbox';
 import query from '../utils/query';
+import { log4js } from 'amethystjs';
 
 export class AnonymousValue {
     private _data: AnonymousDataType;
@@ -22,6 +23,7 @@ export class AnonymousValue {
 
     private async build() {
         this.guild = this.client.guilds.cache.get(this._data.guild_id);
+        if (!this.guild) return
 
         this.channel = this.guild.channels.cache.get(this._data.channel_id) as TextChannel;
         this.webhook = new WebhookClient({ url: this._data.webhook_url });
@@ -113,8 +115,8 @@ export class AnonymousManager {
 
             const value = this._values.get(data.id.toString());
             if (
-                value.bannedRoles.some((x) => message.member.roles.cache.has(x)) ||
-                value.bannedUsers.includes(message.author.id)
+                value.bannedRoles?.some?.((x) => message.member.roles.cache.has(x)) ||
+                value.bannedUsers?.includes?.(message.author.id)
             )
                 return;
 
@@ -141,14 +143,13 @@ export class AnonymousManager {
 
                 return;
             }
-            value.webhook
-                .send({
+            value.webhook?.send?.({
                     content: message.content,
                     allowedMentions: {
                         parse: []
                     }
                 })
-                .catch((error) => {
+                ?.catch?.((error) => {
                     sendError(error);
                     this.values.set(
                         value.data.id.toString(),
@@ -181,6 +182,7 @@ export class AnonymousManager {
     }
     private async fillCache() {
         const datas = await query<AnonymousDataType>(`SELECT * FROM ${DatabaseTables.Anonymous}`);
+        await this.client.guilds.fetch().catch(log4js.trace)
 
         this._values.clear();
         datas.forEach((data) => {
@@ -244,16 +246,14 @@ export class AnonymousManager {
         this._values.set(data.id.toString(), value);
     }
     public async delete(dataId: string) {
-        if (this._cache.has(parseInt(dataId))) {
-            this._cache.delete(parseInt(dataId));
+        this._cache.delete(parseInt(dataId));
 
-            const value = this._values.get(dataId);
-            value.webhook.delete().catch(() => {});
+        const value = this._values.get(dataId);
+        value?.webhook?.delete?.()?.catch?.(() => {});
 
-            this._values.delete(dataId);
+        this._values.delete(dataId);
 
-            await query(`DELETE FROM ${DatabaseTables.Anonymous} WHERE id='${dataId}'`);
-        }
+        await query(`DELETE FROM ${DatabaseTables.Anonymous} WHERE id='${dataId}'`);
         return true;
     }
 
