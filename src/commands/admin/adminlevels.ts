@@ -95,6 +95,42 @@ export default new DraverCommand({
                     type: ApplicationCommandOptionType.Subcommand
                 }
             ]
+        },
+        {
+            name: "retirer",
+            description: "Retire des niveaux ou des messages à un membre",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'membre',
+                    description: 'Membre auquel vous voulez retirer des niveaux',
+                    type: ApplicationCommandOptionType.User,
+                    required: true
+                },
+                {
+                    name: 'type',
+                    description: "Type du retrait que vous voulez faire",
+                    required: true,
+                    type: ApplicationCommandOptionType.String,
+                    choices: [
+                        {
+                            name: 'Messages',
+                            value: AdminLevelAddType.Messages
+                        },
+                        {
+                            name: 'Niveaux',
+                            value: AdminLevelAddType.Level
+                        }
+                    ]
+                },
+                {
+                    name: 'montant',
+                    description: 'Montant de niveaux/messages que vous voulez retirer',
+                    type: ApplicationCommandOptionType.Integer,
+                    required: true,
+                    minValue: 1
+                }
+            ]
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
@@ -406,7 +442,7 @@ export default new DraverCommand({
                 .setDescription(
                     `Vous êtes sur le point de rajouter **${numerize(amount)} ${strType}${plurial(amount, {
                         plurial: plurialSuffix
-                    })}** à ${user}.\nÊtes-vous sûr ?\nVous ne pourrez pas les retirer.`
+                    })}** à ${user}.\nÊtes-vous sûr ?`
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -443,6 +479,68 @@ export default new DraverCommand({
                                     `${numerize(amount)} ${strType}${plurial(amount, {
                                         singular: ' a été ajouté',
                                         plurial: plurialSuffix + ' ont été ajoutés'
+                                    })} à ${user}`
+                                )
+                        ],
+                        components: []
+                    })
+                    .catch(() => {});
+            },
+            random({ max: 5, min: 2 }) * 1000
+        );
+    }
+    if (cmd === 'retirer') {
+        const user = options.getUser('membre');
+        const amount = options.getInteger('montant');
+        const type = options.getString('type') as AdminLevelAddType;
+        const strType = type === AdminLevelAddType.Level ? 'niveau' : 'message';
+        const plurialSuffix = type === AdminLevelAddType.Level ? 'x' : 's';
+
+        const validation = (await confirm({
+            interaction,
+            user: interaction.user,
+            embed: basicEmbed(interaction.user)
+                .setTitle('Retrait de niveaux')
+                .setDescription(
+                    `Vous êtes sur le point de retirer **${numerize(amount)} ${strType}${plurial(amount, {
+                        plurial: plurialSuffix
+                    })}** à ${user}.\nÊtes-vous sûr ?`
+                )
+        }).catch(() => {})) as confirmReturn;
+
+        if (validation === 'cancel' || !validation?.value)
+            return interaction
+                .editReply({
+                    embeds: [replies.cancel()],
+                    components: []
+                })
+                .catch(() => {});
+
+        await interaction
+            .editReply({
+                embeds: [replies.wait(interaction.user)],
+                components: []
+            })
+            .catch(() => {});
+
+        await levelsManager.removeXp({
+            amount,
+            user_id: user.id,
+            type,
+            guild_id: interaction.guild.id
+        });
+
+        setTimeout(
+            () => {
+                interaction
+                    .editReply({
+                        embeds: [
+                            basicEmbed(interaction.user, { draverColor: true })
+                                .setTitle('Retrait de niveaux')
+                                .setDescription(
+                                    `${numerize(amount)} ${strType}${plurial(amount, {
+                                        singular: ' a été retiré',
+                                        plurial: plurialSuffix + ' ont été retirés'
                                     })} à ${user}`
                                 )
                         ],

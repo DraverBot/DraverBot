@@ -39,6 +39,44 @@ export class LevelsManager {
         });
     }
 
+    public async removeXp({
+        amount,
+        type,
+        ...code
+    }: {
+        guild_id: string;
+        user_id: string;
+        amount: number;
+        type: 'level' | 'messages'
+    }) {
+        const has = this.cache.has(this.getCode(code));
+        const data: levels<number> = this.cache.get(this.getCode(code)) ?? {
+            ...code,
+            level: 0,
+            messages: 0,
+            required: 255
+        };
+
+        if (type === 'level') {
+            data.level = Math.max(0, data.level - amount)
+            data.required = this.computeRequiredMessages(data.level)
+            data.messages = 0
+        } else {
+            for (let i = 0; i < amount; i++) {
+                data.messages--
+
+                if (data.messages === 0) {
+                    data.level--
+                    data.messages = this.computeRequiredMessages(data.level)
+                    data.required = this.computeRequiredMessages(data.level)
+                }
+            }
+        }
+
+        this.cache.set(this.getCode(code), data);
+        const res = await query(this.buildSQL(this.getCode(code), has));
+        return notNull(res);
+    }
     public async addXp({
         amount,
         type,
