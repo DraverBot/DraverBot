@@ -97,9 +97,9 @@ const replies = {
         return basic(user)
             .setTitle(':x: Cooldown')
             .setDescription(
-                `Vous êtes sous cooldown.\nMerci de patienter encore **${
-                    Math.floor(metadata.remainingCooldownTime) / 1000
-                } secondes**`
+                `Vous êtes sous cooldown.\nMerci de patienter encore **${Math.ceil(
+                    metadata.remainingCooldownTime
+                )} secondes**`
             )
             .setColor(evokerColor(metadata.guild));
     },
