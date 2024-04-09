@@ -42,7 +42,7 @@
 		"prettier": "^3.0.0"
 	},
 	"scripts": {
-		"build": "yarn tsc -b",
+		"build": "yarn tsc -b && node scripts/compiler.js",
 		"prettier": "prettier -w src",
 		"start": "node dist/index.js",
 		"launch": "yarn install && yarn build && yarn start"
