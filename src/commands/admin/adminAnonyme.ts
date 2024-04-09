@@ -80,7 +80,7 @@ export default new DraverCommand({
                     ...translator.commandData('commands.admins.anonyme.options.bannissements.options.salon'),
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
-                    channel_types: [ChannelType.GuildText],
+                    channel_types: [ChannelType.GuildText]
                 }
             ]
         },
@@ -109,8 +109,19 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.configured.title', interaction))
-                            .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.configured.description', interaction, { channel: pingChan(channel) }))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.configurer.replies.configured.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.configurer.replies.configured.description',
+                                    interaction,
+                                    { channel: pingChan(channel) }
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -128,8 +139,19 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.webhookFailed.description', interaction, { channel: pingChan(channel) }))
-                            .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.webhookFailed.title', interaction))
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.configurer.replies.webhookFailed.description',
+                                    interaction,
+                                    { channel: pingChan(channel) }
+                                )
+                            )
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.configurer.replies.webhookFailed.title',
+                                    interaction
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -139,8 +161,19 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.create.title', interaction))
-                        .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.create.description', interaction, { channel: pingChan(channel) }))
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.anonyme.options.configurer.replies.create.title',
+                                interaction
+                            )
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.anonyme.options.configurer.replies.create.description',
+                                interaction,
+                                { channel: pingChan(channel) }
+                            )
+                        )
                 ]
             })
             .catch(() => {});
@@ -152,8 +185,18 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.anonyme.options.liste.replies.noChannel.title', interaction))
-                            .setDescription(translator.translate('commands.admins.anonyme.options.liste.replies.noChannel.description', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.liste.replies.noChannel.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.liste.replies.noChannel.description',
+                                    interaction
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -162,7 +205,7 @@ export default new DraverCommand({
         const map = (embed: EmbedBuilder, { data, bannedRoles, bannedUsers }: AnonymousValue) => {
             return embed.addFields({
                 name: data.name,
-                value:  translator.translate('commands.admins.anonyme.options.liste.replies.mapper', interaction, {
+                value: translator.translate('commands.admins.anonyme.options.liste.replies.mapper', interaction, {
                     channel: pingChan(data.channel_id),
                     bannedRoles: bannedRoles?.length ?? 0,
                     bannedUsers: bannedUsers?.length ?? 0
@@ -174,9 +217,13 @@ export default new DraverCommand({
             return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle(translator.translate('commands.admins.anonyme.options.liste.replies.list.title', interaction))
                 .setDescription(
-                    translator.translate('commands.admins.anonyme.options.liste.replies.list.description', interaction, {
-                        channels: list.length
-                    })
+                    translator.translate(
+                        'commands.admins.anonyme.options.liste.replies.list.description',
+                        interaction,
+                        {
+                            channels: list.length
+                        }
+                    )
                 );
         };
 
@@ -215,8 +262,16 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
-                            .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
+                            .setTitle(
+                                translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.replies.notAnonymous.description',
+                                    interaction,
+                                    { channel: pingChan(channel) }
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -224,21 +279,40 @@ export default new DraverCommand({
 
         const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
-        const none = translator.translate('commands.admins.anonyme.options.salon.replies.info.none', interaction)
+        const none = translator.translate('commands.admins.anonyme.options.salon.replies.info.none', interaction);
         interaction
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.anonyme.options.salon.replies.info.title', interaction))
-                        .setDescription(translator.translate('commands.admins.anonyme.options.salon.replies.info.description', interaction, { channel: pingChan(channel), name: data.data.name }))
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.anonyme.options.salon.replies.info.title',
+                                interaction
+                            )
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.anonyme.options.salon.replies.info.description',
+                                interaction,
+                                { channel: pingChan(channel), name: data.data.name }
+                            )
+                        )
                         .setFields(
                             {
-                                name: translator.translate('commands.admins.anonyme.options.salon.replies.info.roles', interaction, { roles: data.bannedRoles.length }),
+                                name: translator.translate(
+                                    'commands.admins.anonyme.options.salon.replies.info.roles',
+                                    interaction,
+                                    { roles: data.bannedRoles.length }
+                                ),
                                 value: data.bannedRoles.length > 0 ? data.bannedRoles.map(pingRole).join(' ') : none,
                                 inline: false
                             },
                             {
-                                name: translator.translate('commands.admins.anonyme.options.salon.replies.info.users', interaction, { users: data.bannedUsers.length }),
+                                name: translator.translate(
+                                    'commands.admins.anonyme.options.salon.replies.info.users',
+                                    interaction,
+                                    { users: data.bannedUsers.length }
+                                ),
                                 value: data.bannedUsers.length > 0 ? data.bannedUsers.map(pingUser).join(' ') : none,
                                 inline: true
                             }
@@ -254,21 +328,41 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                        .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
-                        .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
-                        .setColor(evokerColor(interaction.guild))
+                            .setTitle(
+                                translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.replies.notAnonymous.description',
+                                    interaction,
+                                    { channel: pingChan(channel) }
+                                )
+                            )
+                            .setColor(evokerColor(interaction.guild))
                     ]
                 })
                 .catch(() => {});
 
         const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
-        const btn = (str: string) => translator.translate(`commands.admins.anonyme.options.bannissements.buttons.${str}`, interaction)
+        const btn = (str: string) =>
+            translator.translate(`commands.admins.anonyme.options.bannissements.buttons.${str}`, interaction);
         const msg = (await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.control.title', interaction))
-                    .setDescription(translator.translate('commands.admins.anonyme.options.bannissements.replies.control.description', interaction, { channel: pingChan(channel) }))
+                    .setTitle(
+                        translator.translate(
+                            'commands.admins.anonyme.options.bannissements.replies.control.title',
+                            interaction
+                        )
+                    )
+                    .setDescription(
+                        translator.translate(
+                            'commands.admins.anonyme.options.bannissements.replies.control.description',
+                            interaction,
+                            { channel: pingChan(channel) }
+                        )
+                    )
             ],
             fetchReply: true,
             components: [
@@ -316,9 +410,17 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.title',
+                                    interaction
+                                )
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.anonyme.options.bannissements.replies.user.add', interaction)
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.add',
+                                    interaction
+                                )
                             )
                     ],
                     components: []
@@ -358,9 +460,15 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.added', interaction)}`)
+                            .setTitle(
+                                `${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.added', interaction)}`
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.anonyme.options.bannissements.replies.user.added', interaction, { channel: pingChan(channel), user: pingUser(user) })
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.added',
+                                    interaction,
+                                    { channel: pingChan(channel), user: pingUser(user) }
+                                )
                             )
                     ]
                 })
@@ -371,9 +479,17 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.title',
+                                    interaction
+                                )
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.anonyme.options.bannissements.replies.role.add', interaction)
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.add',
+                                    interaction
+                                )
                             )
                     ],
                     components: []
@@ -413,9 +529,15 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.added', interaction)}`)
+                            .setTitle(
+                                `${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.added', interaction)}`
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.anonyme.options.bannissements.replies.role.added', interaction, { channel: pingChan(channel), role: pingRole(role) })
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.added',
+                                    interaction,
+                                    { channel: pingChan(channel), role: pingRole(role) }
+                                )
                             )
                     ]
                 })
@@ -426,10 +548,18 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                        .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction))
-                        .setDescription(
-                            translator.translate('commands.admins.anonyme.options.bannissements.replies.user.remove', interaction)
-                        )
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.remove',
+                                    interaction
+                                )
+                            )
                     ],
                     components: []
                 })
@@ -454,10 +584,10 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                            .setTitle(translator.translate('contents.global.embeds.noUser.title', interaction))
-                            .setDescription(
-                                translator.translate('contents.global.embeds.noUser.description', interaction)
-                            )
+                                .setTitle(translator.translate('contents.global.embeds.noUser.title', interaction))
+                                .setDescription(
+                                    translator.translate('contents.global.embeds.noUser.description', interaction)
+                                )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -467,10 +597,17 @@ export default new DraverCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { draverColor: true }).setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.removed', interaction)}`)
-                        .setDescription(
-                            translator.translate('commands.admins.anonyme.options.bannissements.replies.user.removed', interaction, { channel: pingChan(channel), user: pingUser(user) })
-                        )
+                        basicEmbed(interaction.user, { draverColor: true })
+                            .setTitle(
+                                `${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.removed', interaction)}`
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.user.removed',
+                                    interaction,
+                                    { channel: pingChan(channel), user: pingUser(user) }
+                                )
+                            )
                     ]
                 })
                 .catch(() => {});
@@ -480,10 +617,18 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                        .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction))
-                        .setDescription(
-                            translator.translate('commands.admins.anonyme.options.bannissements.replies.role.remove', interaction)
-                        )
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.remove',
+                                    interaction
+                                )
+                            )
                     ],
                     components: []
                 })
@@ -508,10 +653,10 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                            .setTitle(translator.translate('contents.global.embeds.noRole.title', interaction))
-                            .setDescription(
-                                translator.translate('contents.global.embeds.noRole.description', interaction)
-                            )
+                                .setTitle(translator.translate('contents.global.embeds.noRole.title', interaction))
+                                .setDescription(
+                                    translator.translate('contents.global.embeds.noRole.description', interaction)
+                                )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -521,10 +666,17 @@ export default new DraverCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { draverColor: true }).setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.removed', interaction)}`)
-                        .setDescription(
-                            translator.translate('commands.admins.anonyme.options.bannissements.replies.role.removed', interaction, { channel: pingChan(channel), role: pingRole(role) })
-                        )
+                        basicEmbed(interaction.user, { draverColor: true })
+                            .setTitle(
+                                `${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.removed', interaction)}`
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.options.bannissements.replies.role.removed',
+                                    interaction,
+                                    { channel: pingChan(channel), role: pingRole(role) }
+                                )
+                            )
                     ]
                 })
                 .catch(() => {});
@@ -537,8 +689,16 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                        .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
-                        .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
+                            .setTitle(
+                                translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.anonyme.replies.notAnonymous.description',
+                                    interaction,
+                                    { channel: pingChan(channel) }
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -548,10 +708,17 @@ export default new DraverCommand({
         const confirmation = (await confirm({
             interaction: interaction,
             embed: basicEmbed(interaction.user)
-                .setTitle(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppression.title', interaction))
+                .setTitle(
+                    translator.translate(
+                        'commands.admins.anonyme.options.supprimer.replies.suppression.title',
+                        interaction
+                    )
+                )
                 .setDescription(
                     translator.translate(
-                        'commands.admins.anonyme.options.supprimer.replies.suppression.description', interaction, { channel: pingChan(channel) }
+                        'commands.admins.anonyme.options.supprimer.replies.suppression.description',
+                        interaction,
+                        { channel: pingChan(channel) }
                     )
                 ),
             user: interaction.user
@@ -569,8 +736,19 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppressed.title', interaction))
-                        .setDescription(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppressed.description', interaction, { channel: pingChan(channel) }))
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.anonyme.options.supprimer.replies.suppressed.title',
+                                interaction
+                            )
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.anonyme.options.supprimer.replies.suppressed.description',
+                                interaction,
+                                { channel: pingChan(channel) }
+                            )
+                        )
                 ],
                 components: []
             })

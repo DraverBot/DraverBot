@@ -97,8 +97,8 @@ export default new DraverCommand({
             ]
         },
         {
-            name: "retirer",
-            description: "Retire des niveaux ou des messages à un membre",
+            name: 'retirer',
+            description: 'Retire des niveaux ou des messages à un membre',
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
@@ -109,7 +109,7 @@ export default new DraverCommand({
                 },
                 {
                     name: 'type',
-                    description: "Type du retrait que vous voulez faire",
+                    description: 'Type du retrait que vous voulez faire',
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     choices: [
@@ -137,7 +137,13 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'level'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level', lang: interaction })],
+                embeds: [
+                    replies.moduleDisabled(interaction.user, {
+                        guild: interaction.guild,
+                        module: 'level',
+                        lang: interaction
+                    })
+                ],
                 ephemeral: true
             })
             .catch(() => {});

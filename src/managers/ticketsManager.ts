@@ -809,7 +809,13 @@ export class TicketsManager {
                 if (!modulesManager.enabled(button.guild.id, 'tickets')) {
                     button
                         .reply({
-                            embeds: [replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets', lang: button })],
+                            embeds: [
+                                replies.moduleDisabled(button.user, {
+                                    guild: button.guild,
+                                    module: 'tickets',
+                                    lang: button
+                                })
+                            ],
                             ephemeral: true
                         })
                         .catch(sendError);

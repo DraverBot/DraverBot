@@ -123,7 +123,7 @@ export class ConfigsManager {
         return new Promise(async (resolve) => {
             const tables = await query<{ Tables_in_draver: string }>(`SHOW TABLES`).catch(log4js.trace);
 
-            if (tables && !tables.some((x) => x['Tables_in_draver'] === "configs")) {
+            if (tables && !tables.some((x) => x['Tables_in_draver'] === 'configs')) {
                 await query(
                     `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
                         configsData

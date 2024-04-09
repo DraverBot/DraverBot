@@ -23,7 +23,7 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
     const meta = {
         ...(reason.metadata ?? {}),
         lang: command.interaction
-    }
+    };
     if (integration) {
         systemReply(command.interaction, {
             embeds: [

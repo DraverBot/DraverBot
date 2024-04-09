@@ -61,7 +61,7 @@
                     "description": "Utilisateur auquel vous voulez retirer des {coins}"
                 },
                 "amount": {
-                    "name" :"montant",
+                    "name": "montant",
                     "description": "Montant de {coins} que vous voulez retirer"
                 }
             },

@@ -15,13 +15,17 @@ export default new ButtonHandler({
                 embeds: [
                     basicEmbed(user, { evoker: button.guild })
                         .setTitle(translator.translate('fun.games.mastermind.running.title', button))
-                        .setDescription(
-                            translator.translate('fun.games.mastermind.running.description', button)
-                        )
+                        .setDescription(translator.translate('fun.games.mastermind.running.description', button))
                 ],
                 ephemeral: true,
                 components: [
-                    row(buildButton({ label: translator.translate('fun.games.mastermind.resign.label', button), style: 'Danger', buttonId: 'ResignToCurrentMastermind' }))
+                    row(
+                        buildButton({
+                            label: translator.translate('fun.games.mastermind.resign.label', button),
+                            style: 'Danger',
+                            buttonId: 'ResignToCurrentMastermind'
+                        })
+                    )
                 ]
             })
             .catch(log4js.trace);

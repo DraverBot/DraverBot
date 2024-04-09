@@ -572,8 +572,8 @@ export default new DraverCommand({
                     ctx.customId === 'roles_required'
                         ? 'rôles requis'
                         : ctx.customId === 'denied_roles'
-                        ? 'rôles interdits'
-                        : 'rôles bonus';
+                          ? 'rôles interdits'
+                          : 'rôles bonus';
                 const rep = (await ctx
                     .reply({
                         fetchReply: true,

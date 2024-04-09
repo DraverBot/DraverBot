@@ -4,8 +4,8 @@ import { levelRewardType } from './database';
 export type IfNot<Condition extends boolean, A, B = null> = Condition extends false
     ? A
     : Condition extends true
-    ? B
-    : A;
+      ? B
+      : A;
 
 export type interserver = {
     guild_id: string;

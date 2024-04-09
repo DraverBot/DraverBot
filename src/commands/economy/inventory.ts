@@ -2,7 +2,16 @@ import { shop } from '../../cache/managers';
 import { DraverCommand } from '../../structures/DraverCommand';
 import { preconditions } from 'amethystjs';
 import moduleEnabled from '../../preconditions/moduleEnabled';
-import { basicEmbed, confirm, evokerColor, numerize, paginatorize, pingRole, plurial, subcmd } from '../../utils/toolbox';
+import {
+    basicEmbed,
+    confirm,
+    evokerColor,
+    numerize,
+    paginatorize,
+    pingRole,
+    plurial,
+    subcmd
+} from '../../utils/toolbox';
 import { ApplicationCommandOptionType, EmbedBuilder, GuildMember } from 'discord.js';
 import { InventoryItem } from '../../typings/database';
 import { util } from '../../utils/functions';

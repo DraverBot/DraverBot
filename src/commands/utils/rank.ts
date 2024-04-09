@@ -79,7 +79,12 @@ export default new DraverCommand({
         if (user.bot)
             return interaction
                 .reply({
-                    embeds: [replies.memberBot(interaction.user, { member: interaction.targetMember as GuildMember, lang: interaction })],
+                    embeds: [
+                        replies.memberBot(interaction.user, {
+                            member: interaction.targetMember as GuildMember,
+                            lang: interaction
+                        })
+                    ],
                     ephemeral: true
                 })
                 .catch(log4js.trace);

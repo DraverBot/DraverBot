@@ -129,7 +129,13 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'tickets'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'tickets', lang: interaction })],
+                embeds: [
+                    replies.moduleDisabled(interaction.user, {
+                        guild: interaction.guild,
+                        module: 'tickets',
+                        lang: interaction
+                    })
+                ],
                 ephemeral: true
             })
             .catch(() => {});

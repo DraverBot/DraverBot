@@ -47,7 +47,7 @@ export class LevelsManager {
         guild_id: string;
         user_id: string;
         amount: number;
-        type: 'level' | 'messages'
+        type: 'level' | 'messages';
     }) {
         const has = this.cache.has(this.getCode(code));
         const data: levels<number> = this.cache.get(this.getCode(code)) ?? {
@@ -58,17 +58,17 @@ export class LevelsManager {
         };
 
         if (type === 'level') {
-            data.level = Math.max(0, data.level - amount)
-            data.required = this.computeRequiredMessages(data.level)
-            data.messages = 0
+            data.level = Math.max(0, data.level - amount);
+            data.required = this.computeRequiredMessages(data.level);
+            data.messages = 0;
         } else {
             for (let i = 0; i < amount; i++) {
-                data.messages--
+                data.messages--;
 
                 if (data.messages === 0) {
-                    data.level--
-                    data.messages = this.computeRequiredMessages(data.level)
-                    data.required = this.computeRequiredMessages(data.level)
+                    data.level--;
+                    data.messages = this.computeRequiredMessages(data.level);
+                    data.required = this.computeRequiredMessages(data.level);
                 }
             }
         }

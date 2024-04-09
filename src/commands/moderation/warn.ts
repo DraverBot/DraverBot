@@ -179,7 +179,10 @@ export default new DraverCommand({
             return interaction
                 .reply({
                     embeds: [
-                        replies.memberBot(interaction.user, { member: options.getMember('membre') as GuildMember, lang: interaction })
+                        replies.memberBot(interaction.user, {
+                            member: options.getMember('membre') as GuildMember,
+                            lang: interaction
+                        })
                     ],
                     ephemeral: true
                 })
@@ -271,7 +274,10 @@ export default new DraverCommand({
             return interaction
                 .reply({
                     embeds: [
-                        replies.memberBot(interaction.user, { member: options.getMember('membre') as GuildMember, lang: interaction })
+                        replies.memberBot(interaction.user, {
+                            member: options.getMember('membre') as GuildMember,
+                            lang: interaction
+                        })
                     ],
                     ephemeral: true
                 })

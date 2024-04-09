@@ -30,22 +30,33 @@ log4js.config('onLog', () => client.debug('Got a Log4JS log', DebugImportance.Un
 if (process.env.password?.length > 1) {
     const webhook = new WebhookClient({
         url: process.env.translateErrorWebhook
-    })
+    });
     const logError = (error: TranslateError) => {
         if (webhook) {
-            webhook.send({
-                embeds: [new EmbedBuilder().setTimestamp().setFooter({ text: 'Translate error' }).setColor('Red').setTitle("Translate error").setFields({
-                    name: 'Message',
-                    value: error.message
-                }).setDescription(`Langue : \`${error.data.lang}\`\nChemin complet: \`${error.data.full}\`\nCaractère invalide: \`${error.data.erroring}\``)
-            ]
-            }).catch(log4js.trace)
+            webhook
+                .send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTimestamp()
+                            .setFooter({ text: 'Translate error' })
+                            .setColor('Red')
+                            .setTitle('Translate error')
+                            .setFields({
+                                name: 'Message',
+                                value: error.message
+                            })
+                            .setDescription(
+                                `Langue : \`${error.data.lang}\`\nChemin complet: \`${error.data.full}\`\nCaractère invalide: \`${error.data.erroring}\``
+                            )
+                    ]
+                })
+                .catch(log4js.trace);
         }
-    }
+    };
 
     process.on('uncaughtException', (error, listener) => {
         if (error instanceof TranslateError) {
-            logError(error)
+            logError(error);
         }
         console.log(`Error: ${error} at ${listener} listener`);
     });
@@ -54,7 +65,7 @@ if (process.env.password?.length > 1) {
     });
     process.on('unhandledRejection', (error, promise) => {
         if (error instanceof TranslateError) {
-            logError(error)
+            logError(error);
         }
         console.log(`Error: ${error} at ${JSON.stringify(promise, null, 4)}`);
     });

@@ -64,17 +64,20 @@ const replies = {
         const { missing } = metadata.permissions;
 
         return basic(user)
-            .setTitle(
-                translator.translate('contents.global.embeds.clientMissingPerms.title', metadata.lang)
-            )
+            .setTitle(translator.translate('contents.global.embeds.clientMissingPerms.title', metadata.lang))
             .setDescription(
-                missing.length === 1 ? 
-                    translator.translate('contents.global.embeds.clientMissingPerms.alone', metadata.lang, {
-                        permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
-                    }) :
-                    translator.translate('contents.global.embeds.clientMissingPerms.multiple', metadata.lang, {
-                        permissions: missing.map((permString) => `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``).join(' ')
-                    })
+                missing.length === 1
+                    ? translator.translate('contents.global.embeds.clientMissingPerms.alone', metadata.lang, {
+                          permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
+                      })
+                    : translator.translate('contents.global.embeds.clientMissingPerms.multiple', metadata.lang, {
+                          permissions: missing
+                              .map(
+                                  (permString) =>
+                                      `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``
+                              )
+                              .join(' ')
+                      })
             )
             .setColor(evokerColor(metadata.guild));
     },
@@ -87,13 +90,18 @@ const replies = {
         return basic(user)
             .setTitle(translator.translate('contents.global.embeds.userMissingPerms.title', metadata.lang))
             .setDescription(
-                missing.length === 1 ? 
-                    translator.translate('contents.global.embeds.userMissingPerms.alone', metadata.lang, {
-                        permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
-                    }) :
-                    translator.translate('contents.global.embeds.userMissingPerms.multiple', metadata.lang, {
-                        permissions: missing.map((permString) => `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``).join(' ')
-                    })
+                missing.length === 1
+                    ? translator.translate('contents.global.embeds.userMissingPerms.alone', metadata.lang, {
+                          permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
+                      })
+                    : translator.translate('contents.global.embeds.userMissingPerms.multiple', metadata.lang, {
+                          permissions: missing
+                              .map(
+                                  (permString) =>
+                                      `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``
+                              )
+                              .join(' ')
+                      })
             )
             .setColor(evokerColor(metadata.guild));
     },
@@ -107,7 +115,10 @@ const replies = {
             )
             .setColor(evokerColor(metadata.guild));
     },
-    moduleDisabled: (user: User, { guild, module, lang }: { guild: Guild; module: moduleType; lang: langResolvable }) => {
+    moduleDisabled: (
+        user: User,
+        { guild, module, lang }: { guild: Guild; module: moduleType; lang: langResolvable }
+    ) => {
         const embed = basic(user)
             .setTitle(translator.translate('contents.global.embeds.moduleDisabled.title', lang))
             .setColor(evokerColor(guild));
@@ -121,9 +132,11 @@ const replies = {
                 })
             );
         } else {
-            embed.setDescription(translator.translate('contents.global.embeds.moduleDisabled.description', lang, {
-                module: moduleText
-            }))
+            embed.setDescription(
+                translator.translate('contents.global.embeds.moduleDisabled.description', lang, {
+                    module: moduleText
+                })
+            );
         }
         modules.set(user.id, times + 1);
         return embed;
@@ -135,42 +148,62 @@ const replies = {
             .setDescription(translator.translate('contents.global.embeds.invalidProof.description', lang));
     },
     cancel: (lang: langResolvable) => {
-        return new EmbedBuilder().setTitle(translator.translate('contents.global.embeds.canceled.title', lang)).setColor('Yellow');
+        return new EmbedBuilder()
+            .setTitle(translator.translate('contents.global.embeds.canceled.title', lang))
+            .setColor('Yellow');
     },
     mysqlError: (user: User, metadata: { guild?: Guild; lang: langResolvable }) => {
-        const embed = basic(user).setColor(evokerColor(metadata.guild)).setTitle(translator.translate('contents.global.embeds.mysqlError.title', metadata.lang));
+        const embed = basic(user)
+            .setColor(evokerColor(metadata.guild))
+            .setTitle(translator.translate('contents.global.embeds.mysqlError.title', metadata.lang));
 
         if (errors.has(user.id) && errors.get(user.id) > 3) {
-            embed.setDescription(translator.translate('contents.global.embeds.mysqlError.fullDescription', metadata.lang))
+            embed.setDescription(
+                translator.translate('contents.global.embeds.mysqlError.fullDescription', metadata.lang)
+            );
         } else {
-            embed.setDescription(translator.translate('contents.global.embeds.mysqlError.description', metadata.lang))
+            embed.setDescription(translator.translate('contents.global.embeds.mysqlError.description', metadata.lang));
         }
-        
+
         errors.set(user.id, (errors.get(user.id) ?? 0) + 1);
-        return embed
+        return embed;
     },
     memberOwner: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
             .setTitle(translator.translate('contents.global.embeds.memberOwner.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.memberOwner.description', lang, { member: pingUser(member) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.memberOwner.description', lang, {
+                    member: pingUser(member)
+                })
+            );
     },
     memberBot: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
             .setTitle(translator.translate('contents.global.embeds.memberBot.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.memberBot.description', lang, { member: pingUser(member) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.memberBot.description', lang, { member: pingUser(member) })
+            );
     },
     memberTooHigh: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
             .setTitle(translator.translate('contents.global.embeds.memberTooHigh.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.memberTooHigh.description', lang, { member: pingUser(member) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.memberTooHigh.description', lang, {
+                    member: pingUser(member)
+                })
+            );
     },
     memberTooHighClient: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setTitle(translator.translate('contents.global.embeds.memberTooHighClient.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.memberTooHighClient.description', lang, { member: pingUser(member) }))
+            .setDescription(
+                translator.translate('contents.global.embeds.memberTooHighClient.description', lang, {
+                    member: pingUser(member)
+                })
+            )
             .setColor(evokerColor(member.guild));
     },
     notEnoughCoins: (user: GuildMember, target = user) => {

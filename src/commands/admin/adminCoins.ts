@@ -79,7 +79,13 @@ export default new DraverCommand({
         return interaction
             .reply({
                 ephemeral: true,
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy', lang: interaction })]
+                embeds: [
+                    replies.moduleDisabled(interaction.user, {
+                        guild: interaction.guild,
+                        module: 'economy',
+                        lang: interaction
+                    })
+                ]
             })
             .catch(log4js.trace);
 
@@ -88,18 +94,29 @@ export default new DraverCommand({
     if (subcommand === 'réinitialiser') {
         const user = options.getUser('utilisateur');
 
-        const confirm = (await interaction.reply({
-            embeds: [
-                basicEmbed(interaction.user)
-                    .setColor('Grey')
-                    .setTitle(translator.translate('commands.admins.coins.options.reset.replies.confirm.title', interaction))
-                    .setDescription(
-                        translator.translate(`commands.admins.coins.options.reset.replies.confirm.${!!user ? 'user' : 'server'}`, interaction, { user: pingUser(user) })
-                    )
-            ],
-            components: [yesNoRow()],
-            fetchReply: true
-        }).catch(log4js.trace)) as Message<true>;
+        const confirm = (await interaction
+            .reply({
+                embeds: [
+                    basicEmbed(interaction.user)
+                        .setColor('Grey')
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.coins.options.reset.replies.confirm.title',
+                                interaction
+                            )
+                        )
+                        .setDescription(
+                            translator.translate(
+                                `commands.admins.coins.options.reset.replies.confirm.${!!user ? 'user' : 'server'}`,
+                                interaction,
+                                { user: pingUser(user) }
+                            )
+                        )
+                ],
+                components: [yesNoRow()],
+                fetchReply: true
+            })
+            .catch(log4js.trace)) as Message<true>;
 
         const rep = await waitForInteraction({
             componentType: ComponentType.Button,
@@ -141,9 +158,17 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.coins.options.reset.replies.resetted.title', interaction))
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.coins.options.reset.replies.resetted.title',
+                                interaction
+                            )
+                        )
                         .setDescription(
-                            translator.translate(`commands.admins.coins.options.reset.replies.resetted.${!!user ? 'user' : 'server'}`, interaction)
+                            translator.translate(
+                                `commands.admins.coins.options.reset.replies.resetted.${!!user ? 'user' : 'server'}`,
+                                interaction
+                            )
                         )
                 ],
                 components: []
@@ -157,8 +182,12 @@ export default new DraverCommand({
         const place = (await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user)
-                    .setTitle(translator.translate('commands.admins.coins.options.add.replies.place.title', interaction))
-                    .setDescription(translator.translate('commands.admins.coins.options.add.replies.place.description', interaction))
+                    .setTitle(
+                        translator.translate('commands.admins.coins.options.add.replies.place.title', interaction)
+                    )
+                    .setDescription(
+                        translator.translate('commands.admins.coins.options.add.replies.place.description', interaction)
+                    )
                     .setColor('Grey')
             ],
             fetchReply: true,
@@ -180,7 +209,10 @@ export default new DraverCommand({
                 })
                 .catch(() => {});
 
-        const endroit = translator.translate(`commands.admins.coins.places.${reply.customId === 'coins.pocket' ? 'pocket' : 'bank'}`, interaction);
+        const endroit = translator.translate(
+            `commands.admins.coins.places.${reply.customId === 'coins.pocket' ? 'pocket' : 'bank'}`,
+            interaction
+        );
 
         reply.deferUpdate().catch(log4js.trace);
         const confirmation = await confirm({
@@ -229,13 +261,19 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.coins.options.add.replies.added.title', interaction))
+                        .setTitle(
+                            translator.translate('commands.admins.coins.options.add.replies.added.title', interaction)
+                        )
                         .setDescription(
-                            translator.translate('commands.admins.coins.options.add.replies.added.description', interaction, {
-                                amount,
-                                user: pingUser(user),
-                                author: pingUser(interaction.user)
-                            })
+                            translator.translate(
+                                'commands.admins.coins.options.add.replies.added.description',
+                                interaction,
+                                {
+                                    amount,
+                                    user: pingUser(user),
+                                    author: pingUser(interaction.user)
+                                }
+                            )
                         )
                 ],
                 components: []
@@ -249,8 +287,15 @@ export default new DraverCommand({
         const place = (await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user)
-                    .setTitle(translator.translate('commands.admins.coins.options.remove.replies.place.title', interaction))
-                    .setDescription(translator.translate('commands.admins.coins.options.remove.replies.place.description', interaction))
+                    .setTitle(
+                        translator.translate('commands.admins.coins.options.remove.replies.place.title', interaction)
+                    )
+                    .setDescription(
+                        translator.translate(
+                            'commands.admins.coins.options.remove.replies.place.description',
+                            interaction
+                        )
+                    )
                     .setColor('Grey')
             ],
             fetchReply: true,
@@ -273,19 +318,28 @@ export default new DraverCommand({
                 .catch(() => {});
 
         await reply.deferUpdate().catch(log4js.trace);
-        const endroit = translator.translate(`commands.admins.coins.places.${reply.customId === 'coins.pocket' ? 'pocket' : 'bank'}`, interaction);
+        const endroit = translator.translate(
+            `commands.admins.coins.places.${reply.customId === 'coins.pocket' ? 'pocket' : 'bank'}`,
+            interaction
+        );
 
         const confirmation = await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle(translator.translate('commands.admins.coins.options.remove.replies.confirm.title', interaction))
+                .setTitle(
+                    translator.translate('commands.admins.coins.options.remove.replies.confirm.title', interaction)
+                )
                 .setDescription(
-                    translator.translate('commands.admins.coins.options.remove.replies.confirm.description', interaction, {
-                        amount,
-                        user: pingUser(user),
-                        place: endroit
-                    })
+                    translator.translate(
+                        'commands.admins.coins.options.remove.replies.confirm.description',
+                        interaction,
+                        {
+                            amount,
+                            user: pingUser(user),
+                            place: endroit
+                        }
+                    )
                 )
         });
 
@@ -339,13 +393,22 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.coins.options.remove.replies.removed.title', interaction))
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.coins.options.remove.replies.removed.title',
+                                interaction
+                            )
+                        )
                         .setDescription(
-                            translator.translate('commands.admins.coins.options.remove.replies.removed.description', interaction, {
-                                amount,
-                                user: pingUser(user),
-                                author: pingUser(interaction.user)
-                            })
+                            translator.translate(
+                                'commands.admins.coins.options.remove.replies.removed.description',
+                                interaction,
+                                {
+                                    amount,
+                                    user: pingUser(user),
+                                    author: pingUser(interaction.user)
+                                }
+                            )
                         )
                 ],
                 components: []
@@ -363,12 +426,27 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setDescription(translator.translate('commands.admins.coins.options.voir.info.description', interaction, { user: pingUser(user) }))
+                        .setDescription(
+                            translator.translate('commands.admins.coins.options.voir.info.description', interaction, {
+                                user: pingUser(user)
+                            })
+                        )
                         .setTitle(translator.translate('commands.admins.coins.options.voir.info.title', interaction))
                         .setFields(
-                            [["pocket", stats.coins], ["bank", stats.bank], ["total", stats.coins + stats.bank]].map(([k, count]) => ({
-                                name: translator.translate(`commands.admins.coins.options.voir.info.fields.${k}.name`, interaction),
-                                value: translator.translate(`commands.admins.coins.options.voir.info.fields.${k}.value`, interaction, { count }),
+                            [
+                                ['pocket', stats.coins],
+                                ['bank', stats.bank],
+                                ['total', stats.coins + stats.bank]
+                            ].map(([k, count]) => ({
+                                name: translator.translate(
+                                    `commands.admins.coins.options.voir.info.fields.${k}.name`,
+                                    interaction
+                                ),
+                                value: translator.translate(
+                                    `commands.admins.coins.options.voir.info.fields.${k}.value`,
+                                    interaction,
+                                    { count }
+                                ),
                                 inline: true
                             }))
                         )

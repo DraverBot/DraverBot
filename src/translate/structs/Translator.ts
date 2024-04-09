@@ -25,31 +25,36 @@ export class Translator {
                     full: key,
                     lang,
                     erroring: section
-                })
-                value = null
-                break
+                });
+                value = null;
+                break;
             }
         }
 
-        return value
+        return value;
     }
-    public commandData(key: string): { name: string; description: string; nameLocalizations: LocalizationMap; descriptionLocalizations: LocalizationMap; } {
-        const defaultSet = this.resolve(key, this.defaultLang)
+    public commandData(key: string): {
+        name: string;
+        description: string;
+        nameLocalizations: LocalizationMap;
+        descriptionLocalizations: LocalizationMap;
+    } {
+        const defaultSet = this.resolve(key, this.defaultLang);
         const data = {
             name: defaultSet.name,
             description: defaultSet.description,
             nameLocalizations: {},
             descriptionLocalizations: {}
-        }
+        };
 
         Object.keys(this.dict).forEach((lang) => {
-            const set = this.resolve(key, lang)
-            
-            data.nameLocalizations[lang] = set.name
-            data.descriptionLocalizations[lang] = set.description
-        })
+            const set = this.resolve(key, lang);
 
-        return data
+            data.nameLocalizations[lang] = set.name;
+            data.descriptionLocalizations[lang] = set.description;
+        });
+
+        return data;
     }
     public resolveLang(resolvable: langResolvable): string {
         if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
@@ -59,14 +64,14 @@ export class Translator {
     public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
         const translation = this.resolveLang(lang);
 
-        const value = this.resolve(key, translation)
+        const value = this.resolve(key, translation);
         if (!value || value instanceof Object) {
-            throw new TranslateError("Invalid path", {
+            throw new TranslateError('Invalid path', {
                 full: key,
                 erroring: 'Unknown',
                 lang: translation
-            })
-        };
+            });
+        }
 
         const content = ((input: string) => {
             const regexes = Object.entries(opts)
@@ -81,16 +86,16 @@ export class Translator {
         return content;
     }
     private get includedRegexes(): [RegExp, string][] {
-        return [[/{coins}/g, util('coins')]]
+        return [[/{coins}/g, util('coins')]];
     }
 
     private start() {
         readdirSync(this.join('langs')).forEach((lang) => {
-            if (!this.dict[lang]) this.dict[lang] = {}
+            if (!this.dict[lang]) this.dict[lang] = {};
             readdirSync(this.join('langs', lang)).forEach((folder) => {
-                if (!this.dict[lang][folder]) this.dict[lang][folder] = {}
+                if (!this.dict[lang][folder]) this.dict[lang][folder] = {};
                 readdirSync(this.join('langs', lang, folder)).forEach((subFolder) => {
-                    if (!this.dict[lang][folder][subFolder]) this.dict[lang][folder][subFolder] = {}
+                    if (!this.dict[lang][folder][subFolder]) this.dict[lang][folder][subFolder] = {};
                     readdirSync(this.join('langs', lang, folder, subFolder)).forEach((fileName) => {
                         const content = require(`../langs/${lang}/${folder}/${subFolder}/${fileName}`);
 

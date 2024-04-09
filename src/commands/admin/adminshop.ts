@@ -164,8 +164,8 @@ export default new DraverCommand({
                                 type === 'item'
                                     ? "qu'objet"
                                     : type === 'role'
-                                    ? `que rôle, associé avec le rôle ${pingRole(role.id)},`
-                                    : ''
+                                      ? `que rôle, associé avec le rôle ${pingRole(role.id)},`
+                                      : ''
                             } avec un stock ${quantity === 0 ? 'infini' : `de ${numerize(quantity)}`}\n${hint(
                                 `Vous pouvez à tout moment modifier un item avec la commande \`/adminmagasin modifier\``
                             )}`

@@ -47,7 +47,13 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, types[top]))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { lang: interaction, guild: interaction.guild, module: types[top] })],
+                embeds: [
+                    replies.moduleDisabled(interaction.user, {
+                        lang: interaction,
+                        guild: interaction.guild,
+                        module: types[top]
+                    })
+                ],
                 ephemeral: true
             })
             .catch(() => {});
@@ -56,8 +62,8 @@ export default new DraverCommand({
         top === 'monnaie'
             ? coinsManager.getLeaderboard(interaction.guild.id)
             : top === 'invitations'
-            ? invitesManager.getLeaderboard(interaction.guild.id).toJSON()
-            : levelsManager.leaderboard(interaction.guild.id).toJSON();
+              ? invitesManager.getLeaderboard(interaction.guild.id).toJSON()
+              : levelsManager.leaderboard(interaction.guild.id).toJSON();
 
     const map = (embed: EmbedBuilder, data: any) => {
         const index = leaderboard.indexOf(data as any);
@@ -69,8 +75,8 @@ export default new DraverCommand({
                 top === 'niveaux'
                     ? `Niveau ${numerize(dt.level)}`
                     : top === 'monnaie'
-                    ? `${numerize(dt.coins + dt.bank)} ${util('coins')}`
-                    : `${dt.total - (dt.fakes + dt.leaves)} invitation${plurial(dt.total - (dt.fakes + dt.leaves))}`
+                      ? `${numerize(dt.coins + dt.bank)} ${util('coins')}`
+                      : `${dt.total - (dt.fakes + dt.leaves)} invitation${plurial(dt.total - (dt.fakes + dt.leaves))}`
             }`,
             inline: false
         });

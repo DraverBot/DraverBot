@@ -23,7 +23,7 @@ export class AnonymousValue {
 
     private async build() {
         this.guild = this.client.guilds.cache.get(this._data.guild_id);
-        if (!this.guild) return
+        if (!this.guild) return;
 
         this.channel = this.guild.channels.cache.get(this._data.channel_id) as TextChannel;
         this.webhook = new WebhookClient({ url: this._data.webhook_url });
@@ -143,7 +143,8 @@ export class AnonymousManager {
 
                 return;
             }
-            value.webhook?.send?.({
+            value.webhook
+                ?.send?.({
                     content: message.content,
                     allowedMentions: {
                         parse: []
@@ -182,7 +183,7 @@ export class AnonymousManager {
     }
     private async fillCache() {
         const datas = await query<AnonymousDataType>(`SELECT * FROM ${DatabaseTables.Anonymous}`);
-        await this.client.guilds.fetch().catch(log4js.trace)
+        await this.client.guilds.fetch().catch(log4js.trace);
 
         this._values.clear();
         datas.forEach((data) => {

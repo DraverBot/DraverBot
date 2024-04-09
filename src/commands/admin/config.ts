@@ -446,14 +446,14 @@ export default new DraverCommand({
                                 parameter.type === 'channel'
                                     ? pingChan(value as string)
                                     : parameter.type === 'role'
-                                    ? pingRole(value as string)
-                                    : parameter.type === 'image'
-                                    ? 'cette image'
-                                    : parameter.type === 'boolean'
-                                    ? value
-                                        ? 'activé'
-                                        : 'désactivé'
-                                    : '```' + value + '```'
+                                      ? pingRole(value as string)
+                                      : parameter.type === 'image'
+                                        ? 'cette image'
+                                        : parameter.type === 'boolean'
+                                          ? value
+                                              ? 'activé'
+                                              : 'désactivé'
+                                          : '```' + value + '```'
                             }${
                                 parameter.value.includes('radius')
                                     ? `\n⚠️\n> Si le rayon que vous avez définit est trop grand, l'image ne sera pas envoyée`
@@ -501,8 +501,8 @@ export default new DraverCommand({
                                 parameter.type === 'boolean'
                                     ? capitalize(value ? 'activé' : 'désactivé')
                                     : parameter.type === 'channel'
-                                    ? pingChan(value as string)
-                                    : `\`\`\`${value}\`\`\``,
+                                      ? pingChan(value as string)
+                                      : `\`\`\`${value}\`\`\``,
                             inline: false
                         })
                 ]
@@ -541,12 +541,12 @@ export default new DraverCommand({
                                 ? parameter.type === 'number'
                                     ? numerize(parseInt(value as string))
                                     : parameter.type === 'boolean'
-                                    ? value
-                                        ? 'activé'
-                                        : 'désactivé'
-                                    : parameter.type === 'channel'
-                                    ? pingChan(value as string)
-                                    : `\`\`\`${value}\`\`\``
+                                      ? value
+                                          ? 'activé'
+                                          : 'désactivé'
+                                      : parameter.type === 'channel'
+                                        ? pingChan(value as string)
+                                        : `\`\`\`${value}\`\`\``
                                 : 'N/A',
                         inline: parameter.type === 'string' ? false : true
                     }

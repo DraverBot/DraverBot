@@ -68,7 +68,13 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'economy'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy', lang: interaction })],
+                embeds: [
+                    replies.moduleDisabled(interaction.user, {
+                        guild: interaction.guild,
+                        module: 'economy',
+                        lang: interaction
+                    })
+                ],
                 ephemeral: true
             })
             .catch(() => {});

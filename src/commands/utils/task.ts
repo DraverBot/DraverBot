@@ -578,18 +578,18 @@ export default new DraverCommand({
                               task.data.description
                           }`
                         : task.data.state === 'pending'
-                        ? `En attente\n${task.data.description}${
-                              notNull(task.data.deadline) && task.data.deadline > 0
-                                  ? `\nÀ finir avant ${displayDate(task.data.deadline)}`
-                                  : ''
-                          }`
-                        : `En traitement (${numerize(task.data.assignees.length)} assigné${plurial(
-                              task.data.assignees
-                          )})\n${task.data.description}${
-                              notNull(task.data.deadline) && task.data.deadline > 0
-                                  ? `\nÀ finir avant ${displayDate(task.data.deadline)}`
-                                  : ''
-                          }`,
+                          ? `En attente\n${task.data.description}${
+                                notNull(task.data.deadline) && task.data.deadline > 0
+                                    ? `\nÀ finir avant ${displayDate(task.data.deadline)}`
+                                    : ''
+                            }`
+                          : `En traitement (${numerize(task.data.assignees.length)} assigné${plurial(
+                                task.data.assignees
+                            )})\n${task.data.description}${
+                                notNull(task.data.deadline) && task.data.deadline > 0
+                                    ? `\nÀ finir avant ${displayDate(task.data.deadline)}`
+                                    : ''
+                            }`,
                     length: 1024
                 }),
                 inline: false
@@ -622,10 +622,10 @@ export default new DraverCommand({
             task.data.state === 'closed'
                 ? color('taskClosed')
                 : task.data.state === 'done'
-                ? color('taskDone')
-                : task.data.state === 'pending'
-                ? color('taskPending')
-                : color('taskWorking');
+                  ? color('taskDone')
+                  : task.data.state === 'pending'
+                    ? color('taskPending')
+                    : color('taskWorking');
 
         const states: Record<taskState, string> = {
             closed: 'fermée',

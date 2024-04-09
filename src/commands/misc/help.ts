@@ -56,10 +56,10 @@ export default new DraverCommand({
                                 (opt as { required?: boolean })?.required === true
                                     ? 'requis'
                                     : (opt as { required?: boolean })?.required === false
-                                    ? 'optionnel'
-                                    : opt
-                                    ? 'sous-commande'
-                                    : 'sous-commande'
+                                      ? 'optionnel'
+                                      : opt
+                                        ? 'sous-commande'
+                                        : 'sous-commande'
                             }**`
                     )
                     ?.join('\n') ?? '';
@@ -248,8 +248,8 @@ export default new DraverCommand({
                                                     x.required === true
                                                         ? 'requis'
                                                         : x.required === false
-                                                        ? 'optionnel'
-                                                        : 'sous-commande'
+                                                          ? 'optionnel'
+                                                          : 'sous-commande'
                                                 }**`
                                         )
                                         ?.join('\n') ?? "Pas d'options"
@@ -345,7 +345,12 @@ export default new DraverCommand({
         }
         if (!(ctx.member as GuildMember).permissions.has('Administrator')) {
             ctx.reply({
-                embeds: [replies.userMissingPermissions(ctx.user, { lang: interaction, permissions: { missing: ['Administrator'] } })],
+                embeds: [
+                    replies.userMissingPermissions(ctx.user, {
+                        lang: interaction,
+                        permissions: { missing: ['Administrator'] }
+                    })
+                ],
                 ephemeral: true
             }).catch(log4js.trace);
             return;

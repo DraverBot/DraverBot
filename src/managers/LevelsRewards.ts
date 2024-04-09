@@ -20,8 +20,8 @@ export class LevelsRewards {
         return resolvable instanceof Guild
             ? resolvable.id
             : resolvable instanceof BaseInteraction || resolvable instanceof GuildMember
-            ? resolvable.guild.id
-            : resolvable;
+              ? resolvable.guild.id
+              : resolvable;
     }
     public getRewards(guild: guildResolvable) {
         const id = this.getGuild(guild);
