@@ -137,7 +137,7 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'level'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
+                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level', lang: interaction })],
                 ephemeral: true
             })
             .catch(() => {});
@@ -224,7 +224,7 @@ export default new DraverCommand({
             if (ctx.customId === 'cancel') {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);
@@ -339,7 +339,7 @@ export default new DraverCommand({
             } else if (reason !== 'cancel') {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);
@@ -393,7 +393,7 @@ export default new DraverCommand({
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -449,7 +449,7 @@ export default new DraverCommand({
         if (validation === 'cancel' || !validation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -511,7 +511,7 @@ export default new DraverCommand({
         if (validation === 'cancel' || !validation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

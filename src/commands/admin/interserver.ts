@@ -139,7 +139,7 @@ export default new DraverCommand({
         if (!reply)
             return interaction.editReply({
                 components: [],
-                embeds: [replies.cancel()]
+                embeds: [replies.cancel(interaction)]
             });
 
         let frequence = undefined;
@@ -176,7 +176,7 @@ export default new DraverCommand({
             if (!modalResult)
                 interaction.editReply({
                     components: [],
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(reply)]
                 });
 
             frequence = modalResult.fields.getTextInputValue('frequence-field');
@@ -243,7 +243,7 @@ export default new DraverCommand({
         if (validated === 'cancel' || !validated?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

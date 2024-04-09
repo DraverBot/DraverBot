@@ -20,12 +20,16 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
 
     if (!reason.metadata?.guild && command.interaction?.guild) reason.metadata.guild = command.interaction.guild;
 
+    const meta = {
+        ...(reason.metadata ?? {}),
+        lang: command.interaction
+    }
     if (integration) {
         systemReply(command.interaction, {
             embeds: [
                 (replies[integration.value] as (user: User, metadata: any) => EmbedBuilder)(
                     command.interaction.user,
-                    reason.metadata
+                    meta
                 )
             ],
             ephemeral: true,
@@ -34,7 +38,7 @@ export default new AmethystEvent('commandDenied', (command, reason) => {
         return;
     }
 
-    const reply = replies[reason.metadata?.replyKey](command.interaction?.user, reason.metadata ?? {});
+    const reply = replies[reason.metadata?.replyKey](command.interaction?.user, meta ?? {});
     systemReply(command.interaction, {
         embeds: [reply],
         ephemeral: true,

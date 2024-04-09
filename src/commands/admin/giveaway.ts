@@ -459,7 +459,7 @@ export default new DraverCommand({
             if (ctx.customId === 'cancel') {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -539,7 +539,7 @@ export default new DraverCommand({
 
                 hasCurrentAction = false;
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
-                    ctx.editReply({ embeds: [replies.cancel()] }).catch(() => {});
+                    ctx.editReply({ embeds: [replies.cancel(interaction)] }).catch(() => {});
                     setDeleteTmst();
                     reedit();
                     return;
@@ -601,7 +601,7 @@ export default new DraverCommand({
                 hasCurrentAction = false;
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     }).catch(() => {});
                     setDeleteTmst();
 
@@ -708,7 +708,7 @@ export default new DraverCommand({
                 if (!reply || reply.content === 'cancel') {
                     interaction
                         .editReply({
-                            embeds: [replies.cancel()]
+                            embeds: [replies.cancel(interaction)]
                         })
                         .catch(() => {});
                     reedit();
@@ -757,7 +757,7 @@ export default new DraverCommand({
 
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     }).catch(() => {});
                     reedit();
                     setDeleteTmst();
@@ -805,7 +805,7 @@ export default new DraverCommand({
                 if (reply.deletable) reply.delete().catch(() => {});
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     }).catch(() => {});
                     reedit();
                     setDeleteTmst();
@@ -843,7 +843,7 @@ export default new DraverCommand({
                 if (reply.deletable) reply.delete().catch(() => {});
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     }).catch(() => {});
                     reedit();
                     setDeleteTmst();
@@ -890,7 +890,7 @@ export default new DraverCommand({
                 if (reply.deletable) reply.delete().catch(() => {});
                 if (!reply || reply.content.toLowerCase() === 'cancel') {
                     ctx.editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     }).catch(() => {});
                     reedit();
                     setDeleteTmst();
@@ -915,7 +915,7 @@ export default new DraverCommand({
             if (!['sent', 'canceled'].includes(reason)) {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -1131,7 +1131,7 @@ export default new DraverCommand({
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -1213,7 +1213,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -1284,7 +1284,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

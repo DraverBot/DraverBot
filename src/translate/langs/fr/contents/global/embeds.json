@@ -6,5 +6,43 @@
     "noRole": {
         "title": "Rôle introuvable",
         "description": "Je n'ai pas pu trouver le rôle.\nRéessayez la commande avec un identifiant ou une mention."
+    },
+    "guildOnly": {
+        "title": "❌ Serveur uniquement",
+        "description": "Cette commande n'est disponible que sur un serveur"
+    },
+    "DMOnly": {
+        "title": "❌ Messages privés uniquement",
+        "description": "Cette commande n'est disponible qu'n messages privés"
+    },
+    "clientMissingPerms": {
+        "title": "❌ Permissions insuffisantes",
+        "description": {
+            "alone": "Je n'ai pas les permissions nécessaires pour exécuter cette commande.\nVérifiez que j'ai bien la permission {permission}",
+            "multiple": "Je n'ai pas les permissions nécessaires pour exécuter cette commande.\nVérifiez que j'ai bien les permissions {permissions}"
+        }
+    },
+    "userMissingPerms": {
+        "title": "❌ Permissions insuffisantes",
+        "description": {
+            "alone": "Vous n'avez pas les permissions nécessaires pour exécuter cette commande.\nVérifiez que vous ayez bien la permission {permission}",
+            "multiple": "Vous n'avez pas les permissions nécessaires pour exécuter cette commande.\nVérifiez que vous ayez bien les permissions {permissions}"
+        }
+    },
+    "underCooldown": {
+        "title": "❌ Cooldown",
+        "description": "Vous êtes sous cooldown.\nMerci de patienter encore **{cooldown}**"
+    },
+    "moduleDisabled": {
+        "title": "❌ Module désactivé",
+        "description": "Le module {module} est désactivé",
+        "fullDescription": "Le module {module} est désactivé\n\n💡\n> Pour activer un module, utilisez la commande `/module configurer`"
+    },
+    "invalidProof": {
+        "title": "❌ Preuve invalide",
+        "description": "Désolé, les preuves doivent être sous format **image**"
+    },
+    "canceled": {
+        "title": "💡 Annulé"
     }
 }

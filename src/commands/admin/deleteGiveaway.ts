@@ -35,7 +35,7 @@ export default new DraverCommand({
     }).catch(log4js.trace);
 
     if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
-        return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+        return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
     await confirmation.interaction.deferUpdate().catch(log4js.trace);
 
     const deletion = giveaways.deleteGiveaway(message.id).catch(log4js.trace);

@@ -23,7 +23,7 @@ export default new ButtonHandler({
     if (confirmation === 'cancel' || !confirmation?.value)
         return button
             .editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(button)],
                 components: []
             })
             .catch(sendError);

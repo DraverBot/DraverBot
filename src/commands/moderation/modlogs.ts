@@ -401,7 +401,7 @@ export default new DraverCommand({
             return interaction
                 .editReply({
                     components: [],
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(interaction)]
                 })
                 .catch(() => {});
 

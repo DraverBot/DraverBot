@@ -578,7 +578,7 @@ export default new DraverCommand({
             } else {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -600,7 +600,7 @@ export default new DraverCommand({
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

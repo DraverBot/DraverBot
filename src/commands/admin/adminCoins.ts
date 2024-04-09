@@ -79,7 +79,7 @@ export default new DraverCommand({
         return interaction
             .reply({
                 ephemeral: true,
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' })]
+                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy', lang: interaction })]
             })
             .catch(log4js.trace);
 
@@ -111,7 +111,7 @@ export default new DraverCommand({
         if (!rep || rep.customId === 'no')
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -175,7 +175,7 @@ export default new DraverCommand({
         if (!reply)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -199,7 +199,7 @@ export default new DraverCommand({
 
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction.editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(reply)],
                 components: []
             });
 
@@ -267,7 +267,7 @@ export default new DraverCommand({
         if (!reply)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -291,7 +291,7 @@ export default new DraverCommand({
 
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction.editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(reply)],
                 components: []
             });
 

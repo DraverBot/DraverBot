@@ -74,7 +74,7 @@ export default new DraverCommand({
                 subcommands.splice(0);
                 (
                     cmd.options.options.find((x) => x.name === subcommandGroup) as ApplicationCommandSubCommandData
-                ).options.forEach((opt) => subcommands.push(opt));
+                ).options.forEach((opt) => subcommands.push(opt as any));
             }
 
             const selector = new StringSelectMenuBuilder()
@@ -263,7 +263,7 @@ export default new DraverCommand({
 
         collector.on('end', () => {
             interaction.editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(interaction)],
                 components: []
             });
         });
@@ -338,14 +338,14 @@ export default new DraverCommand({
         if (!ctx.isButton()) return;
         if (ctx.user.id != interaction.user.id) {
             ctx.reply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(ctx)],
                 ephemeral: true
             }).catch(log4js.trace);
             return;
         }
         if (!(ctx.member as GuildMember).permissions.has('Administrator')) {
             ctx.reply({
-                embeds: [replies.userMissingPermissions(ctx.user, { permissions: { missing: ['Administrator'] } })],
+                embeds: [replies.userMissingPermissions(ctx.user, { lang: interaction, permissions: { missing: ['Administrator'] } })],
                 ephemeral: true
             }).catch(log4js.trace);
             return;
@@ -380,7 +380,7 @@ export default new DraverCommand({
             interaction
                 .editReply({
                     components: [],
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(ctx)]
                 })
                 .catch(() => {});
             collector.stop();

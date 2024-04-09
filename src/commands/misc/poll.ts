@@ -165,7 +165,7 @@ export default new DraverCommand({
 
                 if (!confirmation || confirmation == 'cancel' || !confirmation.value) {
                     ctx.deleteReply().catch(log4js.trace);
-                    builder.edit({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+                    builder.edit({ embeds: [replies.cancel(ctx)], components: [] }).catch(log4js.trace);
                     return;
                 }
 
@@ -353,7 +353,7 @@ export default new DraverCommand({
             if (!reason) {
                 builder
                     .edit({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);
@@ -397,7 +397,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation == 'cancel' || !confirmation.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(log4js.trace);

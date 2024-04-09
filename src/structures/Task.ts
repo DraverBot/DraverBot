@@ -227,7 +227,8 @@ export class Task {
                             embeds: [
                                 replies.userMissingPermissions(ctx.user, {
                                     permissions: { missing: ['ManageGuild'] },
-                                    guild: ctx.guild
+                                    guild: ctx.guild,
+                                    lang: ctx
                                 })
                             ],
                             ephemeral: true
@@ -245,7 +246,7 @@ export class Task {
                     }).catch(log4js.trace);
                     if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
                         ctx.editReply({
-                            embeds: [replies.cancel()],
+                            embeds: [replies.cancel(ctx)],
                             components: []
                         }).catch(log4js.trace);
                         return;
@@ -311,7 +312,8 @@ export class Task {
                             embeds: [
                                 replies.userMissingPermissions(ctx.user, {
                                     permissions: { missing: ['ManageGuild'] },
-                                    guild: ctx.guild
+                                    guild: ctx.guild,
+                                    lang: ctx
                                 })
                             ],
                             ephemeral: true
@@ -328,7 +330,7 @@ export class Task {
                     }).catch(log4js.trace);
                     if (!confirmation || confirmation === 'cancel' || !confirmation?.value) {
                         ctx.editReply({
-                            embeds: [replies.cancel()],
+                            embeds: [replies.cancel(ctx)],
                             components: []
                         }).catch(log4js.trace);
                         return;

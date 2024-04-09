@@ -32,6 +32,8 @@ import { inputLetters } from '../utils/ciphers';
 import { color } from '../utils/functions';
 import modules from '../maps/modules';
 import { configKeys, configsData } from './configData';
+import { langResolvable } from '../typings/core';
+import { translator } from '../translate/translate';
 
 export type anyUser = User | GuildMember;
 
@@ -43,89 +45,97 @@ const userMember = (user: anyUser, color?: ColorResolvable) => {
 };
 
 const replies = {
-    guildOnly: (user: User, metadata: { guild?: Guild }) => {
+    guildOnly: (user: User, metadata: { guild?: Guild; lang: langResolvable }) => {
         return basic(user)
-            .setTitle(':x: Serveur uniquement')
-            .setDescription(`Cette commande n'est disponible que sur un serveur`)
+            .setTitle(translator.translate('contents.global.embeds.guildOnly.title', metadata.lang))
+            .setDescription(translator.translate('contents.global.embeds.guildOnly.description', metadata.lang))
             .setColor(evokerColor(metadata.guild));
     },
-    DMOnly: (user: User, metadata: { guild?: Guild }) => {
+    DMOnly: (user: User, metadata: { guild?: Guild; lang: langResolvable }) => {
         return basic(user)
-            .setTitle(':x: Message privés uniquement')
-            .setDescription(`Cette commande n'est disponible qu'en messages privés`)
+            .setTitle(translator.translate('contents.global.embeds.DMOnly.title', metadata.lang))
+            .setDescription(translator.translate('contents.global.embeds.DMOnly.description', metadata.lang))
             .setColor(evokerColor(metadata.guild));
     },
     clientMissingPermissions: (
         user: User,
-        metadata: { permissions?: { missing: PermissionsString[] }; guild?: Guild }
+        metadata: { lang: langResolvable; permissions?: { missing: PermissionsString[] }; guild?: Guild }
     ) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
-            .setTitle(':x: Permissions insuffisantes')
+            .setTitle(
+                translator.translate('contents.global.embeds.clientMissingPerms.title', metadata.lang)
+            )
             .setDescription(
-                `Je n'ai pas les permissions nécéssaires pour éxécuter cette commande.\n${
-                    missing.length === 1
-                        ? `Vérifiez que j'aie bien la permission \`${getRolePerm(missing[0] as permType<'role'>)}\``
-                        : `Vérifiez que j'aie bien les permissions : ${missing
-                              .map((perm) => `\`${getRolePerm(perm as permType<'role'>)}\``)
-                              .join(' ')}`
-                }`
+                missing.length === 1 ? 
+                    translator.translate('contents.global.embeds.clientMissingPerms.alone', metadata.lang, {
+                        permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
+                    }) :
+                    translator.translate('contents.global.embeds.clientMissingPerms.multiple', metadata.lang, {
+                        permissions: missing.map((permString) => `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``).join(' ')
+                    })
             )
             .setColor(evokerColor(metadata.guild));
     },
     userMissingPermissions: (
         user: User,
-        metadata: { permissions?: { missing: PermissionsString[] }; guild?: Guild }
+        metadata: { permissions?: { missing: PermissionsString[] }; guild?: Guild; lang: langResolvable }
     ) => {
         const { missing } = metadata.permissions;
 
         return basic(user)
-            .setTitle(':x: Permissions insuffisantes')
+            .setTitle(translator.translate('contents.global.embeds.userMissingPerms.title', metadata.lang))
             .setDescription(
-                `Vous n'avez pas pas les permissions nécéssaires pour éxécuter cette commande.\n${
-                    missing.length === 1
-                        ? `Vérifiez que vous ayez bien la permission \`${getRolePerm(missing[0] as permType<'role'>)}\``
-                        : `Vérifiez que vous ayez bien les permissions : ${missing
-                              .map((perm) => `\`${getRolePerm(perm as permType<'role'>)}\``)
-                              .join(' ')}`
-                }`
+                missing.length === 1 ? 
+                    translator.translate('contents.global.embeds.userMissingPerms.alone', metadata.lang, {
+                        permission: translator.translate(`contents.global.perms.role.${missing}`, metadata.lang)
+                    }) :
+                    translator.translate('contents.global.embeds.userMissingPerms.multiple', metadata.lang, {
+                        permissions: missing.map((permString) => `\`${translator.translate(`contents.global.perms.role.${permString}`, metadata.lang)}\``).join(' ')
+                    })
             )
             .setColor(evokerColor(metadata.guild));
     },
-    underCooldown: (user: User, metadata: { remainingCooldownTime?: number; guild?: Guild }) => {
+    underCooldown: (user: User, metadata: { remainingCooldownTime?: number; guild?: Guild; lang: langResolvable }) => {
         return basic(user)
-            .setTitle(':x: Cooldown')
+            .setTitle(translator.translate('contents.global.embeds.underCooldown.title', metadata.lang))
             .setDescription(
-                `Vous êtes sous cooldown.\nMerci de patienter encore **${Math.ceil(
-                    metadata.remainingCooldownTime
-                )} secondes**`
+                translator.translate('contents.global.embeds.underCooldown.description', metadata.lang, {
+                    cooldown: Math.ceil(metadata.remainingCooldownTime / 1000)
+                })
             )
             .setColor(evokerColor(metadata.guild));
     },
-    moduleDisabled: (user: User, { guild, module }: { guild: Guild; module: moduleType }) => {
+    moduleDisabled: (user: User, { guild, module, lang }: { guild: Guild; module: moduleType; lang: langResolvable }) => {
         const embed = basic(user)
-            .setTitle(':x: Module désactivé')
-            .setDescription(`Le module \`${moduleName(module)}\` est désactivé.`)
+            .setTitle(translator.translate('contents.global.embeds.moduleDisabled.title', lang))
             .setColor(evokerColor(guild));
 
         const times = modules.get(user.id) ?? 0;
+        const moduleText = translator.translate(`contents.global.modules.${module}`, lang);
         if (times >= 5) {
             embed.setDescription(
-                `${embed.data.description}\n\n:bulb:\n> Pour activer un module, utilisez la commande \`/module configurer\``
+                translator.translate('contents.global.embeds.moduleDisabled.fullDescription', lang, {
+                    module: moduleText
+                })
             );
+        } else {
+            embed.setDescription(translator.translate('contents.global.embeds.moduleDisabled.description', lang, {
+                module: moduleText
+            }))
         }
         modules.set(user.id, times + 1);
         return embed;
     },
-    invalidProofType: (user: User, { guild }: { guild: Guild }) => {
+    invalidProofType: (user: User, { guild, lang }: { guild: Guild; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(guild))
-            .setTitle(`:x: Preuve invalide`)
-            .setDescription(`Désolé, les preuves doivent être sous format **image**`);
+            .setTitle(translator.translate('contents.global.embeds.invalidProof.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidProof.description', lang));
     },
-    cancel: () => {
-        return new EmbedBuilder().setTitle('💡 Annulé').setColor('Yellow');
+    cancel: (lang: langResolvable) => {
+        return new EmbedBuilder().setTitle(translator.translate('contents.global.embeds.canceled.title', lang)).setColor('Yellow');
     },
     mysqlError: (user: User, metadata: { guild?: Guild }) => {
         let text = `Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.`;

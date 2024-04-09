@@ -137,7 +137,7 @@ export default new DraverCommand({
         if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
-                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
+                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level', lang: interaction })],
                     ephemeral: true
                 })
                 .catch(log4js.trace);
@@ -188,7 +188,7 @@ export default new DraverCommand({
         if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
-                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
+                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level', lang: interaction })],
                     ephemeral: true
                 })
                 .catch(log4js.trace);
@@ -245,7 +245,7 @@ export default new DraverCommand({
         if (!modulesManager.enabled(interaction.guild.id, 'level'))
             return interaction
                 .reply({
-                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level' })],
+                    embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'level', lang: interaction })],
                     ephemeral: true
                 })
                 .catch(log4js.trace);
@@ -299,7 +299,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy' })
+                            replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'economy', lang: interaction })
                         ],
                         ephemeral: true
                     })

@@ -82,7 +82,7 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'invitations'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'invitations' })],
+                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'invitations', lang: interaction })],
                 ephemeral: true
             })
             .catch(log4js.trace);
@@ -123,7 +123,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(log4js.trace);

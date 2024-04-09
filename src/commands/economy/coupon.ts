@@ -45,7 +45,7 @@ export default new DraverCommand({
         })
         .catch(() => {})) as ModalSubmitInteraction;
 
-    if (!res) return res.reply({ embeds: [replies.cancel()] }).catch(() => {});
+    if (!res) return res.reply({ embeds: [replies.cancel(interaction)] }).catch(() => {});
 
     const msg = (await res
         .deferReply({
@@ -95,7 +95,7 @@ export default new DraverCommand({
     if (!input || input.customId === 'no')
         return res
             .editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(interaction)],
                 components: []
             })
             .catch(() => {});

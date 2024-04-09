@@ -244,7 +244,7 @@ export default new DraverCommand({
         if (ctx.customId === 'cancel') {
             interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(ctx)],
                     components: []
                 })
                 .catch(() => {});
@@ -279,7 +279,7 @@ export default new DraverCommand({
             if (reply && reply.deletable) reply.delete().catch(() => {});
             if (!reply || reply.content === 'cancel') {
                 ctx.editReply({
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(ctx)]
                 }).catch(() => {});
                 interaction
                     .editReply({
@@ -393,7 +393,7 @@ export default new DraverCommand({
 
             if (!rep || rep.customId === 'cancel') {
                 ctx.editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(ctx)],
                     components: []
                 }).catch(() => {});
                 interaction
@@ -691,7 +691,7 @@ export default new DraverCommand({
                     })
                     .catch(() => {});
                 ctx.editReply({
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(ctx)]
                 }).catch(() => {});
                 return;
             }
@@ -827,7 +827,7 @@ export default new DraverCommand({
         if (reason !== 'cancel' && reason !== 'ended')
             interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

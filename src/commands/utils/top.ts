@@ -47,7 +47,7 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, types[top]))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: types[top] })],
+                embeds: [replies.moduleDisabled(interaction.user, { lang: interaction, guild: interaction.guild, module: types[top] })],
                 ephemeral: true
             })
             .catch(() => {});

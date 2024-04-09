@@ -249,7 +249,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation == 'cancel' || confirmation.value == false) {
             interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(log4js.trace);
@@ -568,7 +568,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.userMissingPermissions(interaction.user, {
                             permissions: { missing: [permission] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
@@ -580,7 +581,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.clientMissingPermissions(interaction.user, {
                             permissions: { missing: [permission] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
@@ -646,7 +648,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.userMissingPermissions(interaction.user, {
                             permissions: { missing: [permission] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
@@ -658,7 +661,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.clientMissingPermissions(interaction.user, {
                             permissions: { missing: [permission] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true

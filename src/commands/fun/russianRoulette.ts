@@ -26,7 +26,7 @@ export default new DraverCommand({
         return interaction
             .reply({
                 embeds: [
-                    replies.guildOnly(interaction.user, { guild: interaction?.guild }).addFields({
+                    replies.guildOnly(interaction.user, { guild: interaction?.guild, lang: interaction }).addFields({
                         name: '⚠️ option',
                         value: `Vous ne pouvez pas utiliser cette commande en messages privés, car l'option d'expulsion n'est valable que dans un serveur.\nSi vous voulez jouer à la roulette russe, n'activez pas l'option \`expulsion\``,
                         inline: false
@@ -59,7 +59,7 @@ export default new DraverCommand({
         if (!reply || reply.customId === 'no')
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

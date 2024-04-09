@@ -131,7 +131,7 @@ export default new DraverCommand({
             time: 120000
         }).catch(log4js.trace);
 
-        if (!act) return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+        if (!act) return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
         const counter = countersManager.getCounter(interaction.guild.id);
         if (!counter)
             return interaction
@@ -182,7 +182,7 @@ export default new DraverCommand({
             if (!selection)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);

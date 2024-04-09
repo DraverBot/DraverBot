@@ -203,7 +203,7 @@ export default new DraverCommand({
         if (valid === 'cancel' || !valid?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});
@@ -322,7 +322,7 @@ export default new DraverCommand({
         if (validation === 'cancel' || !validation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

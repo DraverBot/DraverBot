@@ -809,7 +809,7 @@ export class TicketsManager {
                 if (!modulesManager.enabled(button.guild.id, 'tickets')) {
                     button
                         .reply({
-                            embeds: [replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets' })],
+                            embeds: [replies.moduleDisabled(button.user, { guild: button.guild, module: 'tickets', lang: button })],
                             ephemeral: true
                         })
                         .catch(sendError);
@@ -832,7 +832,7 @@ export class TicketsManager {
                             }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
+                                button.editReply({ embeds: [replies.cancel(button)], components: [] }).catch(sendError);
                                 return;
                             }
                             await button
@@ -875,7 +875,7 @@ export class TicketsManager {
                             }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
+                                button.editReply({ embeds: [replies.cancel(button)], components: [] }).catch(sendError);
                                 return;
                             }
                             await button
@@ -938,7 +938,7 @@ export class TicketsManager {
                             }).catch(sendError)) as confirmReturn;
 
                             if (confirmation === 'cancel' || !confirmation?.value) {
-                                button.editReply({ embeds: [replies.cancel()], components: [] }).catch(sendError);
+                                button.editReply({ embeds: [replies.cancel(button)], components: [] }).catch(sendError);
                                 return;
                             }
                             await button

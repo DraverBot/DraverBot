@@ -110,7 +110,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.userMissingPermissions(interaction.user, {
                             permissions: { missing: ['ManageChannels'] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ]
                 })
@@ -170,7 +171,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.userMissingPermissions(interaction.user, {
                             permissions: { missing: ['ManageChannels'] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ]
                 })
@@ -272,7 +274,7 @@ export default new DraverCommand({
         }).catch(log4js.trace);
 
         if (!confirmation || confirmation == 'cancel' || !confirmation.value)
-            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+            return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
         const annulation = lotoManager.unregisterParticipation(loto.id, interaction.user.id);
 
         // This should never be called
@@ -304,7 +306,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.userMissingPermissions(interaction.user, {
                             permissions: { missing: ['ManageGuild'] },
-                            guild: interaction.guild
+                            guild: interaction.guild,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
@@ -326,7 +329,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation == 'cancel' || !confirmation.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(log4js.trace);

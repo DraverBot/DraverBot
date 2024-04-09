@@ -234,7 +234,7 @@ export default new Process(
                     panel
                         .edit({
                             components: [],
-                            embeds: [replies.cancel()]
+                            embeds: [replies.cancel(interaction)]
                         })
                         .catch(log4js.trace);
                     collector.stop('cancel');
@@ -267,7 +267,7 @@ export default new Process(
                 if (r === 'ended' || r === 'cancel') return;
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);

@@ -195,7 +195,7 @@ export default new DraverCommand({
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(log4js.trace);
@@ -397,7 +397,7 @@ export default new DraverCommand({
                 )
         }).catch(log4js.trace);
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
-            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+            return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
 
         confirmation.interaction.deferUpdate().catch(log4js.trace);
         const roles = await RoleReactConfigPanel.process({
@@ -406,7 +406,7 @@ export default new DraverCommand({
         });
 
         if (roles === 'cancel')
-            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+            return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
         roles.button.deferUpdate().catch(() => {});
 
         await rolesReact

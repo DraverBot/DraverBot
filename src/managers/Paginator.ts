@@ -31,7 +31,7 @@ export class Paginator {
     private endMessage() {
         this.options.interaction
             .editReply({
-                embeds: [replies.cancel()],
+                embeds: [replies.cancel(this.options.interaction)],
                 components: []
             })
             .catch(sendError);

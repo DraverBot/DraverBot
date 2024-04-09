@@ -130,7 +130,7 @@ export default new Process(
 
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);

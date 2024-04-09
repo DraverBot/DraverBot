@@ -156,7 +156,7 @@ export default new DraverCommand({
             if (reply === 'cancel' || reply?.value === undefined)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -190,7 +190,7 @@ export default new DraverCommand({
             if (!reply)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -249,7 +249,7 @@ export default new DraverCommand({
             if (!reply || reply.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -303,7 +303,7 @@ export default new DraverCommand({
             if (confirmation === 'cancel' || !confirmation?.value)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -332,7 +332,7 @@ export default new DraverCommand({
             if (!reply || reply.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -381,7 +381,7 @@ export default new DraverCommand({
             if (confirmation === 'cancel' || !confirmation?.value)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -401,7 +401,7 @@ export default new DraverCommand({
             if (!image || image === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(log4js.trace);
 
@@ -417,7 +417,7 @@ export default new DraverCommand({
             if (confirmation === 'cancel' || !confirmation?.value)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});

@@ -193,7 +193,7 @@ export class Poll {
             }).catch(log4js.trace);
 
             if (!confirmation || confirmation === 'cancel' || !confirmation.value) {
-                ctx.editReply({ components: [], embeds: [replies.cancel()] }).catch(log4js.trace);
+                ctx.editReply({ components: [], embeds: [replies.cancel(ctx)] }).catch(log4js.trace);
                 return;
             }
 

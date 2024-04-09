@@ -108,7 +108,7 @@ export default new DraverCommand({
             if (!choice)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -165,7 +165,7 @@ export default new DraverCommand({
             if (!yesNoRep)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: [],
                         makeContent() {
                             return undefined;
@@ -176,7 +176,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         components: [],
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         makeContent() {
                             return undefined;
                         }
@@ -208,7 +208,7 @@ export default new DraverCommand({
             if (!userSignID)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: [],
                         makeContent() {
                             return undefined;
@@ -231,7 +231,7 @@ export default new DraverCommand({
 
             if (!twoSign)
                 return interaction.editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: [],
                     makeContent() {
                         return undefined;
@@ -340,7 +340,7 @@ export default new DraverCommand({
             if (!choice)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -397,7 +397,7 @@ export default new DraverCommand({
             if (!yesNoRep)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: [],
                         makeContent() {
                             return undefined;
@@ -408,7 +408,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         components: [],
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         makeContent() {
                             return undefined;
                         }
@@ -440,7 +440,7 @@ export default new DraverCommand({
             if (!userSignID)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: [],
                         makeContent() {
                             return undefined;
@@ -463,7 +463,7 @@ export default new DraverCommand({
 
             if (!twoSign)
                 return interaction.editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: [],
                     makeContent() {
                         return undefined;

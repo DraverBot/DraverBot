@@ -278,7 +278,7 @@ export default new DraverCommand({
         }).catch(log4js.trace);
 
         if (!confirmation || confirmation == 'cancel' || !confirmation.value)
-            return interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+            return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
 
         await Promise.all([
             interaction.editReply({ embeds: [replies.wait(interaction.user)], components: [] }).catch(log4js.trace),
@@ -360,7 +360,7 @@ export default new DraverCommand({
                 }
 
                 button.deleteReply().catch(log4js.trace);
-                interaction.editReply({ embeds: [replies.cancel()], components: [] }).catch(log4js.trace);
+                interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
                 collector.stop('canceled');
             }
             if (button.customId === 'validate') {
@@ -485,7 +485,7 @@ export default new DraverCommand({
             if (r !== 'finished' && r !== 'canceled') {
                 interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(log4js.trace);

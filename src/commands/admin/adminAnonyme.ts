@@ -307,7 +307,7 @@ export default new DraverCommand({
             return interaction
                 .editReply({
                     components: [],
-                    embeds: [replies.cancel()]
+                    embeds: [replies.cancel(interaction)]
                 })
                 .catch(() => {});
 
@@ -334,7 +334,7 @@ export default new DraverCommand({
             if (!rep || rep.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -389,7 +389,7 @@ export default new DraverCommand({
             if (!rep || rep.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -444,7 +444,7 @@ export default new DraverCommand({
             if (!rep || rep.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -498,7 +498,7 @@ export default new DraverCommand({
             if (!rep || rep.content.toLowerCase() === 'cancel')
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()]
+                        embeds: [replies.cancel(interaction)]
                     })
                     .catch(() => {});
 
@@ -560,7 +560,7 @@ export default new DraverCommand({
         if (confirmation === 'cancel' || !confirmation?.value)
             return interaction
                 .editReply({
-                    embeds: [replies.cancel()],
+                    embeds: [replies.cancel(interaction)],
                     components: []
                 })
                 .catch(() => {});

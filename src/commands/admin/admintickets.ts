@@ -129,7 +129,7 @@ export default new DraverCommand({
     if (!modulesManager.enabled(interaction.guild.id, 'tickets'))
         return interaction
             .reply({
-                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'tickets' })],
+                embeds: [replies.moduleDisabled(interaction.user, { guild: interaction.guild, module: 'tickets', lang: interaction })],
                 ephemeral: true
             })
             .catch(() => {});
@@ -280,7 +280,7 @@ export default new DraverCommand({
             if (confirmation === 'cancel' || !confirmation?.value)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
@@ -338,7 +338,7 @@ export default new DraverCommand({
             if (confirmation === 'cancel' || !confirmation?.value)
                 return interaction
                     .editReply({
-                        embeds: [replies.cancel()],
+                        embeds: [replies.cancel(interaction)],
                         components: []
                     })
                     .catch(() => {});
