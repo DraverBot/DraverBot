@@ -117,13 +117,13 @@ export class ConfigsManager {
         if (data.type === 'number') return `${data.value} INTEGER(255) NOT NULL DEFAULT '${data.default}'`;
         if (data.type === 'image') return `${data.value} MEDIUMBLOB`;
         if (data.type === 'string')
-            return `${data.value} VARCHAR(255) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
+            return `${data.value} VARCHAR(${data.value.includes('invite') ? 1024 : 255}) NOT NULL DEFAULT "${sqliseString(data.default as string)}"`;
     }
     private queryDatabase(): Promise<boolean> {
         return new Promise(async (resolve) => {
             const tables = await query<{ Tables_in_draver: string }>(`SHOW TABLES`).catch(log4js.trace);
 
-            if (tables && !tables.some((x) => x['Tables_in_draver'])) {
+            if (tables && !tables.some((x) => x['Tables_in_draver'] === "configs")) {
                 await query(
                     `CREATE TABLE IF NOT EXISTS configs ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, ${Object.keys(
                         configsData
