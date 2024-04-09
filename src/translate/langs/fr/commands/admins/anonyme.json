@@ -1,0 +1,138 @@
+{
+    "name": "adminanonymat",
+    "description": "Configure les salons anonymes du serveur",
+    "options": {
+        "configurer": {
+            "name": "configurer",
+            "description": "Configure un salon d'anonymat dans le serveur",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon sur lequel l'anonymat sera configuré"
+                },
+                "nom": {
+                    "name": "nom",
+                    "description": "Nom qui sera donné au webhook"
+                }
+            },
+            "replies": {
+                "configured": {
+                    "title": "Salon déjà configuré",
+                    "description": "Le salon {channel} est déjà un salon anonyme"
+                },
+                "webhookFailed": {
+                    "title": "Erreur de création",
+                    "description": "Le webhook n'a pas pu être crée dans le salon {channel}"
+                },
+                "create": {
+                    "title": "Salon anonyme crée",
+                    "description": "Le salon {channel} est maintenant anonyme"
+                }
+            }
+        },
+        "liste": {
+            "name": "liste",
+            "description": "Affiche la liste des salons anonymes du serveur",
+            "replies": {
+                "noChannel": {
+                    "title": "Pas de salon",
+                    "description": "Aucun salon anonyme n'est configuré"
+                },
+                "mapper": "Dans {channel} ( {bannedRoles} rôle(s) banni(s) et {bannedUsers} utilisateur(s) banni(s)",
+                "list": {
+                    "title": "Salons anonymes",
+                    "description": "{channels} salon(s) anonyme(s)"
+                }
+            }
+        },
+        "salon": {
+            "name": "salon",
+            "description": "Affiche les informations d'un salon anonyme",
+            "options": {
+                "salon": {
+                    "name": "salon",
+                    "description": "Salon anonyme"
+                }
+            },
+            "replies": {
+                "info": {
+                    "title": "Salon anonyme",
+                    "description": "Salon: {channel}\nNom du webhook: `{name}`",
+                    "roles": "Rôles bannis [{roles}]",
+                    "users": "Utilisateurs bannis [{users}]",
+                    "none": "Aucun"
+                }
+            }
+        },
+        "bannissements": {
+            "name": "bannissements",
+            "description": "Gère les bannissements d'un salon anonyme",
+            "options": {
+                "salon": {
+                    "name": "salon",
+                    "description": "Salon à gérer"
+                }
+            },
+            "replies": {
+                "control": {
+                    "title": "Contrôle des bannissements",
+                    "description": "Que voulez-vous faire avec les bannissements du salon {channel} ?"
+                },
+                "user": {
+                    "title": "Utilisateur",
+                    "add": "Qui est l'utilisateur que vous voulez ajouter ?\nRépondez avec son identifiant ou sa mention dans le chat.\n\n💡\n> Vous avez **deux minutes**\n> Répondez par `cancel` pour annuler",
+                    "added": "{user} n'est désormais plus anonyme dans {channel}",
+                    "suffixes": {
+                        "added": "ajouté",
+                        "removed": "retiré"
+                    },
+                    "remove": "Qui est l'utilisateur que vous voulez retirer ?\nRépondez avec son identifiant ou sa mention dans le chat.\n\n💡\n> Vous avez **deux minutes**\n> Répondez par `cancel` pour annuler",
+                    "removed": "{user} est à nouveau anonyme dans {channel}"
+                },
+                "role": {
+                    "title": "Rôle",
+                    "add": "Quel est le rôle que vous voulez ajouter ?\nRépondez avec son identifiant ou sa mention dans le chat\n\n💡\n> Vous avez **deux minutes**\n> Répondez par `cancel` pour annuler",
+                    "added": "{role} n'est plus anonyme dans {channel}",
+                    "suffixes": {
+                        "added": "ajouté",
+                        "removed": "retiré"
+                    },
+                    "remove": "Quel est le rôle que vous voulez retirer ?\nRépondez avec son identifiant ou sa mention dans le chat\n\n💡\n> Vous avez **deux minutes**\n> Répondez par `cancel` pour annuler",
+                    "removed": "{role} est à nouveau anonyme dans {channel}"
+                }
+            },
+            "buttons": {
+                "addRole": "Ajouter un rôle",
+                "removeRole": "Retirer un rôle",
+                "addUser": "Ajouter un utilisateur",
+                "removeUser": "Retirer un utilisateur"
+            }
+        },
+        "supprimer": {
+            "name": "supprimer",
+            "description": "Supprimer un salon anonyme",
+            "options": {
+                "salon": {
+                    "name": "salon",
+                    "description": "Salon anonyme"
+                }
+            },
+            "replies": {
+                "suppression": {
+                    "title": "Suppression de salon",
+                    "description": "Vous allez désanonymiser le salon {channel}.\nVoulez-vous poursuivre ?\n\n💡\n> Le salon ne sera pas supprimé"
+                },
+                "suppressed": {
+                    "title": "Salon désanonymisé",
+                    "description": "Le salon {channel} n'est plus anonyme"
+                }
+            }
+        }
+    },
+    "replies": {
+        "notAnonymous": {
+            "title": "Salon non-anonyme",
+            "description": "Le salon {channel} n'est pas anonyme"
+        }
+    }
+}

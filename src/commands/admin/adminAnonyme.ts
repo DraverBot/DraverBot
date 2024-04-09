@@ -31,47 +31,41 @@ import { AnonymousValue } from '../../managers/Anonymous';
 import { cancelButton } from '../../data/buttons';
 import replies from '../../data/replies';
 import { confirmReturn } from '../../typings/functions';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'adminanonymat',
+    ...translator.commandData('commands.admins.anonyme'),
     module: 'config',
-    description: 'Configure les salons anonymes du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],
     options: [
         {
-            name: 'configurer',
-            description: "Configure un salon d'anonymat dans le serveur",
+            ...translator.commandData('commands.admins.anonyme.options.configurer'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: "Salon sur lequel l'anonymat sera configuré",
+                    ...translator.commandData('commands.admins.anonyme.options.configurer.options.channel'),
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText],
                     required: true
                 },
                 {
-                    name: 'nom',
-                    description: 'Nom qui sera donné au webhook',
+                    ...translator.commandData('commands.admins.anonyme.options.configurer.options.nom'),
                     type: ApplicationCommandOptionType.String,
                     required: false
                 }
             ]
         },
         {
-            name: 'liste',
-            description: 'Affiche la liste des salons anonymes du serveur',
+            ...translator.commandData('commands.admins.anonyme.options.liste'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'salon',
-            description: "Affiche les informations d'un salon anonyme",
+            ...translator.commandData('commands.admins.anonyme.options.salon'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon anonyme',
+                    ...translator.commandData('commands.admins.anonyme.options.salon.options.salon'),
                     type: ApplicationCommandOptionType.Channel,
                     required: true,
                     channel_types: [ChannelType.GuildText]
@@ -79,27 +73,23 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'bannissements',
+            ...translator.commandData('commands.admins.anonyme.options.bannissements'),
             type: ApplicationCommandOptionType.Subcommand,
-            description: "Gère les bannissements d'un salon anonyme",
             options: [
                 {
-                    name: 'salon',
+                    ...translator.commandData('commands.admins.anonyme.options.bannissements.options.salon'),
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
                     channel_types: [ChannelType.GuildText],
-                    description: 'Salon à gérer'
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprimer un salon anonyme',
+            ...translator.commandData('commands.admins.anonyme.options.supprimer'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon anonyme',
+                    ...translator.commandData('commands.admins.anonyme.options.supprimer.options.salon'),
                     type: ApplicationCommandOptionType.Channel,
                     channel_types: [ChannelType.GuildText],
                     required: true
@@ -119,8 +109,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Salon déjà configuré')
-                            .setDescription(`Le salon ${pingChan(channel)} est déjà un salon anonyme`)
+                            .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.configured.title', interaction))
+                            .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.configured.description', interaction, { channel: pingChan(channel) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -138,8 +128,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setDescription(`Le webhook n'a pas pu être crée dans le salon ${pingChan(channel)}`)
-                            .setTitle('Erreur de création')
+                            .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.webhookFailed.description', interaction, { channel: pingChan(channel) }))
+                            .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.webhookFailed.title', interaction))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -149,8 +139,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salon anonyme crée')
-                        .setDescription(`Le salon ${pingChan(channel)} est maintenant anonyme`)
+                        .setTitle(translator.translate('commands.admins.anonyme.options.configurer.replies.create.title', interaction))
+                        .setDescription(translator.translate('commands.admins.anonyme.options.configurer.replies.create.description', interaction, { channel: pingChan(channel) }))
                 ]
             })
             .catch(() => {});
@@ -162,8 +152,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de salon')
-                            .setDescription(`Aucun salon anonyme n'est configuré`)
+                            .setTitle(translator.translate('commands.admins.anonyme.options.liste.replies.noChannel.title', interaction))
+                            .setDescription(translator.translate('commands.admins.anonyme.options.liste.replies.noChannel.description', interaction))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -172,22 +162,21 @@ export default new DraverCommand({
         const map = (embed: EmbedBuilder, { data, bannedRoles, bannedUsers }: AnonymousValue) => {
             return embed.addFields({
                 name: data.name,
-                value: `Dans ${pingChan(data.channel_id)} ( ${numerize(bannedRoles.length)} rôle${plurial(
-                    data.banned_roles.length
-                )} banni${plurial(bannedRoles)} et ${numerize(bannedUsers.length)} utilisateur${plurial(
-                    bannedUsers
-                )} banni${plurial(bannedUsers)} )`,
+                value:  translator.translate('commands.admins.anonyme.options.liste.replies.mapper', interaction, {
+                    channel: pingChan(data.channel_id),
+                    bannedRoles: bannedRoles?.length ?? 0,
+                    bannedUsers: bannedUsers?.length ?? 0
+                }),
                 inline: false
             });
         };
         const basic = () => {
             return basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Salons anonymes')
+                .setTitle(translator.translate('commands.admins.anonyme.options.liste.replies.list.title', interaction))
                 .setDescription(
-                    `${numerize(list.length)} salon${plurial(list)} ${plurial(list, {
-                        singular: 'est',
-                        plurial: 'sont'
-                    })} anonyme${plurial(list)}`
+                    translator.translate('commands.admins.anonyme.options.liste.replies.list.description', interaction, {
+                        channels: list.length
+                    })
                 );
         };
 
@@ -226,8 +215,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Salon non-anonyme')
-                            .setDescription(`Le salon ${pingChan(channel)} n'est pas anonyme`)
+                            .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
+                            .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -235,21 +224,22 @@ export default new DraverCommand({
 
         const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
+        const none = translator.translate('commands.admins.anonyme.options.salon.replies.info.none', interaction)
         interaction
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salon anonyme')
-                        .setDescription(`Salon: ${pingChan(channel)}\nNom du webhook: \`${data.data.name}\``)
+                        .setTitle(translator.translate('commands.admins.anonyme.options.salon.replies.info.title', interaction))
+                        .setDescription(translator.translate('commands.admins.anonyme.options.salon.replies.info.description', interaction, { channel: pingChan(channel), name: data.data.name }))
                         .setFields(
                             {
-                                name: `Rôles bannis [${numerize(data.bannedRoles.length)}]`,
-                                value: data.bannedRoles.length > 0 ? data.bannedRoles.map(pingRole).join(' ') : 'Aucun',
+                                name: translator.translate('commands.admins.anonyme.options.salon.replies.info.roles', interaction, { roles: data.bannedRoles.length }),
+                                value: data.bannedRoles.length > 0 ? data.bannedRoles.map(pingRole).join(' ') : none,
                                 inline: false
                             },
                             {
-                                name: `Utilisateur bannis [${numerize(data.bannedUsers.length)}]`,
-                                value: data.bannedUsers.length > 0 ? data.bannedUsers.map(pingUser).join(' ') : 'Aucun',
+                                name: translator.translate('commands.admins.anonyme.options.salon.replies.info.users', interaction, { users: data.bannedUsers.length }),
+                                value: data.bannedUsers.length > 0 ? data.bannedUsers.map(pingUser).join(' ') : none,
                                 inline: true
                             }
                         )
@@ -264,39 +254,40 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Salon non-anonyme')
-                            .setDescription(`Le salon ${pingChan(channel)} n'est pas anonyme`)
-                            .setColor(evokerColor(interaction.guild))
+                        .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
+                        .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
+                        .setColor(evokerColor(interaction.guild))
                     ]
                 })
                 .catch(() => {});
 
         const data = AnonymousManager.values.find((x) => x.data.channel_id === channel.id);
 
+        const btn = (str: string) => translator.translate(`commands.admins.anonyme.options.bannissements.buttons.${str}`, interaction)
         const msg = (await interaction.reply({
             embeds: [
                 basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle('Contrôle des bannissements')
-                    .setDescription(`Que voulez-vous faire avec les bannissements du salon ${pingChan(channel)} ?`)
+                    .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.control.title', interaction))
+                    .setDescription(translator.translate('commands.admins.anonyme.options.bannissements.replies.control.description', interaction, { channel: pingChan(channel) }))
             ],
             fetchReply: true,
             components: [
                 row(
-                    buildButton({ label: 'Ajouter un rôle', style: 'Primary', id: 'addRole' }),
+                    buildButton({ label: btn('addRole'), style: 'Primary', id: 'addRole' }),
                     buildButton({
-                        label: 'Retirer un rôle',
+                        label: btn('removeRole'),
                         style: 'Secondary',
                         id: 'removeRole'
                     })
                 ),
                 row(
                     buildButton({
-                        label: 'Ajouter un utilisateur',
+                        label: btn('addUser'),
                         style: 'Primary',
                         id: 'addUser'
                     }),
                     buildButton({
-                        label: 'Retirer un utilisateur',
+                        label: btn('removeUser'),
                         style: 'Secondary',
                         id: 'removeUser'
                     })
@@ -325,11 +316,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle('Utilisateur')
+                            .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction))
                             .setDescription(
-                                `Qui est l'utilisateur que vous voulez ajouter ?\nRépondez avec son identifiant ou sa mention dans le chat\n${hint(
-                                    `Vous avez **deux minutes**\nRépondez par \`cancel\` pour annuler`
-                                )}`
+                                translator.translate('commands.admins.anonyme.options.bannissements.replies.user.add', interaction)
                             )
                     ],
                     components: []
@@ -355,9 +344,9 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Utilisateur introuvable')
+                                .setTitle(translator.translate('contents.global.embeds.noUser.title', interaction))
                                 .setDescription(
-                                    `Je n'ai pas pu trouver l'utilisateur.\nRéessayez la commande avec un identifiant ou une mention`
+                                    translator.translate('contents.global.embeds.noUser.description', interaction)
                                 )
                                 .setColor(evokerColor(interaction.guild))
                         ]
@@ -369,9 +358,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Utilisateur ajouté')
+                            .setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.added', interaction)}`)
                             .setDescription(
-                                `${pingUser(user)} est n'est désormais plus anonyme dans ${pingChan(channel)}`
+                                translator.translate('commands.admins.anonyme.options.bannissements.replies.user.added', interaction, { channel: pingChan(channel), user: pingUser(user) })
                             )
                     ]
                 })
@@ -382,11 +371,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle('Rôle')
+                            .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction))
                             .setDescription(
-                                `Quel est le rôle que vous voulez ajouter ?\nRépondez avec son identifiant ou sa mention dans le chat\n${hint(
-                                    `Vous avez **deux minutes**\nRépondez par \`cancel\` pour annuler`
-                                )}`
+                                translator.translate('commands.admins.anonyme.options.bannissements.replies.role.add', interaction)
                             )
                     ],
                     components: []
@@ -412,9 +399,9 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Role introuvable')
+                                .setTitle(translator.translate('contents.global.embeds.noRole.title', interaction))
                                 .setDescription(
-                                    `Je n'ai pas pu trouver le rôle.\nRéessayez la commande avec un identifiant ou une mention`
+                                    translator.translate('contents.global.embeds.noRole.description', interaction)
                                 )
                                 .setColor(evokerColor(interaction.guild))
                         ]
@@ -426,9 +413,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Rôle ajouté')
+                            .setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.added', interaction)}`)
                             .setDescription(
-                                `${pingRole(role)} est n'est désormais plus anonyme dans ${pingChan(channel)}`
+                                translator.translate('commands.admins.anonyme.options.bannissements.replies.role.added', interaction, { channel: pingChan(channel), role: pingRole(role) })
                             )
                     ]
                 })
@@ -439,12 +426,10 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle('Utilisateur')
-                            .setDescription(
-                                `Qui est l'utilisateur que vous voulez retirer ?\nRépondez avec son identifiant ou sa mention dans le chat\n${hint(
-                                    `Vous avez **deux minutes**\nRépondez par \`cancel\` pour annuler`
-                                )}`
-                            )
+                        .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction))
+                        .setDescription(
+                            translator.translate('commands.admins.anonyme.options.bannissements.replies.user.remove', interaction)
+                        )
                     ],
                     components: []
                 })
@@ -469,10 +454,10 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Utilisateur introuvable')
-                                .setDescription(
-                                    `Je n'ai pas pu trouver l'utilisateur.\nRéessayez la commande avec un identifiant ou une mention`
-                                )
+                            .setTitle(translator.translate('contents.global.embeds.noUser.title', interaction))
+                            .setDescription(
+                                translator.translate('contents.global.embeds.noUser.description', interaction)
+                            )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -482,9 +467,10 @@ export default new DraverCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Utilisateur retiré')
-                            .setDescription(`${pingUser(user)} est est à nouveau anonyme dans ${pingChan(channel)}`)
+                        basicEmbed(interaction.user, { draverColor: true }).setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.user.suffixes.removed', interaction)}`)
+                        .setDescription(
+                            translator.translate('commands.admins.anonyme.options.bannissements.replies.user.removed', interaction, { channel: pingChan(channel), user: pingUser(user) })
+                        )
                     ]
                 })
                 .catch(() => {});
@@ -494,12 +480,10 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle('Rôle')
-                            .setDescription(
-                                `Quel est le rôle que vous voulez retirer ?\nRépondez avec son identifiant ou sa mention dans le chat\n${hint(
-                                    `Vous avez **deux minutes**\nRépondez par \`cancel\` pour annuler`
-                                )}`
-                            )
+                        .setTitle(translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction))
+                        .setDescription(
+                            translator.translate('commands.admins.anonyme.options.bannissements.replies.role.remove', interaction)
+                        )
                     ],
                     components: []
                 })
@@ -524,10 +508,10 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Role introuvable')
-                                .setDescription(
-                                    `Je n'ai pas pu trouver le rôle.\nRéessayez la commande avec un identifiant ou une mention`
-                                )
+                            .setTitle(translator.translate('contents.global.embeds.noRole.title', interaction))
+                            .setDescription(
+                                translator.translate('contents.global.embeds.noRole.description', interaction)
+                            )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -537,9 +521,10 @@ export default new DraverCommand({
             interaction
                 .editReply({
                     embeds: [
-                        basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Rôle retiré')
-                            .setDescription(`${pingRole(role)} est est à nouveau anonyme dans ${pingChan(channel)}`)
+                        basicEmbed(interaction.user, { draverColor: true }).setTitle(`${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.title', interaction)} ${translator.translate('commands.admins.anonyme.options.bannissements.replies.role.suffixes.removed', interaction)}`)
+                        .setDescription(
+                            translator.translate('commands.admins.anonyme.options.bannissements.replies.role.removed', interaction, { channel: pingChan(channel), role: pingRole(role) })
+                        )
                     ]
                 })
                 .catch(() => {});
@@ -552,8 +537,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Salon non-anonyme')
-                            .setDescription(`Le salon ${pingChan(channel)} n'est pas anonyme`)
+                        .setTitle(translator.translate('commands.admins.anonyme.replies.notAnonymous.title', interaction))
+                        .setDescription(translator.translate('commands.admins.anonyme.replies.notAnonymous.description', interaction, { channel: pingChan(channel) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -563,11 +548,11 @@ export default new DraverCommand({
         const confirmation = (await confirm({
             interaction: interaction,
             embed: basicEmbed(interaction.user)
-                .setTitle('Suppression de salon')
+                .setTitle(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppression.title', interaction))
                 .setDescription(
-                    `Vous allez désanonimiser le salon ${pingChan(channel)}.\nVoulez-vous poursuivre ?\n${hint(
-                        `Le salon ne sera pas supprimé`
-                    )}`
+                    translator.translate(
+                        'commands.admins.anonyme.options.supprimer.replies.suppression.description', interaction, { channel: pingChan(channel) }
+                    )
                 ),
             user: interaction.user
         }).catch(() => {})) as confirmReturn;
@@ -584,8 +569,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salon désanonymisé')
-                        .setDescription(`Le salon ${pingChan(channel)} n'est plus anonyme`)
+                        .setTitle(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppressed.title', interaction))
+                        .setDescription(translator.translate('commands.admins.anonyme.options.supprimer.replies.suppressed.description', interaction, { channel: pingChan(channel) }))
                 ],
                 components: []
             })

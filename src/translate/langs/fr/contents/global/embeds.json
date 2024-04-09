@@ -1,0 +1,10 @@
+{
+    "noUser": {
+        "title": "Utilisateur introuvable",
+        "description": "Je n'ai pas pu trouver l'utilisateur.\nRéessayez la commande avec un identifiant ou une mention"
+    },
+    "noRole": {
+        "title": "Rôle introuvable",
+        "description": "Je n'ai pas pu trouver le rôle.\nRéessayez la commande avec un identifiant ou une mention."
+    }
+}
