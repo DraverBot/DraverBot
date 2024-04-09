@@ -17,7 +17,7 @@ export class LevelsManager {
         return this.cache.get(this.getCode(opts));
     }
     public computeRequiredMessages(level: number) {
-        return 255 + (4 / 3) * level;
+        return Math.ceil(255 + (4 / 3) * level);
     }
 
     private async start() {
