@@ -1,11 +1,12 @@
 import { readdirSync } from 'node:fs';
 import { langResolvable } from '../../typings/core';
-import { BaseInteraction, Message } from 'discord.js';
+import { BaseInteraction, LocalizationMap, Message } from 'discord.js';
 import { util } from '../../utils/functions';
+import { TranslateError } from './TranslateError';
 
 export class Translator {
     private defaultLang: string;
-    private dict: Record<string, any>;
+    private dict: Record<string, any> = {};
 
     constructor(defaultLang: string) {
         this.defaultLang = defaultLang;
@@ -13,16 +14,9 @@ export class Translator {
         this.start();
     }
 
-    public resolveLang(resolvable: langResolvable): string {
-        if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
-        if (resolvable instanceof BaseInteraction) return resolvable?.locale;
-        return resolvable;
-    }
-    public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
-        const translation = this.resolveLang(lang);
-
+    private resolve(key: string, lang: string) {
         const path = key.split('.');
-        let value = Object.keys(this.dict).includes(translation) ? this.dict[translation] : this.dict[this.defaultLang];
+        let value = Object.keys(this.dict).includes(lang) ? this.dict[lang] : this.dict[this.defaultLang];
 
         for (const section of path) {
             if (value[section]) value = value[section];
@@ -31,7 +25,42 @@ export class Translator {
                 break;
             }
         }
-        if (!value || value instanceof Object) return null;
+
+        return value
+    }
+    public commandData(key: string): { name: string; description: string; nameLocalizations: LocalizationMap; descriptionLocalizations: LocalizationMap; } {
+        const defaultSet = this.resolve(key, this.defaultLang)
+        const data = {
+            name: defaultSet.name,
+            description: defaultSet.description,
+            nameLocalizations: {},
+            descriptionLocalizations: {}
+        }
+
+        Object.keys(this.dict).forEach((lang) => {
+            const set = this.resolve(key, lang)
+            
+            data.nameLocalizations[lang] = set.name
+            data.descriptionLocalizations[lang] = set.description
+        })
+
+        return data
+    }
+    public resolveLang(resolvable: langResolvable): string {
+        if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
+        if (resolvable instanceof BaseInteraction) return resolvable?.locale;
+        return resolvable;
+    }
+    public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
+        const translation = this.resolveLang(lang);
+
+        const value = this.resolve(key, translation)
+        if (!value || value instanceof Object) {
+            throw new TranslateError("Invalid path", {
+                full: key,
+                erroring: 'Unknown'
+            })
+        };
 
         const content = ((input: string) => {
             const regexes = Object.entries(opts)
@@ -48,8 +77,11 @@ export class Translator {
 
     private start() {
         readdirSync(this.join('langs')).forEach((lang) => {
+            if (!this.dict[lang]) this.dict[lang] = {}
             readdirSync(this.join('langs', lang)).forEach((folder) => {
+                if (!this.dict[lang][folder]) this.dict[lang][folder] = {}
                 readdirSync(this.join('langs', lang, folder)).forEach((subFolder) => {
+                    if (!this.dict[lang][folder][subFolder]) this.dict[lang][folder][subFolder] = {}
                     readdirSync(this.join('langs', lang, folder, subFolder)).forEach((fileName) => {
                         const content = require(`../langs/${lang}/${folder}/${subFolder}/${fileName}`);
 
