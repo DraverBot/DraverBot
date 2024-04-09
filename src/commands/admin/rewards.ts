@@ -333,7 +333,7 @@ export default new DraverCommand({
         if (!res || res === 'not found')
             return interaction
                 .editReply({
-                    embeds: [replies.mysqlError(interaction.user, { guild: interaction.guild })]
+                    embeds: [replies.mysqlError(interaction.user, { guild: interaction.guild, lang: interaction })]
                 })
                 .catch(log4js.trace);
 

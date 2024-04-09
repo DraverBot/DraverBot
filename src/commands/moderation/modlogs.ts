@@ -410,7 +410,10 @@ export default new DraverCommand({
             return interaction
                 .editReply({
                     components: [],
-                    embeds: [replies.mysqlError(interaction.user, interaction)]
+                    embeds: [replies.mysqlError(interaction.user, {
+                        guild: interaction.guild,
+                        lang: interaction
+                    })]
                 })
                 .catch(() => {});
 

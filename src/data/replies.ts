@@ -137,38 +137,40 @@ const replies = {
     cancel: (lang: langResolvable) => {
         return new EmbedBuilder().setTitle(translator.translate('contents.global.embeds.canceled.title', lang)).setColor('Yellow');
     },
-    mysqlError: (user: User, metadata: { guild?: Guild }) => {
-        let text = `Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.`;
-        if (errors.has(user.id)) {
-            if (errors.get(user.id) > 3) {
-                text += `\nSi l'erreur persiste, contactez mes développeurs`;
-            }
+    mysqlError: (user: User, metadata: { guild?: Guild; lang: langResolvable }) => {
+        const embed = basic(user).setColor(evokerColor(metadata.guild)).setTitle(translator.translate('contents.global.embeds.mysqlError.title', metadata.lang));
+
+        if (errors.has(user.id) && errors.get(user.id) > 3) {
+            embed.setDescription(translator.translate('contents.global.embeds.mysqlError.fullDescription', metadata.lang))
+        } else {
+            embed.setDescription(translator.translate('contents.global.embeds.mysqlError.description', metadata.lang))
         }
+        
         errors.set(user.id, (errors.get(user.id) ?? 0) + 1);
-        return basic(user).setColor(evokerColor(metadata.guild)).setDescription(text).setTitle('Erreur');
+        return embed
     },
-    memberOwner: (user: User, { member }: { member: GuildMember }) => {
+    memberOwner: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle('Membre propriétaire')
-            .setDescription(`Vous ne pouvez pas faire ça, car ${member} est le propriétaire du serveur`);
+            .setTitle(translator.translate('contents.global.embeds.memberOwner.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.memberOwner.description', lang, { member: pingUser(member) }));
     },
-    memberBot: (user: User, { member }: { member: GuildMember }) => {
+    memberBot: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle('Robot')
-            .setDescription(`${member} est un robot. Je ne peux pas effectuer cette action sur un robot`);
+            .setTitle(translator.translate('contents.global.embeds.memberBot.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.memberBot.description', lang, { member: pingUser(member) }));
     },
-    memberTooHigh: (user: User, { member }: { member: GuildMember }) => {
+    memberTooHigh: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(member.guild))
-            .setTitle('Membre trop haut')
-            .setDescription(`${member} est supérieur ou égal à vous dans la hiéararchie des rôles`);
+            .setTitle(translator.translate('contents.global.embeds.memberTooHigh.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.memberTooHigh.description', lang, { member: pingUser(member) }));
     },
-    memberTooHighClient: (user: User, { member }: { member: GuildMember }) => {
+    memberTooHighClient: (user: User, { member, lang }: { member: GuildMember; lang: langResolvable }) => {
         return basic(user)
-            .setTitle('Membre trop haut')
-            .setDescription(`${member} est supérieur ou égal à moi dans la hiérarchie des rôles`)
+            .setTitle(translator.translate('contents.global.embeds.memberTooHighClient.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.memberTooHighClient.description', lang, { member: pingUser(member) }))
             .setColor(evokerColor(member.guild));
     },
     notEnoughCoins: (user: GuildMember, target = user) => {

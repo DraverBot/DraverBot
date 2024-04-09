@@ -123,7 +123,7 @@ export default new DraverCommand({
         if (!res)
             return interaction
                 .editReply({
-                    embeds: [replies.mysqlError(interaction.user, { guild: interaction.guild })],
+                    embeds: [replies.mysqlError(interaction.user, { guild: interaction.guild, lang: interaction })],
                     components: []
                 })
                 .catch(log4js.trace);

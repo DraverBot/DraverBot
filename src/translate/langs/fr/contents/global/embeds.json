@@ -44,5 +44,26 @@
     },
     "canceled": {
         "title": "💡 Annulé"
+    },
+    "mysqlError": {
+        "title": "Erreur",
+        "description": "Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.",
+        "fulldescription": "Une erreur a eu lieu lors de l'interaction avec la base de données.\nPatientez quelques secondes et réessayez.\nSi l'erreur persiste, contactez mes développeurs."
+    },
+    "memberOwner": {
+        "title": "Membre propriétaire",
+        "description": "Vous ne pouvez pas faire ça, {member} est le propriétaire du serveur"
+    },
+    "memberBot": {
+        "title": "Robot",
+        "description": "{member} est un robot. Je ne peux pas effectuer cette action sur un robot"
+    },
+    "memberTooHigh": {
+        "title": "Membre trop haut",
+        "description": "{member} est supérieur ou égal à vous dans la hiérarchie des rôles"
+    },
+    "memberTooHighClient": {
+        "title": "Membre trop haut",
+        "description": "{member} est supérieur ou égal à moi dans la hiérarchie des rôles"
     }
 }

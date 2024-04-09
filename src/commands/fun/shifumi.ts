@@ -131,7 +131,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             replies.memberBot(interaction.user, {
-                                member: options.getMember('adversaire') as GuildMember
+                                member: options.getMember('adversaire') as GuildMember,
+                                lang: interaction
                             })
                         ],
                         ephemeral: true
@@ -363,7 +364,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             replies.memberBot(interaction.user, {
-                                member: interaction.targetMember as GuildMember
+                                member: interaction.targetMember as GuildMember,
+                                lang: interaction
                             })
                         ],
                         ephemeral: true

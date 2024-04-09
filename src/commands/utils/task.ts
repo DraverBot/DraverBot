@@ -381,7 +381,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         replies.memberTooHigh(interaction.user, {
-                            member: (options.getMember('utilisateur') ?? interaction.member) as GuildMember
+                            member: (options.getMember('utilisateur') ?? interaction.member) as GuildMember,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
@@ -465,7 +466,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         replies.memberTooHigh(interaction.user, {
-                            member: (options.getMember('utilisateur') ?? interaction.member) as GuildMember
+                            member: (options.getMember('utilisateur') ?? interaction.member) as GuildMember,
+                            lang: interaction
                         })
                     ],
                     ephemeral: true
