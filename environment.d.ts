@@ -8,6 +8,7 @@ declare global {
             password: string;
             BLAGUES_API_TOKEN: string;
             benderPort: string;
+            translateErrorWebhook?: string;
         }
     }
 }
