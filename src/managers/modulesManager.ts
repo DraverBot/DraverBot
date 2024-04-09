@@ -81,6 +81,8 @@ export class ModulesManager {
             .join(', ')})`;
     }
     private async fillCache() {
+        await this.checkDb()
+
         const datas = await query<modules>(`SELECT * FROM modules`);
         for (const data of datas) {
             const dt = {};
