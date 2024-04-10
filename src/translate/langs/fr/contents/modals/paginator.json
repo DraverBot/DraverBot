@@ -1,0 +1,5 @@
+{
+    "title": "Changer de page",
+    "field": "Numéro de page",
+    "invalidIndex": "Merci de sélectionner un nombre valide, compris entre **1** et **{max}**"
+}

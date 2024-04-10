@@ -12,6 +12,8 @@ import replies from '../data/replies';
 import { paginatorOptions } from '../typings/functions';
 import { util } from '../utils/functions';
 import { row, sendError, systemReply } from '../utils/toolbox';
+import { translator } from '../translate/translate';
+import { log4js } from 'amethystjs';
 
 export class Paginator {
     public readonly options: paginatorOptions;
@@ -77,12 +79,12 @@ export class Paginator {
                                 style: TextInputStyle.Short,
                                 maxLength: this.options.embeds.length.toString().length,
                                 required: true,
-                                label: 'Numéro de page'
+                                label: translator.translate('contents.modals.paginator.field', interaction)
                             })
                         )
                     ],
                     customId: 'paginatorSelectModal',
-                    title: 'Changer de page'
+                    title: translator.translate('contents.modals.paginator.title', interaction)
                 });
 
                 interaction.showModal(modal);
@@ -97,14 +99,14 @@ export class Paginator {
                 if (!pageIndex || isNaN(pageIndex) || pageIndex < 1 || pageIndex > this.options.embeds.length) {
                     reply
                         .reply({
-                            content: `Merci de sélectionner un nombre valide, compris entre **1** et **${this.options.embeds.length}**`,
+                            content: translator.translate('contents.modals.paginator.invalidIndex', interaction, { max: this.options.embeds.length }),
                             ephemeral: true
                         })
                         .catch(sendError);
                     return;
                 }
 
-                reply.deferUpdate();
+                reply.deferUpdate().catch(log4js.trace);
 
                 this._index = pageIndex - 1;
             }
