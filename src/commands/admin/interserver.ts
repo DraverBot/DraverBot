@@ -116,7 +116,7 @@ export default new DraverCommand({
 
         const msg = (await interaction
             .reply({
-                components: [yesNoRow()],
+                components: [yesNoRow(interaction)],
                 embeds: [
                     basicEmbed(interaction.user)
                         .setTitle('Fréquence optionnelle')
@@ -215,7 +215,7 @@ export default new DraverCommand({
                     .setTitle('Interchat crée')
                     .setDescription(`Un salon d'interchat à bien été crée dans le salon ${pingChan(channel)}`)
             ],
-            components: [row(frequenceBtn())]
+            components: [row(frequenceBtn(interaction))]
         });
     }
     if (subcommand === 'supprimer') {
@@ -312,7 +312,7 @@ export default new DraverCommand({
                                 }`
                             )
                     ],
-                    components: [row(frequenceBtn())]
+                    components: [row(frequenceBtn(interaction))]
                 })
                 .catch(() => {});
         }
@@ -404,7 +404,7 @@ export default new DraverCommand({
                         .setTitle('Interchat modifié')
                         .setDescription(`La fréquence du salon d'interchat ${pingChan(channel)} a été modifiée`)
                 ],
-                components: [row(frequenceBtn())]
+                components: [row(frequenceBtn(interaction))]
             })
             .catch(() => {});
     }

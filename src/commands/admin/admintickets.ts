@@ -20,6 +20,7 @@ import {
 import replies from '../../data/replies';
 import { ticketChannels } from '../../typings/database';
 import { confirmReturn } from '../../typings/functions';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
     name: 'admintickets',
@@ -304,7 +305,8 @@ export default new DraverCommand({
                     subject,
                     description,
                     image: img?.url,
-                    user: interaction.user
+                    user: interaction.user,
+                    lang: interaction.guild.preferredLocale ?? translator.defaultLang
                 })
                 .catch(() => {})) as { embed: EmbedBuilder };
 

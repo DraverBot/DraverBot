@@ -367,7 +367,7 @@ export default new DraverCommand({
 
         ctx.deferUpdate().catch(log4js.trace);
         interaction.editReply({
-            components: [row<StringSelectMenuBuilder>(selector), row(moduleEnabledButton(!state, mod.id))]
+            components: [row<StringSelectMenuBuilder>(selector), row(moduleEnabledButton(!state, mod.id, ctx))]
         });
     });
 
@@ -411,7 +411,8 @@ export default new DraverCommand({
                 row(
                     moduleEnabledButton(
                         modulesManager.enabled(interaction.guild.id, ctx.values[0] as moduleType),
-                        ctx.values[0]
+                        ctx.values[0],
+                        ctx
                     )
                 )
             ]

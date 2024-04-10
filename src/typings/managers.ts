@@ -1,5 +1,6 @@
 import { Guild, If, TextChannel, User } from 'discord.js';
 import { levelRewardType } from './database';
+import { langResolvable } from './core';
 
 export type IfNot<Condition extends boolean, A, B = null> = Condition extends false
     ? A
@@ -26,6 +27,7 @@ export type createTicketOptions<IsPanel extends boolean> = {
     panel_id?: If<IsPanel, number, null>;
     subject?: If<IsPanel, null, string>;
     description?: IfNot<IsPanel, string>;
+    lang: langResolvable;
 };
 
 export type closeTicketOptions = {
@@ -45,6 +47,7 @@ export type createPanelOptions = {
     subject: string;
     channel: TextChannel;
     user: User;
+    lang: string;
 };
 export enum ticketButtonIds {
     Close = 'ticket.close',

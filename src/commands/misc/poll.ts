@@ -113,7 +113,7 @@ export default new DraverCommand({
                     buttonId: 'PollValidate',
                     disabled: !!allDisabled
                 }),
-                cancelButton().setCustomId(ButtonIds.PollCancel).setDisabled(!!allDisabled)
+                cancelButton(interaction).setCustomId(ButtonIds.PollCancel).setDisabled(!!allDisabled)
             )
         ];
         const embed = () =>

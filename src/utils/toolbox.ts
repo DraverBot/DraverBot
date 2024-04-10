@@ -296,7 +296,7 @@ export const confirm = ({
     user,
     embed,
     time = 120000,
-    components = [yesNoRow()],
+    components = [yesNoRow(interaction)],
     ephemeral = false
 }: {
     interaction: CommandInteraction | ButtonInteraction | AnySelectMenuInteraction | ContextMenuCommandInteraction;

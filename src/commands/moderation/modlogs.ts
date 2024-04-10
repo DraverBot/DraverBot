@@ -386,7 +386,7 @@ export default new DraverCommand({
                         )
                         .setColor('Grey')
                 ],
-                components: [yesNoRow()]
+                components: [yesNoRow(interaction)]
             })
             .catch(() => {});
 

@@ -386,7 +386,7 @@ export default new DraverCommand({
                         id: 'removeUser'
                     })
                 ),
-                row(cancelButton())
+                row(cancelButton(interaction))
             ]
         })) as Message<true>;
 

@@ -265,7 +265,7 @@ export default new DraverCommand({
                         id: 'valider',
                         disabled: changes === 0 || (item.itemType === 'role' && item.roleId.length < 1) || fullDisable
                     }),
-                    cancelButton().setDisabled(fullDisable)
+                    cancelButton(interaction).setDisabled(fullDisable)
                 )
             ];
         };
@@ -416,7 +416,7 @@ export default new DraverCommand({
                                 id: 'role',
                                 disabled: item.itemType === 'role'
                             }),
-                            cancelButton()
+                            cancelButton(ctx)
                         )
                     ];
                 };

@@ -151,7 +151,7 @@ export default new DraverCommand({
                             .setColor('Grey')
                     ],
                     fetchReply: true,
-                    components: [yesNoRow()]
+                    components: [yesNoRow(interaction)]
                 })
                 .catch(() => {})) as Message<true>;
             if (!msg) return;
@@ -384,7 +384,7 @@ export default new DraverCommand({
                             .setColor('Grey')
                     ],
                     fetchReply: true,
-                    components: [yesNoRow()]
+                    components: [yesNoRow(interaction)]
                 })
                 .catch(() => {})) as Message<true>;
             if (!msg) return;

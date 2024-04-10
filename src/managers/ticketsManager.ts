@@ -42,6 +42,7 @@ import htmlSave from '../utils/htmlSave';
 import { rmSync } from 'fs';
 import { confirmReturn } from '../typings/functions';
 import replies from '../data/replies';
+import { translator } from '../translate/translate';
 
 export class TicketsManager {
     public readonly client: Client;
@@ -168,7 +169,7 @@ export class TicketsManager {
             const msg = (await ticket
                 .send({
                     embeds: [embed],
-                    components: [this.createComponents],
+                    components: [this.createComponents(translator.resolveLang(opts.lang))],
                     content: pingUser(user)
                 })
                 .catch(sendError)) as Message<true>;
@@ -192,16 +193,17 @@ export class TicketsManager {
                 state: 'open' as ticketState,
                 panel_reference: opts.panel_id ?? 0,
                 message_id: msg.id,
-                channelName: ticket.name
+                channelName: ticket.name,
+                lang: translator.resolveLang(opts.lang)
             };
             this._tickets.set(msg.id, ticketDatas);
             const sql = `INSERT INTO ${
                 DatabaseTables.Tickets
-            } ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName ) VALUES ( '${
+            } ( guild_id, channel_id, user_id, message_id, panel_reference, state, channelName, lang ) VALUES ( '${
                 guild.id
             }', '${ticket.id}', '${user.id}',  '${msg.id}', '${ticketDatas.panel_reference}', 'open', "${sqliseString(
                 ticket.name
-            )}" )`;
+            )}", "${sqliseString(ticketDatas.lang)}" )`;
             await query(sql);
 
             return resolve({
@@ -249,7 +251,7 @@ export class TicketsManager {
                 channel.setName(`${ticket.channelName}-closed`).catch(console.log),
                 message
                     .edit({
-                        components: [row(...ticketsClosedButtons())]
+                        components: [row(...ticketsClosedButtons(ticket.lang))]
                     })
                     .catch(console.log)
             ]);
@@ -299,7 +301,7 @@ export class TicketsManager {
                 }),
                 channel.setName(ticket.channelName).catch(console.log),
                 message.edit({
-                    components: [this.createComponentsNoMention]
+                    components: [this.createComponentsNoMention(ticket.lang)]
                 })
             ]);
 
@@ -449,7 +451,7 @@ export class TicketsManager {
 
         await msg
             .edit({
-                components: [this.createComponentsNoMention]
+                components: [this.createComponentsNoMention(ticket.lang)]
             })
             .catch(sendError);
 
@@ -544,7 +546,8 @@ export class TicketsManager {
         subject,
         description,
         image,
-        user
+        user,
+        lang
     }: createPanelOptions): Promise<{ embed: EmbedBuilder; panel?: ticketPanels }> {
         return new Promise(async (resolve) => {
             const embed = basicEmbed(guild.client.user)
@@ -581,7 +584,8 @@ export class TicketsManager {
                 description: description ?? '',
                 subject,
                 channel_id: channel.id,
-                guild_id: guild.id
+                guild_id: guild.id,
+                lang: lang
             };
 
             const res = await query(
@@ -656,11 +660,11 @@ export class TicketsManager {
     /* End panels part */
     // Private methods to get components
 
-    private get createComponents() {
-        return row(...ticketsCreateButtons(true));
+    private createComponents(lang: string) {
+        return row(...ticketsCreateButtons(lang, true));
     }
-    private get createComponentsNoMention() {
-        return row(...ticketsCreateButtons(false));
+    private createComponentsNoMention(lang: string) {
+        return row(...ticketsCreateButtons(lang, false));
     }
     private invalidChannel(user: User, guild: Guild) {
         return basicEmbed(user)
@@ -780,10 +784,10 @@ export class TicketsManager {
     private async checkDb() {
         await Promise.all([
             query(
-                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL DEFAULT '-1', user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open', channelName VARCHAR(255) NOT NULL )`
+                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Tickets} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL PRIMARY KEY, panel_reference INTEGER(255) NOT NULL DEFAULT '-1', user_id VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL DEFAULT 'open', channelName VARCHAR(255) NOT NULL, lang VARCHAR(255) NOT NULL DEFAULT 'fr' )`
             ),
             query(
-                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet' )`
+                `CREATE TABLE IF NOT EXISTS ${DatabaseTables.Panels} ( guild_id VARCHAR(255) NOT NULL, channel_id VARCHAR(255) NOT NULL, message_id VARCHAR(255) NOT NULL, reference INTEGER(255) NOT NULL AUTO_INCREMENT PRIMARY KEY, image VARCHAR(255) NOT NULL DEFAULT '', description VARCHAR(255) NOT NULL DEFAULT '', subject VARCHAR(255) NOT NULL DEFAULT 'pas de sujet', lang varchar(255) not null default 'fr' )`
             ),
             query(
                 `CREATE TABLE IF NOT EXISTS ${DatabaseTables.ModRoles} ( guild_id VARCHAR(255) NOT NULL PRIMARY KEY, roles LONGTEXT )`
@@ -921,7 +925,8 @@ export class TicketsManager {
                                 panel_id: panel.reference,
                                 user: button.user,
                                 description: panel.description,
-                                subject: panel.subject
+                                subject: panel.subject,
+                                lang: panel.lang
                             });
 
                             button

@@ -200,7 +200,7 @@ export default new DraverCommand({
                         style: 'Success',
                         id: 'apply'
                     }),
-                    cancelButton().setDisabled(allDisabled)
+                    cancelButton(interaction).setDisabled(allDisabled)
                 )
             ];
         };

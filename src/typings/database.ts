@@ -160,6 +160,7 @@ export type ticketPanels<HasReference extends boolean = true> = {
     image: string | null;
     subject: string;
     description: string;
+    lang: string;
 } & (HasReference extends true
     ? {
           /**
@@ -180,6 +181,7 @@ export type ticketChannels = {
     user_id: string;
     state: ticketState;
     channelName: string;
+    lang: string;
 };
 export type ticketModRoles<T extends boolean = false> = {
     /**

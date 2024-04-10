@@ -81,7 +81,7 @@ export default new DraverCommand({
                         )}** ?`
                     )
             ],
-            components: [yesNoRow()]
+            components: [yesNoRow(interaction)]
         })
         .catch(() => {});
 

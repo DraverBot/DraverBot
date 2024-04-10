@@ -5,18 +5,21 @@ import { util } from '../../utils/functions';
 import { TranslateError } from './TranslateError';
 
 export class Translator {
-    private defaultLang: string;
+    private _defaultLang: string;
     private dict: Record<string, any> = {};
 
     constructor(defaultLang: string) {
-        this.defaultLang = defaultLang;
+        this._defaultLang = defaultLang;
 
         this.start();
     }
 
+    public get defaultLang() {
+        return this._defaultLang
+    }
     private resolve(key: string, lang: string) {
         const path = key.split('.');
-        let value = Object.keys(this.dict).includes(lang) ? this.dict[lang] : this.dict[this.defaultLang];
+        let value = Object.keys(this.dict).includes(lang) ? this.dict[lang] : this.dict[this._defaultLang];
 
         for (const section of path) {
             if (value[section]) value = value[section];
@@ -39,7 +42,7 @@ export class Translator {
         nameLocalizations: LocalizationMap;
         descriptionLocalizations: LocalizationMap;
     } {
-        const defaultSet = this.resolve(key, this.defaultLang);
+        const defaultSet = this.resolve(key, this._defaultLang);
         const data = {
             name: defaultSet.name,
             description: defaultSet.description,
@@ -59,7 +62,7 @@ export class Translator {
     public resolveLang(resolvable: langResolvable): string {
         if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
         if (resolvable instanceof BaseInteraction) return resolvable?.locale;
-        if (resolvable === 'default') return this.defaultLang
+        if (resolvable === 'default') return this._defaultLang
         return resolvable;
     }
     public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {

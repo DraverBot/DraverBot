@@ -221,7 +221,7 @@ export default new Process(
                                 `Le rôle ${pingRole(role)} sera attribué.\nVoulez-vous ajouter un émoji au rôle ?`
                             )
                     ],
-                    components: [yesNoRow()]
+                    components: [yesNoRow(interaction)]
                 })
                 .catch(log4js.trace);
             const emojiQuestionRes = await waitForInteraction({

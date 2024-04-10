@@ -1,17 +1,19 @@
+import { translator } from '../translate/translate';
+import { langResolvable } from '../typings/core';
 import { ticketButtonIds } from '../typings/managers';
 import { util } from '../utils/functions';
 import { buildButton, notNull, row } from '../utils/toolbox';
 
-export const yesBtn = (options?: { label?: string }) => {
+export const yesBtn = (lang: langResolvable, options?: { label?: string }) => {
     return buildButton({
-        label: options?.label ?? 'Oui',
+        label: options?.label ?? translator.translate('contents.global.buttons.yes', lang),
         id: 'yes',
         style: 'Success'
     });
 };
-export const noBtn = (options?: { label?: string }) => {
+export const noBtn = (lang: langResolvable, options?: { label?: string }) => {
     return buildButton({
-        label: options?.label ?? 'Non',
+        label: options?.label ?? translator.translate('contents.global.buttons.no', lang),
         id: 'no',
         style: 'Danger'
     });
@@ -70,74 +72,74 @@ export const closePaginator = () => {
         style: 'Danger'
     });
 };
-export const moduleEnabled = (enabled: boolean, moduleId: string) => {
+export const moduleEnabled = (enabled: boolean, moduleId: string, lang: langResolvable) => {
     return buildButton({
-        label: enabled ? 'Désactiver' : 'Activer',
+        label: translator.translate(`contents.global.buttons.module.${enabled ? 'enabled' : 'disabled'}`, lang),
         id: moduleId,
         style: 'Primary'
     });
 };
-export const frequenceBtn = () => {
+export const frequenceBtn = (lang: langResolvable) => {
     return buildButton({
-        label: 'Fréquence',
+        label: translator.translate('contents.global.buttons.frequence', lang),
         id: 'interchat.see-frequence',
         style: 'Primary'
     });
 };
-export const inPocket = () => {
+export const inPocket = (lang: langResolvable) => {
     return buildButton({
-        label: 'En poche',
+        label: translator.translate(`contents.global.buttons.pocket`, lang),
         id: 'coins.pocket',
         style: 'Primary'
     });
 };
-export const inBank = () => {
+export const inBank = (lang: langResolvable) => {
     return buildButton({
-        label: 'En banque',
+        label: translator.translate('contents.global.buttons.bank', lang),
         id: 'coins.bank',
         style: 'Primary'
     });
 };
-export const cancelButton = () => {
+export const cancelButton = (lang: langResolvable) => {
     return buildButton({
-        label: 'Annuler',
+        label: translator.translate('contents.global.buttons.cancel', lang),
         id: 'cancel',
         style: 'Danger'
     });
 };
-export const ticketsCreateButtons = (mentionEveryone?: boolean) => {
+export const ticketsCreateButtons = (lang: langResolvable, mentionEveryone?: boolean) => {
     return [
         buildButton({
-            label: 'Fermer',
+            label: translator.translate('contents.global.buttons.tickets.close', lang),
             id: ticketButtonIds.Close,
             style: 'Secondary',
             emoji: '🔐'
         }),
         mentionEveryone === true
             ? buildButton({
-                  label: 'Mentionner everyone',
+                  label: translator.translate('contents.global.buttons.tickets.mention', lang),
                   id: ticketButtonIds.Mention,
                   style: 'Danger'
               })
             : null
     ].filter(notNull);
 };
-export const ticketsClosedButtons = () => {
+export const ticketsClosedButtons = (lang: langResolvable) => {
     return [
         buildButton({
-            label: 'Réouvrir',
+            label: translator.translate('contents.global.buttons.tickets.reopen', lang),
             id: ticketButtonIds.Reopen,
             emoji: '🔓',
             style: 'Primary'
         }),
         buildButton({
-            label: 'Sauvegarder',
+            label: translator.translate('contents.global.buttons.tickets.save', lang),
             id: ticketButtonIds.Save,
             emoji: '📑',
             style: 'Secondary'
         }),
         buildButton({
-            label: 'Supprimer',
+            label: translator.translate('contents.global.buttons.tickets.delete', lang),
             id: ticketButtonIds.Delete,
             emoji: '⛔',
             style: 'Danger'
@@ -145,6 +147,6 @@ export const ticketsClosedButtons = () => {
     ];
 };
 
-export const yesNoRow = () => {
-    return row(yesBtn(), noBtn());
+export const yesNoRow = (lang: langResolvable) => {
+    return row(yesBtn(lang), noBtn(lang));
 };

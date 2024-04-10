@@ -1,0 +1,19 @@
+{
+    "yes": "Oui",
+    "no": "Non",
+    "module": {
+        "enabled": "Désactiver",
+        "disabled": "Activer"
+    },
+    "frequence": "Fréquence",
+    "pocket": "En poche",
+    "bank": "En banque",
+    "cancel": "Annuler",
+    "tickets": {
+        "close": "Fermer",
+        "mention": "Mentionner everyone",
+        "reopen": "Réouvrir",
+        "save": "Sauvegarder",
+        "delete": "Supprimer"
+    }
+}

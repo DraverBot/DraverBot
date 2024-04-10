@@ -113,7 +113,7 @@ export default new DraverCommand({
                             )
                         )
                 ],
-                components: [yesNoRow()],
+                components: [yesNoRow(interaction)],
                 fetchReply: true
             })
             .catch(log4js.trace)) as Message<true>;
@@ -191,7 +191,7 @@ export default new DraverCommand({
                     .setColor('Grey')
             ],
             fetchReply: true,
-            components: [row(inPocket(), inBank())]
+            components: [row(inPocket(interaction), inBank(interaction))]
         })) as Message<true>;
 
         const reply = await waitForInteraction({
@@ -299,7 +299,7 @@ export default new DraverCommand({
                     .setColor('Grey')
             ],
             fetchReply: true,
-            components: [row(inPocket(), inBank())]
+            components: [row(inPocket(interaction), inBank(interaction))]
         })) as Message<true>;
 
         const reply = await waitForInteraction({

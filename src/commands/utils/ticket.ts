@@ -6,6 +6,7 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { basicEmbed, confirm, subcmd, systemReply } from '../../utils/toolbox';
 import { confirmReturn } from '../../typings/functions';
 import replies from '../../data/replies';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
     name: 'ticket',
@@ -105,7 +106,8 @@ export default new DraverCommand({
         const res = await ticketsManager.createTicket<false>({
             guild: interaction.guild,
             user: interaction.user,
-            subject: sujet
+            subject: sujet,
+            lang: interaction.guild.preferredLocale ?? translator.defaultLang
         });
 
         interaction

@@ -45,7 +45,7 @@ export default new DraverCommand({
                     .setColor('Grey')
                     .setTitle('Expulsion')
             ],
-            components: [yesNoRow()],
+            components: [yesNoRow(interaction)],
             fetchReply: true
         })) as Message<true>;
 
