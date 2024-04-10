@@ -1,0 +1,82 @@
+{
+    "name": "admininvitations",
+    "description": "Gère les invitations du serveur",
+    "options": {
+        "reset": {
+            "name": "réinitialiser",
+            "description": "Réinitialise les invitations",
+            "options": {
+                "server": {
+                    "name": "serveur",
+                    "description": "Réinitialise les invitations du serveur"
+                },
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Réinitialise les invitations d'un utilisateur"
+                }
+            }
+        },
+        "bonus": {
+            "name": "bonus",
+            "description": "Gère les bonus d'un utilisateur",
+            "options": {
+                "add": {
+                    "name": "ajouter",
+                    "description": "Ajoute des invitations bonus à un membre",
+                    "options": {
+                        "user": {
+                            "name": "utilisateur",
+                            "description": "Utilisateur auquel vous voulez rajouter des invitations"
+                        },
+                        "invites": {
+                            "name": "invitations",
+                            "description": "Nombre d'invitations que vous voulez rajouter"
+                        }
+                    }
+                },
+                "remove": {
+                    "name" :"retirer",
+                    "description": "Retire des invitations bonus à un membre",
+                    "options": {
+                        "user": {
+                            "name": "utilisateur",
+                            "description": "Utilisateur auquel vous voulez retirer des invitations"
+                        },
+                        "invites": {
+                            "name": "invitations",
+                            "description": "Nombre d'invitations que vous voulez retirer"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "replies": {
+        "reset": {
+            "confirmation": {
+                "title": "Réinitialisation",
+                "descriptionServer": "Vous êtes sur le point de réinitialiser les invitations du serveur.\nVoulez-vous continuer ?",
+                "descriptionUser": "Vous êtes sur le point de réinitialiser les invitations de {user}.\nVoulez-vous continuer ?"
+            },
+            "setted": {
+                "title": "Réinitialisation",
+                "descriptionServer": "Les invitations du serveur ont été réinitialisées.",
+                "descriptionUser": "Les invitations de {user} ont été réinitialisées."
+            }
+        },
+        "bonus": {
+            "added": {
+                "title": "Invitations ajoutées",
+                "description": "**{invites}** invitations ont été ajoutées à {user}"
+            },
+            "notEnough": {
+                "title": "Invitations insuffisantes",
+                "description": "{user} n'a pas assez d'invitations pour pouvoir en retirer **{amount}**"
+            },
+            "removed": {
+                "title": "Invitations retirées",
+                "description": "**{amount}** invitations ont été retirées à {user}"
+            }
+        }
+    }
+}

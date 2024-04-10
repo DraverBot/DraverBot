@@ -5,48 +5,41 @@ import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { basicEmbed, checkPerms, confirm, numerize, pingUser, plurial } from '../../utils/toolbox';
 import replies from '../../data/replies';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'admininvitations',
+    ...translator.commandData('commands.admins.invites'),
     module: 'administration',
-    description: 'Gère les invitations du serveur',
     options: [
         {
-            name: 'réinitialiser',
+            ...translator.commandData('commands.admins.invites.options.reset'),
             type: ApplicationCommandOptionType.SubcommandGroup,
-            description: 'Réinitialise les invitations',
             options: [
                 {
-                    name: 'serveur',
-                    description: 'Réinitialise toutes les invitations du serveur',
+                    ...translator.commandData('commands.admins.invites.options.reset.options.server'),
                     type: ApplicationCommandOptionType.Subcommand
                 },
                 {
-                    name: 'utilisateur',
-                    description: "Réinitialise toutes les invitations d'un utilisateur",
+                    ...translator.commandData('commands.admins.invites.options.reset.options.user'),
                     type: ApplicationCommandOptionType.Subcommand
                 }
             ]
         },
         {
-            name: 'bonus',
-            description: "Gère les bonus d'un utilisateur",
+            ...translator.commandData('commands.admins.invites.options.bonus'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'ajouter',
-                    description: 'Ajoute des invitations bonus à un membre',
+                    ...translator.commandData('commands.admins.invites.options.bonus.options.add'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'utilisateur',
-                            description: 'Utilisateur auquel vous voulez rajouter des invitations',
+                            ...translator.commandData('commands.admins.invites.options.bonus.options.add.options.user'),
                             required: true,
                             type: ApplicationCommandOptionType.User
                         },
                         {
-                            name: 'invitations',
-                            description: "Nombre d'invitations que vous voulez rajouter",
+                            ...translator.commandData('commands.admins.invites.options.bonus.options.add.options.invites'),
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             minValue: 1
@@ -54,19 +47,16 @@ export default new DraverCommand({
                     ]
                 },
                 {
-                    name: 'retirer',
-                    description: 'Retire des invitations bonus à un membre',
+                    ...translator.commandData('commands.admins.invites.options.bonus.options.remove'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'utilisateur',
-                            description: 'Utilisateur auquel vous voulez retirer des invitations',
+                            ...translator.commandData('commands.admins.invites.options.bonus.remove.options.user'),
                             required: true,
                             type: ApplicationCommandOptionType.User
                         },
                         {
-                            name: 'invitations',
-                            description: "Nombre d'invitations que vous voulez retirer",
+                            ...translator.commandData('commands.admins.invites.options.bonus.remove.options.invites'),
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             minValue: 1
@@ -120,9 +110,9 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Réinitialisation')
+                .setTitle(translator.translate('commands.admins.invites.replies.reset.confirmation.title', interaction))
                 .setDescription(
-                    `Vous êtes sur le points de réinitialiser les invitations ${resetText}.\nVoulez-vous continuer ?`
+                    translator.translate(`commands.admins.invites.replies.reset.confirmation.description${cmd === 'serveur' ? 'Server' : 'User'}`, interaction, { user: pingUser(user?.id) })
                 )
         }).catch(log4js.trace);
 
@@ -144,8 +134,9 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Réinitialisation')
-                        .setDescription(`Les invitations ${resetText} ont été réinitialisées`)
+                        .setTitle(translator.translate('commands.admins.invites.replies.reset.setted.title', interaction))
+                        .setDescription(translator.translate(`commands.admins.invites.replies.reset.setted.description${cmd === 'serveur' ? 'Server': 'User'}`, interaction, { user: pingUser(user?.id) })
+                    )
                 ],
                 components: []
             })
@@ -183,12 +174,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Invitations ajoutées')
+                            .setTitle(translator.translate('commands.admins.invites.bonus.added.title', interaction))
                             .setDescription(
-                                `${numerize(amount)} invitation${plurial(amount, {
-                                    singular: ' a été ajoutée',
-                                    plurial: 's ont été ajoutées'
-                                })} à ${pingUser(user)}`
+                                translator.translate('commands.admins.invites.bonus.added.description', interaction, {
+                                    invites: amount,
+                                    user: pingUser(user)
+                                })
                             )
                     ]
                 })
@@ -199,11 +190,12 @@ export default new DraverCommand({
                 return interaction.reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Invitations insuffisantes')
+                            .setTitle(translator.translate('commands.admins.invites.replies.bonus.notEnough.title', interaction))
                             .setDescription(
-                                `${pingUser(user)} n'a pas assez d'invitations pour pouvoir en retirer **${numerize(
-                                    amount
-                                )}**`
+                                translator.translate('commands.admins.invites.replies.bonus.notEnough.description', interaction, {
+                                    amount,
+                                    user: pingUser(user)
+                                })
                             )
                     ]
                 });
@@ -218,12 +210,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Invitations retirées')
+                            .setTitle(translator.translate('commands.admins.invites.replies.removed.title', interaction))
                             .setDescription(
-                                `**${numerize(quantity * -1)}** invitation${plurial(quantity * -1, {
-                                    singular: ' a été retirée',
-                                    plurial: 's ont été retirées'
-                                })} à ${pingUser(user)}`
+                                translator.translate('commands.admins.invites.replies.removed.description', interaction, {
+                                    amount: quantity,
+                                    user: pingUser(user)
+                                })
                             )
                     ]
                 })
