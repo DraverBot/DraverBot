@@ -1,0 +1,51 @@
+{
+    "name": "admincoupons",
+    "description": "Gère les coupons sur le serveur",
+    "options": {
+        "create": {
+            "name": "créer",
+            "description": "Crée un coupon",
+            "options": {
+                "value": {
+                    "name": "valeur",
+                    "description": "Valeur du coupon"
+                }
+            }
+        },
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des coupons"
+        },
+        "delete": {
+            "name": "supprimer",
+            "description":"Supprime un coupon",
+            "options": {
+                "coupon": {
+                    "name": "coupon",
+                    "description": "Coupon à supprimer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "generateError": {
+            "title": "Erreur de génération",
+            "description": "Je n'ai pas pu générer de code pour le coupon.\nVeuillez réessayez la commande.\n\n💡\n> Si l'erreur persiste, contactez le [serveur de support]({support})"
+        },
+        "created": "Un coupon d'une valeur de **{amount} {coins}** a été généré. Vous pouvez voir la liste des coupons avec la commande `/admincoupons liste`\n\nLe code du coupon est ```{code}```",
+        "noCoupons": {
+            "title": "Pas de coupons",
+            "description": "Il n'y a aucun coupons sur ce serveur"
+        },
+        "list": {
+            "title": "Liste des coupons",
+            "description": "Il y a **{count}** coupons sur le serveur",
+            "mapper": "Valeur de **{amount} {coins}**"
+        },
+        "deleted": {
+            "title": "Coupon supprimé",
+            "description": "Un coupon d'une valeur de **{amount} {coins}** a été supprimé",
+            "codeName": "code"
+        }
+    }
+}

@@ -22,22 +22,20 @@ import { DatabaseTables, coupons } from '../../typings/database';
 import couponsErrors from '../../maps/couponsErrors';
 import { util } from '../../utils/functions';
 import replies from '../../data/replies';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'admincoupons',
+    ...translator.commandData('commands.admins.coupons'),
     module: 'administration',
-    description: 'Gère les coupons sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'créer',
-            description: 'Crée un coupon',
+            ...translator.commandData('commands.admins.coupons.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'valeur',
-                    description: 'Valeur du coupon',
+                    ...translator.commandData('commands.admins.coupons.options.create.options.value'),
                     required: false,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
@@ -45,18 +43,15 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'liste',
-            description: 'Affiche la liste des coupons',
+            ...translator.commandData('commands.admins.coupons.options.list'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un coupon',
+            ...translator.commandData('commands.admins.coupons.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'coupon',
-                    description: 'Coupon à supprimer',
+                    ...translator.commandData('commands.admins.coupons.options.delete.options.coupon'),
                     type: ApplicationCommandOptionType.String,
                     required: true,
                     autocomplete: true
@@ -117,11 +112,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Erreur de génération')
+                            .setTitle(translator.translate('commands.admins.coupons.replies.generateError.title', interaction))
                             .setDescription(
-                                `Je n'ai pas pu générer de code pour le coupon.\nVeuillez réessayez la commande.\n${hint(
-                                    `Si l'erreur persiste, contactez le serveur de support`
-                                )}`
+                                translator.translate('commands.admins.coupons.replies.generateError.description', interaction)
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]
@@ -141,11 +134,10 @@ export default new DraverCommand({
 
         interaction
             .editReply({
-                content: `Le coupon d'une valeur de ${numerize(amount)} ${util(
-                    'coins'
-                )} a été généré. Vous pouvez voir la liste des coupons avec la commande \`/admincoupons liste\`\n\nLe code du coupon est : ${codeBox(
-                    valid[0]
-                )}`
+                content: translator.translate('commands.admins.coupons.replies.created', interaction, {
+                    amount,
+                    code: valid[0]
+                })
             })
             .catch(() => {});
     }
@@ -161,21 +153,27 @@ export default new DraverCommand({
                     embeds: [
                         basicEmbed(interaction.user)
                             .setColor(evokerColor(interaction.guild))
-                            .setTitle('Pas de coupons')
-                            .setDescription(`Il n'y a aucun coupons sur ce serveur`)
+                            .setTitle(translator.translate('commands.admins.coupons.replies.title', interaction))
+                            .setDescription(translator.translate('commands.admins.coupons.replies.description', interaction))
                     ]
                 })
                 .catch(() => {});
 
         const basic = () => {
             return basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Liste des coupons')
-                .setDescription(`Il y a ${numerize(list.length)} coupon${plurial(list.length)} sur le serveur`);
+                .setTitle(translator.translate('commands.admins.coupons.replies.list.title', interaction))
+                .setDescription(
+                    translator.translate('commands.admins.coupons.replies.list.description', interaction, {
+                        count: list.length
+                    })
+                );
         };
         const map = (coupon: coupons, embed: EmbedBuilder) => {
             return embed.addFields({
                 name: coupon.coupon,
-                value: `Valeur de ${numerize(coupon.amount)} ${util('coins')}`,
+                value: translator.translate('commands.admins.coupons.replies.list.mapper', interaction, {
+                    amount: coupon.amount
+                }),
                 inline: false
             });
         };
@@ -225,12 +223,14 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Coupon supprimé')
+                        .setTitle(translator.translate('commands.admins.coupons.replies.deleted.title', interaction))
                         .setDescription(
-                            `Un coupon d'une valeur de ${numerize(res[0].amount)} ${util('coins')} a été supprimé`
+                            translator.translate('commands.admins.coupons.replies.deleted.description', interaction, {
+                                amount: res[0].amount
+                            })
                         )
                         .setFields({
-                            name: 'Code',
+                            name: translator.translate('commands.admins.coupons.replies.deleted.codeName', interaction),
                             value: codeBox(res[0].coupon),
                             inline: false
                         })
