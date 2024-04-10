@@ -13,7 +13,7 @@ export default new Process(
         user,
         width = 1100,
         height = 700,
-        embed = replies.askImage(user, { width, height }),
+        embed = replies.askImage(user, { width, height }, interaction),
         time = 120000
     }: {
         interaction: CommandInteraction;
@@ -44,7 +44,7 @@ export default new Process(
                 const validImg = /(jpe?g|png|webp)/;
                 if (!msg.attachments.filter((x) => validImg.test(x.contentType)).size) {
                     SendAndDelete.process(
-                        { embeds: [replies.noImage(msg.member ?? msg.author)] },
+                        { embeds: [replies.noImage(msg.member ?? msg.author, interaction)] },
                         msg.channel as TextChannel
                     );
                     return;
@@ -52,14 +52,14 @@ export default new Process(
                 const img = msg.attachments.first();
                 if (img.size > 1000000) {
                     SendAndDelete.process(
-                        { embeds: [replies.imageToLarge(msg.member ?? msg.author)] },
+                        { embeds: [replies.imageTooLarge(msg.member ?? msg.author, interaction)] },
                         msg.channel as TextChannel
                     );
                     return;
                 }
                 if (img.width > width || img.height > height) {
                     SendAndDelete.process(
-                        { embeds: [replies.invalidDimens(msg.member ?? msg.author, { width, height })] },
+                        { embeds: [replies.invalidDimens(msg.member ?? msg.author, { width, height }, interaction)] },
                         msg.channel as TextChannel
                     );
                     return;

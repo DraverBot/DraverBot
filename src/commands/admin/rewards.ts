@@ -125,7 +125,7 @@ export default new DraverCommand({
             interaction
                 .reply({
                     ephemeral: true,
-                    embeds: [replies.configDisabled(interaction.member as GuildMember, parameter)]
+                    embeds: [replies.configDisabled(interaction.member as GuildMember, parameter, interaction)]
                 })
                 .catch(log4js.trace);
             return false;

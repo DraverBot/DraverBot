@@ -266,7 +266,7 @@ export default new DraverCommand({
         if (!res || res === 'insertion not found' || res === 'no guild found' || res === 'no message found')
             return interaction
                 .editReply({
-                    embeds: [replies.internalError(interaction.member as GuildMember)]
+                    embeds: [replies.internalError(interaction.member as GuildMember, interaction)]
                 })
                 .catch(log4js.trace);
 
@@ -288,7 +288,7 @@ export default new DraverCommand({
         if (!task)
             return interaction
                 .reply({
-                    embeds: [replies.tasks.unexisting(interaction.member as GuildMember)],
+                    embeds: [replies.tasks.unexisting(interaction.member as GuildMember, interaction)],
                     ephemeral: true
                 })
                 .catch(log4js.trace);
@@ -321,7 +321,7 @@ export default new DraverCommand({
         if (!task)
             return interaction
                 .reply({
-                    embeds: [replies.tasks.unexisting(interaction.member as GuildMember)],
+                    embeds: [replies.tasks.unexisting(interaction.member as GuildMember, interaction)],
                     ephemeral: true
                 })
                 .catch(log4js.trace);
@@ -370,11 +370,11 @@ export default new DraverCommand({
 
         if (!task)
             return interaction
-                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
         if (task.ended)
             return interaction
-                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
 
         if (!checkUser(task))
@@ -455,11 +455,11 @@ export default new DraverCommand({
 
         if (!task)
             return interaction
-                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
         if (task.ended)
             return interaction
-                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.tasks.taskEnded(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
 
         if (!checkUser(task))
@@ -616,7 +616,7 @@ export default new DraverCommand({
         const task = getTask();
         if (!task)
             return interaction
-                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.tasks.unexisting(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
 
         const embedColor =

@@ -29,7 +29,7 @@ export default new DraverCommand({
     const reroll = await giveaways.reroll(message.id);
     if (typeof reroll === 'string')
         return interaction
-            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
+            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember, interaction)] })
             .catch(log4js.trace);
     interaction.deleteReply().catch(log4js.trace);
 });

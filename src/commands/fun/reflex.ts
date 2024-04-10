@@ -29,7 +29,7 @@ export default new DraverCommand({
     if (!rep)
         return interaction
             .editReply({
-                embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user)],
+                embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user, interaction)],
                 components: []
             })
             .catch(log4js.trace);

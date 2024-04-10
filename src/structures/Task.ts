@@ -17,6 +17,7 @@ import replies from '../data/replies';
 import { basicEmbed, buildButton, confirm, notNull, row } from '../utils/toolbox';
 import query from '../utils/query';
 import { ButtonIds } from '../typings/buttons';
+import { translator } from '../translate/translate';
 
 export class Task {
     private guild_id: string;
@@ -36,6 +37,7 @@ export class Task {
     private assignees: string[];
     private id: number;
     private collector: InteractionCollector<ButtonInteraction>;
+    private lang: string;
 
     private client: Client;
 
@@ -54,6 +56,7 @@ export class Task {
         this.channel_id = data.channel_id;
         this.message_id = data.message_id;
         this.state = data.state;
+        this.lang = translator.resolveLang(data.lang)
 
         this.start();
     }
@@ -70,20 +73,21 @@ export class Task {
             id: this.id,
             guild_id: this.guild_id,
             channel_id: this.channel_id,
-            message_id: this.message_id
+            message_id: this.message_id,
+            lang: this.lang
         };
     }
 
     private edit(closeReason?: 'deadline crossed' | 'someone closed') {
         let embed: EmbedBuilder;
         if (this.state === 'closed') {
-            embed = replies.tasks.closed(this.data, closeReason);
+            embed = replies.tasks.closed(this.data, closeReason, this.lang);
         } else if (this.state === 'done') {
-            embed = replies.tasks.done(this.data);
+            embed = replies.tasks.done(this.data, this.lang);
         } else if (this.state === 'pending') {
-            embed = replies.tasks.pending(this.data);
+            embed = replies.tasks.pending(this.data, this.lang);
         } else {
-            embed = replies.tasks.working(this.data);
+            embed = replies.tasks.working(this.data, this.lang);
         }
 
         this.message

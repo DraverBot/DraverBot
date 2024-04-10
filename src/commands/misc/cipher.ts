@@ -375,7 +375,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, {
+                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction, {
                                 letters: characters.join('')
                             })
                         ],
@@ -440,7 +440,7 @@ export default new DraverCommand({
             if (!IsValidInput(content))
                 return interaction
                     .reply({
-                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user)],
+                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)],
                         ephemeral: true
                     })
                     .catch(log4js.trace);
@@ -467,7 +467,7 @@ export default new DraverCommand({
             if (!IsValidInput(content))
                 return interaction
                     .reply({
-                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user)],
+                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)],
                         ephemeral: true
                     })
                     .catch(log4js.trace);
@@ -475,7 +475,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, {
+                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction, {
                                 test: 'key'
                             })
                         ],

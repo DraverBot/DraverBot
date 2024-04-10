@@ -732,7 +732,7 @@ export const dumpDatabase = async () => {
     if (!existsSync('./save.sql'))
         return channel
             .send({
-                embeds: [replies.internalError(client.user)]
+                embeds: [replies.internalError(client.user, 'default')]
             })
             .catch(log4js.trace);
 

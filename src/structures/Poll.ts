@@ -14,6 +14,7 @@ import { log4js } from 'amethystjs';
 import query from '../utils/query';
 import { basicEmbed, confirm, numerize, pingUser, plurial, round } from '../utils/toolbox';
 import replies from '../data/replies';
+import { translator } from '../translate/translate';
 
 export class Poll {
     private _data: polls;
@@ -127,9 +128,14 @@ export class Poll {
         const base = this._message.embeds[0];
         const embed = new EmbedBuilder(base);
         embed.setDescription(
-            `Sondage lancé par ${pingUser(this._data.started_by)}\n> ${this._data.question}\n\n${this._data.choices
-                .map((x) => `- ${x.name} ( ${x.count} vote${plurial(x.count)} )`)
-                .join('\n')}`
+            translator.translate('contents.global.embeds.poll.description', this._data.lang, {
+                user: pingUser(this._data.started_by),
+                question: this._data.question,
+                choices: this._data.choices.map(x => translator.translate('contents.global.embeds.poll.mapper', this._data.lang, {
+                    name: x.name,
+                    votes: x.count
+                })).join('\n')
+            })
         );
 
         return this._message.edit({ embeds: [embed] }).catch(log4js.trace);
@@ -172,7 +178,7 @@ export class Poll {
             const choices = ctx.values.map((x) => this._data.choices.find((y) => y.id === parseInt(x)));
             if (!choices) {
                 ctx.reply({
-                    embeds: [replies.internalError((ctx.member as GuildMember) ?? ctx.user)],
+                    embeds: [replies.internalError((ctx.member as GuildMember) ?? ctx.user, ctx)],
                     ephemeral: true
                 }).catch(log4js.trace);
                 return;

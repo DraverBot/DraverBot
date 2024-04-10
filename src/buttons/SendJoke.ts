@@ -17,7 +17,7 @@ export default new ButtonHandler({
 
     if (!joke || (joke as unknown as { status: number }).status === 404)
         return systemReply(button, {
-            embeds: [replies.internalError((button.member as GuildMember) ?? user)],
+            embeds: [replies.internalError((button.member as GuildMember) ?? user, button)],
             ephemeral: true
         }).catch(log4js.trace);
 

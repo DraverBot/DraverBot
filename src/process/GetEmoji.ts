@@ -3,6 +3,7 @@ import { Process } from '../structures/Process';
 import { log4js } from 'amethystjs';
 import SendAndDelete from './SendAndDelete';
 import replies from '../data/replies';
+import { langResolvable } from '../typings/core';
 
 export default new Process(
     'Get emoji',
@@ -10,12 +11,14 @@ export default new Process(
         user,
         channel,
         allowCancel = false,
-        time = 120000
+        time = 120000,
+        lang
     }: {
         user: User;
         channel: TextChannel;
         time?: number;
         allowCancel: boolean;
+        lang: langResolvable
     }) => {
         return new Promise<'cancel' | "time's up" | string>(async (resolve) => {
             const collector = channel.createMessageCollector({
@@ -36,7 +39,7 @@ export default new Process(
                     !!message.client.emojis.cache.find((x) => x.toString() === message.content);
                 if (!valid) {
                     SendAndDelete.process(
-                        { embeds: [replies.invalidEmoji((message.member as GuildMember) ?? message.author)] },
+                        { embeds: [replies.invalidEmoji((message.member as GuildMember) ?? message.author, lang)] },
                         message.channel as TextChannel
                     );
                     return;

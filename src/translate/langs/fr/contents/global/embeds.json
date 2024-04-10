@@ -178,5 +178,107 @@
             "winner": "Numéros tirés :\n* Gagnants : `{rolled}`\n\nGagnants : {winners}",
             "winnerComplementaries": "Numéros tirés :\n* Gagnants : `{rolled}`\n* Complémentaires : `{complementariesRolled}`\n\nGagnants : {winners}"
         }
+    },
+    "internalError": {
+        "title": "Erreur interne",
+        "description": "Une erreur interne est survenue.\nVeuillez réessayer. Si l'erreur persiste, contactez mon [serveur de support]({support})"
+    },
+    "poll": {
+        "title":  "Sondage",
+        "description": "Sondage lancé par {user}\n> {question}\n\n{choices}",
+        "mapper": "- {name} ( {votes} votes )",
+        "field": "Fin"
+    },
+    "tasks": {
+        "fields": {
+            "open": {
+                "name": "Ouvert par",
+                "unknown": "Inconnu"
+            },
+            "date": {
+                "name": "À faire avant",
+                "unknown": "Inconnu"
+            },
+            "assignees": {
+                "name": "Assignés",
+                "unknown": "Aucun assigné"
+            }
+        },
+        "pending": {
+            "description": "Tâche en attente\n{description}\n\nAssignez-vous pour commencer la tâche"
+        },
+        "working": {
+            "description": "Tâche en cours\n{description}"
+        },
+        "closed": {
+            "description": "Tâche fermée\n{description}",
+            "informations": {
+                "name": "Informations",
+                "deadlined": "La date limite a été atteinte",
+                "closed": "Quelqu'un a fermé la tâche"
+            }
+        },
+        "done": {
+            "description": "La tâche a été terminée\n{description}"
+        },
+        "unexisting": {
+            "title": "Tâche inexistante",
+            "description": "Cette tâche n'existe pas"
+        },
+        "ended": {
+            "title": "Tâche terminée",
+            "description": "Cette tâche est terminée, vous ne pouvez pas assigner quelqu'un"
+        }
+    },
+    "invalidEmoji": {
+        "title": "❌ | Émoji invalide",
+        "description": "Ce n'est pas un émoji valide.\nVeuillez envoyer un émoji correct, et assurez-vous que je puisse accéder à cet émoji"
+    },
+    "requestStopped": {
+        "title": "Erreur",
+        "description": "Les données n'ont pas pu être trouvées à cause d'un problème venant de la plateforme.\nPatientez quelques minutes, puis réessayez.\nSi cette erreur persiste, contactez mon développeur, par le [serveur de support]({support}), ou par mail ( `{email}` )"
+    },
+    "invalidChannel": {
+        "title": "Salon invalide",
+        "description": "Ce n'est pas un salon valide. Réessayez avec un nom, un identifiant ou une mention"
+    },
+    "invalidChannelType": {
+        "title": "Type de salon invalide",
+        "description": "Ce n'est pas un salon valide, veuillez spécifier un salon de type : {types}"
+    },
+    "configDisabled": {
+        "title": "Paramètre désactivé",
+        "description": "Le paramètre **{param}** est désactivé"
+    },
+    "invalidInput": {
+        "invalidKey": "Clé invalide",
+        "invalidMessage": "Message invalide",
+        "descriptionKey": "Je ne peux pas chiffrer ce message, car la clé contient des caractères que je ne peux pas chiffrer. Assurez-vous que la clé contienne uniquement ces caractères :\n```{letters}```",
+        "descriptionMessage": "Je ne peux pas chiffrer ce message, car om contient des caractères que je ne peux pas chiffrer. Assurez-vous que votre message contienne uniquement ces caractères :\n```{letters}```"
+    },
+    "askImage": {
+        "title": "Image",
+        "description": "Envoyez une image dans le chat, de dimensions au maximum de **{width}** par **{height}** pixels, et de 1Mo au maximum.\nRépondez par `cancel` pour annuler"
+    },
+    "noImage": {
+        "title": "Pas d'image",
+        "description": "Vous n'avez pas envoyé d'image dans votre message"
+    },
+    "invalidDimens": {
+        "title": "Image invalide",
+        "description": "Veuillez envoyer une image au maximum de **{width}** par **{height}** pixels"
+    },
+    "imageTooLarge": {
+        "title": "Image trop grande",
+        "description": "Votre image ne doit pas dépasser **1 Mo**"
+    },
+    "noEmoji": {
+        "title": "Aucun émoji",
+        "description": "Aucun émoji n'a été trouvé",
+        "descriptionQuery": "Aucun émoji n'a été trouvé pour `{query}`"
+    },
+    "countersDesactivated": {
+        "title": "Compteurs désactivés",
+        "description": "Les compteurs n'ont pas été activés.\nUtilisez la commande `/compteurs activer` pour les mettre en place."
     }
 }

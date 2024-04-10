@@ -6,6 +6,7 @@ import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { sqliseString } from '../utils/toolbox';
 import { langResolvable } from '../typings/core';
+import { translator } from '../translate/translate';
 
 export class TaskManager {
     private _cache: Collection<number, Task> = new Collection();
@@ -89,7 +90,7 @@ export class TaskManager {
         );
 
         if (!insertion) {
-            message.edit({ embeds: [replies.internalError(by)] }).catch(log4js.trace);
+            message.edit({ embeds: [replies.internalError(by, lang)] }).catch(log4js.trace);
             return 'insertion not found';
         }
 
@@ -105,7 +106,8 @@ export class TaskManager {
             image: image ?? null,
             startedAt: message.createdAt.getTime().toString(),
             assignees: '[]',
-            opened_by: by.id
+            opened_by: by.id,
+            lang: translator.resolveLang(lang)
         });
 
         this._cache.set(task.data.id, task);

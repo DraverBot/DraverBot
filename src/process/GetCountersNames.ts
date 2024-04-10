@@ -120,7 +120,7 @@ export default new Process(
                 if (reason === 'no counter') {
                     interaction
                         .editReply({
-                            embeds: [replies.noCounter(interaction.member as GuildMember)],
+                            embeds: [replies.noCounter(interaction.member as GuildMember, interaction)],
                             components: []
                         })
                         .catch(log4js.trace);

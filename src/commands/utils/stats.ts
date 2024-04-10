@@ -66,7 +66,7 @@ export default new DraverCommand({
         if (!overview || !overview.data || overview.status !== 200)
             return interaction
                 .editReply({
-                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user)]
+                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)]
                 })
                 .catch(log4js.trace);
         const data = overview.data as ChessPlayer;
@@ -74,7 +74,7 @@ export default new DraverCommand({
         const statsRep = informations[1];
         if (!statsRep || !statsRep.data || statsRep.status !== 200) {
             return interaction.editReply({
-                embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user)]
+                embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)]
             });
         }
         const { chess_blitz, chess_rapid, chess_bullet, tactics, ...stats } = statsRep.data as ChessStats;
@@ -167,7 +167,7 @@ export default new DraverCommand({
         if (!res || !res.data || res.status !== 200)
             return interaction
                 .editReply({
-                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user)]
+                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)]
                 })
                 .catch(log4js.trace);
 

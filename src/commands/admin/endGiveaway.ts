@@ -30,7 +30,7 @@ export default new DraverCommand({
 
     if (typeof gw === 'string')
         return interaction
-            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
+            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember, interaction)] })
             .catch(log4js.trace);
     interaction.deleteReply().catch(log4js.trace);
 });

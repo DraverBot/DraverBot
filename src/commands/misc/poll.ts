@@ -278,13 +278,14 @@ export default new DraverCommand({
                     choices: choices,
                     time,
                     channel,
-                    choosable
+                    choosable,
+                    lang: ctx
                 });
 
                 if (creation === 'invalid insertion' || creation === 'message not sent') {
                     builder
                         .edit({
-                            embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user)]
+                            embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user, ctx)]
                         })
                         .catch(log4js.trace);
                     return;

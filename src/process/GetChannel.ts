@@ -56,13 +56,13 @@ export default new Process(
 
                 if (!channel)
                     return SendAndDelete.process(
-                        { embeds: [replies.invalidChannel(user)] },
+                        { embeds: [replies.invalidChannel(user, interaction)] },
                         message.channel as TextChannel
                     );
                 if (channelTypes.length > 0 && !channelTypes.includes(channel.type))
                     return SendAndDelete.process(
                         {
-                            embeds: [replies.invalidChannelType(user, channelTypes)]
+                            embeds: [replies.invalidChannelType(user, channelTypes, interaction)]
                         },
                         message.channel as TextChannel
                     );

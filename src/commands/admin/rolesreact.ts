@@ -155,7 +155,7 @@ export default new DraverCommand({
 
         if (creation === 'message not found') {
             interaction
-                .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
+                .editReply({ embeds: [replies.internalError(interaction.member as GuildMember, res.button)] })
                 .catch(log4js.trace);
             return;
         }

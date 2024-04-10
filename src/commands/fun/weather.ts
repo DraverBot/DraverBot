@@ -55,7 +55,7 @@ export default new DraverCommand({
             sendError(`Erreur sur la commande météo\n${JSON.stringify(err, null, 4)}`);
             return interaction
                 .editReply({
-                    embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user)]
+                    embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user, interaction)]
                 })
                 .catch(log4js.trace);
         }

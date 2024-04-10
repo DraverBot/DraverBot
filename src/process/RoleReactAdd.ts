@@ -254,7 +254,8 @@ export default new Process(
             const emoji = await GetEmoji.process({
                 user: interaction.user,
                 channel: message.channel as TextChannel,
-                allowCancel: false
+                allowCancel: false,
+                lang: context
             });
 
             if (emoji === "time'up" || emoji === 'cancel') {

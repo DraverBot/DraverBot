@@ -59,6 +59,7 @@ export class Translator {
     public resolveLang(resolvable: langResolvable): string {
         if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
         if (resolvable instanceof BaseInteraction) return resolvable?.locale;
+        if (resolvable === 'default') return this.defaultLang
         return resolvable;
     }
     public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
@@ -86,7 +87,7 @@ export class Translator {
         return content;
     }
     private get includedRegexes(): [RegExp, string][] {
-        return [[/{coins}/g, util('coins')]];
+        return [[/{coins}/g, util('coins')], [/{support}/g, util('support')], [/{email}/g, util('email')]];
     }
 
     private start() {

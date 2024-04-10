@@ -41,7 +41,7 @@ export default new DraverCommand({
     const deletion = giveaways.deleteGiveaway(message.id).catch(log4js.trace);
     if (typeof deletion === 'string')
         return interaction
-            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember)] })
+            .editReply({ embeds: [replies.internalError(interaction.member as GuildMember, confirmation.interaction)] })
             .catch(log4js.trace);
 
     interaction.deleteReply().catch(log4js.trace);

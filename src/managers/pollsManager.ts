@@ -5,6 +5,8 @@ import { Poll } from '../structures/Poll';
 import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { dbBool, row, sqliseString } from '../utils/toolbox';
+import { langResolvable } from '../typings/core';
+import { translator } from '../translate/translate';
 
 export class PollsManager {
     private client: Client;
@@ -22,7 +24,8 @@ export class PollsManager {
         channel,
         choices,
         time,
-        choosable = 1
+        choosable = 1,
+        lang
     }: {
         question: string;
         by: User;
@@ -30,6 +33,7 @@ export class PollsManager {
         choices: string[];
         time: number;
         choosable?: number;
+        lang: langResolvable
     }) {
         const options = choices.map((x, i) => ({ name: x, count: 0, id: i }));
         if (options.length > 25) return 'options is too large';
@@ -44,7 +48,7 @@ export class PollsManager {
             );
         const msg = (await channel
             .send({
-                embeds: [replies.pollEmbed(by, question, endsAt, options)],
+                embeds: [replies.pollEmbed(by, question, endsAt, options, lang)],
                 components: [row<StringSelectMenuBuilder>(selector)]
             })
             .catch(log4js.trace)) as Message<true>;
@@ -72,7 +76,8 @@ export class PollsManager {
             poll_id: insertion.insertId,
             started_by: by.id,
             ended: false,
-            choosable
+            choosable,
+            lang: translator.resolveLang(lang)
         });
 
         this.cache.set(poll.data.poll_id, poll);
@@ -117,7 +122,8 @@ export class PollsManager {
                     choices: JSON.parse(data.choices),
                     participants: JSON.parse(data.participants),
                     ended: dbBool(data.ended),
-                    choosable: data.choosable
+                    choosable: data.choosable,
+                    lang: data.lang
                 });
 
                 this.cache.set(data.poll_id, poll);

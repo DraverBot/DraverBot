@@ -65,7 +65,7 @@ export default new DraverCommand({
     if (!configsManager.getValue(interaction.guild.id, 'temp_channels'))
         return interaction
             .reply({
-                embeds: [replies.configDisabled(interaction.member as GuildMember, 'temp_channels')],
+                embeds: [replies.configDisabled(interaction.member as GuildMember, 'temp_channels', interaction)],
                 ephemeral: true
             })
             .catch(log4js.trace);

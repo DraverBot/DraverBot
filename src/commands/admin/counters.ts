@@ -90,7 +90,7 @@ export default new DraverCommand({
         if (!countersManager.getCounter(interaction.guild.id))
             return interaction
                 .reply({
-                    embeds: [replies.noCounter(interaction.member as GuildMember)]
+                    embeds: [replies.noCounter(interaction.member as GuildMember, interaction)]
                 })
                 .catch(log4js.trace);
 
@@ -120,7 +120,7 @@ export default new DraverCommand({
             .catch(log4js.trace)) as Message<true>;
         if (!rep)
             return systemReply(interaction, {
-                embeds: [replies.internalError(interaction.member as GuildMember)]
+                embeds: [replies.internalError(interaction.member as GuildMember, interaction)]
             }).catch(log4js.trace);
 
         const act = await waitForInteraction({
@@ -137,7 +137,7 @@ export default new DraverCommand({
         if (!counter)
             return interaction
                 .editReply({
-                    embeds: [replies.noCounter(interaction.member as GuildMember)]
+                    embeds: [replies.noCounter(interaction.member as GuildMember, interaction)]
                 })
                 .catch(log4js.trace);
 
@@ -190,7 +190,7 @@ export default new DraverCommand({
             if (!countersManager.getCounter(interaction.guild.id))
                 return interaction
                     .editReply({
-                        embeds: [replies.noCounter(interaction.member as GuildMember)],
+                        embeds: [replies.noCounter(interaction.member as GuildMember, interaction)],
                         components: []
                     })
                     .catch(log4js.trace);
@@ -232,7 +232,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         components: [],
-                        embeds: [replies.noCounter(interaction.member as GuildMember)]
+                        embeds: [replies.noCounter(interaction.member as GuildMember, interaction)]
                     })
                     .catch(log4js.trace);
             const names = await GetCountersNames.process({

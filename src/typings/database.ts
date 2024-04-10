@@ -311,6 +311,7 @@ export type polls<Raw extends boolean = false> = {
     question: string;
     ended: If<Raw, string, boolean>;
     choosable: number;
+    lang: string;
 };
 export type plugboard<Raw extends boolean = false> = {
     user_id: string;
@@ -332,6 +333,7 @@ export type tasks<Raw extends boolean = false> = {
     channel_id: string;
     message_id: string;
     id: number;
+    lang: string;
 };
 export type levelRewardType = 'role' | 'coins';
 export type levelRewards = {

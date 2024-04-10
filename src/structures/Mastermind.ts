@@ -344,7 +344,7 @@ export class Mastermind {
         }
         if (!this._message)
             return this._interaction
-                .editReply({ embeds: [replies.internalError(this._user)], components: [] })
+                .editReply({ embeds: [replies.internalError(this._user, this._interaction)], components: [] })
                 .catch(log4js.trace);
 
         this.collector = this._message.createMessageComponentCollector({

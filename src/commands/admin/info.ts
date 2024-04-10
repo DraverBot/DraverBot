@@ -104,7 +104,7 @@ export default new DraverCommand({
         if (!emoji)
             return interaction
                 .editReply({
-                    embeds: [replies.noEmoji(interaction.member as GuildMember, emojiName)]
+                    embeds: [replies.noEmoji(interaction.member as GuildMember, interaction, emojiName)]
                 })
                 .catch(log4js.trace);
 

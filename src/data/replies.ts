@@ -210,9 +210,13 @@ const replies = {
         return basic(user.user)
             .setTitle(translator.translate('contents.global.embeds.notEnoughCoins.title', lang))
             .setDescription(
-                translator.translate(`contents.global.embeds.notEnoughCoins.${target.id === user.id ? 'self' : 'other'}Description`, lang, {
-                    user: pingUser(target)
-                })
+                translator.translate(
+                    `contents.global.embeds.notEnoughCoins.${target.id === user.id ? 'self' : 'other'}Description`,
+                    lang,
+                    {
+                        user: pingUser(target)
+                    }
+                )
             )
             .setColor(evokerColor(user.guild));
     },
@@ -230,7 +234,9 @@ const replies = {
     unexistingLog: (user: anyUser, id: string, lang: langResolvable) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.unexistingLog.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.unexistingLog.description', lang, { id: parseInt(id) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.unexistingLog.description', lang, { id: parseInt(id) })
+            );
     },
     deletedLog: (user: anyUser, id: string, lang: langResolvable) => {
         return userMember(user)
@@ -248,36 +254,47 @@ const replies = {
     interserverAlreadySet: (user: anyUser, metadata: { channel_id: string; lang: langResolvable }) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.interserverAlreadySet.title', metadata.lang))
-            .setDescription(translator.translate('contents.global.embeds.interserverAlreadySet.description', metadata.lang, { channel: pingChan(metadata.channel_id) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.interserverAlreadySet.description', metadata.lang, {
+                    channel: pingChan(metadata.channel_id)
+                })
+            );
     },
-    interserverUnexistingFrequence: (user: anyUser, { frequence, lang }: { frequence: string; lang: langResolvable }) => {
+    interserverUnexistingFrequence: (
+        user: anyUser,
+        { frequence, lang }: { frequence: string; lang: langResolvable }
+    ) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.unexistingFrequence.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.unexistingFrequence.description', lang, { frequence }));
+            .setDescription(
+                translator.translate('contents.global.embeds.unexistingFrequence.description', lang, { frequence })
+            );
     },
     interserverFrequenceAssigned: (user: anyUser, { frequence, lang }: { frequence: string; lang: langResolvable }) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.frequenceAssigned.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.frequenceAssigned.description', lang, { frequence }));
+            .setDescription(
+                translator.translate('contents.global.embeds.frequenceAssigned.description', lang, { frequence })
+            );
     },
     interserverWebhookFailed: (user: anyUser, metadata: object & { lang: langResolvable }) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.webhookFailed.title', metadata.lang))
-            .setDescription(
-                translator.translate('contents.global.embeds.webhookFailed.description', metadata.lang)
-            );
+            .setDescription(translator.translate('contents.global.embeds.webhookFailed.description', metadata.lang));
     },
     interserverNoFrequence: (user: anyUser, metadata: object & { lang: langResolvable }) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.noFrequence.title', metadata.lang))
-            .setDescription(
-                translator.translate('contents.global.embeds.noFrequence.description', metadata.lang)
-            );
+            .setDescription(translator.translate('contents.global.embeds.noFrequence.description', metadata.lang));
     },
     interserverNotChannel: (user: anyUser, metadata: { channel: TextChannel; lang: langResolvable }) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.interserverNotChannel.title', metadata.lang))
-            .setDescription(translator.translate('contents.global.embeds.interserverNotChannel.description', metadata.lang, { channel: pingChan(metadata.channel) }));
+            .setDescription(
+                translator.translate('contents.global.embeds.interserverNotChannel.description', metadata.lang, {
+                    channel: pingChan(metadata.channel)
+                })
+            );
     },
     wait: (user: User, lang: langResolvable) => {
         return basic(user)
@@ -293,18 +310,18 @@ const replies = {
     invalidTime: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.invalidTime.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.invalidTime.descriptoin', lang, {
-                timeDoc: addTimeDoc(user.id, lang)
-            }))
+            .setDescription(
+                translator.translate('contents.global.embeds.invalidTime.descriptoin', lang, {
+                    timeDoc: addTimeDoc(user.id, lang)
+                })
+            );
     },
     invalidColor: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
             .setTitle(translator.translate('contents.global.embeds.invalidColor.title', lang))
             .setDescription(
                 translator.translate('contents.global.embeds.invalidColor.description', lang, {
-                    colorOne: anyHexColor(
-                        { hashtagIncluded: false, type: 'long' }
-                    ),
+                    colorOne: anyHexColor({ hashtagIncluded: false, type: 'long' }),
                     colorTwo: anyHexColor({ hashtagIncluded: true, type: 'long' }),
                     colorThree: anyHexColor({
                         type: 'short',
@@ -323,12 +340,16 @@ const replies = {
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
                 .setTitle(translator.translate('contents.global.embeds.loto.participationRegistered.title', lang))
-                .setDescription(translator.translate('contents.global.embeds.loto.participationRegistered.description', lang)),
+                .setDescription(
+                    translator.translate('contents.global.embeds.loto.participationRegistered.description', lang)
+                ),
         alreadyParticipate: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
                 .setTitle(translator.translate('contents.global.embeds.loto.alreadyParticipate.title', lang))
-                .setDescription(translator.translate('contents.global.embeds.loto.alreadyParticipate.description', lang)),
+                .setDescription(
+                    translator.translate('contents.global.embeds.loto.alreadyParticipate.description', lang)
+                ),
         noParticipation: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
@@ -338,27 +359,40 @@ const replies = {
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
                 .setTitle(translator.translate('contents.global.embeds.loto.participationDeleted.title', lang))
-                .setDescription(translator.translate('contents.global.embeds.loto.participationDeleted.description', lang)),
+                .setDescription(
+                    translator.translate('contents.global.embeds.loto.participationDeleted.description', lang)
+                ),
         lotoDeleted: (user: User, lang: langResolvable) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
                 .setTitle(translator.translate('contents.global.embeds.loto.lotoDeleted.title', lang))
                 .setDescription(translator.translate('contents.global.embeds.loto.lotoDeleted.description', lang)),
-        lotoStarted: (user: User, data: { coins: number; complementaries: number; numbers: number; endsAt: number; lang: langResolvable }) =>
+        lotoStarted: (
+            user: User,
+            data: { coins: number; complementaries: number; numbers: number; endsAt: number; lang: langResolvable }
+        ) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
                 .setTitle(translator.translate('contents.global.embeds.loto.started.title', data.lang))
                 .setDescription(
-                    translator.translate(`contents.global.embeds.loto.started.description${data.coins > 0 ? 'Coins' : ''}`, data.lang, {
-                        user: pingUser(user),
-                        winnings: data.numbers,
-                        complementaries: data.complementaries,
-                        date: displayDate(data.endsAt),
-                        prize: data.coins
-                    })
+                    translator.translate(
+                        `contents.global.embeds.loto.started.description${data.coins > 0 ? 'Coins' : ''}`,
+                        data.lang,
+                        {
+                            user: pingUser(user),
+                            winnings: data.numbers,
+                            complementaries: data.complementaries,
+                            date: displayDate(data.endsAt),
+                            prize: data.coins
+                        }
+                    )
                 )
                 .setTimestamp(data.endsAt),
-        invalidParticipation: (user: User, guild: Guild, data: { numbers: number; complementaries: number; lang: langResolvable }) => {
+        invalidParticipation: (
+            user: User,
+            guild: Guild,
+            data: { numbers: number; complementaries: number; lang: langResolvable }
+        ) => {
             const numbers: number[] = [];
             const complementaries: number[] = [];
 
@@ -383,12 +417,16 @@ const replies = {
                 .setColor(evokerColor(guild))
                 .setTitle(translator.translate('contents.global.embeds.loto.invalidParticipation.title', data.lang))
                 .setDescription(
-                    translator.translate(`contents.global.embeds.loto.invalidParticipation.description${data.complementaries > 0 ? 'Complementaries' : ''}`, data.lang, {
-                        numbers: data.numbers,
-                        complementaries: data.complementaries,
-                        exampleNumbers: numbers.join(' '),
-                        complementariesExample: complementaries.join(' ')
-                    })
+                    translator.translate(
+                        `contents.global.embeds.loto.invalidParticipation.description${data.complementaries > 0 ? 'Complementaries' : ''}`,
+                        data.lang,
+                        {
+                            numbers: data.numbers,
+                            complementaries: data.complementaries,
+                            exampleNumbers: numbers.join(' '),
+                            complementariesExample: complementaries.join(' ')
+                        }
+                    )
                 );
         },
         lotoAlreadyStarted: (user: User, guild: Guild, lang: langResolvable) =>
@@ -412,111 +450,181 @@ const replies = {
                 return userMember(user, util<ColorResolvable>('accentColor'))
                     .setTitle(translator.translate('contents.global.embeds.loto.result.title', lang))
                     .setDescription(
-                        translator.translate(`contents.global.embeds.loto.result.noWinner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`, lang, {
-                            rolled: rolled.numbers.join(' '),
-                            complementaries: rolled.complementaries?.join?.(' ')
-                        })
+                        translator.translate(
+                            `contents.global.embeds.loto.result.noWinner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`,
+                            lang,
+                            {
+                                rolled: rolled.numbers.join(' '),
+                                complementaries: rolled.complementaries?.join?.(' ')
+                            }
+                        )
                     );
             return userMember(user, util<ColorResolvable>('accentColor'))
                 .setTitle(translator.translate('contents.global.embeds.loto.result.title', lang))
                 .setDescription(
-                    translator.translate(`contents.global.embeds.loto.result.winner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`, lang, {
-                        rolled: rolled.numbers.join(' '),
-                        complementariesRolled: rolled.complementaries?.join?.(' '),
-                        winners: winners.map(w => translator.translate('contents.global.embeds.loto.result.mapper', lang, {
-                            user: pingUser(w.userId),
-                            accuracy: w.accuracy * 100,
-                            reward: w.reward
-                        })).join('\n')
-                    })
+                    translator.translate(
+                        `contents.global.embeds.loto.result.winner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`,
+                        lang,
+                        {
+                            rolled: rolled.numbers.join(' '),
+                            complementariesRolled: rolled.complementaries?.join?.(' '),
+                            winners: winners
+                                .map((w) =>
+                                    translator.translate('contents.global.embeds.loto.result.mapper', lang, {
+                                        user: pingUser(w.userId),
+                                        accuracy: w.accuracy * 100,
+                                        reward: w.reward
+                                    })
+                                )
+                                .join('\n')
+                        }
+                    )
                 );
         }
     },
-    internalError: (user: anyUser) =>
+    internalError: (user: anyUser, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Erreur interne')
-            .setDescription(
-                `Une erreur interne est survenue.\nVeuillez réeesayer. Si l'erreur persiste, contactez mon [serveur de support](${util(
-                    'support'
-                )})`
-            ),
+            .setTitle(translator.translate('contents.global.embeds.internalError.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.internalError.description', lang)),
     pollEmbed: (
         user: User,
         question: string,
         endsAt: number,
-        choices: { name: string; count: number; id?: number }[]
+        choices: { name: string; count: number; id?: number }[],
+        lang: langResolvable
     ) =>
         userMember(user, util<ColorResolvable>('accentColor'))
-            .setTitle('Sondage')
+            .setTitle(translator.translate('contents.global.embeds.poll.title', lang))
             .setDescription(
-                `Sondage lancé par ${pingUser(user)}\n> ${question}\n\n${choices
-                    .map((x) => `${x.name} ( ${x.count} vote${plurial(x.count)} )`)
-                    .join('\n')}`
+                translator.translate('contents.global.embeds.poll.description', lang, {
+                    user: pingUser(user),
+                    question,
+                    choices: choices
+                        .map((x) =>
+                            translator.translate('contents.global.embeds.poll.mapper', lang, {
+                                name: x.name,
+                                votes: x.count
+                            })
+                        )
+                        .join('\n')
+                })
             )
-            .addFields({ name: 'Fin', value: displayDate(endsAt), inline: false }),
+            .addFields({
+                name: translator.translate('contents.global.embeds.poll.field', lang),
+                value: displayDate(endsAt),
+                inline: false
+            }),
     tasks: {
-        pending: (data: tasks) => {
+        pending: (data: tasks, lang: langResolvable) => {
             const embed = new EmbedBuilder()
                 .setTitle(resizeString({ str: data.name, length: 256 }))
                 .setDescription(
                     resizeString({
-                        str: `Tâche en attente\n${data.description}\n\nAssignez-vous pour commencer la tâche`,
+                        str: translator.translate('contents.global.embeds.tasks.pending.description', lang, {
+                            description: data.description
+                        }),
                         length: 4096
                     })
                 )
-                .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by) ?? 'inconnu', inline: true })
+                .setFields({
+                    name: translator.translate('contents.global.embeds.tasks.fields.open.name', lang),
+                    value:
+                        pingUser(data.opened_by) ??
+                        translator.translate('contents.global.embeds.tasks.fields.open.unknown', lang),
+                    inline: true
+                })
                 .setColor(color('taskPending'))
                 .setTimestamp(data.startedAt);
 
             if (notNull(data.deadline) && data.deadline > 0)
                 embed.addFields({
-                    name: 'À faire avant',
-                    value: displayDate(data.deadline) ?? 'Inconnu',
+                    name: translator.translate('contents.global.embeds.tasks.fields.date.name', lang),
+                    value:
+                        displayDate(data.deadline) ??
+                        translator.translate('contents.global.embeds.tasks.fields.date.unknown', lang),
                     inline: true
                 });
             if (notNull(data.image)) embed.setImage(data.image);
             return embed;
         },
-        working: (data: tasks) => {
+        working: (data: tasks, lang: langResolvable) => {
             const embed = new EmbedBuilder()
                 .setTitle(resizeString({ str: data.name, length: 256 }))
-                .setDescription(resizeString({ str: `Tâche en cours\n${data.description}`, length: 4096 }))
-                .setFields({ name: 'Ouvert par', value: pingUser(data.opened_by), inline: true })
+                .setDescription(
+                    resizeString({
+                        str: translator.translate('contents.global.embeds.tasks.working.description', lang, {
+                            description: data.description
+                        }),
+                        length: 4096
+                    })
+                )
+                .setFields({
+                    name: translator.translate('contents.global.embeds.tasks.fields.open.name', lang),
+                    value:
+                        pingUser(data.opened_by) ??
+                        translator.translate('contents.global.embeds.tasks.fields.open.unknown', lang),
+                    inline: true
+                })
                 .setColor(color('taskWorking'))
                 .setTimestamp(data.startedAt);
 
             if (notNull(data.deadline) && data.deadline > 0)
-                embed.addFields({ name: 'À faire avant', value: displayDate(data.deadline), inline: true });
+                embed.addFields({
+                    name: translator.translate('contents.global.embeds.tasks.fields.data.name', lang),
+                    value:
+                        displayDate(data.deadline) ??
+                        translator.translate('contents.global.embeds.tasks.working.unknown', lang),
+                    inline: true
+                });
             if (notNull(data.image)) embed.setImage(data.image);
 
             embed.addFields({
-                name: 'Assigné' + plurial(data.assignees),
-                value: data.assignees.length === 0 ? 'Aucun assigné' : data.assignees.map(pingUser).join(', '),
+                name: translator.translate('contents.global.embeds.tasks.fields.assignees.name', lang),
+                value:
+                    data.assignees.length === 0
+                        ? translator.translate('contents.global.embeds.tasks.fields.assignees.unknown', lang)
+                        : data.assignees.map(pingUser).join(', '),
                 inline: false
             });
 
             return embed;
         },
-        closed: (data: tasks, reason: 'deadline crossed' | 'someone closed') => {
+        closed: (data: tasks, reason: 'deadline crossed' | 'someone closed', lang: langResolvable) => {
             const embed = new EmbedBuilder()
                 .setTitle(resizeString({ str: data.name, length: 256 }))
-                .setDescription(resizeString({ str: `Tâche fermée\n${data.description}`, length: 4096 }))
+                .setDescription(
+                    resizeString({
+                        str: translator.translate('contents.global.embeds.tasks.closed.description', lang, {
+                            description: data.description
+                        }),
+                        length: 4096
+                    })
+                )
                 .setTimestamp()
                 .setColor(color('taskClosed'))
                 .setFields({
-                    name: 'Informations',
-                    value:
-                        reason === 'deadline crossed' ? `La date limite a été atteinte` : `Quelqu'un a fermé la tâche`,
+                    name: translator.translate('contents.global.embeds.tasks.closed.informations.name', lang),
+                    value: translator.translate(
+                        `contents.global.embeds.tasks.closed.informations.${reason === 'deadline crossed' ? 'deadlined' : 'closed'}`,
+                        lang
+                    ),
                     inline: false
                 });
             if (notNull(data.image)) embed.setImage(data.image);
 
             return embed;
         },
-        done: (data: tasks) => {
+        done: (data: tasks, lang: langResolvable) => {
             const embed = new EmbedBuilder()
                 .setTitle(resizeString({ str: data.name, length: 256 }))
-                .setDescription(resizeString({ str: `La tâche a été terminée\n${data.description}`, length: 4096 }))
+                .setDescription(
+                    resizeString({
+                        str: translator.translate('contents.global.embeds.tasks.done.description', lang, {
+                            description: data.description
+                        }),
+                        length: 4096
+                    })
+                )
                 .setTimestamp()
                 .setColor(color('taskDone'));
 
@@ -524,94 +632,82 @@ const replies = {
 
             return embed;
         },
-        unexisting: (user: anyUser) =>
-            userMember(user).setTitle('Tâche inexistante').setDescription(`Cette tâche n'existe pas`),
-        taskEnded: (user: anyUser) =>
+        unexisting: (user: anyUser, lang: langResolvable) =>
             userMember(user)
-                .setTitle('Tâche terminée')
-                .setDescription(`Cette tâche est terminée, vous ne pouvez pas assigner quelqu'un`)
+                .setTitle(translator.translate('contents.global.embeds.tasks.unexisting.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.tasks.unexisting.description', lang)),
+        taskEnded: (user: anyUser, lang: langResolvable) =>
+            userMember(user)
+                .setTitle(translator.translate('contents.global.embeds.tasks.ended.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.tasks.ended.description', lang))
     },
-    invalidEmoji: (user: anyUser) =>
+    invalidEmoji: (user: anyUser, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Émoji invalide')
+            .setTitle(translator.translate('contents.global.embeds.invalidEmoji.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidEmoji.description', lang)),
+    requestStopped: (user: anyUser, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.requestStopped.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.requestStopped.description', lang)),
+    invalidChannel: (user: anyUser, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.invalidChannel.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidChannel.description', lang)),
+    invalidChannelType: (user: anyUser, types: ChannelType[], lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.invalidChannelType.title', lang))
             .setDescription(
-                `Ce n'est pas un émoji valide.\nVeuillez envoyer un émoji correct, et assurez-vous que je puisse accéder à cet émoji`
+                translator.translate('contents.global.embeds.invalidChannelType.description', lang, {
+                    types: types
+                        .map((x) => translator.translate(`contents.global.channels.${x.toString()}`, lang))
+                        .join(', ')
+                })
             ),
-    requestStopped: (user: anyUser) =>
+    configDisabled: (user: anyUser, config: keyof configKeys, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Erreur')
+            .setTitle(translator.translate('contents.global.embeds.configDisabled.title', lang))
             .setDescription(
-                `Les données n'ont pas pu être trouvées à cause d'un problème venant de la plateforme.\nPatientez quelques minutes, puis réessayez.\nSi cette erreur persiste, contactez le développeur, par le [serveur de support](${util(
-                    'support'
-                )}) ou par l'adresse email ( \`${util('email')}\` )`
+                translator.translate('contents.global.embeds.configDisabled.description', lang, {
+                    param: translator.translate(`contents.global.configs.${config}.name`, lang)
+                })
             ),
-    invalidChannel: (user: anyUser) =>
-        userMember(user)
-            .setTitle('Salon invalide')
-            .setDescription(`Ce n'est pas un salon valide, réessayez avec un nom, un identifiant ou une mention`),
-    invalidChannelType: (user: anyUser, types: ChannelType[]) => {
-        const vals: Record<ChannelType, string> = {
-            10: "fil d'annonce",
-            1: 'messages privés',
-            3: 'groupe privé',
-            5: 'annonces',
-            4: 'catégorie',
-            14: 'catégorie',
-            15: 'forum',
-            12: 'fil privé',
-            11: 'fil public',
-            13: 'conférences',
-            0: 'textuel',
-            2: 'vocal',
-            16: 'médiatique'
-        };
+    invalidInput: (user: anyUser, lang: langResolvable, opts?: { test?: 'key'; letters?: string }) => {
+        const prefix = opts?.test === 'key' ? 'Key' : 'Message';
 
         return userMember(user)
-            .setTitle('Type de salon invalide')
+            .setTitle(translator.translate(`contents.global.embeds.invalidInput.invalid${prefix}`, lang))
             .setDescription(
-                `Ce n'est pas un salon valide, veuillez spécifier un salon de type : ${types
-                    .map((x) => vals[x])
-                    .join(', ')}`
+                translator.translate(`contents.global.embeds.invalidInput.description${prefix}`, lang, {
+                    letters: opts?.letters ?? inputLetters()
+                })
             );
     },
-    configDisabled: (user: anyUser, config: keyof configKeys) =>
-        userMember(user)
-            .setTitle('Paramètre désactivé')
-            .setDescription(`Le paramètre **${configsData[config].name}** est désactivé`),
-    invalidInput: (user: anyUser, opts?: { test?: 'key'; letters?: string }) =>
-        userMember(user)
-            .setTitle(`${opts?.test === 'key' ? 'Clé' : 'Message'} invalide`)
-            .setDescription(
-                `Je ne peux pas chiffrer ce message, car ${
-                    opts?.test === 'key' ? 'la clé' : 'il'
-                } contient des caractères que je peux pas chiffrer.\nAssurez-vous que ${
-                    opts?.test === 'key' ? 'la clé' : 'votre message'
-                } contienne uniquement ces caractères :\n\`\`\`${opts?.letters ?? inputLetters()}\`\`\``
-            ),
-    askImage: (user: User, dimens: { height: number; width: number }) =>
+    askImage: (user: User, dimens: { height: number; width: number }, lang: langResolvable) =>
         basic(user, { questionMark: true })
-            .setTitle('Image')
-            .setDescription(
-                `Envoyez une image dans le chat, de dimensions au maximum de ${dimens.width} par ${dimens.height} pixels et de 1Mo au maximum\nRépondez par \`cancel\` pour annuler`
-            ),
-    noImage: (user: anyUser) =>
-        userMember(user).setTitle("Pas d'image").setDescription(`Vous n'avez pas envoyé d'image dans votre message`),
-    invalidDimens: (user: anyUser, { width, height }: { height: number; width: number }) =>
+            .setTitle(translator.translate('contents.global.embeds.askImage.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.askImage.description', lang, dimens)),
+    noImage: (user: anyUser, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Image invalide')
-            .setDescription(`Veuillez envoyer une image au maximum de ${width} par ${height} pixels`),
-    imageToLarge: (user: anyUser) =>
-        userMember(user).setTitle('Image trop grande').setDescription(`Votre image ne doit pas dépasser **1 Mo**`),
-    noEmoji: (user: anyUser, query?: string) =>
+            .setTitle(translator.translate('contents.global.embeds.noImage.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.noImage.description', lang)),
+    invalidDimens: (user: anyUser, dimens: { height: number; width: number }, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Aucun émoji')
-            .setDescription(`Aucun émoji n'a été trouvé${!!query ? ` pour \`${query}\`` : ''}`),
+            .setTitle(translator.translate('contents.global.embeds.invalidDimens.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidDimens.description', lang, dimens)),
+    imageTooLarge: (user: anyUser, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.imageTooLarge.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.imageTooLarge.description', lang)),
+    noEmoji: (user: anyUser, lang: langResolvable, query?: string) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.noEmoji.title', lang))
+            .setDescription(translator.translate(`contents.global.embeds.noEmoji.description${!!query ? 'Query' : ''}`, lang, { query })),
     basicGuild: (user: anyUser, guild: Guild) => userMember(user).setColor(guild?.members?.me?.displayHexColor),
-    noCounter: (user: anyUser) =>
+    noCounter: (user: anyUser, lang: langResolvable) =>
         userMember(user)
-            .setTitle('Compteurs désactivés')
+            .setTitle(translator.translate('contents.global.embeds.countersDesactivated.title', lang))
             .setDescription(
-                `Les compteurs n'ont pas été activés.\nUtilisez la commande \`/compteurs activer\` pour les mettre en place`
+                translator.translate('contents.global.embeds.countersDesactivated.description', lang)
             )
 };
 

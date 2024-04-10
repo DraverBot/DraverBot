@@ -1,0 +1,172 @@
+{
+    "logs_channel": {
+        "name": "salon des logs",
+        "description": "Configure le salon des logs",
+        "default": null
+    },
+    "logs_enable": {
+        "name": "activation des logs",
+        "description": "Active/désactive les logs",
+        "default": false
+    },
+    "level_channel": {
+        "name": "salon des niveaux",
+        "description": "Salon de l'envoi des messages de niveau",
+        "default": null
+    },
+    "level_msg": {
+        "name": "message de niveau",
+        "description": "Message de niveau",
+        "default": "Bien joué {user.mention} ! Tu passes au niveau {user.level}"
+    },
+    "join_active": {
+        "name": "messages d'arrivée",
+        "description": "Activation de message d'arrivée",
+        "default": false
+    },
+    "leave_active": {
+        "name": "messages de départ",
+        "description": "Activation des messages de départ",
+        "default": false
+    },
+    "join_channel": {
+        "name": "salon d'arrivée",
+        "description": "Salon des messages d'arrivée",
+        "default": null
+    },
+    "leave_channel": {
+        "name": "salon de départ",
+        "description": "Salon des messages de départ",
+        "default": null
+    },
+    "join_message": {
+        "name": "message d'arrivée",
+        "description": "Message d'arrivée",
+        "default": "{user.mention} vient d'arriver"
+    },
+    "leave_message": {
+        "name": "message de départ",
+        "description": "Message de départ",
+        "default": "{user.name} vient de partir"
+    },
+    "suggest_channel": {
+        "name": "salon de suggestions",
+        "description": "Salon des suggestions",
+        "default": null
+    },
+    "suggest_enable": {
+        "name": "suggestions",
+        "description": "Activation des suggestions",
+        "default": false
+    },
+    "join_roles": {
+        "name": "rôles d'arrivée",
+        "description": "Activation des rôles d'arrivée",
+        "default": false
+    },
+    "suggest_thread": {
+        "name": "fil de suggestion",
+        "description": "Création d'un fil pour une nouvelle suggestion",
+        "default": false
+    },
+    "gban": {
+        "name": "GBan",
+        "description": "Système de GBan",
+        "default": true
+    },
+    "gban_ban": {
+        "name": "Bannissement si GBan",
+        "description": "Banni le membre si il est GBanni (sinon expulsé)",
+        "default": false
+    },
+    "mention_message": {
+        "name": "Message de mention",
+        "description": "Affiche le message lors de la mention",
+        "default": true
+    },
+    "task_channel": {
+        "name": "Salon des tâches",
+        "description": "Salon dans lequel les tâches sont envoyées",
+        "default": null
+    },
+    "task_enable": {
+        "name": "Tâches activées",
+        "description": "Définit si les tâches sont utilisables sur le serveur",
+        "default": false
+    },
+    "level_rewards": {
+        "name": "Récompenses de niveau",
+        "description": "Active les récompenses de niveaux",
+        "default": false
+    },
+    "voice_role": {
+        "name": "Rôle vocal",
+        "description": "Rôle attribué aux membres en vocal",
+        "default": null
+    },
+    "voice_role_enabled": {
+        "name": "Système de rôle vocal",
+        "description": "Active les rôles vocaux",
+        "default": false
+    },
+    "temp_channels": {
+        "name": "Salons temporaires",
+        "description": "Active les salons temporaires",
+        "default": false
+    },
+    "welcome_image": {
+        "name": "Image de bienvenue",
+        "description": "L'image de bienvenue du serveur",
+        "default": null
+    },
+    "welcome_image_radius": {
+        "name": "Rayon avatar de l'image de bienvenue",
+        "description": "Rayon de l'avatar de la photo de profil de l'image de bienvenue",
+        "default": 100
+    },
+    "leave_image": {
+        "name": "Image de départ",
+        "description": "L'image de départ du serveur",
+        "default": null
+    },
+    "leave_image_radius": {
+        "name": "Rayon avatar de l'image de départ",
+        "description": "Rayon de l'avatar de la photo de profil de l'image de départ",
+        "default": 100
+    },
+    "invite_channel": {
+        "name": "Salon des invitations",
+        "description": "Le salon dans lequel les messages d'invitations seront envoyés",
+        "default": null
+    },
+    "invite_normal_message_join": {
+        "name": "Message d'invitation",
+        "description": "Le message d'invitation",
+        "default": "{user.mention} a été invité par {inviter.name}, il a maintenant {inviter.invites} invitations !\nNous sommes dorénavant {guild.count} dans le serveur"
+    },
+    "invite_unknown_message_join": {
+        "name": "Message d'invitation inconnu",
+        "description": "Message d'invitations quand l'inviteur est inconnu",
+        "default": "{user.mention} est arrivé, mais je ne sais pas grâce à qui"
+    },
+    "invite_vanity_message_join": {
+        "name": "Message d'invitation personnalisé",
+        "description": "Message d'invitation quand le membre rejoint via l'url customisé du serveur",
+        "default": "{user.mention} vient d'arriver en utilisant le lien du serveur"
+    },
+    "invite_normal_message_leave": {
+        "name": "Message d'invitation de départ",
+        "description": "Message d'invitation quand un membre quitte le serveur",
+        "default": "{user.name} est partit, il avait été invité par {inviter.name}"
+    },
+    "invite_unknown_message_leave": {
+        "name": "Message d'invitation de départ inconnu",
+        "description": "Message d'invitation de départ quand un membre quitte le serveur et que la personne qui l'a invité est inconnue",
+        "default": "{user.name} vient de partir, mais je ne sais pas qui l'a invité"
+    },
+    "ghost_monitor": {
+        "name": "Surveillance des ghost pings",
+        "description": "Envoie un log lors d'une mention fantôme",
+        "default": false
+    }
+}
