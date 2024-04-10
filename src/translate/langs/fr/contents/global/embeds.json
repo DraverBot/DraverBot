@@ -280,5 +280,9 @@
     "countersDesactivated": {
         "title": "Compteurs désactivés",
         "description": "Les compteurs n'ont pas été activés.\nUtilisez la commande `/compteurs activer` pour les mettre en place."
+    },
+    "roleTooHigh": {
+        "title": "Rôle trop haut",
+        "description": "Le rôle {role} est supérieur ou égal à vous dans la hiérarchie des rôles"
     }
 }

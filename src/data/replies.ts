@@ -7,6 +7,7 @@ import {
     Guild,
     GuildMember,
     PermissionsString,
+    Role,
     TextChannel,
     User
 } from 'discord.js';
@@ -23,6 +24,7 @@ import {
     notNull,
     numerize,
     pingChan,
+    pingRole,
     pingUser,
     plurial,
     random,
@@ -710,7 +712,8 @@ const replies = {
     noCounter: (user: anyUser, lang: langResolvable) =>
         userMember(user)
             .setTitle(translator.translate('contents.global.embeds.countersDesactivated.title', lang))
-            .setDescription(translator.translate('contents.global.embeds.countersDesactivated.description', lang))
+            .setDescription(translator.translate('contents.global.embeds.countersDesactivated.description', lang)),
+    roleTooHigh: (user: anyUser, role: Role | string, lang: langResolvable) => userMember(user).setTitle(translator.translate('contents.global.embeds.roleTooHigh.title', lang)).setDescription(translator.translate('contents.global.embeds.roleTooHigh.description', lang, { role: pingRole(role) }))
 };
 
 export type replyKey = keyof typeof replies;

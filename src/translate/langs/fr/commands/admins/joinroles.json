@@ -1,0 +1,62 @@
+{
+    "name": "adminjoinroles",
+    "description": "Configure les rôles d'arrivée sur le serveur",
+    "options": {
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des rôles d'arrivées"
+        },
+        "add": {
+            "name": "ajouter",
+            "description": "Ajoute un rôle à la liste",
+            "options": {
+                "role" :{
+                    "name": "rôle",
+                    "description": "Rôle à ajouter"
+                }
+            }
+        },
+        "remove": {
+            "name": "supprimer",
+            "description": "Supprime un rôle de la liste",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à supprimer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "list": {
+            "noRole": {
+                "title": "Pas de rôles",
+                "description": "Aucun rôle n'est configuré"
+            },
+            "list": {
+                "title": "Rôles d'arrivée",
+                "description": "Il y a **{count}** rôles configurés :\n{roles}"
+            }
+        },
+        "add": {
+            "alreadyConfigured": {
+                "title": "Rôle déjà configuré",
+                "description": "Le rôle {role} est déjà configuré"
+            },
+            "configured": {
+                "title": "Rôle configuré",
+                "description": "Le rôle {role} sera désormais attribué aux nouveaux membres"
+            }
+        },
+        "remove": {
+            "notConfigured": {
+                "title": "Rôle non-configuré",
+                "description": "Le rôle {role} n'est pas un rôle donné au nouveaux membres"
+            },
+            "configured": {
+                "title": "Rôle supprimé",
+                "description": "Le rôle {role} n'est plus donné aux nouveaux membres"
+            }
+        }
+    }
+}

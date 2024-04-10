@@ -1,45 +1,41 @@
 import { configsManager } from '../../cache/managers';
 import { DraverCommand } from '../../structures/DraverCommand';
-import { preconditions } from 'amethystjs';
+import { log4js, preconditions } from 'amethystjs';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, GuildMember, Role } from 'discord.js';
 import { basicEmbed, evokerColor, hint, numerize, pingRole, plurial, sqliseString, subcmd } from '../../utils/toolbox';
 import query from '../../utils/query';
 import { DatabaseTables, joinRoles } from '../../typings/database';
+import { translator } from '../../translate/translate';
+import replies from '../../data/replies';
 
 export default new DraverCommand({
-    name: 'adminjoinroles',
+    ...translator.commandData('commands.admins.joinroles'),
     module: 'administration',
-    description: "Configure les rôles d'arrivée sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild', 'ManageRoles'],
     options: [
         {
-            name: 'liste',
-            description: "Affiche la liste des rôles d'arrivée",
+            ...translator.commandData('commands.admins.joinroles.options.list'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'ajouter',
-            description: 'Ajoute un rôle à la liste',
+            ...translator.commandData('commands.admins.joinroles.options.add'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à ajouter',
+                    ...translator.commandData('commands.admins.joinroles.options.add.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un rôle de la liste',
+            ...translator.commandData('commands.admins.joinroles.options.remove'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à supprimer',
+                    ...translator.commandData('commands.admins.joinroles.options.remove.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 }
@@ -51,14 +47,7 @@ export default new DraverCommand({
         return interaction
             .reply({
                 embeds: [
-                    basicEmbed(interaction.user)
-                        .setColor(evokerColor(interaction.guild))
-                        .setTitle('Rôles désactivés')
-                        .setDescription(
-                            `Les rôles sont désactivés.\n${hint(
-                                `Pour les activer, utilisez la commande \`/configurer paramètre\`, puis sélectionnez l'option \`rôles d'arrivés\``
-                            )}`
-                        )
+                    replies.configDisabled(interaction.member as GuildMember, 'join_roles', interaction)
                 ],
                 ephemeral: true
             })
@@ -76,8 +65,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Pas de rôles')
-                            .setDescription(`Aucun rôle n'est configuré`)
+                            .setTitle(translator.translate('commands.admins.joinroles.replies.list.noRole.title', interaction))
+                            .setDescription(translator.translate('commands.admins.joinroles.replies.list.noRole.description', interaction))
                     ]
                 })
                 .catch(() => {});
@@ -87,11 +76,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle("Rôles d'arrivée")
+                        .setTitle(translator.translate('commands.admins.joinroles.replies.list.list.title', interaction))
                         .setDescription(
-                            `Il y a ${numerize(list.length)} rôle${plurial(list.length)} configuré${plurial(
-                                list.length
-                            )} :\n${list.map(pingRole).join(' ')}`
+                            translator.translate('commands.admins.joinroles.replies.list.list.description', interaction, {
+                                count: list.length,
+                                roles: list.map(pingRole).join(' ')
+                            })
                         )
                 ]
             })
@@ -104,10 +94,7 @@ export default new DraverCommand({
         return interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user)
-                        .setTitle('Rôle trop haut')
-                        .setDescription(`Le rôle est supérieur ou égal à vous dans la hiérarchie des rôles`)
-                        .setColor(evokerColor(interaction.guild))
+                    replies.roleTooHigh(interaction.member as GuildMember, role, interaction)
                 ]
             })
             .catch(() => {});
@@ -119,8 +106,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Rôle déjà configuré')
-                            .setDescription(`Le rôle ${pingRole(role)} est déjà configuré`)
+                            .setTitle(translator.translate('commands.admins.joinroles.replies.add.alreadyConfigured.title', interaction))
+                            .setDescription(translator.translate('commands.admins.joinroles.replies.add.alradyConfigured.description', interaction, { role: pingRole(role) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -137,8 +124,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle configuré')
-                        .setDescription(`Le rôle ${pingRole(role)} sera désormais attribué aux nouveaux membres`)
+                        .setTitle(translator.translate('commands.admins.joinroles.replies.add.configured.title', interaction))
+                        .setDescription(translator.translate('commands.admins.joinroles.replies.add.configured.description', interaction, { role: pingRole(role) }))
                 ]
             })
             .catch(() => {});
@@ -149,8 +136,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Rôle non-configuré')
-                            .setDescription(`Le rôle ${pingRole(role)} n'est pas un rôle donné aux nouveaux membres`)
+                            .setTitle(translator.translate('commands.admins.joinroles.replies.remove.notConfigured.title', interaction))
+                            .setDescription(translator.translate('commands.admins.joinroles.replies.remove.notConfigured.description', interaction, { role: pingRole(role) })
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -167,9 +155,9 @@ export default new DraverCommand({
         interaction.editReply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Rôle supprimé')
-                    .setDescription(`Le rôle ${pingRole(role)} n'est plus donné aux nouveaux membres`)
+                    .setTitle(translator.translate('commands.admins.joinroles.replies.remove.configured.title', interaction))
+                    .setDescription(translator.translate('commands.admins.joinroles.replies.remove.configured.description', interaction, { role: pingRole(role) }))
             ]
-        });
+        }).catch(log4js.trace);
     }
 });
