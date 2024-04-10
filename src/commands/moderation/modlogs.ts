@@ -1,5 +1,5 @@
 import { DraverCommand } from '../../structures/DraverCommand';
-import { preconditions, waitForInteraction } from 'amethystjs';
+import { log4js, preconditions, waitForInteraction } from 'amethystjs';
 import { ApplicationCommandOptionType, ComponentType, EmbedBuilder, GuildMember, Message } from 'discord.js';
 import { yesNoRow } from '../../data/buttons';
 import replies from '../../data/replies';
@@ -201,7 +201,7 @@ export default new DraverCommand({
         });
     }
     if (subcommand === 'analyser') {
-        await interaction.deferReply();
+        await interaction.deferReply().catch(log4js.trace);
         const logs = await query<modlogs>(
             `SELECT * FROM modlogs WHERE guild_id='${interaction.guild.id}' AND case_id='${sqliseString(
                 options.getString('identifiant')
@@ -211,7 +211,7 @@ export default new DraverCommand({
         if (logs.length === 0)
             return interaction
                 .editReply({
-                    embeds: [replies.unexistingLog(interaction.member as GuildMember, options.getString('identifiant'))]
+                    embeds: [replies.unexistingLog(interaction.member as GuildMember, options.getString('identifiant'), interaction)]
                 })
                 .catch(() => {});
 
@@ -301,14 +301,14 @@ export default new DraverCommand({
         if (!logs || logs.length === 0)
             return interaction
                 .editReply({
-                    embeds: [replies.unexistingLog(interaction.member as GuildMember, identifiant)]
+                    embeds: [replies.unexistingLog(interaction.member as GuildMember, identifiant, interaction)]
                 })
                 .catch(() => {});
 
         if (dbBool(logs[0].deleted))
             return interaction
                 .editReply({
-                    embeds: [replies.deletedLog(interaction.member as GuildMember, logs[0].case_id)]
+                    embeds: [replies.deletedLog(interaction.member as GuildMember, logs[0].case_id, interaction)]
                 })
                 .catch(() => {});
 
@@ -341,7 +341,7 @@ export default new DraverCommand({
         if (interaction.user.id !== interaction.guild.ownerId)
             return interaction
                 .reply({
-                    embeds: [replies.ownerOnly(interaction.user, interaction)]
+                    embeds: [replies.ownerOnly(interaction.user, { guild: interaction.guild, lang: interaction })]
                 })
                 .catch(() => {});
 
@@ -359,7 +359,7 @@ export default new DraverCommand({
         if (!logs || logs.length === 0)
             return interaction
                 .editReply({
-                    embeds: [replies.unexistingLog(interaction.member as GuildMember, id)]
+                    embeds: [replies.unexistingLog(interaction.member as GuildMember, id, interaction)]
                 })
                 .catch(() => {});
         const log = logs[0];
@@ -394,7 +394,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             message: msg,
             user: interaction.user,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         }).catch(() => {});
 
         if (!reply || reply.customId === 'no')

@@ -388,7 +388,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 message: ask,
                 user: interaction.user,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!rep || rep.customId === 'cancel') {
@@ -447,7 +447,7 @@ export default new DraverCommand({
             const color = res.fields.getTextInputValue('color');
             if (!isValidHexColor(color)) {
                 res.reply({
-                    embeds: [replies.invalidColor(interaction.member as GuildMember)],
+                    embeds: [replies.invalidColor(interaction.member as GuildMember, ctx)],
                     ephemeral: true
                 }).catch(() => {});
             }
@@ -573,7 +573,7 @@ export default new DraverCommand({
                 message: question,
                 componentType: ComponentType.StringSelect,
                 user: interaction.user,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!select || select.values[0] === 'cancel') {

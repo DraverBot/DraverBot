@@ -843,7 +843,7 @@ export class TicketsManager {
                             }
                             await button
                                 .editReply({
-                                    embeds: [replies.wait(button.user)],
+                                    embeds: [replies.wait(button.user, button)],
                                     components: []
                                 })
                                 .catch(sendError);
@@ -886,7 +886,7 @@ export class TicketsManager {
                             }
                             await button
                                 .editReply({
-                                    embeds: [replies.wait(button.user)],
+                                    embeds: [replies.wait(button.user, button)],
                                     components: []
                                 })
                                 .catch(sendError);
@@ -949,7 +949,7 @@ export class TicketsManager {
                             }
                             await button
                                 .editReply({
-                                    embeds: [replies.wait(button.user)],
+                                    embeds: [replies.wait(button.user, button)],
                                     components: []
                                 })
                                 .catch(sendError);

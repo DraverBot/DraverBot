@@ -149,7 +149,7 @@ export default new DraverCommand({
 
         collector.on('collect', async (ctx) => {
             if (ctx.user.id != interaction.user.id) {
-                ctx.reply(waitForReplies(interaction.client).everyone).catch(log4js.trace);
+                ctx.reply(waitForReplies(interaction.client, ctx).everyone).catch(log4js.trace);
                 return;
             }
 
@@ -248,7 +248,7 @@ export default new DraverCommand({
                 const selection = await waitForInteraction({
                     componentType: ComponentType.StringSelect,
                     user: interaction.user,
-                    replies: waitForReplies(interaction.client),
+                    replies: waitForReplies(interaction.client, ctx),
                     message: rep
                 }).catch(log4js.trace);
 
@@ -270,7 +270,7 @@ export default new DraverCommand({
             }
             if (ctx.customId === ButtonIds.PollValidate) {
                 collector.stop('validate');
-                await builder.edit({ embeds: [replies.wait(interaction.user)], components: [] }).catch(log4js.trace);
+                await builder.edit({ embeds: [replies.wait(interaction.user, ctx)], components: [] }).catch(log4js.trace);
 
                 const creation = await pollsManager.create({
                     question: options.getString('question'),
@@ -331,7 +331,7 @@ export default new DraverCommand({
                 let int = parseInt(rep.fields.getTextInputValue('value'));
                 if (!int || isNaN(int)) {
                     rep.reply({
-                        embeds: [replies.invalidNumber(interaction.member as GuildMember)],
+                        embeds: [replies.invalidNumber(interaction.member as GuildMember, rep)],
                         ephemeral: true
                     }).catch(log4js.trace);
                     return;
@@ -405,7 +405,7 @@ export default new DraverCommand({
         await interaction
             .editReply({
                 components: [],
-                embeds: [replies.wait(interaction.user)]
+                embeds: [replies.wait(interaction.user, interaction)]
             })
             .catch(log4js.trace);
         pollsManager.end(poll.data.poll_id);

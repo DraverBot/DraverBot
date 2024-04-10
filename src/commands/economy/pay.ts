@@ -66,7 +66,7 @@ export default new DraverCommand({
     )
         return interaction
             .reply({
-                embeds: [replies.notEnoughCoins(interaction.member as GuildMember)]
+                embeds: [replies.notEnoughCoins(interaction.member as GuildMember, interaction.user, interaction)]
             })
             .catch(() => {});
 

@@ -122,7 +122,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             message: confirm,
             user: interaction.user,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         });
 
         if (!rep || rep.customId === 'no')
@@ -198,7 +198,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             user: interaction.user,
             message: place,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         });
 
         if (!reply)
@@ -306,7 +306,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             user: interaction.user,
             message: place,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         });
 
         if (!reply)
@@ -360,7 +360,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.notEnoughCoins(
                             interaction.member as GuildMember,
-                            options.getMember('utilisateur') as GuildMember
+                            options.getMember('utilisateur') as GuildMember,
+                            confirmation.interaction
                         )
                     ],
                     components: []

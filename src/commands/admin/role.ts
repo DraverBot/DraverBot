@@ -294,7 +294,7 @@ export default new DraverCommand({
             interaction
                 .reply({
                     ephemeral: true,
-                    embeds: [replies.invalidColor(interaction.member as GuildMember)]
+                    embeds: [replies.invalidColor(interaction.member as GuildMember, interaction)]
                 })
                 .catch(log4js.trace);
             return;
@@ -356,7 +356,7 @@ export default new DraverCommand({
 
         if (!isValidHexColor(color))
             return interaction
-                .reply({ embeds: [replies.invalidColor(interaction.member as GuildMember)], ephemeral: true })
+                .reply({ embeds: [replies.invalidColor(interaction.member as GuildMember, interaction)], ephemeral: true })
                 .catch(log4js.trace);
 
         const before = JSON.parse(JSON.stringify(role.toJSON()));

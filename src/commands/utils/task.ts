@@ -233,7 +233,7 @@ export default new DraverCommand({
 
         await interaction
             .reply({
-                embeds: [replies.wait(interaction.user)]
+                embeds: [replies.wait(interaction.user, interaction)]
             })
             .catch(log4js.trace);
         const channel = await interaction.guild.channels.fetch(channelId).catch(log4js.trace);
@@ -259,7 +259,8 @@ export default new DraverCommand({
                 image: img?.url ?? null,
                 time: time ?? 0,
                 by: interaction.user,
-                channel: channel as TextChannel
+                channel: channel as TextChannel,
+                lang: interaction
             })
             .catch(log4js.trace);
         if (!res || res === 'insertion not found' || res === 'no guild found' || res === 'no message found')

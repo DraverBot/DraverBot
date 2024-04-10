@@ -377,7 +377,7 @@ export default new DraverCommand({
         await interaction
             .editReply({
                 components: [],
-                embeds: [replies.wait(interaction.user)]
+                embeds: [replies.wait(interaction.user, confirmation.interaction)]
             })
             .catch(() => {});
         const res = await channel.delete().catch(() => {});

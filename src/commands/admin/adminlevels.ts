@@ -221,7 +221,7 @@ export default new DraverCommand({
         collector.on('collect', async (ctx) => {
             if (ctx.user.id !== interaction.user.id) {
                 ctx.reply({
-                    embeds: [replies.replyNotAllowed(ctx.member as GuildMember)],
+                    embeds: [replies.replyNotAllowed(ctx.member as GuildMember, ctx)],
                     ephemeral: true
                 }).catch(log4js.trace);
                 return;
@@ -405,7 +405,7 @@ export default new DraverCommand({
                 .catch(() => {});
 
         await interaction.editReply({
-            embeds: [replies.wait(interaction.user)],
+            embeds: [replies.wait(interaction.user, interaction)],
             components: []
         });
         await levelsManager.reset(interaction.guild.id, user?.id);
@@ -462,7 +462,7 @@ export default new DraverCommand({
 
         await interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, validation.interaction)],
                 components: []
             })
             .catch(() => {});
@@ -524,7 +524,7 @@ export default new DraverCommand({
 
         await interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, validation.interaction)],
                 components: []
             })
             .catch(() => {});

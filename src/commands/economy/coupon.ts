@@ -89,7 +89,7 @@ export default new DraverCommand({
         componentType: ComponentType.Button,
         user: interaction.user,
         message: msg,
-        replies: waitForReplies(interaction.client)
+        replies: waitForReplies(interaction.client, interaction)
     });
 
     if (!input || input.customId === 'no')

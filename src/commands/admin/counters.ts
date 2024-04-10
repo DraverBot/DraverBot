@@ -127,7 +127,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             message: rep,
             user: interaction.user,
-            replies: waitForReplies(interaction.client),
+            replies: waitForReplies(interaction.client, interaction),
             time: 120000
         }).catch(log4js.trace);
 
@@ -176,7 +176,7 @@ export default new DraverCommand({
             const selection = await waitForInteraction({
                 componentType: ComponentType.StringSelect,
                 user: interaction.user,
-                replies: waitForReplies(interaction.client),
+                replies: waitForReplies(interaction.client, act),
                 time: 120000,
                 message: rep
             }).catch(log4js.trace);
@@ -207,7 +207,7 @@ export default new DraverCommand({
 
             await interaction
                 .editReply({
-                    embeds: [replies.wait(interaction.user)],
+                    embeds: [replies.wait(interaction.user, selection)],
                     components: []
                 })
                 .catch(log4js.trace);

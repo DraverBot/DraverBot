@@ -7,6 +7,7 @@ import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { removeKey, sqliseString } from '../utils/toolbox';
 import GetEmojiStorage from '../process/GetEmojiStorage';
+import { langResolvable } from '../typings/core';
 
 export class RolesReactManager {
     private client: Client;
@@ -43,7 +44,8 @@ export class RolesReactManager {
         image = '',
         roles,
         channel,
-        user
+        user,
+        lang
     }: {
         title: string;
         description: string;
@@ -51,10 +53,11 @@ export class RolesReactManager {
         roles: { name: string; role_id: string; type: roleReactType; emoji: string }[];
         channel: TextChannel;
         user: User;
+        lang: langResolvable;
     }) {
         const message = (await channel
             .send({
-                embeds: [replies.wait(user)]
+                embeds: [replies.wait(user, lang)]
             })
             .catch(log4js.trace)) as Message<true>;
         if (!message) return 'message not found';

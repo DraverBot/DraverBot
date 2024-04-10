@@ -81,7 +81,7 @@ export default new DraverCommand({
 
     const rep = (await interaction
         .reply({
-            embeds: [replies.wait(interaction.user)],
+            embeds: [replies.wait(interaction.user, interaction)],
             fetchReply: true
         })
         .catch(log4js.trace)) as Message<true>;

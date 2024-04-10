@@ -206,159 +206,159 @@ const replies = {
             )
             .setColor(evokerColor(member.guild));
     },
-    notEnoughCoins: (user: GuildMember, target = user) => {
+    notEnoughCoins: (user: GuildMember, target: anyUser = user, lang: langResolvable) => {
         return basic(user.user)
-            .setTitle(`Pas assez ${util('coinsPrefix')}`)
+            .setTitle(translator.translate('contents.global.embeds.notEnoughCoins.title', lang))
             .setDescription(
-                `${target.id === user.id ? "Vous n'avez" : `${target} n'a`} pas assez ${util(
-                    'coinsPrefix'
-                )} pour faire ça`
+                translator.translate(`contents.global.embeds.notEnoughCoins.${target.id === user.id ? 'self' : 'other'}Description`, lang, {
+                    user: pingUser(target)
+                })
             )
             .setColor(evokerColor(user.guild));
     },
-    selfMod: ({ user, guild }: GuildMember, metadata: any) => {
+    selfMod: ({ user, guild }: GuildMember, metadata: { lang: langResolvable }) => {
         return basic(user)
-            .setTitle(`Auto-modération`)
-            .setDescription(`Vous ne pouvez pas faire ça sur vous-même`)
+            .setTitle(translator.translate('contents.global.embeds.selfMod.title', metadata.lang))
+            .setDescription(translator.translate('contents.global.embeds.selfMod.description', metadata.lang))
             .setColor(evokerColor(guild));
     },
-    replyNotAllowed: (user: anyUser) => {
+    replyNotAllowed: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Interaction non-autorisée')
-            .setDescription(`Vous n'êtes pas autorisé à interagir avec ce message`);
+            .setTitle(translator.translate('contents.global.embeds.replyNotAllowed.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.replyNotAllowed.description', lang));
     },
-    unexistingLog: (user: anyUser, id: string) => {
+    unexistingLog: (user: anyUser, id: string, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Log inexistant')
-            .setDescription(`Le log d'identifiant \`${id}\` n'existe pas sur ce serveur.`);
+            .setTitle(translator.translate('contents.global.embeds.unexistingLog.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.unexistingLog.description', lang, { id: parseInt(id) }));
     },
-    deletedLog: (user: anyUser, id: string) => {
+    deletedLog: (user: anyUser, id: string, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Log supprimé')
+            .setTitle(translator.translate('contents.global.embeds.deletedLog.title', lang))
             .setDescription(
-                `Le log d'identifiant \`${id}\` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé`
+                translator.translate('contents.global.embeds.deletedLog.description', lang, { id: parseInt(id) })
             );
     },
-    ownerOnly: (user: User, { guild }: { guild: Guild }) => {
+    ownerOnly: (user: User, { guild, lang }: { guild: Guild; lang: langResolvable }) => {
         return basic(user)
             .setColor(evokerColor(guild))
-            .setTitle('Propriétaire uniquement')
-            .setDescription(`Cette commande est réservée au propriétaire du serveur`);
+            .setTitle(translator.translate('contents.global.embeds.ownerOnly.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.ownerOnly.description', lang));
     },
-    interserverAlreadySet: (user: anyUser, metadata: { channel_id: string }) => {
+    interserverAlreadySet: (user: anyUser, metadata: { channel_id: string; lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Salon déjà configuré')
-            .setDescription(`Le salon ${pingChan(metadata.channel_id)} est déjà un salon d'interchat`);
+            .setTitle(translator.translate('contents.global.embeds.interserverAlreadySet.title', metadata.lang))
+            .setDescription(translator.translate('contents.global.embeds.interserverAlreadySet.description', metadata.lang, { channel: pingChan(metadata.channel_id) }));
     },
-    interserverUnexistingFrequence: (user: anyUser, { frequence }: { frequence: string }) => {
+    interserverUnexistingFrequence: (user: anyUser, { frequence, lang }: { frequence: string; lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Fréquence invalide')
-            .setDescription(`La fréquence \`${frequence}\` n'est utilisée dans aucun autre serveur`);
+            .setTitle(translator.translate('contents.global.embeds.unexistingFrequence.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.unexistingFrequence.description', lang, { frequence }));
     },
-    interserverFrequenceAssigned: (user: anyUser, { frequence }: { frequence: string }) => {
+    interserverFrequenceAssigned: (user: anyUser, { frequence, lang }: { frequence: string; lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Fréquence déjà utilisée')
-            .setDescription(`Cette fréquence est déjà utilisée dans un autre salon du serveur`);
+            .setTitle(translator.translate('contents.global.embeds.frequenceAssigned.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.frequenceAssigned.description', lang, { frequence }));
     },
-    interserverWebhookFailed: (user: anyUser, metadata: object) => {
+    interserverWebhookFailed: (user: anyUser, metadata: object & { lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Pas de webhook')
+            .setTitle(translator.translate('contents.global.embeds.webhookFailed.title', metadata.lang))
             .setDescription(
-                `Je n'ai pas pu créer de webhook.\nVérifiez que je possède la permission \`gérer les webhooks\` et réessayez`
+                translator.translate('contents.global.embeds.webhookFailed.description', metadata.lang)
             );
     },
-    interserverNoFrequence: (user: anyUser, metadata: object) => {
+    interserverNoFrequence: (user: anyUser, metadata: object & { lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Pas de fréquence')
+            .setTitle(translator.translate('contents.global.embeds.noFrequence.title', metadata.lang))
             .setDescription(
-                `Vous n'êtes pas censé voir ce message.\nCette erreur arrive lorsque je n'ai pas réussi à générer une fréquence unique pour votre salon.\nUne des solutions est de réessayer la commande`
+                translator.translate('contents.global.embeds.noFrequence.description', metadata.lang)
             );
     },
-    interserverNotChannel: (user: anyUser, metadata: { channel: TextChannel }) => {
+    interserverNotChannel: (user: anyUser, metadata: { channel: TextChannel; lang: langResolvable }) => {
         return userMember(user)
-            .setTitle('Salon invalide')
-            .setDescription(`Le salon ${pingChan(metadata.channel)} n'est pas un salon d'interchat`);
+            .setTitle(translator.translate('contents.global.embeds.interserverNotChannel.title', metadata.lang))
+            .setDescription(translator.translate('contents.global.embeds.interserverNotChannel.description', metadata.lang, { channel: pingChan(metadata.channel) }));
     },
-    wait: (user: User) => {
+    wait: (user: User, lang: langResolvable) => {
         return basic(user)
-            .setTitle('Patientez...')
-            .setDescription(`Merci de patienter quelques instants`)
+            .setTitle(translator.translate('contents.global.embeds.wait.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.wait.description', lang))
             .setColor('Orange');
     },
-    invalidNumber: (user: anyUser) => {
+    invalidNumber: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Nombre invalide')
-            .setDescription(`Merci de saisir un nombre valide, supérieur à 0`);
+            .setTitle(translator.translate('contents.global.embeds.invalidNumber.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidNumber.description', lang));
     },
-    invalidTime: (user: anyUser) => {
+    invalidTime: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Temps invalide')
-            .setDescription(`Vous n'avez pas saisi une durée valide${addTimeDoc(user.id)}`);
+            .setTitle(translator.translate('contents.global.embeds.invalidTime.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidTime.descriptoin', lang, {
+                timeDoc: addTimeDoc(user.id, lang)
+            }))
     },
-    invalidColor: (user: anyUser) => {
+    invalidColor: (user: anyUser, lang: langResolvable) => {
         return userMember(user)
-            .setTitle('Couleur invalide')
+            .setTitle(translator.translate('contents.global.embeds.invalidColor.title', lang))
             .setDescription(
-                `Vous n'avez pas saisi une couleur valide.\nVoici quelques exemples de couleurs valides :\n\`${anyHexColor(
-                    { hashtagIncluded: false, type: 'long' }
-                )}\`\n\`${anyHexColor({ hashtagIncluded: true, type: 'long' })}\`\n\`${anyHexColor({
-                    type: 'short',
-                    hashtagIncluded: true
-                })}\``
+                translator.translate('contents.global.embeds.invalidColor.description', lang, {
+                    colorOne: anyHexColor(
+                        { hashtagIncluded: false, type: 'long' }
+                    ),
+                    colorTwo: anyHexColor({ hashtagIncluded: true, type: 'long' }),
+                    colorThree: anyHexColor({
+                        type: 'short',
+                        hashtagIncluded: true
+                    })
+                })
             );
     },
     loto: {
-        noCurrentLoto: (user: User, guild: Guild) =>
+        noCurrentLoto: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
-                .setTitle('Loto inexistant')
-                .setDescription(`Il n'y a aucun giveaway en cours sur ce serveur`),
-        participationRegistered: (user: User) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.noLoto.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.noLoto.description', lang)),
+        participationRegistered: (user: User, lang: langResolvable) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
-                .setTitle('Participation enregistrée')
-                .setDescription(`Votre participation au loto a été enregistrée`),
-        alreadyParticipate: (user: User, guild: Guild) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.participationRegistered.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.participationRegistered.description', lang)),
+        alreadyParticipate: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
-                .setTitle('Participation déjà enregistrée')
-                .setDescription(`Vous participez déjà au loto`),
-        noParticipation: (user: User, guild: Guild) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.alreadyParticipate.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.alreadyParticipate.description', lang)),
+        noParticipation: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
-                .setTitle('Participation non enregistrée')
-                .setDescription(`Vous ne participez pas au loto sur ce serveur`),
-        participationDeleted: (user: User) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.noParticipation.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.noParticipation.description', lang)),
+        participationDeleted: (user: User, lang: langResolvable) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
-                .setTitle('Participation retirée')
-                .setDescription(`Votre participation au loto a été annulée`),
-        lotoDeleted: (user: User) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.participationDeleted.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.participationDeleted.description', lang)),
+        lotoDeleted: (user: User, lang: langResolvable) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
-                .setTitle('Loto supprimé')
-                .setDescription(`Le loto a été annulé sur le serveur`),
-        lotoStarted: (user: User, data: { coins: number; complementaries: number; numbers: number; endsAt: number }) =>
+                .setTitle(translator.translate('contents.global.embeds.loto.lotoDeleted.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.lotoDeleted.description', lang)),
+        lotoStarted: (user: User, data: { coins: number; complementaries: number; numbers: number; endsAt: number; lang: langResolvable }) =>
             userMember(user)
                 .setColor(util<ColorResolvable>('accentColor'))
-                .setTitle('Loto')
+                .setTitle(translator.translate('contents.global.embeds.loto.started.title', data.lang))
                 .setDescription(
-                    `Un loto a été lancé par ${pingUser(
-                        user
-                    )} !\nPour participer, utilisez la commande \`/loto participer\`\n\nModalités :\n* ${numerize(
-                        data.numbers
-                    )} numéros gagnants nécessaires\n* ${numerize(data.complementaries)} numéro${plurial(
-                        data.complementaries
-                    )} complémentaire${plurial(data.complementaries)} nécessaires\n* Se finit ${displayDate(
-                        data.endsAt
-                    )}${
-                        data.coins > 0
-                            ? `\n* ${numerize(data.coins)} ${util('coins')} sont en jeu à partager entre les gagnants`
-                            : ''
-                    }`
+                    translator.translate(`contents.global.embeds.loto.started.description${data.coins > 0 ? 'Coins' : ''}`, data.lang, {
+                        user: pingUser(user),
+                        winnings: data.numbers,
+                        complementaries: data.complementaries,
+                        date: displayDate(data.endsAt),
+                        prize: data.coins
+                    })
                 )
                 .setTimestamp(data.endsAt),
-        invalidParticipation: (user: User, guild: Guild, data: { numbers: number; complementaries: number }) => {
+        invalidParticipation: (user: User, guild: Guild, data: { numbers: number; complementaries: number; lang: langResolvable }) => {
             const numbers: number[] = [];
             const complementaries: number[] = [];
 
@@ -381,28 +381,21 @@ const replies = {
             }
             return userMember(user)
                 .setColor(evokerColor(guild))
-                .setTitle('Participation invalide')
+                .setTitle(translator.translate('contents.global.embeds.loto.invalidParticipation.title', data.lang))
                 .setDescription(
-                    `Votre participation est invalide.\nVous devez spécifier **${
-                        data.numbers
-                    }** numéros gagnants, et **${data.complementaries}** numéro${plurial(
-                        data.complementaries
-                    )} complémentaire${plurial(
-                        data.complementaries
-                    )} tous différents\n\nPar exemple :\n* Numéros gagnants : \`${numbers.join(' ')}\`${
-                        data.complementaries > 0
-                            ? `\n* Numéro${plurial(data.complementaries)} complémentaire${plurial(
-                                  data.complementaries
-                              )} : \`${complementaries.join(' ')}\``
-                            : ''
-                    }`
+                    translator.translate(`contents.global.embeds.loto.invalidParticipation.description${data.complementaries > 0 ? 'Complementaries' : ''}`, data.lang, {
+                        numbers: data.numbers,
+                        complementaries: data.complementaries,
+                        exampleNumbers: numbers.join(' '),
+                        complementariesExample: complementaries.join(' ')
+                    })
                 );
         },
-        lotoAlreadyStarted: (user: User, guild: Guild) =>
+        lotoAlreadyStarted: (user: User, guild: Guild, lang: langResolvable) =>
             userMember(user)
                 .setColor(evokerColor(guild))
-                .setTitle('Loto déjà lancé')
-                .setDescription(`Un loto existe déjà sur ${guild.name}`),
+                .setTitle(translator.translate('contents.global.embeds.loto.alreadyStarted.title', lang))
+                .setDescription(translator.translate('contents.global.embeds.loto.alreadyStarted.description', lang)),
         lotoResult: (
             user: User,
             rolled: { numbers: number[]; complementaries: number[] },
@@ -412,37 +405,30 @@ const replies = {
                 complementaries: number[];
                 accuracy: number;
                 reward: number;
-            }[]
+            }[],
+            lang: langResolvable
         ) => {
             if (winners.length == 0)
                 return userMember(user, util<ColorResolvable>('accentColor'))
-                    .setTitle('Résultats du loto')
+                    .setTitle(translator.translate('contents.global.embeds.loto.result.title', lang))
                     .setDescription(
-                        `Numéros tirés :\n* Gagnants : \`${rolled.numbers.join(' ')}\`${
-                            rolled.complementaries.length > 0
-                                ? `\n* Complémentaire${plurial(
-                                      rolled.complementaries
-                                  )} : \`${rolled.complementaries.join(' ')}\``
-                                : ''
-                        }\n\nIl n'y a aucun gagnant pour ce loto`
+                        translator.translate(`contents.global.embeds.loto.result.noWinner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`, lang, {
+                            rolled: rolled.numbers.join(' '),
+                            complementaries: rolled.complementaries?.join?.(' ')
+                        })
                     );
             return userMember(user, util<ColorResolvable>('accentColor'))
-                .setTitle('Résultats du loto')
+                .setTitle(translator.translate('contents.global.embeds.loto.result.title', lang))
                 .setDescription(
-                    `Numéros tirés :\n* Gagnants : \`${rolled.numbers.join(' ')}\`${
-                        rolled.complementaries.length > 0
-                            ? `\n* Complémentaire${plurial(rolled.complementaries)} : \`${rolled.complementaries.join(
-                                  ' '
-                              )}\``
-                            : ''
-                    }\n\nGagnants : ${winners
-                        .map(
-                            (w) =>
-                                `${pingUser(w.userId)} avec ${w.accuracy * 100}% de précision ( ${w.reward} ${util(
-                                    'coins'
-                                )} )`
-                        )
-                        .join('\n')}`
+                    translator.translate(`contents.global.embeds.loto.result.winner${rolled.complementaries.length > 0 ? 'Complementaries' : ''}`, lang, {
+                        rolled: rolled.numbers.join(' '),
+                        complementariesRolled: rolled.complementaries?.join?.(' '),
+                        winners: winners.map(w => translator.translate('contents.global.embeds.loto.result.mapper', lang, {
+                            user: pingUser(w.userId),
+                            accuracy: w.accuracy * 100,
+                            reward: w.reward
+                        })).join('\n')
+                    })
                 );
         }
     },

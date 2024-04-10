@@ -60,7 +60,7 @@ export default new Process(
                         void 0 &&
                         ctx
                             .reply({
-                                embeds: [replies.replyNotAllowed(ctx.member as GuildMember)],
+                                embeds: [replies.replyNotAllowed(ctx.member as GuildMember, ctx)],
                                 ephemeral: true
                             })
                             .catch(log4js.trace)
@@ -104,7 +104,7 @@ export default new Process(
 
                 await interaction
                     .editReply({
-                        embeds: [replies.wait(user)],
+                        embeds: [replies.wait(user, ctx)],
                         components: []
                     })
                     .catch(log4js.trace);

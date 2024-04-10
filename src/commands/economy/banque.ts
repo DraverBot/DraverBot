@@ -77,7 +77,7 @@ export default new DraverCommand({
         if (data.coins < amount)
             return interaction
                 .reply({
-                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember)]
+                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember, interaction.user, interaction)]
                 })
                 .catch(() => {});
 
@@ -112,7 +112,7 @@ export default new DraverCommand({
         if (data.bank < amount)
             return interaction
                 .reply({
-                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember)]
+                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember, interaction.user, interaction)]
                 })
                 .catch(() => {});
 

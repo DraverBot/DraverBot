@@ -47,7 +47,7 @@ export default new DraverCommand({
         const reply = await waitForInteraction({
             message: rep,
             user: interaction.user,
-            replies: waitForReplies(interaction.client),
+            replies: waitForReplies(interaction.client, interaction),
             time: 20000,
             componentType: ComponentType.Button
         });

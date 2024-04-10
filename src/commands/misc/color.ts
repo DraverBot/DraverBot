@@ -42,7 +42,7 @@ export default new DraverCommand({
     if (!isValidHexColor(color.toString()))
         return interaction
             .reply({
-                embeds: [replies.invalidColor((interaction.member as GuildMember) ?? interaction.user)],
+                embeds: [replies.invalidColor((interaction.member as GuildMember) ?? interaction.user, interaction)],
                 ephemeral: true
             })
             .catch(log4js.trace);

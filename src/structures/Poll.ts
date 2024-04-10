@@ -202,7 +202,7 @@ export class Poll {
                     ctx.user.id,
                     choices.map((x) => x.id)
                 ),
-                ctx.editReply({ embeds: [replies.wait(ctx.user)], components: [] }).catch(log4js.trace),
+                ctx.editReply({ embeds: [replies.wait(ctx.user, ctx)], components: [] }).catch(log4js.trace),
                 this.editMessage()
             ]);
 

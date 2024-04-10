@@ -15,7 +15,7 @@ export default new Precondition('validTime').setChatInputRun(({ interaction, opt
     if (!ms(time)) {
         interaction
             .reply({
-                embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user)],
+                embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user, interaction)],
                 ephemeral: true
             })
             .catch(sendError);

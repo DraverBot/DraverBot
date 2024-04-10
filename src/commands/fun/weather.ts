@@ -43,7 +43,7 @@ export default new DraverCommand({
 
     const msg = (await interaction
         .reply({
-            embeds: [replies.wait(interaction.user)],
+            embeds: [replies.wait(interaction.user, interaction)],
             fetchReply: true
         })
         .catch(log4js.trace)) as Message<true>;
@@ -130,7 +130,7 @@ export default new DraverCommand({
         collector.on('collect', (ctx) => {
             if (ctx.user.id !== interaction.user.id) {
                 ctx.reply({
-                    embeds: [replies.replyNotAllowed(ctx.member ?? ctx.user)],
+                    embeds: [replies.replyNotAllowed(ctx.member ?? ctx.user, ctx)],
                     ephemeral: true
                 }).catch(log4js.trace);
                 return;

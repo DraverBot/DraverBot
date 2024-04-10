@@ -149,7 +149,8 @@ export default new DraverCommand({
             image: img?.url ?? '',
             channel,
             user: interaction.user,
-            roles: res.roles
+            roles: res.roles,
+            lang: interaction
         });
 
         if (creation === 'message not found') {

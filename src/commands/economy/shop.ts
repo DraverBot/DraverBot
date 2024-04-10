@@ -114,7 +114,7 @@ export default new DraverCommand({
         if (item.price > coinsManager.getData({ user_id: interaction.user.id, guild_id: interaction.guild.id }).coins)
             return interaction
                 .reply({
-                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember)],
+                    embeds: [replies.notEnoughCoins(interaction.member as GuildMember, interaction.user, interaction)],
                     ephemeral: true
                 })
                 .catch(() => {});

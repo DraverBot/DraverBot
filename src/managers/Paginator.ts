@@ -56,7 +56,7 @@ export class Paginator {
                 interaction
                     .reply({
                         ephemeral: true,
-                        embeds: [replies.replyNotAllowed(interaction.member ?? interaction.user)]
+                        embeds: [replies.replyNotAllowed(interaction.member ?? interaction.user, interaction)]
                     })
                     .catch(sendError);
                 return;

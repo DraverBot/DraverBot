@@ -377,7 +377,7 @@ export default new DraverCommand({
                     changes--;
                     reply
                         .reply({
-                            embeds: [replies.invalidNumber(interaction.member as GuildMember)],
+                            embeds: [replies.invalidNumber(interaction.member as GuildMember, ctx)],
                             ephemeral: true
                         })
                         .catch(() => {});
@@ -446,7 +446,7 @@ export default new DraverCommand({
                     user: interaction.user,
                     componentType: ComponentType.Button,
                     message: question,
-                    replies: waitForReplies(interaction.client)
+                    replies: waitForReplies(interaction.client, ctx)
                 }).catch(() => {})) as ButtonInteraction;
 
                 if (!reply || reply.customId === 'cancel') {

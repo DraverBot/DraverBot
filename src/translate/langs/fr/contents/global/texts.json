@@ -1,0 +1,3 @@
+{
+    "timeDoc": "Pour afficher un temps correct, utilisez un nombre, suivi du temps que vous voulez.\nVous pouvez utiliser des unités pour spécifier le temps que vous souhaitez.\n* `s` pour les secondes\n* `m` pour les minutes\n* `h` pour les heures\n* `d` pour les jours"
+}

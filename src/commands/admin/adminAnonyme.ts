@@ -394,7 +394,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             message: msg,
             user: interaction.user,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         }).catch(() => {})) as ButtonInteraction;
 
         if (!choice || choice.customId === 'cancel')

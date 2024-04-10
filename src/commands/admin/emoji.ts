@@ -68,7 +68,7 @@ export default new DraverCommand({
         await Promise.all([
             interaction
                 .reply({
-                    embeds: [replies.wait(interaction.user)]
+                    embeds: [replies.wait(interaction.user, interaction)]
                 })
                 .catch(log4js.trace),
             interaction.guild.emojis.fetch().catch(log4js.trace)
@@ -121,7 +121,7 @@ export default new DraverCommand({
         await Promise.all([
             interaction
                 .reply({
-                    embeds: [replies.wait(interaction.user)]
+                    embeds: [replies.wait(interaction.user, interaction)]
                 })
                 .catch(log4js.trace),
             interaction.guild.emojis.fetch().catch(log4js.trace)

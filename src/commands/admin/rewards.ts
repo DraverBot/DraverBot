@@ -341,7 +341,7 @@ export default new DraverCommand({
 
         await interaction
             .reply({
-                embeds: [replies.wait(interaction.user)]
+                embeds: [replies.wait(interaction.user, interaction)]
             })
             .catch(log4js.trace);
 

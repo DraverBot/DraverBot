@@ -154,12 +154,12 @@ export default new DraverCommand({
                 .catch(log4js.trace);
         if (loto == 'loto already started')
             return interaction
-                .editReply({ embeds: [replies.loto.lotoAlreadyStarted(interaction.user, interaction.guild)] })
+                .editReply({ embeds: [replies.loto.lotoAlreadyStarted(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
 
         interaction
             .editReply({
-                embeds: [replies.loto.lotoStarted(interaction.user, { coins, numbers, complementaries, endsAt })]
+                embeds: [replies.loto.lotoStarted(interaction.user, { coins, numbers, complementaries, endsAt, lang: interaction })]
             })
             .catch(log4js.trace);
     }
@@ -181,19 +181,19 @@ export default new DraverCommand({
         const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
-                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
 
         const results = lotoManager.end(loto.id);
         if (results == 'unexisting loto')
             return interaction
                 .reply({
-                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)]
+                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)]
                 })
                 .catch(log4js.trace);
         interaction
             .reply({
-                embeds: [replies.loto.lotoResult(interaction.user, results.rolled, results.winners)]
+                embeds: [replies.loto.lotoResult(interaction.user, results.rolled, results.winners, interaction)]
             })
             .catch(log4js.trace);
     }
@@ -216,7 +216,7 @@ export default new DraverCommand({
 
         if (!loto || !loto.availableForJoin)
             return interaction
-                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
         const registration = lotoManager.registerParticipation(loto.id, {
             userId: interaction.user.id,
@@ -227,12 +227,12 @@ export default new DraverCommand({
         if (registration == 'unexisting loto')
             return interaction
                 .reply({
-                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)]
+                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)]
                 })
                 .catch(log4js.trace);
         if (registration == 'user is already participating to the loto')
             return interaction
-                .reply({ embeds: [replies.loto.alreadyParticipate(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.alreadyParticipate(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
 
         if (registration == 'invalid numbers array' || registration == 'one of arrays has duplicates')
@@ -241,7 +241,8 @@ export default new DraverCommand({
                     embeds: [
                         replies.loto.invalidParticipation(interaction.user, interaction.guild, {
                             numbers: loto.numbers,
-                            complementaries: loto.complementaries
+                            complementaries: loto.complementaries,
+                            lang: interaction
                         })
                     ]
                 })
@@ -249,7 +250,7 @@ export default new DraverCommand({
 
         interaction
             .reply({
-                embeds: [replies.loto.participationRegistered(interaction.user)]
+                embeds: [replies.loto.participationRegistered(interaction.user, interaction)]
             })
             .catch(log4js.trace);
     }
@@ -257,11 +258,11 @@ export default new DraverCommand({
         const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto || loto.ended)
             return interaction
-                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
         if (!loto.isParticipating(interaction.user.id))
             return interaction
-                .reply({ embeds: [replies.loto.noParticipation(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noParticipation(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
 
         const confirmation = await confirm({
@@ -281,7 +282,7 @@ export default new DraverCommand({
         if (annulation == 'unexisting loto')
             return interaction
                 .editReply({
-                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)],
+                    embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)],
                     components: []
                 })
                 .catch(log4js.trace);
@@ -290,13 +291,13 @@ export default new DraverCommand({
         if (annulation == 'user is not participating in the loto')
             return interaction
                 .editReply({
-                    embeds: [replies.loto.noParticipation(interaction.user, interaction.guild)],
+                    embeds: [replies.loto.noParticipation(interaction.user, interaction.guild, interaction)],
                     components: []
                 })
                 .catch(log4js.trace);
 
         interaction
-            .editReply({ embeds: [replies.loto.participationDeleted(interaction.user)], components: [] })
+            .editReply({ embeds: [replies.loto.participationDeleted(interaction.user, interaction)], components: [] })
             .catch(log4js.trace);
     }
     if (cmd == 'annuler') {
@@ -316,7 +317,7 @@ export default new DraverCommand({
         const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
-                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
         const confirmation = await confirm({
             interaction,
@@ -339,9 +340,7 @@ export default new DraverCommand({
         interaction
             .editReply({
                 embeds: [
-                    basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Loto annulé')
-                        .setDescription(`Le loto a été annulé`)
+                    replies.loto.lotoDeleted(interaction.user, interaction)
                 ],
                 components: []
             })
@@ -351,7 +350,7 @@ export default new DraverCommand({
         const loto = lotoManager.getGuildLoto(interaction.guild.id);
         if (!loto)
             return interaction
-                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild)] })
+                .reply({ embeds: [replies.loto.noCurrentLoto(interaction.user, interaction.guild, interaction)] })
                 .catch(log4js.trace);
 
         const embed = basicEmbed(interaction.user, { draverColor: true })

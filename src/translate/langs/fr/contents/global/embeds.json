@@ -65,5 +65,118 @@
     "memberTooHighClient": {
         "title": "Membre trop haut",
         "description": "{member} est supérieur ou égal à moi dans la hiérarchie des rôles"
+    },
+    "notEnoughCoins": {
+        "title": "Pas assez de {coins}",
+        "selfDescription": "Vous n'avez pas assez de {coins} pour faire ça",
+        "otherDescription": "{user} n'as pas assez de {coins} pour faire ça"
+    },
+    "selfMod": {
+        "title": "Auto-modération",
+        "description": "Vous ne pouvez pas faire ça sur vous-même"
+    },
+    "replyNotAllowed": {
+        "title": "Interaction non-autorisée",
+        "description": "Vous n'êtes pas autorisé à interagir avec ce message"
+    },
+    "unexistingLog": {
+        "title": "Log inexistant",
+        "description": "Le log d'identifiant `{id}` n'existe pas sur ce serveur"
+    },
+    "deletedLog": {
+        "title": "Log supprimé",
+        "description": "Le log d'identifiant `{id}` est supprimé.\nVous ne pouvez pas faire ça sur un log supprimé"
+    },
+    "ownerOnly": {
+        "title": "Propriétaire uniquement",
+        "description": "Cette commande est réservée au propriétaire du serveur"
+    },
+    "interserverAlreadySet": {
+        "title": "Salon déjà configuré",
+        "description": "Le salon {channel} est déjà un salon d'interchat"
+    },
+    "unexistingFrequence": {
+        "title": "Fréquence invalide",
+        "description": "La fréquence `{frequence}` n'est utilisée dans aucun autre serveur"
+    },
+    "frequenceAssigned": {
+        "title": "Fréquence déjà utilisée",
+        "description": "La fréquence `{frequence}` est déjà utilisée dans un autre salon du serveur"
+    },
+    "webhookFailed": {
+        "title": "Pas de webhook",
+        "description": "Je n'ai pas pu créer de webhook.\nVérififiez que je possède la permission `gérer les webhooks` et réessayez"
+    },
+    "noFrequence": {
+        "title": "Pas de fréquence",
+        "description": "Vous n'êtes pas censé voir ce message.\nCette erreur arrive lorsque je n'ai pas réussi à générer une fréquence unique pour votre salon.\nUne des solutions est de réessayez la commande."
+    },
+    "interserverNotChannel": {
+        "title": "Salon invalide",
+        "description": "Le salon {channel} n'est pas un salon d'interchat"
+    },
+    "wait": {
+        "title": "Patientez...",
+        "description": "Merci de patienter quelques instants"
+    },
+    "invalidNumber": {
+        "title": "Nombre invalide",
+        "description": "Merci de saisir un nombre valide, supérieur à 0"
+    },
+    "invalidTime": {
+        "title": "Temps invalide",
+        "description": "Vous n'avez pas saisi une durée valide{timeDoc}"
+    },
+    "invalidColor": {
+        "title": "Couleur invalide",
+        "description": "Vous n'avez pas saisi une couleur valide.\nVoici quelques examples de couleurs valides :\n`{colorOne}`\n{colorTwo}`\n`{colorThree}`"
+    },
+    "loto": {
+        "noLoto": {
+            "title": "Loto inexistant",
+            "description": "Il n'y a aucun loto en cours sur ce serveur"
+        },
+        "participationRegistered": {
+            "title": "Participation enregistrée",
+            "description": "Votre participation au loto a été enregistrée"
+        },
+        "alreadyParticipate": {
+            "title": "Participation déjà enregistrée",
+            "description": "Vous participez déjà au loto"
+        },
+        "noParticipation": {
+            "title": "Participation non enregistrée",
+            "description": "Vous ne participez pas au loto sur ce serveur"
+        },
+        "participationDeleted": {
+            "title": "Participation retirée",
+            "description": "Votre participation au loto a été annulée"
+        },
+        "lotoDeleted": {
+            "title": "Loto supprimé",
+            "description": "Le loto a été annulé sur le serveur"
+        },
+        "started": {
+            "title": "Loto",
+            "description": "Un loto a été lancé par {user} !\nPour participer, utilisez la commande `/loto participer`\n\nModalités :\n* {winnings} numéros gagnants nécessaires\n* {complementaries} numéros complémentaires nécessaires\n* Se finit {date}",
+            "descriptionCoins": "Un loto a été lancé par {user} !\nPour participer, utilisez la commande `/loto participer`\n\nModalités :\n* {winnings} numéros gagnants nécessaires\n* {complementaries} numéros complémentaires nécessaires\n* Se finit {date}\n* {prize} {coins} sont en jeu à partager entre les gagnants"
+        },
+        "invalidParticipation": {
+            "title": "Participation invalide",
+            "description": "Votre participation est invalide.\nVous devez spécifier **{numbers}** numéros gagnants, et **{complementaries}** numéros complémentaires, tous différents.\n\nPar exemple :\n* Numéros gagnants : `{exampleNumbers}`",
+            "descriptionComplementaries": "Votre participation est invalide.\nVous devez spécifier **{numbers}** numéros gagnants, et **{complementaries}** numéros complémentaires, tous différents.\n\nPar exemple :\n* Numéros gagnants : `{exampleNumbers}`\n* Numéros complémentaires `{complementariesExample}`"
+        },
+        "alreadyStarted": {
+            "title": "Loto déjà lancé",
+            "description": "Un loto existe déjà sur {name}"
+        },
+        "result": {
+            "title": "Résultats du loto",
+            "noWinner": "Numéros tirés :\n* Gagnants : `{rolled}`\n\nIl n'y a aucun gagnant pour ce loto",
+            "noWinnerComplementaries": "Numéros tirés :\n* Gagnants : `{rolled}`\n* Complémentaires `{complementaries}`\n\nIl n'y a aucun gagnant pour ce loto",
+            "mapper": "{user} avec {accuracy}% de précision ( {reward} {coins} )",
+            "winner": "Numéros tirés :\n* Gagnants : `{rolled}`\n\nGagnants : {winners}",
+            "winnerComplementaries": "Numéros tirés :\n* Gagnants : `{rolled}`\n* Complémentaires : `{complementariesRolled}`\n\nGagnants : {winners}"
+        }
     }
 }

@@ -5,6 +5,7 @@ import { DatabaseTables, tasks } from '../typings/database';
 import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { sqliseString } from '../utils/toolbox';
+import { langResolvable } from '../typings/core';
 
 export class TaskManager {
     private _cache: Collection<number, Task> = new Collection();
@@ -56,7 +57,8 @@ export class TaskManager {
         image,
         channel,
         by,
-        time = 0
+        time = 0,
+        lang
     }: {
         name: string;
         description: string;
@@ -64,11 +66,12 @@ export class TaskManager {
         channel: TextChannel;
         by: User;
         time?: number;
+        lang: langResolvable
     }) {
         if (!channel.guild) return 'no guild found';
         const message = (await channel
             .send({
-                embeds: [replies.wait(by)]
+                embeds: [replies.wait(by, lang)]
             })
             .catch(log4js.trace)) as Message<true>;
 

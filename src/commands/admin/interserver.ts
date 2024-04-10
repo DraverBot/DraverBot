@@ -1,6 +1,6 @@
 import { interserver } from '../../cache/managers';
 import { DraverCommand } from '../../structures/DraverCommand';
-import { preconditions, waitForInteraction } from 'amethystjs';
+import { log4js, preconditions, waitForInteraction } from 'amethystjs';
 import {
     ApplicationCommandOptionType,
     ChannelType,
@@ -133,7 +133,7 @@ export default new DraverCommand({
             componentType: ComponentType.Button,
             user: interaction.user,
             message: msg,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         }).catch(() => {});
 
         if (!reply)
@@ -188,7 +188,7 @@ export default new DraverCommand({
         interaction
             .editReply({
                 components: [],
-                embeds: [replies.wait(interaction.user)]
+                embeds: [replies.wait(interaction.user, interaction)]
             })
             .catch(() => {});
         const res = await interserver.createInterserver({
@@ -200,7 +200,7 @@ export default new DraverCommand({
         if (typeof res === 'string') {
             const rep = (replies[res] as (user: GuildMember, metadata: any) => EmbedBuilder)(
                 interaction.member as GuildMember,
-                { frequence, channel_id: channel.id, channel }
+                { frequence, channel_id: channel.id, channel, lang: interaction }
             );
             return interaction
                 .editReply({
@@ -224,7 +224,7 @@ export default new DraverCommand({
         if (!interserver.cache.find((x) => x.guild_id === interaction.guild.id && x.channel_id === channel.id))
             return interaction
                 .reply({
-                    embeds: [replies.interserverNotChannel(interaction.user, { channel })]
+                    embeds: [replies.interserverNotChannel(interaction.user, { channel, lang: interaction })]
                 })
                 .catch(() => {});
 
@@ -249,7 +249,7 @@ export default new DraverCommand({
                 .catch(() => {});
 
         await interaction.editReply({
-            embeds: [replies.wait(interaction.user)],
+            embeds: [replies.wait(interaction.user, validated.interaction)],
             components: []
         });
 
@@ -289,7 +289,7 @@ export default new DraverCommand({
             if (!data)
                 return interaction
                     .reply({
-                        embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel })]
+                        embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel, lang: interaction })]
                     })
                     .catch(() => {});
 
@@ -380,11 +380,11 @@ export default new DraverCommand({
         if (!interserver.cache.find((x) => x.channel_id === channel.id && x.guild_id === interaction.guild.id))
             return interaction
                 .reply({
-                    embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel })]
+                    embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel, lang: interaction })]
                 })
                 .catch(() => {});
 
-        await interaction.deferReply();
+        await interaction.deferReply().catch(log4js.trace);
         const res = await interserver
             .editFrequence({
                 guild_id: interaction.guild.id,
@@ -394,7 +394,7 @@ export default new DraverCommand({
             .catch(() => {});
         if (res === 'interserverFrequenceAssigned')
             return interaction.editReply({
-                embeds: [replies.interserverFrequenceAssigned(interaction.member as GuildMember, { frequence })]
+                embeds: [replies.interserverFrequenceAssigned(interaction.member as GuildMember, { frequence, lang: interaction })]
             });
 
         interaction

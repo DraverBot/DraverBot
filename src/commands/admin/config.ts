@@ -199,7 +199,7 @@ export default new DraverCommand({
                 if (isNaN(test) || test < 0)
                     return interaction
                         .editReply({
-                            embeds: [replies.invalidNumber(interaction.member as GuildMember)]
+                            embeds: [replies.invalidNumber(interaction.member as GuildMember, reply)]
                         })
                         .catch(() => {});
 

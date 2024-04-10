@@ -37,7 +37,7 @@ export default new Process(
         return new Promise(async (resolve) => {
             const rep = (await interaction
                 .reply({
-                    embeds: [replies.wait(user)],
+                    embeds: [replies.wait(user, interaction)],
                     fetchReply: true
                 })
                 .catch(log4js.trace)) as Message<true>;
@@ -95,7 +95,7 @@ export default new Process(
             collector.on('collect', async (ctx) => {
                 if (ctx.user.id !== user.id) {
                     ctx.reply({
-                        embeds: [replies.replyNotAllowed(ctx.user)],
+                        embeds: [replies.replyNotAllowed(ctx.user, ctx)],
 
                         ephemeral: true
                     }).catch(log4js.trace);
@@ -227,7 +227,7 @@ export default new Process(
 
                         interaction
                             .editReply({
-                                embeds: [replies.wait(user)],
+                                embeds: [replies.wait(user, interaction)],
                                 components: []
                             })
                             .catch(log4js.trace);

@@ -212,7 +212,7 @@ export default new DraverCommand({
                 .catch(() => {});
         interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, valid.interaction)],
                 components: []
             })
             .catch(() => {});
@@ -334,7 +334,7 @@ export default new DraverCommand({
                 .catch(() => {});
         interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, validation.interaction)],
                 components: []
             })
             .catch(() => {});

@@ -375,7 +375,7 @@ export default new DraverCommand({
         if (!ctx.isStringSelectMenu) return;
         if (ctx.user.id !== interaction.user.id) {
             ctx.reply({
-                embeds: [replies.replyNotAllowed((ctx?.member as GuildMember) ?? ctx.user)],
+                embeds: [replies.replyNotAllowed((ctx?.member as GuildMember) ?? ctx.user, ctx)],
                 ephemeral: true
             }).catch(() => {});
             return;

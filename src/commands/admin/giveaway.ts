@@ -468,7 +468,7 @@ export default new DraverCommand({
             if (ctx.customId === 'validate') {
                 interaction
                     .editReply({
-                        embeds: [replies.wait(interaction.user)],
+                        embeds: [replies.wait(interaction.user, ctx)],
                         components: []
                     })
                     .catch(() => {});
@@ -721,7 +721,7 @@ export default new DraverCommand({
                     setDeleteTmst();
                     interaction
                         .editReply({
-                            embeds: [replies.invalidNumber(interaction.member as GuildMember)]
+                            embeds: [replies.invalidNumber(interaction.member as GuildMember, reply)]
                         })
                         .catch(() => {});
                     return;
@@ -738,7 +738,7 @@ export default new DraverCommand({
                                 .setTitle('Durée du giveaway')
                                 .setDescription(
                                     `Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(
-                                        interaction.user.id
+                                        interaction.user.id, interaction
                                     )}\n${util('cancelMsg')}`
                                 )
                                 .setColor('Grey')
@@ -767,7 +767,7 @@ export default new DraverCommand({
                 const time = ms(reply.content);
                 if (!time || isNaN(time)) {
                     ctx.editReply({
-                        embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user)]
+                        embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user, interaction)]
                     }).catch(() => {});
                     setDeleteTmst();
                     reedit();
@@ -854,7 +854,7 @@ export default new DraverCommand({
                 if (!int || isNaN(int) || int < 0) {
                     reedit();
                     SendAndDelete.process(
-                        { embeds: [replies.invalidNumber(interaction.member as GuildMember)] },
+                        { embeds: [replies.invalidNumber(interaction.member as GuildMember, reply)] },
                         interaction.channel as TextChannel
                     );
                     return;
@@ -901,7 +901,7 @@ export default new DraverCommand({
                 if (!int || isNaN(int) || int < 0) {
                     reedit();
                     SendAndDelete.process(
-                        { embeds: [replies.invalidNumber(interaction.member as GuildMember)] },
+                        { embeds: [replies.invalidNumber(interaction.member as GuildMember, reply)] },
                         interaction.channel as TextChannel
                     );
                     return;
@@ -1219,7 +1219,7 @@ export default new DraverCommand({
                 .catch(() => {});
         await interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, confirmation.interaction)],
                 components: []
             })
             .catch(() => {});
@@ -1290,7 +1290,7 @@ export default new DraverCommand({
                 .catch(() => {});
         await interaction
             .editReply({
-                embeds: [replies.wait(interaction.user)],
+                embeds: [replies.wait(interaction.user, confirmation.interaction)],
                 components: []
             })
             .catch(() => {});

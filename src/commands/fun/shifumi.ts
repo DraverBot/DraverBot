@@ -102,7 +102,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 user: interaction.user,
                 message: choiceMsg,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!choice)
@@ -160,7 +160,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 message: msg,
                 user: user,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!yesNoRep)
@@ -201,7 +201,7 @@ export default new DraverCommand({
             const userSignID = await waitForInteraction({
                 componentType: ComponentType.Button,
                 message: msg,
-                replies: waitForReplies(interaction.client),
+                replies: waitForReplies(interaction.client, interaction),
                 user: interaction.user,
                 whoCanReact: 'useronly'
             }).catch(() => {});
@@ -227,7 +227,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 user,
                 message: msg,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!twoSign)
@@ -335,7 +335,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 user: interaction.user,
                 message: choiceMsg,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!choice)
@@ -393,7 +393,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 message: msg,
                 user: user,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!yesNoRep)
@@ -434,7 +434,7 @@ export default new DraverCommand({
             const userSignID = await waitForInteraction({
                 componentType: ComponentType.Button,
                 message: msg,
-                replies: waitForReplies(interaction.client),
+                replies: waitForReplies(interaction.client, interaction),
                 user: interaction.user,
                 whoCanReact: 'useronly'
             }).catch(() => {});
@@ -460,7 +460,7 @@ export default new DraverCommand({
                 componentType: ComponentType.Button,
                 user,
                 message: msg,
-                replies: waitForReplies(interaction.client)
+                replies: waitForReplies(interaction.client, interaction)
             }).catch(() => {});
 
             if (!twoSign)

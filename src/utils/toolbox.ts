@@ -55,10 +55,11 @@ import time from '../maps/time';
 import { modActionType } from '../typings/database';
 import { ButtonIds } from '../typings/buttons';
 import SetRandomComponent from '../process/SetRandomComponent';
-import { dateResolvable } from '../typings/core';
+import { dateResolvable, langResolvable } from '../typings/core';
 import mysqldump from 'mysqldump';
 import { client } from '..';
 import { rmSync, existsSync } from 'node:fs';
+import { translator } from '../translate/translate';
 
 export const basicEmbed = (user: User, options?: { draverColor?: boolean; questionMark?: boolean; evoker?: Guild }) => {
     const x = new EmbedBuilder()
@@ -333,7 +334,7 @@ export const confirm = ({
             user,
             message: msg,
             time,
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         }).catch(() => {});
 
         if (!reply) return resolve('cancel');
@@ -358,7 +359,7 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
             interaction
                 .reply({
                     ephemeral: true,
-                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user)],
+                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user, interaction)],
                     components: SetRandomComponent.process()
                 })
                 .catch(sendError);
@@ -397,15 +398,15 @@ export const nickname = (user: anyUser): string => {
     if (user instanceof User) return user.username;
     return user?.nickname ?? user.user.username;
 };
-export const waitForReplies = (client: Client) => {
+export const waitForReplies = (client: Client, lang: langResolvable) => {
     return {
         everyone: {
-            embeds: [replies.replyNotAllowed(client.user)],
+            embeds: [replies.replyNotAllowed(client.user, lang)],
             ephemeral: true,
             components: SetRandomComponent.process()
         },
         user: {
-            embeds: [replies.replyNotAllowed(client.user)],
+            embeds: [replies.replyNotAllowed(client.user, lang)],
             ephemeral: true,
             components: SetRandomComponent.process()
         }
@@ -426,12 +427,12 @@ export const getMsgUrl = ({
 }) => {
     return `https://discord.com/channels/${guild_id}/${channel_id}/${message_id}`;
 };
-export const addTimeDoc = (userId: string) => {
+export const addTimeDoc = (userId: string, lang: langResolvable) => {
     const value = time.get(userId) ?? 0;
     time.set(userId, value + 1);
 
     if (value >= 3)
-        return `\n\nPour afficher un temps correct, utilisez un nombre suivit du temps que vous voulez.\nVous pouvez utiliser des unités pour spécifier le temps que vous souhaitez\n* \`s\` pour les secondes\n* \`m\` pour les minutes\n* \`h\` pour les heures\n* \`d\` pour les jours`;
+        return '\n\n' + translator.translate('contents.global.texts.timeDoc', lang);
     return '';
 };
 export const hint = (text: string) =>

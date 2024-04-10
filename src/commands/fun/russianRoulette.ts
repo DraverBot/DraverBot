@@ -54,7 +54,7 @@ export default new DraverCommand({
             message: msg,
             user: interaction.user,
             whoCanReact: 'useronly',
-            replies: waitForReplies(interaction.client)
+            replies: waitForReplies(interaction.client, interaction)
         });
         if (!reply || reply.customId === 'no')
             return interaction
