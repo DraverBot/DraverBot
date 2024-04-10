@@ -154,12 +154,22 @@ export default new DraverCommand({
                 .catch(log4js.trace);
         if (loto == 'loto already started')
             return interaction
-                .editReply({ embeds: [replies.loto.lotoAlreadyStarted(interaction.user, interaction.guild, interaction)] })
+                .editReply({
+                    embeds: [replies.loto.lotoAlreadyStarted(interaction.user, interaction.guild, interaction)]
+                })
                 .catch(log4js.trace);
 
         interaction
             .editReply({
-                embeds: [replies.loto.lotoStarted(interaction.user, { coins, numbers, complementaries, endsAt, lang: interaction })]
+                embeds: [
+                    replies.loto.lotoStarted(interaction.user, {
+                        coins,
+                        numbers,
+                        complementaries,
+                        endsAt,
+                        lang: interaction
+                    })
+                ]
             })
             .catch(log4js.trace);
     }
@@ -339,9 +349,7 @@ export default new DraverCommand({
 
         interaction
             .editReply({
-                embeds: [
-                    replies.loto.lotoDeleted(interaction.user, interaction)
-                ],
+                embeds: [replies.loto.lotoDeleted(interaction.user, interaction)],
                 components: []
             })
             .catch(log4js.trace);

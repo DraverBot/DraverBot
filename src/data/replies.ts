@@ -701,14 +701,16 @@ const replies = {
     noEmoji: (user: anyUser, lang: langResolvable, query?: string) =>
         userMember(user)
             .setTitle(translator.translate('contents.global.embeds.noEmoji.title', lang))
-            .setDescription(translator.translate(`contents.global.embeds.noEmoji.description${!!query ? 'Query' : ''}`, lang, { query })),
+            .setDescription(
+                translator.translate(`contents.global.embeds.noEmoji.description${!!query ? 'Query' : ''}`, lang, {
+                    query
+                })
+            ),
     basicGuild: (user: anyUser, guild: Guild) => userMember(user).setColor(guild?.members?.me?.displayHexColor),
     noCounter: (user: anyUser, lang: langResolvable) =>
         userMember(user)
             .setTitle(translator.translate('contents.global.embeds.countersDesactivated.title', lang))
-            .setDescription(
-                translator.translate('contents.global.embeds.countersDesactivated.description', lang)
-            )
+            .setDescription(translator.translate('contents.global.embeds.countersDesactivated.description', lang))
 };
 
 export type replyKey = keyof typeof replies;

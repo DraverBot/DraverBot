@@ -281,7 +281,9 @@ export default new DraverCommand({
             return interaction.editReply({ embeds: [replies.cancel(interaction)], components: [] }).catch(log4js.trace);
 
         await Promise.all([
-            interaction.editReply({ embeds: [replies.wait(interaction.user, confirmation.interaction)], components: [] }).catch(log4js.trace),
+            interaction
+                .editReply({ embeds: [replies.wait(interaction.user, confirmation.interaction)], components: [] })
+                .catch(log4js.trace),
             plugboardsManager.deletePlugboard(board.id)
         ]);
 

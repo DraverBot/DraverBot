@@ -440,7 +440,9 @@ export default new DraverCommand({
             if (!IsValidInput(content))
                 return interaction
                     .reply({
-                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)],
+                        embeds: [
+                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)
+                        ],
                         ephemeral: true
                     })
                     .catch(log4js.trace);
@@ -467,7 +469,9 @@ export default new DraverCommand({
             if (!IsValidInput(content))
                 return interaction
                     .reply({
-                        embeds: [replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)],
+                        embeds: [
+                            replies.invalidInput((interaction.member as GuildMember) ?? interaction.user, interaction)
+                        ],
                         ephemeral: true
                     })
                     .catch(log4js.trace);

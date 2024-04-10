@@ -66,7 +66,9 @@ export default new DraverCommand({
         if (!overview || !overview.data || overview.status !== 200)
             return interaction
                 .editReply({
-                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)]
+                    embeds: [
+                        replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)
+                    ]
                 })
                 .catch(log4js.trace);
         const data = overview.data as ChessPlayer;
@@ -167,7 +169,9 @@ export default new DraverCommand({
         if (!res || !res.data || res.status !== 200)
             return interaction
                 .editReply({
-                    embeds: [replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)]
+                    embeds: [
+                        replies.requestStopped((interaction.member as GuildMember) ?? interaction.user, interaction)
+                    ]
                 })
                 .catch(log4js.trace);
 

@@ -44,7 +44,10 @@ export default new DraverCommand({
 
         if (member.id === interaction.user.id)
             return interaction
-                .reply({ embeds: [replies.selfMod(interaction.member as GuildMember, { lang: interaction })], ephemeral: true })
+                .reply({
+                    embeds: [replies.selfMod(interaction.member as GuildMember, { lang: interaction })],
+                    ephemeral: true
+                })
                 .catch(log4js.trace);
 
         const nick = new WordGenerator({
@@ -109,7 +112,10 @@ export default new DraverCommand({
         const member = interaction.targetMember as GuildMember;
         if (member.id === interaction.user.id)
             return interaction
-                .reply({ embeds: [replies.selfMod(interaction.member as GuildMember, { lang: interaction })], ephemeral: true })
+                .reply({
+                    embeds: [replies.selfMod(interaction.member as GuildMember, { lang: interaction })],
+                    ephemeral: true
+                })
                 .catch(log4js.trace);
 
         const nick = new WordGenerator({

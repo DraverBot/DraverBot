@@ -184,7 +184,7 @@
         "description": "Une erreur interne est survenue.\nVeuillez réessayer. Si l'erreur persiste, contactez mon [serveur de support]({support})"
     },
     "poll": {
-        "title":  "Sondage",
+        "title": "Sondage",
         "description": "Sondage lancé par {user}\n> {question}\n\n{choices}",
         "mapper": "- {name} ( {votes} votes )",
         "field": "Fin"

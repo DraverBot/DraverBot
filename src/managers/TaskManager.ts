@@ -67,7 +67,7 @@ export class TaskManager {
         channel: TextChannel;
         by: User;
         time?: number;
-        lang: langResolvable
+        lang: langResolvable;
     }) {
         if (!channel.guild) return 'no guild found';
         const message = (await channel

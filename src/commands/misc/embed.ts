@@ -381,7 +381,9 @@ export default new DraverCommand({
                                 )}`
                             )
                     ],
-                    components: [row(yesBtn(ctx, { label: 'Activer' }), noBtn(ctx, { label: 'Désactiver' }), cancelButton(ctx))]
+                    components: [
+                        row(yesBtn(ctx, { label: 'Activer' }), noBtn(ctx, { label: 'Désactiver' }), cancelButton(ctx))
+                    ]
                 })
                 .catch(() => {})) as Message<true>;
             const rep = await waitForInteraction({

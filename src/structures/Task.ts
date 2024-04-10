@@ -56,7 +56,7 @@ export class Task {
         this.channel_id = data.channel_id;
         this.message_id = data.message_id;
         this.state = data.state;
-        this.lang = translator.resolveLang(data.lang)
+        this.lang = translator.resolveLang(data.lang);
 
         this.start();
     }

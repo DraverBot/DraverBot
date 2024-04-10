@@ -356,7 +356,10 @@ export default new DraverCommand({
 
         if (!isValidHexColor(color))
             return interaction
-                .reply({ embeds: [replies.invalidColor(interaction.member as GuildMember, interaction)], ephemeral: true })
+                .reply({
+                    embeds: [replies.invalidColor(interaction.member as GuildMember, interaction)],
+                    ephemeral: true
+                })
                 .catch(log4js.trace);
 
         const before = JSON.parse(JSON.stringify(role.toJSON()));

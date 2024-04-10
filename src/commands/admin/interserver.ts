@@ -289,7 +289,12 @@ export default new DraverCommand({
             if (!data)
                 return interaction
                     .reply({
-                        embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel, lang: interaction })]
+                        embeds: [
+                            replies.interserverNotChannel(interaction.member as GuildMember, {
+                                channel,
+                                lang: interaction
+                            })
+                        ]
                     })
                     .catch(() => {});
 
@@ -380,7 +385,9 @@ export default new DraverCommand({
         if (!interserver.cache.find((x) => x.channel_id === channel.id && x.guild_id === interaction.guild.id))
             return interaction
                 .reply({
-                    embeds: [replies.interserverNotChannel(interaction.member as GuildMember, { channel, lang: interaction })]
+                    embeds: [
+                        replies.interserverNotChannel(interaction.member as GuildMember, { channel, lang: interaction })
+                    ]
                 })
                 .catch(() => {});
 
@@ -394,7 +401,12 @@ export default new DraverCommand({
             .catch(() => {});
         if (res === 'interserverFrequenceAssigned')
             return interaction.editReply({
-                embeds: [replies.interserverFrequenceAssigned(interaction.member as GuildMember, { frequence, lang: interaction })]
+                embeds: [
+                    replies.interserverFrequenceAssigned(interaction.member as GuildMember, {
+                        frequence,
+                        lang: interaction
+                    })
+                ]
             });
 
         interaction

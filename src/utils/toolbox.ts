@@ -359,7 +359,9 @@ export const checkCtx = (interaction: BaseInteraction, user: User) => {
             interaction
                 .reply({
                     ephemeral: true,
-                    embeds: [replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user, interaction)],
+                    embeds: [
+                        replies.replyNotAllowed((interaction?.member as GuildMember) ?? interaction.user, interaction)
+                    ],
                     components: SetRandomComponent.process()
                 })
                 .catch(sendError);
@@ -431,8 +433,7 @@ export const addTimeDoc = (userId: string, lang: langResolvable) => {
     const value = time.get(userId) ?? 0;
     time.set(userId, value + 1);
 
-    if (value >= 3)
-        return '\n\n' + translator.translate('contents.global.texts.timeDoc', lang);
+    if (value >= 3) return '\n\n' + translator.translate('contents.global.texts.timeDoc', lang);
     return '';
 };
 export const hint = (text: string) =>

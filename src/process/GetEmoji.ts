@@ -18,7 +18,7 @@ export default new Process(
         channel: TextChannel;
         time?: number;
         allowCancel: boolean;
-        lang: langResolvable
+        lang: langResolvable;
     }) => {
         return new Promise<'cancel' | "time's up" | string>(async (resolve) => {
             const collector = channel.createMessageCollector({

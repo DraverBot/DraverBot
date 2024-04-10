@@ -15,7 +15,7 @@ export class Translator {
     }
 
     public get defaultLang() {
-        return this._defaultLang
+        return this._defaultLang;
     }
     private resolve(key: string, lang: string) {
         const path = key.split('.');
@@ -62,7 +62,7 @@ export class Translator {
     public resolveLang(resolvable: langResolvable): string {
         if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
         if (resolvable instanceof BaseInteraction) return resolvable?.locale;
-        if (resolvable === 'default') return this._defaultLang
+        if (resolvable === 'default') return this._defaultLang;
         return resolvable;
     }
     public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
@@ -90,7 +90,11 @@ export class Translator {
         return content;
     }
     private get includedRegexes(): [RegExp, string][] {
-        return [[/{coins}/g, util('coins')], [/{support}/g, util('support')], [/{email}/g, util('email')]];
+        return [
+            [/{coins}/g, util('coins')],
+            [/{support}/g, util('support')],
+            [/{email}/g, util('email')]
+        ];
     }
 
     private start() {

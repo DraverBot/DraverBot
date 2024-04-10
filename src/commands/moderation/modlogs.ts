@@ -211,7 +211,13 @@ export default new DraverCommand({
         if (logs.length === 0)
             return interaction
                 .editReply({
-                    embeds: [replies.unexistingLog(interaction.member as GuildMember, options.getString('identifiant'), interaction)]
+                    embeds: [
+                        replies.unexistingLog(
+                            interaction.member as GuildMember,
+                            options.getString('identifiant'),
+                            interaction
+                        )
+                    ]
                 })
                 .catch(() => {});
 

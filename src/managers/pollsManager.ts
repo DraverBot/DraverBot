@@ -33,7 +33,7 @@ export class PollsManager {
         choices: string[];
         time: number;
         choosable?: number;
-        lang: langResolvable
+        lang: langResolvable;
     }) {
         const options = choices.map((x, i) => ({ name: x, count: 0, id: i }));
         if (options.length > 25) return 'options is too large';

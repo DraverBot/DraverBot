@@ -738,7 +738,8 @@ export default new DraverCommand({
                                 .setTitle('Durée du giveaway')
                                 .setDescription(
                                     `Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(
-                                        interaction.user.id, interaction
+                                        interaction.user.id,
+                                        interaction
                                     )}\n${util('cancelMsg')}`
                                 )
                                 .setColor('Grey')
@@ -767,7 +768,9 @@ export default new DraverCommand({
                 const time = ms(reply.content);
                 if (!time || isNaN(time)) {
                     ctx.editReply({
-                        embeds: [replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user, interaction)]
+                        embeds: [
+                            replies.invalidTime((interaction?.member as GuildMember) ?? interaction.user, interaction)
+                        ]
                     }).catch(() => {});
                     setDeleteTmst();
                     reedit();

@@ -270,7 +270,9 @@ export default new DraverCommand({
             }
             if (ctx.customId === ButtonIds.PollValidate) {
                 collector.stop('validate');
-                await builder.edit({ embeds: [replies.wait(interaction.user, ctx)], components: [] }).catch(log4js.trace);
+                await builder
+                    .edit({ embeds: [replies.wait(interaction.user, ctx)], components: [] })
+                    .catch(log4js.trace);
 
                 const creation = await pollsManager.create({
                     question: options.getString('question'),
@@ -285,7 +287,9 @@ export default new DraverCommand({
                 if (creation === 'invalid insertion' || creation === 'message not sent') {
                     builder
                         .edit({
-                            embeds: [replies.internalError((interaction.member as GuildMember) ?? interaction.user, ctx)]
+                            embeds: [
+                                replies.internalError((interaction.member as GuildMember) ?? interaction.user, ctx)
+                            ]
                         })
                         .catch(log4js.trace);
                     return;

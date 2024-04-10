@@ -131,10 +131,14 @@ export class Poll {
             translator.translate('contents.global.embeds.poll.description', this._data.lang, {
                 user: pingUser(this._data.started_by),
                 question: this._data.question,
-                choices: this._data.choices.map(x => translator.translate('contents.global.embeds.poll.mapper', this._data.lang, {
-                    name: x.name,
-                    votes: x.count
-                })).join('\n')
+                choices: this._data.choices
+                    .map((x) =>
+                        translator.translate('contents.global.embeds.poll.mapper', this._data.lang, {
+                            name: x.name,
+                            votes: x.count
+                        })
+                    )
+                    .join('\n')
             })
         );
 
