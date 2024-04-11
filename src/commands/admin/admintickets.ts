@@ -91,7 +91,9 @@ export default new DraverCommand({
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            ...translator.commandData('commands.admins.tickets.options.modroles.options.add.options.role'),
+                            ...translator.commandData(
+                                'commands.admins.tickets.options.modroles.options.add.options.role'
+                            ),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         }
@@ -102,7 +104,9 @@ export default new DraverCommand({
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            ...translator.commandData('commands.admins.tickets.options.modroles.options.remove.options.role'),
+                            ...translator.commandData(
+                                'commands.admins.tickets.options.modroles.options.remove.options.role'
+                            ),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         }
@@ -137,8 +141,18 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle(translator.translate('commands.admins.tickets.replies.list.noTickets.title', interaction))
-                                .setDescription(translator.translate('commands.admins.tickets.replies.list.noTickets.description', interaction))
+                                .setTitle(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.list.noTickets.title',
+                                        interaction
+                                    )
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.list.noTickets.description',
+                                        interaction
+                                    )
+                                )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -153,8 +167,19 @@ export default new DraverCommand({
                         .reply({
                             embeds: [
                                 basicEmbed(interaction.user)
-                                    .setTitle(translator.translate('commands.admins.tickets.replies.list.userNoTickets.title', interaction))
-                                    .setDescription(translator.translate('commands.admins.tickets.replies.list.userNoTickets.description', interaction, { user: pingUser(user) }))
+                                    .setTitle(
+                                        translator.translate(
+                                            'commands.admins.tickets.replies.list.userNoTickets.title',
+                                            interaction
+                                        )
+                                    )
+                                    .setDescription(
+                                        translator.translate(
+                                            'commands.admins.tickets.replies.list.userNoTickets.description',
+                                            interaction,
+                                            { user: pingUser(user) }
+                                        )
+                                    )
                                     .setColor(evokerColor(interaction.guild))
                             ]
                         })
@@ -164,17 +189,40 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(translator.translate('commands.admins.tickets.replies.list.user.title', interaction, { name: user.username }))
-                                .setDescription(translator.translate('commands.admins.tickets.replies.list.user.description', interaction, { user: pingUser(user) }))
+                                .setTitle(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.list.user.title',
+                                        interaction,
+                                        { name: user.username }
+                                    )
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.list.user.description',
+                                        interaction,
+                                        { user: pingUser(user) }
+                                    )
+                                )
                                 .setFields(
                                     {
-                                        name: translator.translate('commands.admins.tickets.replies.list.user.channel', interaction),
+                                        name: translator.translate(
+                                            'commands.admins.tickets.replies.list.user.channel',
+                                            interaction
+                                        ),
                                         value: pingChan(ticket.channel_id),
                                         inline: true
                                     },
                                     {
-                                        name: translator.translate('commands.admins.tickets.replies.list.user.state', interaction),
-                                        value: capitalize(translator.translate(`commands.admins.tickets.utils.states.${ticket.state}`, interaction)),
+                                        name: translator.translate(
+                                            'commands.admins.tickets.replies.list.user.state',
+                                            interaction
+                                        ),
+                                        value: capitalize(
+                                            translator.translate(
+                                                `commands.admins.tickets.utils.states.${ticket.state}`,
+                                                interaction
+                                            )
+                                        ),
                                         inline: true
                                     }
                                 )
@@ -187,11 +235,15 @@ export default new DraverCommand({
             const states = {
                 open: translator.translate('commands.admins.tickets.utils.states.open', interaction),
                 closed: translator.translate('commands.admins.tickets.utils.states.closed', interaction)
-            }
+            };
             const basic = () => {
                 return basicEmbed(interaction.user, { draverColor: true })
                     .setTitle(translator.translate('commands.admins.tickets.replies.list.list.title', interaction))
-                    .setDescription(translator.translate('commands.admins.tickets.replies.list.list.description', interaction, { count: list.length }));
+                    .setDescription(
+                        translator.translate('commands.admins.tickets.replies.list.list.description', interaction, {
+                            count: list.length
+                        })
+                    );
             };
             const map = (embed: EmbedBuilder, ticket: ticketChannels) => {
                 return embed.addFields({
@@ -241,9 +293,7 @@ export default new DraverCommand({
             if (img && !img.contentType.includes('image'))
                 return interaction
                     .reply({
-                        embeds: [
-                            replies.invalidImage(interaction.member as GuildMember, interaction)
-                        ],
+                        embeds: [replies.invalidImage(interaction.member as GuildMember, interaction)],
                         ephemeral: true
                     })
                     .catch(() => {});
@@ -252,26 +302,50 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle(translator.translate('commands.admins.tickets.replies.create.creation.title', interaction))
-                    .setDescription(translator.translate('commands.admins.tickets.replies.create.creation.description', interaction, { channel: pingChan(
-                        channel
-                    ) }))
+                    .setTitle(
+                        translator.translate('commands.admins.tickets.replies.create.creation.title', interaction)
+                    )
+                    .setDescription(
+                        translator.translate(
+                            'commands.admins.tickets.replies.create.creation.description',
+                            interaction,
+                            { channel: pingChan(channel) }
+                        )
+                    )
                     .setFields(
                         {
-                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.subject', interaction),
+                            name: translator.translate(
+                                'commands.admins.tickets.replies.create.creation.fields.subject',
+                                interaction
+                            ),
                             value: resizeString({ str: subject, length: 200 }),
                             inline: true
                         },
                         {
-                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.description.name', interaction),
-                            value: description ? resizeString({ str: description, length: 200 }) : translator.translate('commands.admins.tickets.replies.create.creation.fields.description.none', interaction),
+                            name: translator.translate(
+                                'commands.admins.tickets.replies.create.creation.fields.description.name',
+                                interaction
+                            ),
+                            value: description
+                                ? resizeString({ str: description, length: 200 })
+                                : translator.translate(
+                                      'commands.admins.tickets.replies.create.creation.fields.description.none',
+                                      interaction
+                                  ),
                             inline: false
                         },
                         {
-                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.image.name', interaction),
-                            value: translator.translate(`commands.admins.tickets.replies.create.creation.fields.image.${!!img ? 'link' : 'none'}`, interaction, {
-                                link: img?.url
-                            })
+                            name: translator.translate(
+                                'commands.admins.tickets.replies.create.creation.fields.image.name',
+                                interaction
+                            ),
+                            value: translator.translate(
+                                `commands.admins.tickets.replies.create.creation.fields.image.${!!img ? 'link' : 'none'}`,
+                                interaction,
+                                {
+                                    link: img?.url
+                                }
+                            )
                         }
                     )
             }).catch(() => {})) as confirmReturn;
@@ -321,8 +395,18 @@ export default new DraverCommand({
                         embeds: [
                             basicEmbed(interaction.user)
                                 .setColor(evokerColor(interaction.guild))
-                                .setTitle(translator.translate('commands.admins.tickets.replies.delete.noPanel.title', interaction))
-                                .setDescription(translator.translate('commands.admins.tickets.replies.delete.noPanel.description', interaction))
+                                .setTitle(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.delete.noPanel.title',
+                                        interaction
+                                    )
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.delete.noPanel.description',
+                                        interaction
+                                    )
+                                )
                         ]
                     })
                     .catch(() => {});
@@ -331,8 +415,16 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle(translator.translate('commands.admins.tickets.replies.delete.deleting.title', interaction))
-                    .setDescription(translator.translate('commands.admins.tickets.replies.delete.deleting.description', interaction, { link: getMsgUrl(panel) }))
+                    .setTitle(
+                        translator.translate('commands.admins.tickets.replies.delete.deleting.title', interaction)
+                    )
+                    .setDescription(
+                        translator.translate(
+                            'commands.admins.tickets.replies.delete.deleting.description',
+                            interaction,
+                            { link: getMsgUrl(panel) }
+                        )
+                    )
             }).catch(() => {})) as confirmReturn;
 
             if (confirmation === 'cancel' || !confirmation?.value)
@@ -370,8 +462,19 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle(translator.translate('commands.admins.tickets.replies.modroles.list.no.title', interaction))
-                                .setDescription(translator.translate('comands.admins.tickets.replies.modroles.list.no.description', interaction, { name: interaction.guild.name }))
+                                .setTitle(
+                                    translator.translate(
+                                        'commands.admins.tickets.replies.modroles.list.no.title',
+                                        interaction
+                                    )
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'comands.admins.tickets.replies.modroles.list.no.description',
+                                        interaction,
+                                        { name: interaction.guild.name }
+                                    )
+                                )
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -381,12 +484,21 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.list.list.title', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.tickets.replies.modroles.list.list.title',
+                                    interaction
+                                )
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.tickets.replies.modroles.list.list.description', interaction, {
-                                    count: roles.length,
-                                    roles: roles.map(pingRole).join(' ')
-                                })
+                                translator.translate(
+                                    'commands.admins.tickets.replies.modroles.list.list.description',
+                                    interaction,
+                                    {
+                                        count: roles.length,
+                                        roles: roles.map(pingRole).join(' ')
+                                    }
+                                )
                             )
                     ]
                 })
@@ -397,9 +509,7 @@ export default new DraverCommand({
             if (role.position >= (interaction.member as GuildMember).roles.highest.position)
                 return interaction
                     .reply({
-                        embeds: [
-                            replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)
-                        ],
+                        embeds: [replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)],
                         ephemeral: true
                     })
                     .catch(() => {});
@@ -413,11 +523,17 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.add.title', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.tickets.replies.modroles.add.title', interaction)
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.tickets.replies.modroles.add.description', interaction, {
-                                    role: pingRole(role.id)
-                                })
+                                translator.translate(
+                                    'commands.admins.tickets.replies.modroles.add.description',
+                                    interaction,
+                                    {
+                                        role: pingRole(role.id)
+                                    }
+                                )
                             )
                     ]
                 })
@@ -428,9 +544,7 @@ export default new DraverCommand({
             if (role.position >= (interaction.member as GuildMember).roles.highest.position)
                 return interaction
                     .reply({
-                        embeds: [
-                            replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)
-                        ],
+                        embeds: [replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)],
                         ephemeral: true
                     })
                     .catch(() => {});
@@ -444,9 +558,18 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.remove.title', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.tickets.replies.modroles.remove.title',
+                                    interaction
+                                )
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.tickets.replies.modroles.remove.description', interaction, { role: pingRole(role.id) })
+                                translator.translate(
+                                    'commands.admins.tickets.replies.modroles.remove.description',
+                                    interaction,
+                                    { role: pingRole(role.id) }
+                                )
                             )
                     ]
                 })

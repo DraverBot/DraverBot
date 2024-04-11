@@ -554,7 +554,9 @@ export class TicketsManager {
                 .setColor(guild.members.me.displayHexColor ?? util('accentColor'))
                 .setTitle(subject)
                 .setDescription(
-                    translator.translate('commands.admins.tickets.replies.create.panelDesc', lang) + description ? `\n\n${description}` : ''
+                    translator.translate('commands.admins.tickets.replies.create.panelDesc', lang) + description
+                        ? `\n\n${description}`
+                        : ''
                 );
 
             if (image) embed.setThumbnail(image);
@@ -608,7 +610,11 @@ export class TicketsManager {
                 panel: this._panels.get(msg.id),
                 embed: basicEmbed(user, { draverColor: true })
                     .setTitle(translator.translate('commands.admins.tickets.replies.create.created.title', lang))
-                    .setDescription(translator.translate('commands.admins.tickets.replies.create.created.description', lang, { channel: pingChan(channel) }))
+                    .setDescription(
+                        translator.translate('commands.admins.tickets.replies.create.created.description', lang, {
+                            channel: pingChan(channel)
+                        })
+                    )
             });
         });
     }
@@ -646,7 +652,11 @@ export class TicketsManager {
                 panel,
                 embed: basicEmbed(user, { draverColor: true })
                     .setTitle(translator.translate('commands.admins.tickets.replies.delete.deleted.title', lang))
-                    .setDescription(translator.translate('commands.admins.tickets.replies.delete.deleted.description', lang, { channel: pingChan(panel.channel_id) }))
+                    .setDescription(
+                        translator.translate('commands.admins.tickets.replies.delete.deleted.description', lang, {
+                            channel: pingChan(panel.channel_id)
+                        })
+                    )
             });
         });
     }

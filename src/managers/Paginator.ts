@@ -99,7 +99,9 @@ export class Paginator {
                 if (!pageIndex || isNaN(pageIndex) || pageIndex < 1 || pageIndex > this.options.embeds.length) {
                     reply
                         .reply({
-                            content: translator.translate('contents.modals.paginator.invalidIndex', interaction, { max: this.options.embeds.length }),
+                            content: translator.translate('contents.modals.paginator.invalidIndex', interaction, {
+                                max: this.options.embeds.length
+                            }),
                             ephemeral: true
                         })
                         .catch(sendError);

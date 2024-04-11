@@ -112,9 +112,14 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.coupons.replies.generateError.title', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.coupons.replies.generateError.title', interaction)
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.coupons.replies.generateError.description', interaction)
+                                translator.translate(
+                                    'commands.admins.coupons.replies.generateError.description',
+                                    interaction
+                                )
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]
@@ -154,7 +159,9 @@ export default new DraverCommand({
                         basicEmbed(interaction.user)
                             .setColor(evokerColor(interaction.guild))
                             .setTitle(translator.translate('commands.admins.coupons.replies.title', interaction))
-                            .setDescription(translator.translate('commands.admins.coupons.replies.description', interaction))
+                            .setDescription(
+                                translator.translate('commands.admins.coupons.replies.description', interaction)
+                            )
                     ]
                 })
                 .catch(() => {});

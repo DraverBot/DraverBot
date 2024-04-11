@@ -39,7 +39,9 @@ export default new DraverCommand({
                             type: ApplicationCommandOptionType.User
                         },
                         {
-                            ...translator.commandData('commands.admins.invites.options.bonus.options.add.options.invites'),
+                            ...translator.commandData(
+                                'commands.admins.invites.options.bonus.options.add.options.invites'
+                            ),
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             minValue: 1
@@ -112,7 +114,11 @@ export default new DraverCommand({
             embed: basicEmbed(interaction.user)
                 .setTitle(translator.translate('commands.admins.invites.replies.reset.confirmation.title', interaction))
                 .setDescription(
-                    translator.translate(`commands.admins.invites.replies.reset.confirmation.description${cmd === 'serveur' ? 'Server' : 'User'}`, interaction, { user: pingUser(user?.id) })
+                    translator.translate(
+                        `commands.admins.invites.replies.reset.confirmation.description${cmd === 'serveur' ? 'Server' : 'User'}`,
+                        interaction,
+                        { user: pingUser(user?.id) }
+                    )
                 )
         }).catch(log4js.trace);
 
@@ -134,9 +140,16 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.invites.replies.reset.setted.title', interaction))
-                        .setDescription(translator.translate(`commands.admins.invites.replies.reset.setted.description${cmd === 'serveur' ? 'Server': 'User'}`, interaction, { user: pingUser(user?.id) })
-                    )
+                        .setTitle(
+                            translator.translate('commands.admins.invites.replies.reset.setted.title', interaction)
+                        )
+                        .setDescription(
+                            translator.translate(
+                                `commands.admins.invites.replies.reset.setted.description${cmd === 'serveur' ? 'Server' : 'User'}`,
+                                interaction,
+                                { user: pingUser(user?.id) }
+                            )
+                        )
                 ],
                 components: []
             })
@@ -190,12 +203,21 @@ export default new DraverCommand({
                 return interaction.reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle(translator.translate('commands.admins.invites.replies.bonus.notEnough.title', interaction))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.invites.replies.bonus.notEnough.title',
+                                    interaction
+                                )
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.invites.replies.bonus.notEnough.description', interaction, {
-                                    amount,
-                                    user: pingUser(user)
-                                })
+                                translator.translate(
+                                    'commands.admins.invites.replies.bonus.notEnough.description',
+                                    interaction,
+                                    {
+                                        amount,
+                                        user: pingUser(user)
+                                    }
+                                )
                             )
                     ]
                 });
@@ -210,12 +232,18 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(translator.translate('commands.admins.invites.replies.removed.title', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.invites.replies.removed.title', interaction)
+                            )
                             .setDescription(
-                                translator.translate('commands.admins.invites.replies.removed.description', interaction, {
-                                    amount: quantity,
-                                    user: pingUser(user)
-                                })
+                                translator.translate(
+                                    'commands.admins.invites.replies.removed.description',
+                                    interaction,
+                                    {
+                                        amount: quantity,
+                                        user: pingUser(user)
+                                    }
+                                )
                             )
                     ]
                 })

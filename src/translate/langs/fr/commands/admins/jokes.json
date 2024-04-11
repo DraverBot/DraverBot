@@ -23,7 +23,7 @@
     },
     "replies": {
         "list": {
-            "title" :"Blagues",
+            "title": "Blagues",
             "description": "Voici la configuration des blagues sur le serveur"
         },
         "config": {

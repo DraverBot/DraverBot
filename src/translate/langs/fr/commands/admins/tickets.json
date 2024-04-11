@@ -63,7 +63,7 @@
                     }
                 },
                 "remove": {
-                    "name" :"retirer",
+                    "name": "retirer",
                     "description": "Retirer un rôle de modérateur de tickets",
                     "options": {
                         "role": {

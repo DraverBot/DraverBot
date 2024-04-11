@@ -713,10 +713,28 @@ const replies = {
         userMember(user)
             .setTitle(translator.translate('contents.global.embeds.countersDesactivated.title', lang))
             .setDescription(translator.translate('contents.global.embeds.countersDesactivated.description', lang)),
-    roleTooHigh: (user: anyUser, role: Role | string, lang: langResolvable) => userMember(user).setTitle(translator.translate('contents.global.embeds.roleTooHigh.title', lang)).setDescription(translator.translate('contents.global.embeds.roleTooHigh.description', lang, { role: pingRole(role) })),
-    noRole: (user: anyUser, lang: langResolvable) => userMember(user).setTitle(translator.translate('contents.global.embeds.noRole.title', lang)).setDescription(translator.translate('contents.global.embeds.noRole.description', lang)),
-    roleTooHighClient: (user: anyUser, role: Role | string, lang: langResolvable) => userMember(user).setTitle(translator.translate('contents.global.embeds.roleTooHigh.title', lang)).setDescription(translator.translate('contents.global.embeds.roleTooHighClient.description', lang, { role: pingRole(role) })),
-    invalidImage: (user: anyUser, lang: langResolvable) => userMember(user).setTitle(translator.translate('contents.global.embeds.invalidImage.title', lang)).setDescription(translator.translate('contents.global.embeds.invalidImage.description', lang))
+    roleTooHigh: (user: anyUser, role: Role | string, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.roleTooHigh.title', lang))
+            .setDescription(
+                translator.translate('contents.global.embeds.roleTooHigh.description', lang, { role: pingRole(role) })
+            ),
+    noRole: (user: anyUser, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.noRole.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.noRole.description', lang)),
+    roleTooHighClient: (user: anyUser, role: Role | string, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.roleTooHigh.title', lang))
+            .setDescription(
+                translator.translate('contents.global.embeds.roleTooHighClient.description', lang, {
+                    role: pingRole(role)
+                })
+            ),
+    invalidImage: (user: anyUser, lang: langResolvable) =>
+        userMember(user)
+            .setTitle(translator.translate('contents.global.embeds.invalidImage.title', lang))
+            .setDescription(translator.translate('contents.global.embeds.invalidImage.description', lang))
 };
 
 export type replyKey = keyof typeof replies;

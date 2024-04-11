@@ -137,8 +137,15 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.shop.replies.create.exists.title', interaction))
-                            .setDescription(translator.translate('commands.admins.shop.replies.crate.exists.description', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.shop.replies.create.exists.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.shop.replies.crate.exists.description',
+                                    interaction
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -148,16 +155,26 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.shop.replies.create.created.title', interaction))
+                        .setTitle(
+                            translator.translate('commands.admins.shop.replies.create.created.title', interaction)
+                        )
                         .setDescription(
-                            translator.translate(`commands.admins.shop.replies.create.created.description_${type}`, interaction, {
-                                name,
-                                price,
-                                role: pingRole(role?.id),
-                                stock: translator.translate(`commands.admins.shop.replies.create.created.quantity${quantity === 0 ? '_infinite' : ''}`, interaction, {
-                                    stock: quantity
-                                })
-                            })
+                            translator.translate(
+                                `commands.admins.shop.replies.create.created.description_${type}`,
+                                interaction,
+                                {
+                                    name,
+                                    price,
+                                    role: pingRole(role?.id),
+                                    stock: translator.translate(
+                                        `commands.admins.shop.replies.create.created.quantity${quantity === 0 ? '_infinite' : ''}`,
+                                        interaction,
+                                        {
+                                            stock: quantity
+                                        }
+                                    )
+                                }
+                            )
                         )
                 ]
             })
@@ -173,39 +190,79 @@ export default new DraverCommand({
         const embed = () => {
             return basicEmbed(interaction.user, { questionMark: true })
                 .setTitle(translator.translate('commands.admins.shop.replies.edit.embed.title', interaction))
-                .setDescription(translator.translate('commands.admins.shop.replies.edit.embed.description', interaction))
+                .setDescription(
+                    translator.translate('commands.admins.shop.replies.edit.embed.description', interaction)
+                )
                 .setFields(
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.name.name', interaction),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.name.name',
+                            interaction
+                        ),
                         value: item.itemName,
                         inline: true
                     },
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.price.name', interaction),
-                        value: translator.translate('commands.admins.shop.replies.edit.embed.fields.price.value', interaction, {
-                            price: item.price
-                        }),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.price.name',
+                            interaction
+                        ),
+                        value: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.price.value',
+                            interaction,
+                            {
+                                price: item.price
+                            }
+                        ),
                         inline: true
                     },
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.type.name', interaction),
-                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.type.${item.itemType === 'item' ? 'item' : item.itemType === 'role' ? 'role' : 'unknown'}`, interaction),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.type.name',
+                            interaction
+                        ),
+                        value: translator.translate(
+                            `commands.admins.shop.replies.edit.embed.fields.type.${item.itemType === 'item' ? 'item' : item.itemType === 'role' ? 'role' : 'unknown'}`,
+                            interaction
+                        ),
                         inline: false
                     },
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.quantity.name', interaction),
-                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.quantity.${item.quantity === 0 ? 'infinite' : 'value'}`, interaction, { quantity: item.quantity }),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.quantity.name',
+                            interaction
+                        ),
+                        value: translator.translate(
+                            `commands.admins.shop.replies.edit.embed.fields.quantity.${item.quantity === 0 ? 'infinite' : 'value'}`,
+                            interaction,
+                            { quantity: item.quantity }
+                        ),
                         inline: true
                     },
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.available.name', interaction),
-                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.available.${item.quantity === 0 ? 'infinite' : 'value'}`, interaction, { quantity: item.quantityLeft }),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.available.name',
+                            interaction
+                        ),
+                        value: translator.translate(
+                            `commands.admins.shop.replies.edit.embed.fields.available.${item.quantity === 0 ? 'infinite' : 'value'}`,
+                            interaction,
+                            { quantity: item.quantityLeft }
+                        ),
                         inline: true
                     },
                     {
-                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.role.name', interaction),
+                        name: translator.translate(
+                            'commands.admins.shop.replies.edit.embed.fields.role.name',
+                            interaction
+                        ),
                         value:
-                            item.roleId.length > 1 && item.itemType === 'role' ? pingRole(item.roleId) : translator.translate('commands.admins.shop.replies.edit.embed.fields.role.none', interaction)
+                            item.roleId.length > 1 && item.itemType === 'role'
+                                ? pingRole(item.roleId)
+                                : translator.translate(
+                                      'commands.admins.shop.replies.edit.embed.fields.role.none',
+                                      interaction
+                                  )
                     }
                 );
         };
@@ -274,7 +331,9 @@ export default new DraverCommand({
                 embeds: [
                     basicEmbed(interaction.user)
                         .setTitle(translator.translate('commands.admins.shop.replies.edit.error.title', interaction))
-                        .setDescription(translator.translate('commands.admins.shop.replies.edit.error.description', interaction))
+                        .setDescription(
+                            translator.translate('commands.admins.shop.replies.edit.error.description', interaction)
+                        )
                         .setColor(evokerColor(interaction.guild))
                 ]
             });
@@ -300,8 +359,18 @@ export default new DraverCommand({
                             .setComponents(
                                 row<TextInputBuilder>(
                                     new TextInputBuilder()
-                                        .setLabel(translator.translate('commands.admins.shop.modal.name.fields.name.name', interaction))
-                                        .setPlaceholder(translator.translate('commands.admins.shop.modal.name.fields.name.placeholder', interaction))
+                                        .setLabel(
+                                            translator.translate(
+                                                'commands.admins.shop.modal.name.fields.name.name',
+                                                interaction
+                                            )
+                                        )
+                                        .setPlaceholder(
+                                            translator.translate(
+                                                'commands.admins.shop.modal.name.fields.name.placeholder',
+                                                interaction
+                                            )
+                                        )
                                         .setMaxLength(255)
                                         .setRequired(true)
                                         .setCustomId('name')
@@ -340,7 +409,9 @@ export default new DraverCommand({
                             row<TextInputBuilder>(
                                 new TextInputBuilder()
                                     .setStyle(TextInputStyle.Short)
-                                    .setLabel(translator.translate(`commands.admins.shop.modal.labels.${ctx.customId}`, ctx))
+                                    .setLabel(
+                                        translator.translate(`commands.admins.shop.modal.labels.${ctx.customId}`, ctx)
+                                    )
                                     .setPlaceholder(random({ max: 1139, min: 5691 }).toString())
                                     .setRequired(true)
                                     .setCustomId('value')
@@ -410,7 +481,9 @@ export default new DraverCommand({
                         embeds: [
                             basicEmbed(interaction.user, { questionMark: true })
                                 .setTitle(translator.translate('commands.admins.shop.replies.edit.type.title', ctx))
-                                .setDescription(translator.translate('commands.admins.shop.replies.edit.type.description', ctx))
+                                .setDescription(
+                                    translator.translate('commands.admins.shop.replies.edit.type.description', ctx)
+                                )
                         ],
                         fetchReply: true,
                         ephemeral: true,
@@ -459,9 +532,14 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { questionMark: true })
-                                .setTitle(translator.translate('commands.admins.shop.replies.edit.role.title', interaction))
+                                .setTitle(
+                                    translator.translate('commands.admins.shop.replies.edit.role.title', interaction)
+                                )
                                 .setDescription(
-                                    translator.translate('commands.admins.shop.replies.edit.role.description', interaction)
+                                    translator.translate(
+                                        'commands.admins.shop.replies.edit.role.description',
+                                        interaction
+                                    )
                                 )
                         ],
                         ephemeral: true
@@ -484,27 +562,21 @@ export default new DraverCommand({
                 if (!role) {
                     changes--;
                     ctx.editReply({
-                        embeds: [
-                            replies.noRole(interaction.member as GuildMember, ctx)
-                        ]
+                        embeds: [replies.noRole(interaction.member as GuildMember, ctx)]
                     }).catch(() => {});
                     return;
                 }
                 if (role.position >= (interaction.member as GuildMember).roles.highest.position) {
                     changes--;
                     ctx.editReply({
-                        embeds: [
-                            replies.roleTooHigh(interaction.member as GuildMember, role, ctx)
-                        ]
+                        embeds: [replies.roleTooHigh(interaction.member as GuildMember, role, ctx)]
                     }).catch(() => {});
                     return;
                 }
                 if (role.position >= interaction.guild.members.me.roles.highest.position) {
                     changes--;
                     ctx.editReply({
-                        embeds: [
-                            replies.roleTooHighClient(interaction.member as GuildMember, role, ctx)
-                        ]
+                        embeds: [replies.roleTooHighClient(interaction.member as GuildMember, role, ctx)]
                     }).catch(() => {});
                     return;
                 }
@@ -537,8 +609,16 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(translator.translate('commands.admins.shop.replies.edit.edited.title', interaction))
-                                .setDescription(translator.translate('commands.admins.shop.replies.edit.edited.description', interaction, { name: item.itemName }))
+                                .setTitle(
+                                    translator.translate('commands.admins.shop.replies.edit.edited.title', interaction)
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'commands.admins.shop.replies.edit.edited.description',
+                                        interaction,
+                                        { name: item.itemName }
+                                    )
+                                )
                         ],
                         components: []
                     })
@@ -562,7 +642,11 @@ export default new DraverCommand({
             user: interaction.user,
             embed: basicEmbed(interaction.user)
                 .setTitle(translator.translate('commands.admins.shop.replies.delete.deleting.title', interaction))
-                .setDescription(translator.translate('commands.admins.shop.replies.delete.deleting.description', interaction, { name: item.itemName }))
+                .setDescription(
+                    translator.translate('commands.admins.shop.replies.delete.deleting.description', interaction, {
+                        name: item.itemName
+                    })
+                )
         }).catch(() => {})) as confirmReturn;
 
         if (confirmation === 'cancel' || !confirmation?.value)
@@ -579,8 +663,16 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.shop.replies.delete.deleted.title', interaction))
-                        .setDescription(translator.translate('commands.admins.shop.replies.delete.deleted.description', interaction, { name: item.itemName }))
+                        .setTitle(
+                            translator.translate('commands.admins.shop.replies.delete.deleted.title', interaction)
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.shop.replies.delete.deleted.description',
+                                interaction,
+                                { name: item.itemName }
+                            )
+                        )
                 ],
                 components: []
             })

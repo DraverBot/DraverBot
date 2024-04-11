@@ -147,9 +147,13 @@ export default new DraverCommand({
             return basicEmbed(interaction.user, { draverColor: true })
                 .setTitle(translator.translate('commands.admins.levels.replies.configuration.title', interaction))
                 .setDescription(
-                    translator.translate(`commands.admins.levels.replies.configuration.description_${configured}`, interaction, {
-                        channels: data.length > 0 ? data.map((x) => pingChan(x)).join(' ') : ''
-                    })
+                    translator.translate(
+                        `commands.admins.levels.replies.configuration.description_${configured}`,
+                        interaction,
+                        {
+                            channels: data.length > 0 ? data.map((x) => pingChan(x)).join(' ') : ''
+                        }
+                    )
                 );
         };
         const components = (allDisabled = false) => {
@@ -228,7 +232,9 @@ export default new DraverCommand({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
                                 .setTitle(translator.translate('commands.admins.levels.replies.applied.title', ctx))
-                                .setDescription(translator.translate('commands.admins.levels.replies.applied.description', ctx))
+                                .setDescription(
+                                    translator.translate('commands.admins.levels.replies.applied.description', ctx)
+                                )
                         ],
                         components: []
                     })
@@ -280,10 +286,14 @@ export default new DraverCommand({
                             reply: {
                                 embeds: [
                                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                                        .setTitle(translator.translate('commands.admins.levels.replies.invalid.title', ctx)
+                                        .setTitle(
+                                            translator.translate('commands.admins.levels.replies.invalid.title', ctx)
                                         )
                                         .setDescription(
-                                            translator.translate(`commands.admins.levels.replies.invalid.description_${action}`, ctx)
+                                            translator.translate(
+                                                `commands.admins.levels.replies.invalid.description_${action}`,
+                                                ctx
+                                            )
                                         )
                                 ]
                             }
@@ -344,8 +354,15 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle(translator.translate('commands.admins.levels.replies.emptyList.title', interaction))
-                            .setDescription(translator.translate('commands.admins.levels.replies.emptyList.description', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.levels.replies.emptyList.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.levels.replies.emptyList.description',
+                                    interaction
+                                )
+                            )
                     ],
                     ephemeral: true
                 })
@@ -356,11 +373,16 @@ export default new DraverCommand({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(
-                            translator.translate(`commands.admins.levels.replies.list.title_${configured}`, interaction))
+                            translator.translate(`commands.admins.levels.replies.list.title_${configured}`, interaction)
+                        )
                         .setDescription(
-                            translator.translate(`commands.admins.levels.replies.list.description_${configured}`, interaction, {
-                                channels: list.map((x) => pingChan(x)).join(' ')
-                            })
+                            translator.translate(
+                                `commands.admins.levels.replies.list.description_${configured}`,
+                                interaction,
+                                {
+                                    channels: list.map((x) => pingChan(x)).join(' ')
+                                }
+                            )
                         )
                 ]
             })
@@ -375,9 +397,13 @@ export default new DraverCommand({
             embed: basicEmbed(interaction.user)
                 .setTitle(translator.translate('commands.admins.levels.replies.resetting.title', interaction))
                 .setDescription(
-                    translator.translate(`commands.admins.levels.replies.resetting.description${!!user ? 'User' : 'Server'}`, interaction, {
-                        user: pingUser(user?.id)
-                    })
+                    translator.translate(
+                        `commands.admins.levels.replies.resetting.description${!!user ? 'User' : 'Server'}`,
+                        interaction,
+                        {
+                            user: pingUser(user?.id)
+                        }
+                    )
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -409,10 +435,18 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(translator.translate('commands.admins.levels.replies.resetted.title', interaction))
-                                .setDescription(translator.translate(`commands.admins.levels.replies.resetted.description${!!user? 'User' : 'Server'}`, interaction, {
-                                    user: pingUser(user?.id)
-                                }))
+                                .setTitle(
+                                    translator.translate('commands.admins.levels.replies.resetted.title', interaction)
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        `commands.admins.levels.replies.resetted.description${!!user ? 'User' : 'Server'}`,
+                                        interaction,
+                                        {
+                                            user: pingUser(user?.id)
+                                        }
+                                    )
+                                )
                         ]
                     })
                     .catch(() => {});
@@ -468,12 +502,18 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(translator.translate('commands.admins.levels.replies.added.title', interaction))
+                                .setTitle(
+                                    translator.translate('commands.admins.levels.replies.added.title', interaction)
+                                )
                                 .setDescription(
-                                    translator.translate(`commands.admins.levels.replies.added.description_${type}`, interaction, {
-                                        levels: amount,
-                                        user: pingUser(user)
-                                    })
+                                    translator.translate(
+                                        `commands.admins.levels.replies.added.description_${type}`,
+                                        interaction,
+                                        {
+                                            levels: amount,
+                                            user: pingUser(user)
+                                        }
+                                    )
                                 )
                         ],
                         components: []
@@ -531,12 +571,18 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(translator.translate('commands.admins.levels.replies.removed.title', interaction))
+                                .setTitle(
+                                    translator.translate('commands.admins.levels.replies.removed.title', interaction)
+                                )
                                 .setDescription(
-                                    translator.translate(`commands.admins.levels.replies.removed.description_${type}`, interaction, {
-                                        levels: amount,
-                                        user: pingUser(user)
-                                    })
+                                    translator.translate(
+                                        `commands.admins.levels.replies.removed.description_${type}`,
+                                        interaction,
+                                        {
+                                            levels: amount,
+                                            user: pingUser(user)
+                                        }
+                                    )
                                 )
                         ],
                         components: []

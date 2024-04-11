@@ -46,9 +46,7 @@ export default new DraverCommand({
     if (!configsManager.getValue(interaction.guild.id, 'join_roles'))
         return interaction
             .reply({
-                embeds: [
-                    replies.configDisabled(interaction.member as GuildMember, 'join_roles', interaction)
-                ],
+                embeds: [replies.configDisabled(interaction.member as GuildMember, 'join_roles', interaction)],
                 ephemeral: true
             })
             .catch(() => {});
@@ -65,8 +63,15 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(translator.translate('commands.admins.joinroles.replies.list.noRole.title', interaction))
-                            .setDescription(translator.translate('commands.admins.joinroles.replies.list.noRole.description', interaction))
+                            .setTitle(
+                                translator.translate('commands.admins.joinroles.replies.list.noRole.title', interaction)
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.joinroles.replies.list.noRole.description',
+                                    interaction
+                                )
+                            )
                     ]
                 })
                 .catch(() => {});
@@ -76,12 +81,18 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.joinroles.replies.list.list.title', interaction))
+                        .setTitle(
+                            translator.translate('commands.admins.joinroles.replies.list.list.title', interaction)
+                        )
                         .setDescription(
-                            translator.translate('commands.admins.joinroles.replies.list.list.description', interaction, {
-                                count: list.length,
-                                roles: list.map(pingRole).join(' ')
-                            })
+                            translator.translate(
+                                'commands.admins.joinroles.replies.list.list.description',
+                                interaction,
+                                {
+                                    count: list.length,
+                                    roles: list.map(pingRole).join(' ')
+                                }
+                            )
                         )
                 ]
             })
@@ -93,9 +104,7 @@ export default new DraverCommand({
     if (role.position >= (interaction.member as GuildMember).roles.highest.position)
         return interaction
             .editReply({
-                embeds: [
-                    replies.roleTooHigh(interaction.member as GuildMember, role, interaction)
-                ]
+                embeds: [replies.roleTooHigh(interaction.member as GuildMember, role, interaction)]
             })
             .catch(() => {});
 
@@ -106,8 +115,19 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.joinroles.replies.add.alreadyConfigured.title', interaction))
-                            .setDescription(translator.translate('commands.admins.joinroles.replies.add.alradyConfigured.description', interaction, { role: pingRole(role) }))
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.joinroles.replies.add.alreadyConfigured.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.joinroles.replies.add.alradyConfigured.description',
+                                    interaction,
+                                    { role: pingRole(role) }
+                                )
+                            )
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -124,8 +144,16 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(translator.translate('commands.admins.joinroles.replies.add.configured.title', interaction))
-                        .setDescription(translator.translate('commands.admins.joinroles.replies.add.configured.description', interaction, { role: pingRole(role) }))
+                        .setTitle(
+                            translator.translate('commands.admins.joinroles.replies.add.configured.title', interaction)
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.joinroles.replies.add.configured.description',
+                                interaction,
+                                { role: pingRole(role) }
+                            )
+                        )
                 ]
             })
             .catch(() => {});
@@ -136,8 +164,18 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle(translator.translate('commands.admins.joinroles.replies.remove.notConfigured.title', interaction))
-                            .setDescription(translator.translate('commands.admins.joinroles.replies.remove.notConfigured.description', interaction, { role: pingRole(role) })
+                            .setTitle(
+                                translator.translate(
+                                    'commands.admins.joinroles.replies.remove.notConfigured.title',
+                                    interaction
+                                )
+                            )
+                            .setDescription(
+                                translator.translate(
+                                    'commands.admins.joinroles.replies.remove.notConfigured.description',
+                                    interaction,
+                                    { role: pingRole(role) }
+                                )
                             )
                             .setColor(evokerColor(interaction.guild))
                     ]
@@ -152,12 +190,25 @@ export default new DraverCommand({
                 interaction.guild.id
             }", "${sqliseString(JSON.stringify(list))}")`
         );
-        interaction.editReply({
-            embeds: [
-                basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle(translator.translate('commands.admins.joinroles.replies.remove.configured.title', interaction))
-                    .setDescription(translator.translate('commands.admins.joinroles.replies.remove.configured.description', interaction, { role: pingRole(role) }))
-            ]
-        }).catch(log4js.trace);
+        interaction
+            .editReply({
+                embeds: [
+                    basicEmbed(interaction.user, { draverColor: true })
+                        .setTitle(
+                            translator.translate(
+                                'commands.admins.joinroles.replies.remove.configured.title',
+                                interaction
+                            )
+                        )
+                        .setDescription(
+                            translator.translate(
+                                'commands.admins.joinroles.replies.remove.configured.description',
+                                interaction,
+                                { role: pingRole(role) }
+                            )
+                        )
+                ]
+            })
+            .catch(log4js.trace);
     }
 });

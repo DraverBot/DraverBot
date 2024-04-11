@@ -10,7 +10,7 @@
             "name": "ajouter",
             "description": "Ajoute un rôle à la liste",
             "options": {
-                "role" :{
+                "role": {
                     "name": "rôle",
                     "description": "Rôle à ajouter"
                 }

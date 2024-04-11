@@ -50,7 +50,7 @@ export class Translator {
             nameLocalizations: {},
             descriptionLocalizations: {}
         };
-        if (!defaultSet.description) removeKey(removeKey(data, 'descriptionLocalizations'), 'description')
+        if (!defaultSet.description) removeKey(removeKey(data, 'descriptionLocalizations'), 'description');
 
         Object.keys(this.dict).forEach((lang) => {
             const set = this.resolve(key, lang);

@@ -90,9 +90,13 @@ export default new DraverCommand({
                     basicEmbed(interaction.user, { draverColor: true })
                         .setTitle(translator.translate('commands.admins.jokes.replies.config.title', interaction))
                         .setDescription(
-                            translator.translate(`commands.admins.jokes.replies.config.description${state ? 'Enabled' : 'Disabled'}`, interaction, {
-                                name: jokeNames[category]
-                            })
+                            translator.translate(
+                                `commands.admins.jokes.replies.config.description${state ? 'Enabled' : 'Disabled'}`,
+                                interaction,
+                                {
+                                    name: jokeNames[category]
+                                }
+                            )
                         )
                 ]
             })

@@ -98,7 +98,12 @@ export class Mastermind {
             { emoji: '⚪', name: 'blanc', id: 'white' },
             { emoji: '🟤', name: 'marron', id: 'brown' },
             { emoji: '🟠', name: 'orange', id: 'orange' }
-        ].splice(0, this.colors).map(x => ({ ...x, name: translator.translate(`contents.games.mastermind.colors.${x.id}`, this._interaction) })) as colorType[];
+        ]
+            .splice(0, this.colors)
+            .map((x) => ({
+                ...x,
+                name: translator.translate(`contents.games.mastermind.colors.${x.id}`, this._interaction)
+            })) as colorType[];
     }
 
     private join(array: string[]) {
@@ -150,8 +155,16 @@ export class Mastermind {
     private get components(): ActionRowBuilder<ButtonBuilder>[] {
         return [
             row(
-                buildButton({ label: translator.translate('contents.games.mastermind.buttons.try', this._interaction), style: 'Primary', buttonId: 'MastermindReply' }),
-                buildButton({ label: translator.translate('contents.games.mastermind.buttons.resign', this._interaction), style: 'Danger', buttonId: 'MastermindResign' })
+                buildButton({
+                    label: translator.translate('contents.games.mastermind.buttons.try', this._interaction),
+                    style: 'Primary',
+                    buttonId: 'MastermindReply'
+                }),
+                buildButton({
+                    label: translator.translate('contents.games.mastermind.buttons.resign', this._interaction),
+                    style: 'Danger',
+                    buttonId: 'MastermindResign'
+                })
             )
         ];
     }
@@ -205,13 +218,22 @@ export class Mastermind {
                         .setColor(color('mastermindResign'))
                         .setTitle(translator.translate('contents.games.mastermind.lost.title', this._interaction))
                         .setDescription(
-                            translator.translate('contents.games.mastermind.lost.description', this._interaction, { tries: this.maxTries, display: this.triesDisplay })
+                            translator.translate('contents.games.mastermind.lost.description', this._interaction, {
+                                tries: this.maxTries,
+                                display: this.triesDisplay
+                            })
                         )
                         .setFields({
                             name: translator.translate('contents.games.mastermind.lost.field.name', this._interaction),
-                            value: translator.translate('contents.games.mastermind.lost.field.value', this._interaction, { combination: this.combination
-                                .map((x) => this.palette.find((y) => y.id === x).emoji)
-                                .join(' ') }),
+                            value: translator.translate(
+                                'contents.games.mastermind.lost.field.value',
+                                this._interaction,
+                                {
+                                    combination: this.combination
+                                        .map((x) => this.palette.find((y) => y.id === x).emoji)
+                                        .join(' ')
+                                }
+                            ),
                             inline: false
                         })
                 ],
@@ -293,9 +315,7 @@ export class Mastermind {
             if (ctx.user.id !== this._user.id) {
                 ctx.reply({
                     ephemeral: true,
-                    embeds: [
-                        replies.replyNotAllowed(this._interaction?.member as GuildMember ?? this._user, ctx)
-                    ],
+                    embeds: [replies.replyNotAllowed((this._interaction?.member as GuildMember) ?? this._user, ctx)],
                     components: SetRandomComponent.process()
                 }).catch(log4js.trace);
                 return;
@@ -362,9 +382,7 @@ export class Mastermind {
             if (ctx.user.id !== this._user.id) {
                 ctx.reply({
                     ephemeral: true,
-                    embeds: [
-                        replies.replyNotAllowed(this._interaction?.member as GuildMember ?? this._user, ctx)
-                    ],
+                    embeds: [replies.replyNotAllowed((this._interaction?.member as GuildMember) ?? this._user, ctx)],
                     components: SetRandomComponent.process()
                 }).catch(log4js.trace);
                 return;
@@ -396,13 +414,29 @@ export class Mastermind {
                         embeds: [
                             basicEmbed(this._user)
                                 .setColor(color('mastermindResign'))
-                                .setTitle(translator.translate('contents.games.mastermind.resigned.title', this._interaction))
-                                .setDescription(translator.translate('contents.games.mastermind.resigned.description', this._interaction))
+                                .setTitle(
+                                    translator.translate('contents.games.mastermind.resigned.title', this._interaction)
+                                )
+                                .setDescription(
+                                    translator.translate(
+                                        'contents.games.mastermind.resigned.description',
+                                        this._interaction
+                                    )
+                                )
                                 .setFields({
-                                    name: translator.translate('contents.games.mastermind.resigned.field.name', this._interaction),
-                                    value: translator.translate('contents.games.mastermind.resigned.field.value', this._interaction, { display: this.combination
-                                        .map((x) => this.palette.find((y) => y.id === x).emoji)
-                                        .join(' ') }),
+                                    name: translator.translate(
+                                        'contents.games.mastermind.resigned.field.name',
+                                        this._interaction
+                                    ),
+                                    value: translator.translate(
+                                        'contents.games.mastermind.resigned.field.value',
+                                        this._interaction,
+                                        {
+                                            display: this.combination
+                                                .map((x) => this.palette.find((y) => y.id === x).emoji)
+                                                .join(' ')
+                                        }
+                                    ),
                                     inline: false
                                 })
                         ],
