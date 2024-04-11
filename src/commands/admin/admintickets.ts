@@ -5,6 +5,7 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, GuildMember, TextChannel, User } from 'discord.js';
 import {
     basicEmbed,
+    capitalize,
     confirm,
     evokerColor,
     getMsgUrl,
@@ -23,101 +24,85 @@ import { confirmReturn } from '../../typings/functions';
 import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'admintickets',
+    ...translator.commandData('commands.admins.tickets'),
     module: 'administration',
-    description: 'Gère les tickets sur le serveur',
     permissions: ['Administrator'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'liste',
-            description: 'Affiche la liste des tickets',
+            ...translator.commandData('commands.admins.tickets.options.list'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'utilisateur',
-                    description: "Affiche le ticket d'un utilisateur",
+                    ...translator.commandData('commands.admins.tickets.options.list.options.user'),
                     type: ApplicationCommandOptionType.User,
                     required: false
                 }
             ]
         },
         {
-            name: 'créer',
-            description: 'Créer un panel de ticket',
+            ...translator.commandData('commands.admins.tickets.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'sujet',
-                    description: 'Sujet du panel de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.create.options.subject'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'salon',
-                    description: 'Salon du panel de ticket',
+                    ...translator.commandData('commands.admins.tickets.options.create.options.channel'),
                     required: false,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
                 },
                 {
-                    name: 'description',
-                    description: 'Description du panel de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.create.options.description'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'image',
-                    description: 'Image du panel',
+                    ...translator.commandData('commands.admins.tickets.options.create.options.image'),
                     required: false,
                     type: ApplicationCommandOptionType.Attachment
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un panel de tickets',
+            ...translator.commandData('commands.admins.tickets.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'identifiant',
-                    description: 'Identifiant du message du panel de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.delete.options.id'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'modroles',
-            description: 'Gère les rôles de modérateurs de tickets',
+            ...translator.commandData('commands.admins.tickets.options.modroles'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'liste',
-                    description: 'Affiche la liste des rôles de modérateurs de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.modroles.options.list'),
                     type: ApplicationCommandOptionType.Subcommand
                 },
                 {
-                    name: 'ajouter',
-                    description: 'Ajoute un rôle de modérateur de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.modroles.options.add'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'rôle',
-                            description: 'Rôle à rajouter',
+                            ...translator.commandData('commands.admins.tickets.options.modroles.options.add.options.role'),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         }
                     ]
                 },
                 {
-                    name: 'retirer',
-                    description: 'Retirer un rôle de modérateur de tickets',
+                    ...translator.commandData('commands.admins.tickets.options.modroles.options.remove'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'rôle',
-                            description: 'Rôle à retirer',
+                            ...translator.commandData('commands.admins.tickets.options.modroles.options.remove.options.role'),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         }
@@ -152,8 +137,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Pas de tickets')
-                                .setDescription(`Aucun ticket n'est ouvert sur ce serveur`)
+                                .setTitle(translator.translate('commands.admins.tickets.replies.list.noTickets.title', interaction))
+                                .setDescription(translator.translate('commands.admins.tickets.replies.list.noTickets.description', interaction))
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -168,8 +153,8 @@ export default new DraverCommand({
                         .reply({
                             embeds: [
                                 basicEmbed(interaction.user)
-                                    .setTitle('Pas de ticket')
-                                    .setDescription(`${user} n'a pas ouvert de tickets sur ce serveur`)
+                                    .setTitle(translator.translate('commands.admins.tickets.replies.list.userNoTickets.title', interaction))
+                                    .setDescription(translator.translate('commands.admins.tickets.replies.list.userNoTickets.description', interaction, { user: pingUser(user) }))
                                     .setColor(evokerColor(interaction.guild))
                             ]
                         })
@@ -179,17 +164,17 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle(`Ticket de ${user.username}`)
-                                .setDescription(`Voici les informations du ticket de ${user}`)
+                                .setTitle(translator.translate('commands.admins.tickets.replies.list.user.title', interaction, { name: user.username }))
+                                .setDescription(translator.translate('commands.admins.tickets.replies.list.user.description', interaction, { user: pingUser(user) }))
                                 .setFields(
                                     {
-                                        name: 'Salon',
+                                        name: translator.translate('commands.admins.tickets.replies.list.user.channel', interaction),
                                         value: pingChan(ticket.channel_id),
                                         inline: true
                                     },
                                     {
-                                        name: 'État',
-                                        value: ticket.state === 'closed' ? 'Fermé' : 'Ouvert',
+                                        name: translator.translate('commands.admins.tickets.replies.list.user.state', interaction),
+                                        value: capitalize(translator.translate(`commands.admins.tickets.utils.states.${ticket.state}`, interaction)),
                                         inline: true
                                     }
                                 )
@@ -199,17 +184,23 @@ export default new DraverCommand({
                 return;
             }
 
+            const states = {
+                open: translator.translate('commands.admins.tickets.utils.states.open', interaction),
+                closed: translator.translate('commands.admins.tickets.utils.states.closed', interaction)
+            }
             const basic = () => {
                 return basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Tickets')
-                    .setDescription(`Il y a ${numerize(list.length)} ticket${plurial(list.length)} dans ce serveur`);
+                    .setTitle(translator.translate('commands.admins.tickets.replies.list.list.title', interaction))
+                    .setDescription(translator.translate('commands.admins.tickets.replies.list.list.description', interaction, { count: list.length }));
             };
             const map = (embed: EmbedBuilder, ticket: ticketChannels) => {
                 return embed.addFields({
                     name: ticket.channelName,
-                    value: `Ouvert par ${pingUser(ticket.user_id)}\n> Ticket ${
-                        ticket.state === 'open' ? 'ouvert' : 'fermé'
-                    } dans ${pingChan(ticket.channel_id)}`,
+                    value: translator.translate('commands.admins.tickets.replies.list.list.mapper', interaction, {
+                        user: pingUser(ticket.user_id),
+                        channel: pingChan(ticket.channel_id),
+                        state: states[ticket.state]
+                    }),
                     inline: false
                 });
             };
@@ -251,10 +242,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Image invalide')
-                                .setDescription(`L'image fournie est invalide`)
-                                .setColor(evokerColor(interaction.guild))
+                            replies.invalidImage(interaction.member as GuildMember, interaction)
                         ],
                         ephemeral: true
                     })
@@ -264,22 +252,26 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle('Création')
-                    .setDescription(`Vous allez créer un panel de ticket dans ${pingChan(channel)}`)
+                    .setTitle(translator.translate('commands.admins.tickets.replies.create.creation.title', interaction))
+                    .setDescription(translator.translate('commands.admins.tickets.replies.create.creation.description', interaction, { channel: pingChan(
+                        channel
+                    ) }))
                     .setFields(
                         {
-                            name: 'Sujet',
+                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.subject', interaction),
                             value: resizeString({ str: subject, length: 200 }),
                             inline: true
                         },
                         {
-                            name: 'Description',
-                            value: description ? resizeString({ str: description, length: 200 }) : 'Pas de description',
+                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.description.name', interaction),
+                            value: description ? resizeString({ str: description, length: 200 }) : translator.translate('commands.admins.tickets.replies.create.creation.fields.description.none', interaction),
                             inline: false
                         },
                         {
-                            name: 'Image',
-                            value: img ? `[Lien](${img.url})` : "Pas d'image"
+                            name: translator.translate('commands.admins.tickets.replies.create.creation.fields.image.name', interaction),
+                            value: translator.translate(`commands.admins.tickets.replies.create.creation.fields.image.${!!img ? 'link' : 'none'}`, interaction, {
+                                link: img?.url
+                            })
                         }
                     )
             }).catch(() => {})) as confirmReturn;
@@ -329,8 +321,8 @@ export default new DraverCommand({
                         embeds: [
                             basicEmbed(interaction.user)
                                 .setColor(evokerColor(interaction.guild))
-                                .setTitle('Panel introuvable')
-                                .setDescription(`Ce panel n'existe pas`)
+                                .setTitle(translator.translate('commands.admins.tickets.replies.delete.noPanel.title', interaction))
+                                .setDescription(translator.translate('commands.admins.tickets.replies.delete.noPanel.description', interaction))
                         ]
                     })
                     .catch(() => {});
@@ -339,8 +331,8 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle('Suppression')
-                    .setDescription(`Voulez-vous vraiment supprimer [ce panel](${getMsgUrl(panel)}) ?`)
+                    .setTitle(translator.translate('commands.admins.tickets.replies.delete.deleting.title', interaction))
+                    .setDescription(translator.translate('commands.admins.tickets.replies.delete.deleting.description', interaction, { link: getMsgUrl(panel) }))
             }).catch(() => {})) as confirmReturn;
 
             if (confirmation === 'cancel' || !confirmation?.value)
@@ -360,7 +352,8 @@ export default new DraverCommand({
             const res = await ticketsManager.deletePanel({
                 guild: interaction.guild,
                 user: interaction.user,
-                message_id: id
+                message_id: id,
+                lang: interaction
             });
             interaction
                 .editReply({
@@ -377,8 +370,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Pas de rôles')
-                                .setDescription(`Aucun rôle n'est configuré sur ${interaction.guild.name}`)
+                                .setTitle(translator.translate('commands.admins.tickets.replies.modroles.list.no.title', interaction))
+                                .setDescription(translator.translate('comands.admins.tickets.replies.modroles.list.no.description', interaction, { name: interaction.guild.name }))
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     })
@@ -388,12 +381,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Modérateurs de tickets')
+                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.list.list.title', interaction))
                             .setDescription(
-                                `${numerize(roles.length)} rôle${plurial(roles.length, {
-                                    singular: ' est configuré',
-                                    plurial: 's sont configurés'
-                                })}\n${roles.map(pingRole).join(' ')}`
+                                translator.translate('commands.admins.tickets.replies.modroles.list.list.description', interaction, {
+                                    count: roles.length,
+                                    roles: roles.map(pingRole).join(' ')
+                                })
                             )
                     ]
                 })
@@ -405,10 +398,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setColor(evokerColor(interaction.guild))
-                                .setTitle('Rôle trop haut')
-                                .setDescription(`Ce rôle est supérieur ou égal à vous dans la hiérarchie des rôles`)
+                            replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)
                         ],
                         ephemeral: true
                     })
@@ -423,11 +413,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Rôle ajouté')
+                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.add.title', interaction))
                             .setDescription(
-                                `Le rôle ${pingRole(
-                                    role.id
-                                )} a été ajouté à la liste des rôles de modérateur de tickets`
+                                translator.translate('commands.admins.tickets.replies.modroles.add.description', interaction, {
+                                    role: pingRole(role.id)
+                                })
                             )
                     ]
                 })
@@ -439,10 +429,7 @@ export default new DraverCommand({
                 return interaction
                     .reply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setColor(evokerColor(interaction.guild))
-                                .setTitle('Rôle trop haut')
-                                .setDescription(`Ce rôle est supérieur ou égal à vous dans la hiérarchie des rôles`)
+                            replies.roleTooHigh(interaction.member as GuildMember, role.id, interaction)
                         ],
                         ephemeral: true
                     })
@@ -457,11 +444,9 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Rôle ajouté')
+                            .setTitle(translator.translate('commands.admins.tickets.replies.modroles.remove.title', interaction))
                             .setDescription(
-                                `Le rôle ${pingRole(
-                                    role.id
-                                )} a été ajouté à la liste des rôles de modérateur de tickets`
+                                translator.translate('commands.admins.tickets.replies.modroles.remove.description', interaction, { role: pingRole(role.id) })
                             )
                     ]
                 })

@@ -554,7 +554,7 @@ export class TicketsManager {
                 .setColor(guild.members.me.displayHexColor ?? util('accentColor'))
                 .setTitle(subject)
                 .setDescription(
-                    `Créez un ticket en appuyant sur le bouton ci-dessous${description ? `\n\n${description}` : ''}`
+                    translator.translate('commands.admins.tickets.replies.create.panelDesc', lang) + description ? `\n\n${description}` : ''
                 );
 
             if (image) embed.setThumbnail(image);
@@ -564,7 +564,7 @@ export class TicketsManager {
                     components: [
                         row(
                             buildButton({
-                                label: 'Ouvrir un ticket',
+                                label: translator.translate('commands.admins.tickets.buttons.open', lang),
                                 emoji: '📥',
                                 id: ticketButtonIds.Panel,
                                 style: 'Primary'
@@ -607,15 +607,16 @@ export class TicketsManager {
             return resolve({
                 panel: this._panels.get(msg.id),
                 embed: basicEmbed(user, { draverColor: true })
-                    .setTitle('Panel crée')
-                    .setDescription(`Le panel a été crée dans le salon ${pingChan(channel)}`)
+                    .setTitle(translator.translate('commands.admins.tickets.replies.create.created.title', lang))
+                    .setDescription(translator.translate('commands.admins.tickets.replies.create.created.description', lang, { channel: pingChan(channel) }))
             });
         });
     }
     public deletePanel({
         guild,
         user,
-        message_id
+        message_id,
+        lang
     }: deletePanelOptions): Promise<{ panel?: ticketPanels; embed: EmbedBuilder }> {
         return new Promise(async (resolve) => {
             const panel = this._panels.get(message_id);
@@ -625,13 +626,9 @@ export class TicketsManager {
                 return resolve({
                     embed: basicEmbed(user)
                         .setColor(evokerColor(guild))
-                        .setTitle('Salon invalide')
+                        .setTitle(translator.translate('commands.admins.tickets.replies.delete.invalid.title', lang))
                         .setDescription(
-                            `Je ne trouve pas le salon du panel.\nRéessayez dans quelques minutes.\n${hint(
-                                `Si l'erreur persiste, vérifiez que j'ai la permissions **${getRolePerm(
-                                    'ManageChannels'
-                                )}**`
-                            )}`
+                            translator.translate('commands.admins.tickets.replies.delete.invalid.description', lang)
                         )
                 });
             const message = await this.fetchPanelMessage({ channel, message_id });
@@ -648,8 +645,8 @@ export class TicketsManager {
             return resolve({
                 panel,
                 embed: basicEmbed(user, { draverColor: true })
-                    .setTitle('Panel supprimé')
-                    .setDescription(`Le panel dans le salon ${pingChan(panel.channel_id)} a été supprimé`)
+                    .setTitle(translator.translate('commands.admins.tickets.replies.delete.deleted.title', lang))
+                    .setDescription(translator.translate('commands.admins.tickets.replies.delete.deleted.description', lang, { channel: pingChan(panel.channel_id) }))
             });
         });
     }

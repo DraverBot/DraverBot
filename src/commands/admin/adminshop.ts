@@ -36,71 +36,63 @@ import { util } from '../../utils/functions';
 import { cancelButton } from '../../data/buttons';
 import replies from '../../data/replies';
 import { confirmReturn } from '../../typings/functions';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'adminmagasin',
+    ...translator.commandData('commands.admins.shop'),
     module: 'economy',
-    description: 'Configure le magasin du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled, validRole],
     permissions: ['ManageGuild'],
     options: [
         {
-            name: 'créer',
-            description: 'Créer un item dans le magasin',
+            ...translator.commandData('commands.admins.shop.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: "Nom de l'item",
+                    ...translator.commandData('commands.admins.shop.options.create.options.name'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'prix',
-                    description: "Prix de l'item",
+                    ...translator.commandData('commands.admins.shop.options.create.options.price'),
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 0
                 },
                 {
-                    name: 'type',
-                    description: "Type de l'item",
+                    ...translator.commandData('commands.admins.shop.options.create.options.type'),
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     choices: [
                         {
-                            name: 'Rôle',
+                            ...translator.commandData('commands.admins.shop.options.create.options.type.choices.role'),
                             value: 'role'
                         },
                         {
-                            name: 'Objet',
+                            ...translator.commandData('commands.admins.shop.options.create.options.type.choices.item'),
                             value: 'item'
                         }
                     ]
                 },
                 {
-                    name: 'quantité',
-                    description: "Quantité d'items disponible",
+                    ...translator.commandData('commands.admins.shop.options.create.options.quantity'),
                     required: false,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
                 },
                 {
-                    name: 'rôle',
-                    description: 'Rôle à donner en cas de type rôle',
+                    ...translator.commandData('commands.admins.shop.options.create.options.role'),
                     type: ApplicationCommandOptionType.Role,
                     required: false
                 }
             ]
         },
         {
-            name: 'modifier',
-            description: 'Modifie un item',
+            ...translator.commandData('commands.admins.shop.options.edit'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'item',
-                    description: 'Item à modifier',
+                    ...translator.commandData('commands.admins.shop.options.edit.options.item'),
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
@@ -108,13 +100,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un item',
+            ...translator.commandData('commands.admins.shop.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'item',
-                    description: 'Item à supprimer',
+                    ...translator.commandData('commands.admins.shop.options.delete.options.item'),
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true
@@ -147,8 +137,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Item déjà existant')
-                            .setDescription(`Un item du même nom existe déjà sur le serveur`)
+                            .setTitle(translator.translate('commands.admins.shop.replies.create.exists.title', interaction))
+                            .setDescription(translator.translate('commands.admins.shop.replies.crate.exists.description', interaction))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -158,17 +148,16 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Item crée')
+                        .setTitle(translator.translate('commands.admins.shop.replies.create.created.title', interaction))
                         .setDescription(
-                            `L'item \`${name}\` a été crée pour **${numerize(price)} ${util('coins')}** en tant ${
-                                type === 'item'
-                                    ? "qu'objet"
-                                    : type === 'role'
-                                      ? `que rôle, associé avec le rôle ${pingRole(role.id)},`
-                                      : ''
-                            } avec un stock ${quantity === 0 ? 'infini' : `de ${numerize(quantity)}`}\n${hint(
-                                `Vous pouvez à tout moment modifier un item avec la commande \`/adminmagasin modifier\``
-                            )}`
+                            translator.translate(`commands.admins.shop.replies.create.created.description_${type}`, interaction, {
+                                name,
+                                price,
+                                role: pingRole(role?.id),
+                                stock: translator.translate(`commands.admins.shop.replies.create.created.quantity${quantity === 0 ? '_infinite' : ''}`, interaction, {
+                                    stock: quantity
+                                })
+                            })
                         )
                 ]
             })
@@ -183,38 +172,40 @@ export default new DraverCommand({
 
         const embed = () => {
             return basicEmbed(interaction.user, { questionMark: true })
-                .setTitle("Modification d'item")
-                .setDescription(`Appuyez sur les bouttons pour modifier l'item`)
+                .setTitle(translator.translate('commands.admins.shop.replies.edit.embed.title', interaction))
+                .setDescription(translator.translate('commands.admins.shop.replies.edit.embed.description', interaction))
                 .setFields(
                     {
-                        name: 'Nom',
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.name.name', interaction),
                         value: item.itemName,
                         inline: true
                     },
                     {
-                        name: 'Prix',
-                        value: `${numerize(item.price)} ${util('coins')}`,
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.price.name', interaction),
+                        value: translator.translate('commands.admins.shop.replies.edit.embed.fields.price.value', interaction, {
+                            price: item.price
+                        }),
                         inline: true
                     },
                     {
-                        name: 'Type',
-                        value: item.itemType === 'item' ? 'Objet' : item.itemType === 'role' ? 'Rôle' : 'Inconnu',
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.type.name', interaction),
+                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.type.${item.itemType === 'item' ? 'item' : item.itemType === 'role' ? 'role' : 'unknown'}`, interaction),
                         inline: false
                     },
                     {
-                        name: 'Quantité',
-                        value: item.quantity === 0 ? 'Infinie' : numerize(item.quantity),
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.quantity.name', interaction),
+                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.quantity.${item.quantity === 0 ? 'infinite' : 'value'}`, interaction, { quantity: item.quantity }),
                         inline: true
                     },
                     {
-                        name: 'Quantité disponible',
-                        value: item.quantity === 0 ? 'Infinie' : numerize(item.quantityLeft),
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.available.name', interaction),
+                        value: translator.translate(`commands.admins.shop.replies.edit.embed.fields.available.${item.quantity === 0 ? 'infinite' : 'value'}`, interaction, { quantity: item.quantityLeft }),
                         inline: true
                     },
                     {
-                        name: 'Rôle donné',
+                        name: translator.translate('commands.admins.shop.replies.edit.embed.fields.role.name', interaction),
                         value:
-                            item.roleId.length > 1 && item.itemType === 'role' ? pingRole(item.roleId) : 'Pas de rôle'
+                            item.roleId.length > 1 && item.itemType === 'role' ? pingRole(item.roleId) : translator.translate('commands.admins.shop.replies.edit.embed.fields.role.none', interaction)
                     }
                 );
         };
@@ -222,31 +213,31 @@ export default new DraverCommand({
             return [
                 row(
                     buildButton({
-                        label: 'Nom',
+                        label: translator.translate('commands.admins.shop.buttons.name', interaction),
                         style: 'Primary',
                         id: 'name',
                         disabled: fullDisable
                     }),
                     buildButton({
-                        label: 'Prix',
+                        label: translator.translate('commands.admins.shop.buttons.price', interaction),
                         style: 'Primary',
                         id: 'price',
                         disabled: fullDisable
                     }),
                     buildButton({
-                        label: 'Type',
+                        label: translator.translate('commands.admins.shop.buttons.type', interaction),
                         style: 'Secondary',
                         id: 'type',
                         disabled: fullDisable
                     }),
                     buildButton({
-                        label: 'Quantité',
+                        label: translator.translate('commands.admins.shop.buttons.quantity', interaction),
                         style: 'Success',
                         id: 'quantity',
                         disabled: fullDisable
                     }),
                     buildButton({
-                        label: 'Quantité disponible',
+                        label: translator.translate('commands.admins.shop.buttons.left', interaction),
                         style: 'Danger',
                         id: 'quantityLeft',
                         disabled: fullDisable
@@ -254,13 +245,13 @@ export default new DraverCommand({
                 ),
                 row(
                     buildButton({
-                        label: 'Rôle',
+                        label: translator.translate('commands.admins.shop.buttons.role', interaction),
                         style: 'Primary',
                         id: 'role',
                         disabled: item.itemType !== 'role' || fullDisable
                     }),
                     buildButton({
-                        label: 'Valider',
+                        label: translator.translate('commands.admins.shop.buttons.validate', interaction),
                         style: 'Success',
                         id: 'valider',
                         disabled: changes === 0 || (item.itemType === 'role' && item.roleId.length < 1) || fullDisable
@@ -282,8 +273,8 @@ export default new DraverCommand({
             return systemReply(interaction, {
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle('Envoi impossible')
-                        .setDescription(`L'envoi a été annulé`)
+                        .setTitle(translator.translate('commands.admins.shop.replies.edit.error.title', interaction))
+                        .setDescription(translator.translate('commands.admins.shop.replies.edit.error.description', interaction))
                         .setColor(evokerColor(interaction.guild))
                 ]
             });
@@ -304,13 +295,13 @@ export default new DraverCommand({
                 await ctx
                     .showModal(
                         new ModalBuilder()
-                            .setTitle("Modification d'item")
+                            .setTitle(translator.translate('commands.admins.shop.modal.name.title', interaction))
                             .setCustomId('edit')
                             .setComponents(
                                 row<TextInputBuilder>(
                                     new TextInputBuilder()
-                                        .setLabel('Nom')
-                                        .setPlaceholder("Nom de l'objet")
+                                        .setLabel(translator.translate('commands.admins.shop.modal.name.fields.name.name', interaction))
+                                        .setPlaceholder(translator.translate('commands.admins.shop.modal.name.fields.name.placeholder', interaction))
                                         .setMaxLength(255)
                                         .setRequired(true)
                                         .setCustomId('name')
@@ -341,21 +332,15 @@ export default new DraverCommand({
                     .catch(() => {});
             }
             if (['price', 'quantity', 'quantityLeft'].includes(ctx.customId)) {
-                const label = {
-                    price: 'Prix',
-                    quantity: 'Quantité',
-                    quantityLeft: 'Quantité restante'
-                };
-
                 await ctx.showModal(
                     new ModalBuilder()
-                        .setTitle("Modification d'item")
+                        .setTitle(translator.translate('commands.admins.shop.modals.quantity.title', ctx))
                         .setCustomId('edit')
                         .setComponents(
                             row<TextInputBuilder>(
                                 new TextInputBuilder()
                                     .setStyle(TextInputStyle.Short)
-                                    .setLabel(label[ctx.customId])
+                                    .setLabel(translator.translate(`commands.admins.shop.modal.labels.${ctx.customId}`, ctx))
                                     .setPlaceholder(random({ max: 1139, min: 5691 }).toString())
                                     .setRequired(true)
                                     .setCustomId('value')
@@ -405,13 +390,13 @@ export default new DraverCommand({
                     return [
                         row(
                             buildButton({
-                                label: 'Objet',
+                                label: translator.translate('commands.admins.shop.buttons.itemType', ctx),
                                 style: 'Primary',
                                 id: 'item',
                                 disabled: item.itemType === 'item'
                             }),
                             buildButton({
-                                label: 'Rôle',
+                                label: translator.translate('commands.admins.shop.buttons.roleType', ctx),
                                 style: 'Secondary',
                                 id: 'role',
                                 disabled: item.itemType === 'role'
@@ -424,8 +409,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { questionMark: true })
-                                .setTitle('Type')
-                                .setDescription(`Quel est le nouveau type de l'item ?`)
+                                .setTitle(translator.translate('commands.admins.shop.replies.edit.type.title', ctx))
+                                .setDescription(translator.translate('commands.admins.shop.replies.edit.type.description', ctx))
                         ],
                         fetchReply: true,
                         ephemeral: true,
@@ -474,11 +459,9 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { questionMark: true })
-                                .setTitle('Rôle')
+                                .setTitle(translator.translate('commands.admins.shop.replies.edit.role.title', interaction))
                                 .setDescription(
-                                    `Quel est le rôle à attribuer à l'objet ?\nRépondez par un **identifiant** ou **une mention** dans le chat\n${hint(
-                                        `Vous disposez de **2 minutes**\nTapez \`cancel\` pour annuler`
-                                    )}`
+                                    translator.translate('commands.admins.shop.replies.edit.role.description', interaction)
                                 )
                         ],
                         ephemeral: true
@@ -502,12 +485,7 @@ export default new DraverCommand({
                     changes--;
                     ctx.editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Rôle introuvable')
-                                .setDescription(
-                                    `Je n'ai pas pu trouver le rôle.\nRéessayez avec un identifiant ou une mention`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.noRole(interaction.member as GuildMember, ctx)
                         ]
                     }).catch(() => {});
                     return;
@@ -516,12 +494,7 @@ export default new DraverCommand({
                     changes--;
                     ctx.editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Röle trop haut')
-                                .setDescription(
-                                    `Le rôle ${pingRole(role)} est supérier ou égal à vous dans la hiérarchie des rôles`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.roleTooHigh(interaction.member as GuildMember, role, ctx)
                         ]
                     }).catch(() => {});
                     return;
@@ -530,12 +503,7 @@ export default new DraverCommand({
                     changes--;
                     ctx.editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Rôle trop haut')
-                                .setDescription(
-                                    `Le rôle ${pingRole(role)} est supérier ou égal à moi dans la hiérarchie des rôles`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.roleTooHighClient(interaction.member as GuildMember, role, ctx)
                         ]
                     }).catch(() => {});
                     return;
@@ -569,8 +537,8 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Item modifié')
-                                .setDescription(`L'item ${item.itemName} a été modifié`)
+                                .setTitle(translator.translate('commands.admins.shop.replies.edit.edited.title', interaction))
+                                .setDescription(translator.translate('commands.admins.shop.replies.edit.edited.description', interaction, { name: item.itemName }))
                         ],
                         components: []
                     })
@@ -593,8 +561,8 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Suppression d'item")
-                .setDescription(`Êtes-vous sûr de vouloir supprimer l'item \`${item.itemName}\` ?`)
+                .setTitle(translator.translate('commands.admins.shop.replies.delete.deleting.title', interaction))
+                .setDescription(translator.translate('commands.admins.shop.replies.delete.deleting.description', interaction, { name: item.itemName }))
         }).catch(() => {})) as confirmReturn;
 
         if (confirmation === 'cancel' || !confirmation?.value)
@@ -611,8 +579,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Item supprimé')
-                        .setDescription(`L'item \`${item.itemName}\` a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.shop.replies.delete.deleted.title', interaction))
+                        .setDescription(translator.translate('commands.admins.shop.replies.delete.deleted.description', interaction, { name: item.itemName }))
                 ],
                 components: []
             })

@@ -1,0 +1,166 @@
+{
+    "name": "adminmagasin",
+    "description": "Configure le magasin du serveur",
+    "options": {
+        "create": {
+            "name": "créer",
+            "description": "Créer un item dans le serveur",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom de l'item"
+                },
+                "price": {
+                    "name": "prix",
+                    "description": "Prix de l'item"
+                },
+                "type": {
+                    "name": "type",
+                    "description": "Type de l'item",
+                    "choices": {
+                        "role": {
+                            "name": "Rôle"
+                        },
+                        "item": {
+                            "name": "Objet"
+                        }
+                    }
+                },
+                "quantity": {
+                    "name": "quantité",
+                    "description": "Quantité d'items disponible"
+                },
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à donner en cas de type rôle"
+                }
+            }
+        },
+        "edit": {
+            "name": "modifier",
+            "description": "Modifie un item",
+            "options": {
+                "item": {
+                    "name": "item",
+                    "description": "Item à modifier"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un item",
+            "options": {
+                "item": {
+                    "name": "item",
+                    "description": "Item à supprimer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "create": {
+            "exists": {
+                "title": "Item déjà existant",
+                "description": "Un item du même nom existe déjà sur le serveur"
+            },
+            "created": {
+                "title": "Item crée",
+                "description_role": "L'item `{name}` a été crée pour **{price} {coins}** en tant que rôle, associé avec le rôle {role}, avec un stock {stock}.\n\n💡\n> Vous pouvez à tout moment modifier un item avec la commande `/adminmagasin modifier`",
+                "description_item": "L'item `{name}` a été crée pour **{price} {coins}** en tant qu'objet, avec un stock {stock}.\n\n💡\n> Vous pouvez à tout moment modifier un item avec la commande `/adminmagasin modifier`",
+                "quantity_infinite": "infini",
+                "quantity": "de {stock}"
+            }
+        },
+        "edit": {
+            "embed": {
+                "title": "Modification d'item",
+                "description": "Appuyez sur les bouttons pour modifier l'item",
+                "fields": {
+                    "name": {
+                        "name": "Nom"
+                    },
+                    "price": {
+                        "name": "Prix",
+                        "value": "**{price} {coins}**"
+                    },
+                    "type": {
+                        "name": "Type",
+                        "role": "Rôle",
+                        "item": "Objet",
+                        "unknown": "Inconnu"
+                    },
+                    "quantity": {
+                        "name": "Quantité",
+                        "infinite": "Infinie",
+                        "value": "**{quantity}**"
+                    },
+                    "available": {
+                        "name": "Quantité disponible",
+                        "infinite": "Infinie",
+                        "value": "**{quantity}**"
+                    },
+                    "role": {
+                        "name": "Rôle donné",
+                        "none": "Pas de rôle"
+                    }
+                }
+            },
+            "error": {
+                "title": "Envoi impossible",
+                "description": "L'envoi a été annulé"
+            },
+            "type": {
+                "title": "Type",
+                "description": "Quel est le nouveau type de l'item ?"
+            },
+            "role": {
+                "title": "Rôle",
+                "description": "Quel est le rôle à attribuer ?\nRépondez par un **identifiant** ou **une mention** dans le chat.\n\n💡\n> Vous disposez de **2 minutes**.\n> Tapez `cancel` pour annuler."
+            },
+            "edited": {
+                "title": "Item modifié",
+                "description": "L'item **{name}** a été modifié"
+            }
+        },
+        "delete": {
+            "deleting": {
+                "title": "Suppression d'item",
+                "description": "Êtes-vous sûr de vouloir supprimer l'item `{name}` ?"
+            },
+            "deleted": {
+                "title": "Item supprimé",
+                "description": "L'item `name` a été supprimé."
+            }
+        }
+    },
+    "modal": {
+        "name": {
+            "title": "Modification d'item",
+            "fields": {
+                "name": {
+                    "name": "Nom",
+                    "placeholder": "Nom de l'objet"
+                }
+            }
+        },
+        "quantity": {
+            "title": "Modification d'item"
+        },
+        "labels": {
+            "price": "Prix",
+            "quantity": "Quantité",
+            "quantityLeft": "Quantité restante"
+        }
+    },
+    "buttons": {
+        "name": "Nom",
+        "price": "Prix",
+        "type": "Type",
+        "quantity": "Quantité",
+        "left": "Quantité disponible",
+        "role": "Rôle",
+        "validate": "Valider",
+        "itemType": "Objet",
+        "roleType": "Rôle"
+    }
+}

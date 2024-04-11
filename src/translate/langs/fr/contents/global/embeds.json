@@ -284,5 +284,13 @@
     "roleTooHigh": {
         "title": "Rôle trop haut",
         "description": "Le rôle {role} est supérieur ou égal à vous dans la hiérarchie des rôles"
+    },
+    "roleTooHighClient": {
+        "title": "Rôle trop haut",
+        "description": "Le rôle {role} est supérieur ou égal à moi dans la hiérarchie des rôles"
+    },
+    "invalidImage": {
+        "title": "Image invalide",
+        "description": "L'image fournie est invalide"
     }
 }

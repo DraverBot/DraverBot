@@ -62,6 +62,7 @@ export type deletePanelOptions = {
     guild: Guild;
     user: User;
     message_id: string;
+    lang: langResolvable;
 };
 export type CooldownsInputOptions = {
     guild_id: string;

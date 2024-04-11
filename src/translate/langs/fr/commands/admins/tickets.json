@@ -1,0 +1,171 @@
+{
+    "name": "admintickets",
+    "description": "Gère les tickets sur le serveur",
+    "options": {
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des tickets",
+            "options": {
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Affiche le ticket d'un utilisateur"
+                }
+            }
+        },
+        "create": {
+            "name": "créer",
+            "description": "Créer un panel de ticket",
+            "options": {
+                "subject": {
+                    "name": "sujet",
+                    "description": "Sujet du panel de tickets"
+                },
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon du panel de ticket"
+                },
+                "description": {
+                    "name": "description",
+                    "description": "Description du panel de tickets"
+                },
+                "image": {
+                    "name": "image",
+                    "description": "Image du panel"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un panel de tickets",
+            "options": {
+                "id": {
+                    "name": "identifiant",
+                    "description": "Identifiant du message du panel de tickets"
+                }
+            }
+        },
+        "modroles": {
+            "name": "modroles",
+            "description": "Gère les rôles de modérateurs de tickets",
+            "options": {
+                "list": {
+                    "name": "liste",
+                    "description": "Affiche la liste des rôles de modérateurs de tickets"
+                },
+                "add": {
+                    "name": "ajouter",
+                    "description": "Ajoute un rôle de modérateurs de tickets",
+                    "options": {
+                        "role": {
+                            "name": "rôle",
+                            "description": "Rôle à rajouter"
+                        }
+                    }
+                },
+                "remove": {
+                    "name" :"retirer",
+                    "description": "Retirer un rôle de modérateur de tickets",
+                    "options": {
+                        "role": {
+                            "name": "rôle",
+                            "description": "Rôle à retirer"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "replies": {
+        "list": {
+            "noTickets": {
+                "title": "Pas de tickets",
+                "description": "Aucun ticket n'est ouvert sur le serveur"
+            },
+            "userNoTickets": {
+                "title": "Pas de tickets",
+                "description": "{user} n'a pas ouvert de tickets sur le serveur"
+            },
+            "user": {
+                "title": "Ticket de {name}",
+                "description": "Voici les informations du ticket de {user}",
+                "channel": "Salon",
+                "state": "État"
+            },
+            "list": {
+                "title": "Tickets",
+                "description": "Il y a {count} tickets dans le serveur",
+                "mapper": "> Ouvert par {user}\n> Salon : {channel}\n> Ticket {state}"
+            }
+        },
+        "create": {
+            "creation": {
+                "title": "Création",
+                "description": "Vous allez créer un panel de ticket dans {channel}",
+                "fields": {
+                    "subject": "Sujet",
+                    "description": {
+                        "name": "Description",
+                        "none": "Pas de description"
+                    },
+                    "image": {
+                        "name": "Image",
+                        "link": "[Lien]({link})",
+                        "none": "Pas d'image"
+                    }
+                }
+            },
+            "created": {
+                "title": "Panel crée",
+                "description": "Le panel de tickets a été crée dans le salon {channel}"
+            },
+            "panelDesc": "Créez un ticket en appuyant sur le bouton ci-dessous."
+        },
+        "delete": {
+            "noPanel": {
+                "title": "Panel introuvable",
+                "description": "Ce panel n'existe pas"
+            },
+            "deleting": {
+                "title": "Suppression",
+                "description": "Voulez-vous vraiment supprimer [ce panel]({link}) ?"
+            },
+            "invalid": {
+                "title": "Salon invalide",
+                "description": "Je ne trouve pas le salon du panel.\nRéessayez dans quelques minutes.\n\n💡\n> Si l'erreur persiste, vérifiez que j'ai la permission **Gérer le serveur**"
+            },
+            "deleted": {
+                "title": "Panel supprimé",
+                "description": "Le panel dans le salon {channel} a été supprimé"
+            }
+        },
+        "modroles": {
+            "list": {
+                "no": {
+                    "title": "Pas de rôles",
+                    "description": "Aucun rôle n'est configuré sur {name}"
+                },
+                "list": {
+                    "title": "Modérateurs de tickets",
+                    "description": "**{count}** rôles sont configurés\n{roles}"
+                }
+            },
+            "add": {
+                "title": "Rôle ajouté",
+                "description": "Le rôle {role} a été ajouté à la liste des modérateurs de tickets"
+            },
+            "remove": {
+                "title": "Rôle retiré",
+                "description": "Le rôle {role} a été retiré de la liste des modérateurs de tickets"
+            }
+        }
+    },
+    "utils": {
+        "states": {
+            "open": "ouvert",
+            "closed": "fermé"
+        }
+    },
+    "buttons": {
+        "open": "Ouvrir un ticket"
+    }
+}

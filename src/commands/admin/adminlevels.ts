@@ -344,8 +344,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Liste vide')
-                            .setDescription(`La liste est vide, vous n'avez configuré aucun salon`)
+                            .setTitle(translator.translate('commands.admins.levels.replies.emptyList.title', interaction))
+                            .setDescription(translator.translate('commands.admins.levels.replies.emptyList.description', interaction))
                     ],
                     ephemeral: true
                 })
