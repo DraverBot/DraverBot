@@ -4,6 +4,7 @@ import {
     ButtonInteraction,
     CommandInteraction,
     ComponentType,
+    GuildMember,
     InteractionCollector,
     Message,
     User
@@ -15,6 +16,7 @@ import { log4js } from 'amethystjs';
 import replies from '../data/replies';
 import { ButtonIds } from '../typings/buttons';
 import SetRandomComponent from '../process/SetRandomComponent';
+import { translator } from '../translate/translate';
 
 export class Mastermind {
     private rows: number;
@@ -96,7 +98,7 @@ export class Mastermind {
             { emoji: '⚪', name: 'blanc', id: 'white' },
             { emoji: '🟤', name: 'marron', id: 'brown' },
             { emoji: '🟠', name: 'orange', id: 'orange' }
-        ].splice(0, this.colors) as colorType[];
+        ].splice(0, this.colors).map(x => ({ ...x, name: translator.translate(`contents.games.mastermind.colors.${x.id}`, this._interaction) })) as colorType[];
     }
 
     private join(array: string[]) {
@@ -130,14 +132,17 @@ export class Mastermind {
     private get embed() {
         const embed = basicEmbed(this._user)
             .setColor(color('mastermind'))
-            .setTitle('Mastermind')
+            .setTitle(translator.translate('contents.games.mastermind.embed.title', this._interaction))
             .setFields({
-                name: 'Indications',
-                value: `>>> Les petits carrés blancs indiquent une bonne couleur au mauvais endroit.\nLes petits carrés noirs indiquent une bonne couleur placée au bon endroit.`,
+                name: translator.translate('contents.games.mastermind.embed.field.name', this._interaction),
+                value: translator.translate('contents.games.mastermind.embed.field.value', this._interaction),
                 inline: false
             })
             .setDescription(
-                `**Tentatives restantes :** \`${this.maxTries - this.tries.length}\`\n\n${this.triesDisplay}`
+                translator.translate('contents.games.mastermind.embed.description', this._interaction, {
+                    count: this.maxTries - this.tries.length,
+                    display: this.triesDisplay
+                })
             );
 
         return embed;
@@ -145,8 +150,8 @@ export class Mastermind {
     private get components(): ActionRowBuilder<ButtonBuilder>[] {
         return [
             row(
-                buildButton({ label: 'Tentative', style: 'Primary', buttonId: 'MastermindReply' }),
-                buildButton({ label: 'Abandonner', style: 'Danger', buttonId: 'MastermindResign' })
+                buildButton({ label: translator.translate('contents.games.mastermind.buttons.try', this._interaction), style: 'Primary', buttonId: 'MastermindReply' }),
+                buildButton({ label: translator.translate('contents.games.mastermind.buttons.resign', this._interaction), style: 'Danger', buttonId: 'MastermindResign' })
             )
         ];
     }
@@ -198,15 +203,15 @@ export class Mastermind {
                 embeds: [
                     basicEmbed(this._user)
                         .setColor(color('mastermindResign'))
-                        .setTitle('Défaite')
+                        .setTitle(translator.translate('contents.games.mastermind.lost.title', this._interaction))
                         .setDescription(
-                            `Vous avez perdu, vous avez fait vos ${this.maxTries} tentatives\n\n${this.triesDisplay}`
+                            translator.translate('contents.games.mastermind.lost.description', this._interaction, { tries: this.maxTries, display: this.triesDisplay })
                         )
                         .setFields({
-                            name: 'Combinaison',
-                            value: `La combinaison était ${this.combination
+                            name: translator.translate('contents.games.mastermind.lost.field.name', this._interaction),
+                            value: translator.translate('contents.games.mastermind.lost.field.value', this._interaction, { combination: this.combination
                                 .map((x) => this.palette.find((y) => y.id === x).emoji)
-                                .join(' ')}`,
+                                .join(' ') }),
                             inline: false
                         })
                 ],
@@ -222,9 +227,12 @@ export class Mastermind {
                 embeds: [
                     basicEmbed(this._user)
                         .setColor(color('mastermindWin'))
-                        .setTitle('Victoire')
+                        .setTitle(translator.translate('contents.games.mastermind.win.title', this._interaction))
                         .setDescription(
-                            `Vous avez trouvé la bonne combinaison en ${this.tries.length} tentatives !\n\n${this.triesDisplay}`
+                            translator.translate('contents.games.mastermind.win.description', this._interaction, {
+                                tries: this.tries.length,
+                                display: this.triesDisplay
+                            })
                         )
                 ],
                 components: []
@@ -241,7 +249,7 @@ export class Mastermind {
 
         const choiceEmbed = () => {
             return basicEmbed(this._user, { questionMark: true })
-                .setTitle(`Choix`)
+                .setTitle(translator.translate('contents.games.mastermind.chooseTitle', interaction))
                 .setDescription(
                     `${this.join(choice.map((x) => this.palette.find((y) => y.id === x).emoji))} ${this.join(
                         new Array(this.rows - choice.length).fill(this.emptySquare)
@@ -286,9 +294,7 @@ export class Mastermind {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
-                        basicEmbed(ctx.user, { evoker: ctx.guild })
-                            .setTitle('Interaction refusée')
-                            .setDescription(`Vous ne pouvez pas interagir avec ce message`)
+                        replies.replyNotAllowed(this._interaction?.member as GuildMember ?? this._user, ctx)
                     ],
                     components: SetRandomComponent.process()
                 }).catch(log4js.trace);
@@ -357,9 +363,7 @@ export class Mastermind {
                 ctx.reply({
                     ephemeral: true,
                     embeds: [
-                        basicEmbed(ctx.user, { evoker: ctx.guild })
-                            .setTitle('Interaction refusée')
-                            .setDescription(`Vous ne pouvez pas interagir avec ce message`)
+                        replies.replyNotAllowed(this._interaction?.member as GuildMember ?? this._user, ctx)
                     ],
                     components: SetRandomComponent.process()
                 }).catch(log4js.trace);
@@ -370,8 +374,8 @@ export class Mastermind {
                 const confirmation = await confirm({
                     interaction: ctx,
                     embed: basicEmbed(this._user)
-                        .setTitle('Abandon')
-                        .setDescription(`Êtes-vous sûr de vouloir abandonner ?`),
+                        .setTitle(translator.translate('contents.games.mastermind.resigning.title', ctx))
+                        .setDescription(translator.translate('contents.games.mastermind.resigning.description', ctx)),
                     user: this._user,
                     ephemeral: true
                 }).catch(log4js.trace);
@@ -392,13 +396,13 @@ export class Mastermind {
                         embeds: [
                             basicEmbed(this._user)
                                 .setColor(color('mastermindResign'))
-                                .setTitle('Abandon')
-                                .setDescription(`Vous avez abandonné`)
+                                .setTitle(translator.translate('contents.games.mastermind.resigned.title', this._interaction))
+                                .setDescription(translator.translate('contents.games.mastermind.resigned.description', this._interaction))
                                 .setFields({
-                                    name: 'Combinaison',
-                                    value: `La combinaison était ${this.combination
+                                    name: translator.translate('contents.games.mastermind.resigned.field.name', this._interaction),
+                                    value: translator.translate('contents.games.mastermind.resigned.field.value', this._interaction, { display: this.combination
                                         .map((x) => this.palette.find((y) => y.id === x).emoji)
-                                        .join(' ')}`,
+                                        .join(' ') }),
                                     inline: false
                                 })
                         ],

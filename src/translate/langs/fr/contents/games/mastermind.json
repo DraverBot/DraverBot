@@ -1,0 +1,49 @@
+{
+    "colors": {
+        "red": "rouge",
+        "yellow": "jaune",
+        "blue" :"bleu",
+        "green": "vert",
+        "black": "noir",
+        "white": "blanc",
+        "brown": "marron",
+        "orange": "orange"
+    },
+    "embed": {
+        "title": "Mastermind",
+        "field": {
+            "name": "Indications",
+            "value": "> Les petits carrés blancs indiquent une bonne couleur au mauvais endroit.\n> Les petits carrés noirs indiquent une bonne couleur placée au bon endroit."
+        },
+        "description": "**Tentatives restantes :** `{count}`\n\n{display}"
+    },
+    "buttons": {
+        "try": "Tentative",
+        "resign": "Abandonner"
+    },
+    "lost": {
+        "title": "Défaite",
+        "description": "Vous avez perdu, vous avez faot vos {tries} tentatives\n\n{display}",
+        "field": {
+            "name": "Combinaison",
+            "description": "La combinaison était {combination}"
+        }
+    },
+    "win": {
+        "title": "Victoire",
+        "description": "Vous avez trouvé la bonne combinaison en {tries} tentatives !\n\n{display}"
+    },
+    "chooseTitle": "Choix",
+    "resigning": {
+        "title": "Abandon",
+        "description": "Êtes-vous sûr de vouloir abandonner ?"
+    },
+    "resigned": {
+        "title": "Abandon",
+        "description": "Vous avez abandonné",
+        "field": {
+            "name": "Combinaison",
+            "value": "La combinaison était {display}"
+        }
+    }
+}
