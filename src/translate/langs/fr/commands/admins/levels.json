@@ -1,0 +1,143 @@
+{
+    "name": "adminlevel",
+    "description": "Gère les niveaux du serveur",
+    "options": {
+        "reset": {
+            "name": "réinitialiser",
+            "description": "Réinitialise les niveaux du serveur ou d'un membre",
+            "options": {
+                "member": {
+                    "name": "membre",
+                    "description": "Membre que vous voulez réinitialiser"
+                }
+            }
+        },
+        "add": {
+            "name": "ajouter",
+            "description": "Ajoute des niveaux ou des messages à un utilisateur",
+            "options": {
+                "member": {
+                    "name": "membre",
+                    "description": "Membre auquel vous voulez ajouter des niveaux"
+                },
+                "type": {
+                    "name": "type",
+                    "description": "Type de l'ajout que vous voulez faire"
+                },
+                "amount": {
+                    "name": "montant",
+                    "description": "Montant de niveaux/messages que vous voulez ajouter"
+                }
+            }
+        },
+        "channels": {
+            "name": "salons",
+            "description": "Gère la liste des salons",
+            "options": {
+                "list": {
+                    "name": "liste",
+                    "description": "Affiche la liste des salons configurés"
+                },
+                "config": {
+                    "name": "configurer",
+                    "description": "Configure la liste des salons"
+                }
+            }
+        },
+        "remove": {
+            "name": "retirer",
+            "description": "Retire des niveaux ou des messages à un membre",
+            "options": {
+                "member": {
+                    "name": "membre",
+                    "description": "Membre auquel vous voulez retirer des niveaux"
+                },
+                "type": {
+                    "name": "type",
+                    "description": "Type du retrait que vous voulez faire"
+                },
+                "amount": {
+                    "name": "montant",
+                    "description": "Montant de niveaux/messages que vous voulez retirer"
+                }
+            }
+        }
+    },
+    "types": {
+        "messages": {
+            "name": "Messages"
+        },
+        "level": {
+            "name": "Niveaux"
+        }
+    },
+    "replies": {
+        "configuration": {
+            "title": "Configuration",
+            "description_bl": "La liste est actuellement configurée en tant que **blacklist**, ce qui signifie que les messages sont ignorés dans les salons listés\n{channels}",
+            "description_wl": "La liste est actuellement configurée en tant que **whitelist**, ce qui signifie que les messages sont comptés uniquement dans les salons listés\n{channels}"
+        },
+        "applied": {
+            "title": "Changements appliqués",
+            "description": "Les changements ont été appliqués"
+        },
+        "channel": {
+            "title": "Salon",
+            "description_add": "Quel salon voulez-vous ajouter ?\nRépondez dans le chat par un identifiant, un nom ou une mention.\nTapez `cancel` pour annuler",
+            "description_remove": "Quel salon voulez-vous retirer ?\nRépondez dans le chat par un identifiant, un nom ou une mention.\nTapez `cancel` pour annuler"
+        },
+        "invalid": {
+            "title": "Salon invalide",
+            "description_add": "Ce salon est déjà dans la liste",
+            "description_remove": "Ce salon n'est pas dans la liste"
+        },
+        "emptyList": {
+            "title": "Liste vide",
+            "description": "La liste est vide, vous n'avez configuré aucun salon"
+        },
+        "list": {
+            "title_bl": "Blacklist de salons",
+            "title_wl": "Whitelist de salons",
+            "description_bl": "Les messages ne sont pas comptés dans ces salons :\n{channels}",
+            "description_wl": "Les messages sont comptés uniquement dans ces salons :\n{channels}"
+        },
+        "resetting": {
+            "title": "Réinitialisation",
+            "descriptionServer": "Vous êtes sur le point de réinitialiser les niveaux du serveur.\nVoulez-vous continuer ?",
+            "descriptionUser": "Vous êtes sur le point de réinitialiser les niveaux de {user}.\nVoulez-vous continuer ?"
+        },
+        "resetted": {
+            "title": "Réinitialisation",
+            "descriptionServer": "Les niveaux du serveur ont été réinitialisés",
+            "descriptionUser": "Les niveux de {user} ont été réinitialisés."
+        },
+        "addding": {
+            "title": "Ajout de niveaux",
+            "description_messages": "Vous êtes sur le point de rajouter **{levels} messages** à {user}.\nÊtes-vous sûr ?",
+            "description_level": "Vous êtes sur le point de rajouter **{levels} niveaux** à {user}.\nÊtes-vous sûr ?"
+        },
+        "added": {
+            "title": "Ajout de niveaux",
+            "description_messages": "**{levels} messages** ont été ajoutés à {user}.",
+            "description_level": "**{levels} niveaux** ont été ajoutés à {user}."
+        },
+        "removing": {
+            "title": "Retrait de niveaux",
+            "description_messages": "Vous êtes sur le point de retirer **{levels} messages** à {user}.\nÊtes-vous sûr ?",
+            "description_level": "Vous êtes sur le point de retirer **{levels} niveaux** à {user}.\nÊtes-vous sûr ?"
+        },
+        "removed": {
+            "title": "Retrait de niveaux",
+            "description_messages": "**{levels} messages** ont été retirés à {user}.",
+            "description_level": "**{levels} niveaux** ont été retirés à {user}."
+        }
+    },
+    "buttons": {
+        "add": "Ajouter",
+        "remove": "Retirer",
+        "change_bl": "Changer en whitelist",
+        "change_wl": "Changer en blacklist",
+        "purge": "Vider",
+        "apply": "Appliquer"
+    }
+}

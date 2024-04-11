@@ -1,0 +1,23 @@
+{
+    "global":  {
+        "name": "général"
+    },
+    "dark":  {
+        "name": "noir"
+    },
+    "limit":  {
+        "name": "limite"
+    },
+    "dev":  {
+        "name": "développeur"
+    },
+    "beauf": {
+        "name": "beauf"
+    },
+    "blondes":  {
+        "name": "blondes"
+    },
+    "random": {
+        "name": "aléatoire"
+    }
+}

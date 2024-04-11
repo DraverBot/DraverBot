@@ -1,0 +1,35 @@
+{
+    "name": "adminblague",
+    "description": "Gère les blagues sur le serveur",
+    "options": {
+        "list": {
+            "name": "liste",
+            "description": "Liste les configurations sur le serveur"
+        },
+        "config": {
+            "name": "configurer",
+            "description": "Configure une catégorie de blagues",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom de la catégorie"
+                },
+                "state": {
+                    "name": "état",
+                    "description": "État de la catégorie"
+                }
+            }
+        }
+    },
+    "replies": {
+        "list": {
+            "title" :"Blagues",
+            "description": "Voici la configuration des blagues sur le serveur"
+        },
+        "config": {
+            "title": "Catégorie configurée",
+            "descriptionEnabled": "La catégorie **{name}** a été activée",
+            "descriptionDisabled": "La catégorie **{name}** a été désactivée"
+        }
+    }
+}

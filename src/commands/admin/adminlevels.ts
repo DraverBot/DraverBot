@@ -14,6 +14,7 @@ import {
     confirm,
     numerize,
     pingChan,
+    pingUser,
     plurial,
     random,
     row,
@@ -22,57 +23,51 @@ import {
 import { cancelButton } from '../../data/buttons';
 import { ButtonIds } from '../../typings/buttons';
 import GetChannel from '../../process/GetChannel';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'adminlevel',
+    ...translator.commandData('commands.admins.levels'),
     module: 'administration',
-    description: 'Gère les niveaux du serveur',
     permissions: ['ManageGuild', 'ManageMessages'],
     preconditions: [preconditions.GuildOnly, moduleEnabled, economyCheck],
     options: [
         {
-            name: 'réinitialiser',
-            description: "Réinitialise les niveaux du serveur ou d'un membre",
+            ...translator.commandData('commands.admins.levels.options.reset'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'membre',
-                    description: 'Membre que vous voulez réinitialiser',
+                    ...translator.commandData('commands.admins.levels.options.reset.options.member'),
                     type: ApplicationCommandOptionType.User,
                     required: false
                 }
             ]
         },
         {
-            name: 'ajouter',
-            description: 'Ajoute des niveaux ou des messages à un utilisateur',
+            ...translator.commandData('commands.admins.levels.options.add'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'membre',
-                    description: 'Membre dont vous voulez ajouter des niveaux',
+                    ...translator.commandData('commands.admins.levels.options.add.options.member'),
                     type: ApplicationCommandOptionType.User,
                     required: true
                 },
                 {
-                    name: 'type',
-                    description: "Type de l'ajout que vous voulez faire",
+                    ...translator.commandData('commands.admins.levels.options.add.options.type'),
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     choices: [
                         {
-                            name: 'Messages',
+                            ...translator.commandData('commands.admins.levels.types.messages'),
                             value: AdminLevelAddType.Messages
                         },
                         {
-                            name: 'Niveaux',
+                            ...translator.commandData('commands.admins.levels.types.level'),
                             value: AdminLevelAddType.Level
                         }
                     ]
                 },
                 {
-                    name: 'montant',
-                    description: 'Montant de niveaux/messages que vous voulez ajouter',
+                    ...translator.commandData('commands.admins.levels.options.add.options.amount'),
                     type: ApplicationCommandOptionType.Integer,
                     required: true,
                     minValue: 1
@@ -80,52 +75,45 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'salons',
-            description: 'Gère la liste des salons',
+            ...translator.commandData('commands.admins.levels.options.channels'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'liste',
-                    description: 'Affiche la liste des salons configurés',
+                    ...translator.commandData('commands.admins.levels.options.channels.options.list'),
                     type: ApplicationCommandOptionType.Subcommand
                 },
                 {
-                    name: 'configurer',
-                    description: 'Configure la liste des salons',
+                    ...translator.commandData('commands.admins.levels.options.channels.options.config'),
                     type: ApplicationCommandOptionType.Subcommand
                 }
             ]
         },
         {
-            name: 'retirer',
-            description: 'Retire des niveaux ou des messages à un membre',
+            ...translator.commandData('commands.admins.levels.options.remove'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'membre',
-                    description: 'Membre auquel vous voulez retirer des niveaux',
+                    ...translator.commandData('commands.admins.levels.options.remove.options.member'),
                     type: ApplicationCommandOptionType.User,
                     required: true
                 },
                 {
-                    name: 'type',
-                    description: 'Type du retrait que vous voulez faire',
+                    ...translator.commandData('commands.admins.levels.options.remove.options.type'),
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     choices: [
                         {
-                            name: 'Messages',
+                            ...translator.commandData('commands.admins.levels.types.messages'),
                             value: AdminLevelAddType.Messages
                         },
                         {
-                            name: 'Niveaux',
+                            ...translator.commandData('commands.admins.levels.types.level'),
                             value: AdminLevelAddType.Level
                         }
                     ]
                 },
                 {
-                    name: 'montant',
-                    description: 'Montant de niveaux/messages que vous voulez retirer',
+                    ...translator.commandData('commands.admins.levels.options.remove.options.amount'),
                     type: ApplicationCommandOptionType.Integer,
                     required: true,
                     minValue: 1
@@ -157,38 +145,36 @@ export default new DraverCommand({
 
         const embed = () => {
             return basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Configuration')
+                .setTitle(translator.translate('commands.admins.levels.replies.configuration.title', interaction))
                 .setDescription(
-                    `La liste est actuellement configurée en tant que **${
-                        configured === 'bl' ? 'blacklist' : 'whitelist'
-                    }**, ce qui signifie que les messages sont ${
-                        configured === 'bl' ? `ignorés` : 'comptés uniquement'
-                    } dans les salons listés\n${data.length > 0 ? data.map((x) => pingChan(x)).join(' ') : ''}`
+                    translator.translate(`commands.admins.levels.replies.configuration.description_${configured}`, interaction, {
+                        channels: data.length > 0 ? data.map((x) => pingChan(x)).join(' ') : ''
+                    })
                 );
         };
         const components = (allDisabled = false) => {
             return [
                 row(
                     buildButton({
-                        label: 'Ajouter',
+                        label: translator.translate('commands.admins.levels.buttons.add', interaction),
                         buttonId: 'LevelAddChannel',
                         style: 'Primary',
                         disabled: allDisabled || data.length === 25
                     }),
                     buildButton({
-                        label: 'Retirer',
+                        label: translator.translate('commands.admins.levels.buttons.remove', interaction),
                         buttonId: 'LevelRemoveChannel',
                         style: 'Secondary',
                         disabled: allDisabled || data.length === 0
                     }),
                     buildButton({
-                        label: `Changer en ${configured === 'bl' ? 'whitelist' : 'blacklist'}`,
+                        label: translator.translate(`commands.admins.levels.buttons.change_${configured}`, interaction),
                         buttonId: 'LevelListSwap',
                         style: 'Secondary',
                         disabled: allDisabled
                     }),
                     buildButton({
-                        label: 'Vider',
+                        label: translator.translate('commands.admins.levels.buttons.purge', interaction),
                         buttonId: 'LevelPurgeList',
                         style: 'Secondary',
                         disabled: allDisabled || data.length === 0
@@ -196,7 +182,7 @@ export default new DraverCommand({
                 ),
                 row(
                     buildButton({
-                        label: 'Appliquer',
+                        label: translator.translate('commands.admins.levels.buttons.apply', interaction),
                         style: 'Success',
                         id: 'apply'
                     }),
@@ -241,8 +227,8 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Changements appliqués')
-                                .setDescription(`Les changements ont été appliqués`)
+                                .setTitle(translator.translate('commands.admins.levels.replies.applied.title', ctx))
+                                .setDescription(translator.translate('commands.admins.levels.replies.applied.description', ctx))
                         ],
                         components: []
                     })
@@ -282,11 +268,9 @@ export default new DraverCommand({
                 const channel = await GetChannel.process({
                     interaction: ctx,
                     embed: basicEmbed(interaction.user, { questionMark: true })
-                        .setTitle('Salon')
+                        .setTitle(translator.translate('commands.admins.levels.replies.channel.title', ctx))
                         .setDescription(
-                            `Quel salon voulez-vous ${
-                                action === 'add' ? 'ajouter' : 'retirer'
-                            } ?\nRépondez dans le chat par un identifiant, un nom ou une mention.\nTapez \`cancel\` pour annuler`
+                            translator.translate(`commands.admins.levels.replies.channel.description_${action}`, ctx)
                         ),
                     user: interaction.user,
                     channelTypes: [ChannelType.GuildText, ChannelType.GuildCategory],
@@ -296,11 +280,10 @@ export default new DraverCommand({
                             reply: {
                                 embeds: [
                                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                                        .setTitle('Salon invalide')
+                                        .setTitle(translator.translate('commands.admins.levels.replies.invalid.title', ctx)
+                                        )
                                         .setDescription(
-                                            action === 'add'
-                                                ? `Ce salon est déjà dans la liste`
-                                                : "Ce salon n'est pas dans la liste"
+                                            translator.translate(`commands.admins.levels.replies.invalid.description_${action}`, ctx)
                                         )
                                 ]
                             }
@@ -372,11 +355,12 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(configured === 'bl' ? 'Blacklist de salons' : 'Whitelist de salons')
+                        .setTitle(
+                            translator.translate(`commands.admins.levels.replies.list.title_${configured}`, interaction))
                         .setDescription(
-                            `Les messages ${
-                                configured === 'bl' ? `ne sont pas comptés` : 'sont comptés uniquement'
-                            } dans ces salons :\n${list.map((x) => pingChan(x)).join(' ')}`
+                            translator.translate(`commands.admins.levels.replies.list.description_${configured}`, interaction, {
+                                channels: list.map((x) => pingChan(x)).join(' ')
+                            })
                         )
                 ]
             })
@@ -384,15 +368,16 @@ export default new DraverCommand({
     }
     if (cmd === 'réinitialiser') {
         const user = options.getUser('membre');
-        const target = user ? `de ${user}` : 'du serveur';
 
         const confirmation = (await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Réinitialisation')
+                .setTitle(translator.translate('commands.admins.levels.replies.resetting.title', interaction))
                 .setDescription(
-                    `Vous êtes sur le point de réinitialiser les niveaux ${target}.\nVoulez-vous continuer ?`
+                    translator.translate(`commands.admins.levels.replies.resetting.description${!!user ? 'User' : 'Server'}`, interaction, {
+                        user: pingUser(user?.id)
+                    })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -424,8 +409,10 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Réinitialisation')
-                                .setDescription(`Les niveaux ${target} ont été réinitialisés`)
+                                .setTitle(translator.translate('commands.admins.levels.replies.resetted.title', interaction))
+                                .setDescription(translator.translate(`commands.admins.levels.replies.resetted.description${!!user? 'User' : 'Server'}`, interaction, {
+                                    user: pingUser(user?.id)
+                                }))
                         ]
                     })
                     .catch(() => {});
@@ -444,11 +431,12 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Ajout de niveaux')
+                .setTitle(translator.translate('commands.admins.levels.replies.adding.title', interaction))
                 .setDescription(
-                    `Vous êtes sur le point de rajouter **${numerize(amount)} ${strType}${plurial(amount, {
-                        plurial: plurialSuffix
-                    })}** à ${user}.\nÊtes-vous sûr ?`
+                    translator.translate(`commands.admins.levels.replies.adding.description_${type}`, interaction, {
+                        levels: amount,
+                        user: pingUser(user)
+                    })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -480,12 +468,12 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Ajout de niveaux')
+                                .setTitle(translator.translate('commands.admins.levels.replies.added.title', interaction))
                                 .setDescription(
-                                    `${numerize(amount)} ${strType}${plurial(amount, {
-                                        singular: ' a été ajouté',
-                                        plurial: plurialSuffix + ' ont été ajoutés'
-                                    })} à ${user}`
+                                    translator.translate(`commands.admins.levels.replies.added.description_${type}`, interaction, {
+                                        levels: amount,
+                                        user: pingUser(user)
+                                    })
                                 )
                         ],
                         components: []
@@ -506,11 +494,12 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Retrait de niveaux')
+                .setTitle(translator.translate('commands.admins.levels.replies.removing.title', interaction))
                 .setDescription(
-                    `Vous êtes sur le point de retirer **${numerize(amount)} ${strType}${plurial(amount, {
-                        plurial: plurialSuffix
-                    })}** à ${user}.\nÊtes-vous sûr ?`
+                    translator.translate(`commands.admins.levels.replies.removing.description_${type}`, interaction, {
+                        levels: amount,
+                        user: pingUser(user)
+                    })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -542,12 +531,12 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Retrait de niveaux')
+                                .setTitle(translator.translate('commands.admins.levels.replies.removed.title', interaction))
                                 .setDescription(
-                                    `${numerize(amount)} ${strType}${plurial(amount, {
-                                        singular: ' a été retiré',
-                                        plurial: plurialSuffix + ' ont été retirés'
-                                    })} à ${user}`
+                                    translator.translate(`commands.admins.levels.replies.removed.description_${type}`, interaction, {
+                                        levels: amount,
+                                        user: pingUser(user)
+                                    })
                                 )
                         ],
                         components: []

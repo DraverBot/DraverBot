@@ -3,6 +3,7 @@ import { langResolvable } from '../../typings/core';
 import { BaseInteraction, LocalizationMap, Message } from 'discord.js';
 import { util } from '../../utils/functions';
 import { TranslateError } from './TranslateError';
+import { removeKey } from '../../utils/toolbox';
 
 export class Translator {
     private _defaultLang: string;
@@ -45,16 +46,17 @@ export class Translator {
         const defaultSet = this.resolve(key, this._defaultLang);
         const data = {
             name: defaultSet.name,
-            description: defaultSet.description,
+            description: defaultSet?.description,
             nameLocalizations: {},
             descriptionLocalizations: {}
         };
+        if (!defaultSet.description) removeKey(removeKey(data, 'descriptionLocalizations'), 'description')
 
         Object.keys(this.dict).forEach((lang) => {
             const set = this.resolve(key, lang);
 
             data.nameLocalizations[lang] = set.name;
-            data.descriptionLocalizations[lang] = set.description;
+            if (!!set.description) data.descriptionLocalizations[lang] = set.description;
         });
 
         return data;

@@ -7,34 +7,30 @@ import { jokes } from '../../typings/database';
 import { getDefaultJokeConfigs } from '../../utils/functions';
 import query from '../../utils/query';
 import { basicEmbed, boolDb, boolEmoji, capitalize, dbBool, subcmd } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'adminblague',
+    ...translator.commandData('commands.admins.jokes'),
     module: 'administration',
-    description: 'Gère les blagues sur le serveur',
     options: [
         {
-            name: 'liste',
-            description: 'Liste les configurations sur le serveur',
+            ...translator.commandData('commands.admins.jokes.options.list'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'configurer',
-            description: 'Configure une catégorie de blagues',
+            ...translator.commandData('commands.admins.jokes.options.config'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: 'Nom de la catégorie',
+                    ...translator.commandData('commands.admins.jokes.options.config.options.name'),
                     type: ApplicationCommandOptionType.String,
                     required: true,
                     choices: Object.keys(jokeNames)
                         .filter((x) => x !== 'random')
-                        .map((k) => ({ name: capitalize(jokeNames[k]), value: k }))
+                        .map((k) => ({ ...translator.commandData(`contents.global.jokes.${k}`), value: k }))
                 },
                 {
-                    name: 'état',
-                    description: 'État de la catégorie',
+                    ...translator.commandData('commands.admins.jokes.options.config.options.state'),
                     required: true,
                     type: ApplicationCommandOptionType.Boolean
                 }
@@ -60,9 +56,10 @@ export default new DraverCommand({
             });
 
         const embed = basicEmbed(interaction.user, { draverColor: true })
-            .setTitle('Blagues')
-            .setDescription(`Voici la configuration des blagues sur le serveur`)
+            .setTitle(translator.translate('commands.admins.jokes.replies.list.title', interaction))
+            .setDescription(translator.translate('commands.admins.jokes.replies.list.description', interaction))
             .setImage(interaction.client.user.displayAvatarURL());
+
         for (const key of Object.keys(datas).filter((x) => !x.includes('_'))) {
             embed.addFields({
                 name: capitalize(jokeNames[key]),
@@ -91,9 +88,11 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Catégorie configurée')
+                        .setTitle(translator.translate('commands.admins.jokes.replies.config.title', interaction))
                         .setDescription(
-                            `La catégorie **${jokeNames[category]}** a été **${state ? 'activée' : 'désactivée'}**`
+                            translator.translate(`commands.admins.jokes.replies.config.description${state ? 'Enabled' : 'Disabled'}`, interaction, {
+                                name: jokeNames[category]
+                            })
                         )
                 ]
             })
