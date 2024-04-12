@@ -1,0 +1,81 @@
+{
+    "name": "info",
+    "description": "Affiche des informations",
+    "options": {
+        "emoji": {
+            "name": "émoji",
+            "description": "Affiche les informations d'un émoji",
+            "options": {
+                "emoji": {
+                    "name": "émoji",
+                    "description": "Émoji que vous voulez voir"
+                }
+            }
+        },
+        "channel": {
+            "name": "salon",
+            "description": "Affiche les informations d'un salon",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon dont vous voulez voir les informations"
+                }
+            }
+        },
+        "user": {
+            "name": "utilisateur",
+            "description": "Affiche les informations d'un utilisateur",
+            "options": {
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur dont vous voulez voir les informations"
+                }
+            }
+        }
+    },
+    "replies": {
+        "emoji": {
+            "title": "Émoji",
+            "fields": {
+                "name": "Nom",
+                "creation": "Création",
+                "animated": "Animé",
+                "id": "Identifiant",
+                "mention": "Mention"
+            }
+        },
+        "channel": {
+            "title": "Salon",
+            "fields": {
+                "name": "Nom",
+                "creation": "Création",
+                "type": "Type",
+                "id": "Identifiant",
+                "channels": {
+                    "name": "Nombre de salons",
+                    "value": "{count}"
+                },
+                "parent": {
+                    "name": "Catégorie",
+                    "none": "Pas de catégorie"
+                }
+            }
+        },
+        "user": {
+            "title": "Utilisateur",
+            "fields": {
+                "account": "Création du compte",
+                "join": "Date d'arrivée",
+                "nickname": {
+                    "name": "Pseudo",
+                    "none": "Aucun"
+                },
+                "roles": "Rôles [ {count} ]",
+                "permissions": {
+                    "name": "Permissions",
+                    "admin": "Administrateur"
+                }
+            }
+        }
+    }
+}

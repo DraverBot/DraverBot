@@ -24,46 +24,40 @@ import {
 } from '../../utils/toolbox';
 import { channelTypeNames } from '../../data/channelTypeNames';
 import { getRolePerm } from '../../utils/functions';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'info',
-    description: 'Affiche des informations',
+    ...translator.commandData('commands.admins.info'),
     module: 'information',
     options: [
         {
-            name: 'émoji',
-            description: "Affiche les informations d'un émoji",
+            ...translator.commandData('commands.admins.info.options.emoji'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'émoji',
-                    description: 'Émoji que vous voulez voir',
+                    ...translator.commandData('commands.admins.info.options.emoji.options.emoji'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'salon',
-            description: "Affiche les informations d'un salon",
+            ...translator.commandData('commands.admins.info.options.channel'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon dont vous voulez voir les informations',
+                    ...translator.commandData('commands.admins.info.options.channel.options.channel'),
                     required: false,
                     type: ApplicationCommandOptionType.Channel
                 }
             ]
         },
         {
-            name: 'utilisateur',
-            description: "Affiche les informations d'un utilisateur",
+            ...translator.commandData('commands.admins.info.options.user'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'utilisateur',
-                    description: 'Utilisateur dont vous voulez voir les informations',
+                    ...translator.commandData('commands.admins.info.options.user.options.user'),
                     required: false,
                     type: ApplicationCommandOptionType.User
                 }
@@ -112,20 +106,20 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Émoji')
+                        .setTitle(translator.translate('commands.admins.info.replies.emoji.title', interaction))
                         .setFields(
                             {
-                                name: 'Nom',
+                                name: translator.translate('commands.admins.info.replies.emoji.fields.name', interaction),
                                 value: emoji.name,
                                 inline: true
                             },
                             {
-                                name: 'Création',
+                                name: translator.translate('commands.admins.info.replies.emoji.fields.creation', interaction),
                                 value: displayDate(emoji.createdTimestamp),
                                 inline: true
                             },
                             {
-                                name: 'Animé',
+                                name: translator.translate('commands.admins.info.replies.emoji.fields.animated', interaction),
                                 value: boolEmoji(emoji.animated),
                                 inline: true
                             },
@@ -135,12 +129,12 @@ export default new DraverCommand({
                                 inline: false
                             },
                             {
-                                name: 'Identifiant',
+                                name: translator.translate('commands.admins.info.replies.emoji.fields.id', interaction),
                                 value: `\`${emoji.id}\``,
                                 inline: true
                             },
                             {
-                                name: `Mention`,
+                                name: translator.translate('commands.admins.info.replies.emoji.fields.mention', interaction),
                                 value: `\`<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>\``,
                                 inline: true
                             }
@@ -162,36 +156,38 @@ export default new DraverCommand({
             )
             .setFields(
                 {
-                    name: 'Nom',
+                    name: translator.translate('commands.admins.info.replies.channel.fields.name', interaction),
                     value: resizeString({ str: channel.name, length: 1024 }),
                     inline: true
                 },
                 {
-                    name: 'Création',
+                    name: translator.translate('commands.admins.info.replies.channel.fields.creation', interaction),
                     value: displayDate(channel.createdTimestamp),
                     inline: true
                 },
                 {
-                    name: 'Type',
-                    value: capitalize(channelTypeNames[ChannelType[channel.type]] ?? 'No type name'),
+                    name: translator.translate('commands.admins.info.replies.channel.fields.type', interaction),
+                    value: capitalize(translator.translate(`contents.global.channels.${channel.type}`, interaction) ?? 'N/A'),
                     inline: true
                 },
                 emptyField(),
                 {
-                    name: 'Identifiant',
+                    name: translator.translate('commands.admins.info.replies.channel.fields.id', interaction),
                     value: `\`${channel.id}\``,
                     inline: true
                 },
                 (() => {
                     if (channel.type === ChannelType.GuildCategory)
                         return {
-                            name: 'Nombre de salons',
-                            value: (channel as CategoryChannel).children.cache.size.toLocaleString(interaction.locale),
+                            name: translator.translate('commands.admins.info.replies.channel.fields.channels.name', interaction),
+                            value: translator.translate('commands.admins.info.replies.channel.fields.channels.value', interaction, {
+                                count: (channel as CategoryChannel).children.cache.size
+                            }),
                             inline: true
                         };
                     return {
-                        name: 'Catégorie',
-                        value: !channel.parent ? 'Pas de catégorie' : `${channel.parent.name}`,
+                        name: translator.translate('commands.admins.info.replies.channel.fields.parent.name', interaction),
+                        value: !channel.parent ? translator.translate('commands.admins.info.replies.channel.fields.parent.none', interaction) : `${channel.parent.name}`,
                         inline: true
                     };
                 })()
@@ -210,34 +206,34 @@ export default new DraverCommand({
 
         const embed = basicEmbed(interaction.user)
             .setColor(member.displayHexColor)
-            .setTitle('Utilisateur')
+            .setTitle(translator.translate('commands.admins.info.replies.user.title', interaction))
             .setFields(
                 {
-                    name: 'Création du compte',
+                    name: translator.translate('commands.admins.info.replies.user.fields.account', interaction),
                     value: displayDate(user.createdAt),
                     inline: true
                 },
                 {
-                    name: "Date d'arrivée",
+                    name: translator.translate('commands.admins.info.replies.user.fields.join', interaction),
                     value: displayDate(member.joinedAt),
                     inline: true
                 },
                 {
-                    name: 'Pseudo',
-                    value: !!member.nickname && member.nickname !== user.username ? `\`${member.nickname}\`` : 'Aucun',
+                    name: translator.translate('commands.admins.info.replies.user.fields.nickname.name', interaction),
+                    value: !!member.nickname && member.nickname !== user.username ? `\`${member.nickname}\`` : translator.translate('commands.admins.info.replies.user.fields.nickname.none', interaction),
                     inline: true
                 },
                 {
-                    name: `Rôles ( ${roles.size.toLocaleString()} )`,
+                    name: translator.translate('commands.admins.info.replies.user.fields.roles', interaction, { count: roles.size }),
                     value: roles.map(pingRole).slice(0, 15).join(', '),
                     inline: false
                 },
                 {
-                    name: 'Permissions',
+                    name: translator.translate('commands.admins.info.replies.user.fields.permissions.names', interaction),
                     value: member.permissions.has('Administrator')
-                        ? 'Administrateur'
+                        ? translator.translate('commands.admins.info.replies.user.fields.permissions.admin', interaction)
                         : Object.entries(member.permissions.serialize())
-                              .map(([p, h]) => (!h ? null : getRolePerm(p as PermissionsString)))
+                              .map(([p, h]) => (!h ? null : translator.translate(`contents.global.perms.role.${p}`, interaction)))
                               .filter(notNull)
                               .join(', ')
                 }
