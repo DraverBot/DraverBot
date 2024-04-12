@@ -35,20 +35,18 @@ import {
     subcmd,
     waitForReplies
 } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'interserver',
+    ...translator.commandData('commands.admins.interserver'),
     module: 'interchat',
-    description: "Gère le système d'interserveur sur le serveur",
     options: [
         {
-            name: 'créer',
-            description: "Créer un salon d'interserveur sur le serveur",
+            ...translator.commandData('commands.admins.interserver.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon à configurer',
+                    ...translator.commandData('commands.admins.interserver.options.create.options.channel'),
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
@@ -56,13 +54,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'supprimer',
-            description: "Supprime un salon d'interchat dans le serveur",
+            ...translator.commandData('commands.admins.interserver.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon à déconfigurer',
+                    ...translator.commandData('commands.admins.interserver.options.delete.options.channel'),
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
@@ -70,13 +66,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'afficher',
-            description: 'Affiche la liste des interchats du serveur',
+            ...translator.commandData('commands.admins.interserver.options.display'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon spécifique que vous voulez voir',
+                    ...translator.commandData('commands.admins.interserver.options.display.options.channel'),
                     required: false,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildText]
@@ -84,20 +78,17 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'modifier',
-            description: "Modifie la fréquence d'un salon d'interchat",
+            ...translator.commandData('commands.admins.interserver.options.edit'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon à re-configurer',
+                    ...translator.commandData('commands.admins.interserver.options.edit.options.channel'),
                     channelTypes: [ChannelType.GuildText],
                     required: true,
                     type: ApplicationCommandOptionType.Channel
                 },
                 {
-                    name: 'fréquence',
-                    description: 'Fréquence surlaquelle vous voulez changer',
+                    ...translator.commandData('commands.admins.interserver.options.edit.options.frequence'),
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     maxLength: 20,
@@ -119,9 +110,9 @@ export default new DraverCommand({
                 components: [yesNoRow(interaction)],
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle('Fréquence optionnelle')
+                        .setTitle(translator.translate('commands.admins.interserver.replies.create.frequence.title', interaction))
                         .setDescription(
-                            `Voulez-vous ajouter une fréquence à votre salon d'interchat ?\nSi vous ne voulez pas, une fréquence sera générée aléatoirement`
+                            translator.translate('commands.admins.interserver.replies.create.frequence.description', interaction)
                         )
                         .setColor('Grey')
                 ],
@@ -146,12 +137,12 @@ export default new DraverCommand({
         if (reply.customId === 'yes') {
             const modal = new ModalBuilder()
                 .setCustomId('frequencemodal')
-                .setTitle('Fréquence')
+                .setTitle(translator.translate('commands.admins.interserver.replies.create.modal.title', interaction))
                 .setComponents(
                     row<TextInputBuilder>(
                         new TextInputBuilder()
                             .setCustomId('frequence-field')
-                            .setLabel('Fréquence souhaitée')
+                            .setLabel(translator.translate('commands.admins.interserver.replies.create.modal.label', interaction))
                             .setMaxLength(255)
                             .setRequired(true)
                             .setStyle(TextInputStyle.Short)
@@ -212,8 +203,8 @@ export default new DraverCommand({
         interaction.editReply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Interchat crée')
-                    .setDescription(`Un salon d'interchat à bien été crée dans le salon ${pingChan(channel)}`)
+                    .setTitle(translator.translate('commands.admins.interserver.replies.create.created.title', interaction))
+                    .setDescription(translator.translate('commands.admins.interserver.replies.create.created.description', interaction, { channel: pingChan(channel) }))
             ],
             components: [row(frequenceBtn(interaction))]
         });
@@ -232,11 +223,9 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle("Suppression d'interchat")
+                .setTitle(translator.translate('commands.admins.interserver.replies.delete.confirm.title', interaction))
                 .setDescription(
-                    `Voulez-vous vraiment supprimer l'interchat du salon ${pingChan(
-                        channel
-                    )}\n> Le salon ne sera pas supprimé`
+                    translator.translate('commands.admins.interserver.replies.delete.confirm.description', interaction, { channel: pingChan(channel) })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -263,8 +252,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Interchat supprimé')
-                        .setDescription(`L'interchat du salon ${pingChan(channel)} a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.interserver.replies.delete.deleted.title', interaction))
+                        .setDescription(translator.translate('commands.admins.interserver.replies.delete.deleted.description', interaction, { channel: pingChan(channel) }))
                 ]
             })
             .catch(() => {});
@@ -277,8 +266,8 @@ export default new DraverCommand({
                     embeds: [
                         basicEmbed(interaction.user)
                             .setColor(evokerColor(interaction.guild))
-                            .setDescription(`Aucun salon d'interchat n'est configuré sur votre serveur`)
-                            .setTitle("Pas d'interchat")
+                            .setDescription(translator.translate('commands.admins.interserver.replies.display.none.description', interaction))
+                            .setTitle(translator.translate('commands.admins.interserver.replies.display.none.title', interaction))
                     ]
                 })
                 .catch(() => {});
@@ -306,15 +295,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Interchat')
+                            .setTitle(translator.translate('commands.admins.interserver.replies.display.info.title', interaction))
                             .setDescription(
-                                `Le salon ${pingChan(channel)} partage sa fréquence avec ${
-                                    shared.length === 1
-                                        ? "aucun autre salon d'interchat"
-                                        : `**${numerize(shared.length - 1)}** autre${
-                                              shared.length > 2 ? 's salons' : ' salon'
-                                          } d'interchat`
-                                }`
+                                translator.translate(`commands.admins.interserver.replies.display.info.${shared.length === 1 ? 'alone' : 'shared'}`, interaction, {
+                                    channel: pingChan(channel),
+                                    shared: shared.length
+                                })
                             )
                     ],
                     components: [row(frequenceBtn(interaction))]
@@ -325,20 +311,21 @@ export default new DraverCommand({
         const map = (embed: EmbedBuilder, data: interserverType) => {
             const index = list.indexOf(data);
             return embed.addFields({
-                name: `Salon numéro ${numerize(index + 1)}`,
-                value: `${pingChan(data.channel_id)}`,
+                name: translator.translate('commands.admins.interserver.replies.display.list.mapper', interaction, {
+                    index: index + 1
+                }),
+                value: pingChan(data.channel_id),
                 inline: false
             });
         };
 
         const basic = () =>
             basicEmbed(interaction.user, { draverColor: true })
-                .setTitle("Salons d'interchat")
+                .setTitle(translator.translate('commands.admins.interserver.replies.display.list.title', interaction))
                 .setDescription(
-                    `Il y a ${list.length} salon${plurial(list.length, {})} configuré${plurial(
-                        list.length,
-                        {}
-                    )} sur le serveur`
+                    translator.translate('commands.admins.interserver.replies.list.description', interaction, {
+                        count: list.length
+                    })
                 );
 
         if (list.length <= 5) {
@@ -413,8 +400,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Interchat modifié')
-                        .setDescription(`La fréquence du salon d'interchat ${pingChan(channel)} a été modifiée`)
+                        .setTitle(translator.translate('commands.admins.interserver.replies.edit.title', interaction))
+                        .setDescription(translator.translate('commands.admins.interserver.replies.edit.description', interaction, { channel: pingChan(channel) }))
                 ],
                 components: [row(frequenceBtn(interaction))]
             })

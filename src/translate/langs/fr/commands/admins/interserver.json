@@ -1,0 +1,96 @@
+{
+    "name": "interserver",
+    "description": "Gère le système d'interserveur sur le serveur",
+    "options": {
+        "create": {
+            "name": "créer",
+            "description": "Créer un salon d'interserveur sur le serveur",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon à configurer"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un salon d'interchat dans le serveur",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon à déconfigurer"
+                }
+            }
+        },
+        "display": {
+            "name": "afficher",
+            "description": "Affiche la liste des interchats du serveur",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon spécifique que vous voulez voir"
+                }
+            }
+        },
+        "edit": {
+            "name": "modifier",
+            "description": "Modifie la fréquence d'un salon d'interchat",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon à reconfigurer"
+                },
+                "frequence": {
+                    "name": "fréquence",
+                    "description": "Fréquence sur laquelle vous voulez changer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "create": {
+            "frequence": {
+                "title": "Fréquence optionnelle",
+                "description": "Voulez-vous ajouter une fréquence à votre salon d'interchat ?\nSi vous ne voulez pas, une fréquence sera générée aléatoirement"
+            },
+            "modal": {
+                "title": "Fréquence",
+                "label": "Fréquence souhaitée"
+            },
+            "created": {
+                "title": "Interchat crée",
+                "description": "Un salon d'interchat a bien été crée dans le salon {channel}"
+            }
+        },
+        "delete": {
+            "confirm": {
+                "title": "Suppression d'interchat",
+                "description": "Voulez-vous vraiment supprimer l'interchat du salon {channel} ?\n> Le salon ne sera pas supprimé."
+            },
+            "deleted": {
+                "title": "Interchat supprimé",
+                "description": "L'interchat du salon {channel} a été supprimé."
+            }
+        }
+    },
+    "display": {
+        "none": {
+            "title": "Pas d'interchat",
+            "description": "Aucun salon d'interchat n'est configuré sur votre serveur"
+        },
+        "info": {
+            "title": "Interchat",
+            "shared": "Le salon {channel} partage sa fréquence avec {shared} autres salons d'interchat",
+            "alone": "Le salon {channel} partage sa fréquence avec aucun autre salon d'interchat"
+        },
+        "list": {
+            "title": "Salons d'interchat",
+            "description": "Il y a **{count}** salons configurés sur le serveur",
+            "mapper": "Salon numéro {index}"
+        }
+    },
+    "edit": {
+        "title": "Interchat modifié",
+        "description": "La fréquence du salon d'interchat {channel} a été modifiée"
+    }
+}
