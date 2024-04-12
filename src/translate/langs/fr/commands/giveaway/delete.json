@@ -1,0 +1,14 @@
+{
+    "name": "supprimer le giveaway",
+    "description": "Supprime le giveaway",
+    "replies": {
+        "invalid": {
+            "title": "Giveaway invalide",
+            "description": "Ce n'est pas un giveaway"
+        },
+        "confirm": {
+            "title": "Suppression",
+            "description": "Êtes-vous sûr de supprimer ce giveaway ?"
+        }
+    }
+}

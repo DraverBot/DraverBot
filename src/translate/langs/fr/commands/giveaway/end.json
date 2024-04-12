@@ -1,0 +1,10 @@
+{
+    "name": "Terminer le giveaway",
+    "description": "Termine le giveaway",
+    "replies": {
+        "invalid": {
+            "title": "Giveaway invalide",
+            "description": "Ce n'est pas un giveaway"
+        }
+    }
+}

@@ -5,11 +5,11 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { basicEmbed, confirm } from '../../utils/toolbox';
 import replies from '../../data/replies';
 import { GuildMember } from 'discord.js';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'Supprimer le giveaway',
+    ...translator.commandData('commands.giveaway.delete'),
     module: 'giveaways',
-    description: 'Supprime le giveaway',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild']
 }).setMessageContextRun(async ({ interaction, message, client }) => {
@@ -19,8 +19,8 @@ export default new DraverCommand({
                 ephemeral: true,
                 embeds: [
                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Giveaway invalide')
-                        .setDescription(`Ce n'est pas un giveaway`)
+                        .setTitle(translator.translate('commands.giveaway.delete.replies.invalid.title', interaction))
+                        .setDescription(translator.translate('commands.giveaway.delete.replies.invalid.description', interaction))
                 ]
             })
             .catch(log4js.trace);
@@ -29,8 +29,8 @@ export default new DraverCommand({
         interaction,
         user: interaction.user,
         embed: basicEmbed(interaction.user)
-            .setTitle('Suppression')
-            .setDescription(`Êtes vous sûr de supprimer ce giveaway ?`),
+            .setTitle(translator.translate('commands.giveaway.delete.replies.confirm.title', interaction))
+            .setDescription(translator.translate('commands.giveaway.delete.replies.confirm.description', interaction)),
         ephemeral: true
     }).catch(log4js.trace);
 

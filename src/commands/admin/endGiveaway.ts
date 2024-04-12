@@ -5,11 +5,11 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import replies from '../../data/replies';
 import { basicEmbed } from '../../utils/toolbox';
 import { GuildMember } from 'discord.js';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'Terminer le giveaway',
+    ...translator.commandData('commands.giveaway.end'),
     module: 'giveaways',
-    description: 'Termine le giveaway',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageGuild']
 }).setMessageContextRun(async ({ interaction, message }) => {
@@ -18,8 +18,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Giveaway invalide')
-                        .setDescription(`Ce n'est pas un giveaway`)
+                        .setTitle(translator.translate('commands.giveaway.end.replies.invalid.title', interaction))
+                        .setDescription(translator.translate('commands.giveaway.end.replies.invalid.description', interaction))
                 ],
                 ephemeral: true
             })

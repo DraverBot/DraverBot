@@ -4,43 +4,38 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { basicEmbed } from '../../utils/toolbox';
 import replies from '../../data/replies';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'émoji',
-    description: 'Gère kes émojis',
+    ...translator.commandData('commands.admins.emoji'),
     module: 'administration',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['ManageEmojisAndStickers'],
     options: [
         {
-            name: 'ajouter',
-            description: 'Ajoute un émoji au serveur',
+            ...translator.commandData('commands.admins.emoji.options.add'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: "Nom de l'émoji",
+                    ...translator.commandData('commands.admins.emoji.options.add.options.name'),
                     type: ApplicationCommandOptionType.String,
                     minLength: 2,
                     maxLength: 50,
                     required: true
                 },
                 {
-                    name: 'image',
-                    description: 'Image que vous voulez ajouter',
+                    ...translator.commandData('commands.admins.emoji.options.add.options.image'),
                     required: true,
                     type: ApplicationCommandOptionType.Attachment
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un émoji',
+            ...translator.commandData('commands.admins.emoji.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: "Nom de l'émoji à supprimer",
+                    ...translator.commandData('commands.admins.emoji.options.delete.options.name'),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 }
@@ -60,8 +55,8 @@ export default new DraverCommand({
                     ephemeral: true,
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Image invalide')
-                            .setDescription(`Merci de spécifier une image`)
+                            .setTitle(translator.translate('commands.admins.emoji.replies.add.invalidImage.title', interaction))
+                            .setDescription(translator.translate('commands.admins.emoji.replies.add.invalidImage.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -79,8 +74,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Émoji déjà existant')
-                            .setDescription(`Cet émoji existe déjà`)
+                            .setTitle(translator.translate('commands.admins.emoji.replies.add.exists.title', interaction))
+                            .setDescription(translator.translate('commands.admins.emoji.replies.add.exists.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -97,8 +92,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Erreur de création')
-                            .setDescription(`L'émoji n'a pas pu être ajouté`)
+                            .setTitle(translator.translate('commands.admins.emoji.replies.add.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.emoji.replies.add.error.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -107,9 +102,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Émoji ajouté')
+                        .setTitle(translator.translate('commands.admins.emoji.replies.add.added.title', interaction))
                         .setDescription(
-                            `L'émoji \`${name}\` <${res.animated ? 'a' : ''}:${res.name}:${res.id}> a été ajouté`
+                            translator.translate('commands.admins.emoji.replies.add.added.description', interaction, {
+                                name: name,
+                                emoji: `<${res.animated ? 'a' : ''}:${res.name}:${res.id}>`
+                            })
                         )
                 ]
             })
@@ -133,8 +131,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Émoji inexistant')
-                            .setDescription(`Cet émoji n'existe pas`)
+                            .setTitle(translator.translate('commands.admins.emoji.replies.delete.unexisting.title', interaction)
+                            )
+                            .setDescription(translator.translate('commands.admins.emoji.replies.delete.unexisting.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -145,8 +144,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Suppression échouée')
-                            .setDescription(`L'émoji n'a pas pu être supprimé`)
+                            .setTitle(translator.translate('commands.admins.emoji.replies.delete.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.emoji.replies.delete.error.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -155,8 +154,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Émoji supprimé')
-                        .setDescription(`L'émoji ${res.name} a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.emoji.replies.delete.deleted.title', interaction))
+                        .setDescription(translator.translate('commands.admins.emoji.replies.delete.deleted.description', interaction, { name: res.name }))
                 ]
             })
             .catch(log4js.trace);

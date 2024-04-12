@@ -1,0 +1,319 @@
+{
+    "name": "giveaway",
+    "description": "Gère les giveaways sur le serveur",
+    "options": {
+        "start": {
+            "name": "démarrer",
+            "description": "Démarre un giveaway",
+            "options": {
+                "reward": {
+                    "title": "récompense",
+                    "description": "Récompense du giveaway"
+                },
+                "winners": {
+                    "title": "gagnants",
+                    "description": "Nombre de gagnants du giveaway"
+                },
+                "time": {
+                    "title": "temps",
+                    "description": "Temps du giveaway"
+                },
+                "channel": {
+                    "title": "salon",
+                    "description": "Salon du giveaway"
+                },
+                "bonus": {
+                    "title": "bonus",
+                    "description": "Identifiants des rôles bonus (séparés par des espaces)"
+                },
+                "required": {
+                    "title": "requis",
+                    "description": "Identifiants des rôles requis (séparés par des espaces)"
+                },
+                "denied": {
+                    "title": "interdits",
+                    "description": "Identifiants des rôles interdits (séparés par des espaces)"
+                },
+                "level": {
+                    "title": "niveau",
+                    "description": "Niveau minimum pour participer"
+                },
+                "invites": {
+                    "title": "invitations",
+                    "description": "Nombre d'invitations minimum pour participer"
+                }
+            }
+        },
+        "create": {
+            "name": "créer",
+            "description": "Crée un giveaway dans le salon"
+        },
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des giveaways",
+            "option": {
+                "name": "giveaways",
+                "description": "Type de giveaways que vous voulez afficher"
+            },
+            "types": {
+                "tous": "Tous",
+                "terminés": "Terminés",
+                "en cours": "En cours"
+            }
+        },
+        "analyze": {
+            "name": "analyser",
+            "description": "Analyse un giveaway",
+            "option": {
+                "name": "identifiant",
+                "description": "Identifiant du message du giveaway"
+            }
+        },
+        "reroll": {
+            "name": "reroll",
+            "description": "Reroll un giveaway terminé",
+            "option": {
+                "name": "identifiant",
+                "description": "Identifiant du message du giveaway"
+            }
+        },
+        "end": {
+            "name": "terminer",
+            "description": "Termine un giveaway",
+            "option": {
+                "name": "identifiant",
+                "description": "Identifiant du message du giveaway"
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un giveaway",
+            "option": {
+                "name": "identifiant",
+                "description": "Identifiant du message du giveaway"
+            }
+        }
+    },
+    "replies": {
+        "start": {
+            "error": {
+                "title": "Erreur",
+                "description": "Une erreur a eu lieu lors de la création du giveaway.\nÇa peut être lié au fait que je n'ai pas les permissions d'envoyer des messages dans {channel}"
+            },
+            "created": {
+                "title": "Giveaway crée",
+                "description": "Le giveaway avec la récompense **{reward}** a été crée dans {channel}.\nIl se finit {date} avec {winners} gagnants."
+            }
+        },
+        "create": {
+            "example": "Un splendide T-Shirt Draver",
+            "embed": {
+                "title": "Création de giveaway",
+                "description": "Appuyez sur les boutons ci-dessous pour configurer votre giveaway",
+                "fields": {
+                    "reward": {
+                        "name": "Récompense"
+                    },
+                    "winners": {
+                        "name": "gagnants",
+                        "value": "{winners}"
+                    },
+                    "ends": {
+                        "name": "Prendra fin"
+                    },
+                    "channel": {
+                        "name": "Salon"
+                    },
+                    "bonus": {
+                        "name": "Rôles bonus",
+                        "default": "Pas de rôle bonus"
+                    },
+                    "required": {
+                        "name": "Rôles requis",
+                        "default": "Pas de rôle requis"
+                    },
+                    "denied": {
+                        "name": "Rôles interdits",
+                        "default": "Pas de rôles interdits"
+                    },
+                    "invites": {
+                        "name": "Invitations",
+                        "none": "Aucune limite",
+                        "value": "**{invites}** invitations"
+                    },
+                    "levels": {
+                        "name": "Niveaux",
+                        "none": "Aucune limite",
+                        "value": "Niveau **{level}**"
+                    }
+                }
+            },
+            "error": {
+                "title": "Erreur",
+                "description": "Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **envoyer des messages** et **envoyer des liens** dans le salon {channel}"
+            },
+            "created": {
+                "title": "Giveaway crée",
+                "description": "Un giveaway a été crée dans {channel}"
+            },
+            "channel": {
+                "title": "Salon",
+                "description": "Dans quel salon voulez-vous lancer le giveaway ?\nRépondez par un nom, un identifiant oue une mention dans le chat.\n\n💡\n> Répondez par `cancel` pour annuler"
+            },
+            "invalidChannel": {
+                "title": "Salon invalide",
+                "description": "Je n'ai pas trouvé de salon, ou alors ce n'est pas un salon textuel."
+            },
+            "roles": {
+                "description": "Quels sont les rôles que vous voulez ajouter ?\nUtilisez un nom, un identifiant ou une mention.\n\n💡\n> Répondez par `cancel` pour annuler.\n> Répondez par `vide` pour vider les rôles."
+            },
+            "noRole": {
+                "title": "Aucun rôle",
+                "description": "Je n'ai trouvé aucun rôle correspondant à votre recherche.\nIl se peut que ce ou ces rôles soient déjà dans la liste."
+            },
+            "invalidRole": {
+                "title": "Rôles invalides",
+                "description": "Un des rôles que vous avez saisi existe déjà dans un autre champ de rôles (rôles requis, bonus ou interdits)"
+            },
+            "winners": {
+                "title": "Nombre de gagnants",
+                "description": "Vous allez configurer le nombre de gagnants.\nSaisissez un nombre entre **1** et **100** dans le chat.\n\n💡\n> Répondez par `cancel` pour annuler."
+            },
+            "time": {
+                "title": "Durée du giveaway",
+                "description": "Quel est le temps du giveaway ?\nRépondez dans le chat.{doc}\n\n💡\n> Répondez par `cancel` pour annuler."
+            },
+            "reward": {
+                "title": "Récompense",
+                "description": "Quelle est la récompense du giveaway ?\nRépondez dans le chat\n\n💡\n> Répondez par `cancel` pour annuler."
+            },
+            "level": {
+                "title": "Niveau",
+                "description": "Quel est le niveau minimum pour participer au giveaway ?\nRépondez dans le chat\n\n💡\n> Répondez par `cancel` pour annuler."
+            },
+            "invites": {
+                "title": "Invitations",
+                "description": "Combien d'invitations sont nécessaires pour participer au giveaway ?\n\n💡\n> Répondez par `cancel` pour annuler."
+            }
+        },
+        "list": {
+            "no": {
+                "title": "Pas de giveaways",
+                "description": "Il n'y a aucun giveaway{type} sur le serveur"
+            },
+            "list": {
+                "title": "Giveaways",
+                "description": "Il y a **{gws}** giveaways sur le serveur",
+                "mapper": "Par {user} (`{id}`) dans {channel}\n> Finit {date}\n> **{winners}** gagnants - {state}",
+                "states": {
+                    "running": "en cours",
+                    "ended": "terminé"
+                }
+            }
+        },
+        "analyze": {
+            "no": {
+                "title": "Pas de giveaways",
+                "description": "Il n'y a aucun giveaway avec l'identifiant `{id}`"
+            },
+            "info": {
+                "title": "Giveaway",
+                "description": "Voici les informations pour le giveawat d'identifiant `{id}`\n> Giveway {state}",
+                "fields": {
+                    "date": {
+                        "name": "Date de fin"
+                    },
+                    "hoster": {
+                        "name": "Offrant",
+                        "value": "{user} (`{id}`)"
+                    },
+                    "channel": {
+                        "name": "Salon",
+                        "value": "{channel} (`{id}`)"
+                    },
+                    "reward": "Récompense",
+                    "winnersField": {
+                        "name": "Nombre de gagnants",
+                        "value": "{winners}"
+                    },
+                    "participants": {
+                        "name": "Participants",
+                        "value": "{participants}"
+                    },
+                    "winners": {
+                        "name": "Gagnants",
+                        "none": "Aucun gagnant",
+                        "value": "**{count}** gagnants (sur **{participants}**, soit {ratio}% des participants) : {map}"
+                    }
+                },
+                "names": {
+                    "bonus_roles": "Rôles bonus",
+                    "denied_roles": "Rôles interdits",
+                    "required_roles": "Rôles requis"
+                }
+            }
+        },
+        "reroll": {
+            "running": {
+                "title": "Giveaway non-terminé",
+                "description": "Le giveaway n'est pas terminé"
+            },
+            "confirm": {
+                "title": "Reroll",
+                "description": "Vous allez reroll [le giveaway]({url}) d'identifiant `{id}` dans {channel}.\nVoulez-vous continuer ?"
+            },
+            "error": {
+                "title": "Reroll échoué",
+                "description": "Le reroll de [ce giveaway]({url}) a échoué"
+            },
+            "rerolled": {
+                "title": "Giveaway rerollé",
+                "description": "[Le giveaway]({url}) a été reroll."
+            }
+        },
+        "end": {
+            "ended": {
+                "title": "Giveaway terminé",
+                "description": "Le giveaway est déjà terminé.\nSi vous voulez changer les gagnants, utilisez plutôt `/giveaway reroll`"
+            },
+            "confirm": {
+                "title": "Confirmation",
+                "description": "Vous allez terminer [ce giveaway]({url}) dans {channel}.\nVoulez-vous continuer ?"
+            },
+            "error": {
+                "title": "Terminaison échouée",
+                "description": "[Le giveaway]({url}) n'a pas pu être terminé."
+            },
+            "done": {
+                "title": "Giveaway terminé",
+                "description": "[Le giveaway]({url}) a été terminé."
+            }
+        },
+        "delete": {
+            "confirm": {
+                "title": "Confirmation",
+                "description": "Vous allez supprimer [ce giveaway]({url}) dans {channel}.\nVoulez-vous continuer ?"
+            },
+            "error": {
+                "title": "Suppression échouée",
+                "description": "[Le giveaway]({url}) n'a pas pu être supprimé."
+            },
+            "deleted": {
+                "title": "Giveaway supprimé",
+                "description": "[Le giveaway]({url}) a été supprimé."
+            }
+        }
+    },
+    "buttons": {
+        "reward": "Récompense",
+        "winners": "Gagnants",
+        "time": "Temps",
+        "channel": "Salon",
+        "bonus": "Bonus",
+        "required": "Requis",
+        "denied": "Interdits",
+        "level": "Niveau",
+        "invites": "Invitations",
+        "validate": "Valider"
+    }
+}

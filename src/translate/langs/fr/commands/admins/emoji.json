@@ -1,0 +1,64 @@
+{
+    "name": "émoji",
+    "description": "Gère les émojis",
+    "options": {
+        "add": {
+            "name": "nom",
+            "description": "Ajoute un émoji au serveur",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom de l'émoji"
+                },
+                "image": {
+                    "name": "image",
+                    "description": "Image que vous voulez ajouter"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un émoji",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom de l'émoji à supprimer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "add": {
+            "invalidImage": {
+                "title": "Image invalide",
+                "description": "Merci de spécifier une image."
+            },
+            "exists": {
+                "title": "Émoji déjà existant",
+                "description": "Cet émoji existe déjà."
+            },
+            "error": {
+                "title": "Erreur de création",
+                "description": "L'émoji n'a pas pu être ajouté."
+            },
+            "added": {
+                "title": "Émoji ajouté",
+                "description": "L'émoji **{name}** {emoji} a été ajouté."
+            }
+        },
+        "delete": {
+            "unexisting": {
+                "title": "Émoji inexistant",
+                "description": "Cet émoji n'existe pas"
+            },
+            "error": {
+                "title": "Suppression échouée",
+                "description": "L'émoji n'a pas pu être supprimé"
+            },
+            "deleted": {
+                "title":"Émoji supprimé",
+                "description": "L'émoji **{name}** a été supprimé"
+            }
+        }
+    }
+}

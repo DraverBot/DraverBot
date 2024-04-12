@@ -42,73 +42,65 @@ import { GWListType } from '../../typings/commands';
 import { confirmReturn } from '../../typings/functions';
 import { giveaway, giveawayInput } from '../../typings/giveaway';
 import SendAndDelete from '../../process/SendAndDelete';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'giveaway',
+    ...translator.commandData('commands.admins.gw'),
     module: 'giveaways',
-    description: 'Gère les giveaways sur le serveur',
     permissions: ['ManageChannels', 'ManageGuild'],
     preconditions: [preconditions.GuildOnly, moduleEnabled, timePrecondition],
     options: [
         {
-            name: 'démarrer',
-            description: 'Démarre un giveaway',
+            ...translator.commandData('commands.admins.gw.options.start'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'récompense',
-                    description: 'Récompense du giveaway',
+                    ...translator.commandData(
+                        'commands.admins.gw.options.start.options.reward'
+                    ),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
-                    name: 'gagnants',
-                    description: 'Nombre de gagnants du giveaway',
+                    ...translator.commandData('commands.admins.gw.options.start.options.winners'),
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
                 },
                 {
-                    name: 'temps',
-                    description: 'Temps du giveaway',
+                    ...translator.commandData('commands.admins.gw.options.start.options.time'),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
-                    name: 'salon',
-                    description: 'Salon du giveaway',
+                    ...translator.commandData('commands.admins.gw.options.start.options.channel'),
                     type: ApplicationCommandOptionType.Channel,
                     required: false,
                     channelTypes: [ChannelType.GuildText]
                 },
                 {
-                    name: 'bonus',
-                    description: 'Identifiants des rôles bonus (séparés par des espaces)',
+                    ...translator.commandData('commands.admins.gw.options.start.options.bonus'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'requis',
-                    description: 'Identifiants des rôles requis (séparés par des espaces)',
+                    ...translator.commandData('commands.admins.gw.options.start.options.required'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'interdits',
-                    description: 'Identifiants des rôles interdits (séparés par des espaces)',
+                    ...translator.commandData('commands.admins.gw.options.start.options.denied'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'niveau',
-                    description: 'Niveau minimum pour participer',
+                    ...translator.commandData('commands.admins.gw.options.start.options.level'),
                     required: false,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
                 },
                 {
-                    name: 'invitations',
-                    description: "Nombre d'invitations minimum pour participer",
+                    ...translator.commandData('commands.admins.gw.options.start.options.invites'),
                     required: false,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
@@ -116,86 +108,69 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'créer',
-            description: 'Crée un giveaway dans le salon',
+            ...translator.commandData('commands.admins.gw.options.create'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'liste',
-            description: 'Affiche la liste des giveaways',
+            ...translator.commandData('commands.admins.gw.options.list'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'giveaways',
-                    description: 'Type de giveaways que vous voulez afficher',
+                    ...translator.commandData(
+                        'commands.admins.gw.options.list.option'
+                    ),
                     required: false,
                     type: ApplicationCommandOptionType.String,
-                    choices: [
-                        {
-                            name: 'Tous',
-                            value: GWListType.All
-                        },
-                        {
-                            name: 'En cours',
-                            value: GWListType.Current
-                        },
-                        {
-                            name: 'Terminés',
-                            value: GWListType.Ended
-                        }
-                    ]
+                    choices: [GWListType.All, GWListType.Current, GWListType.Ended].map(x => ({
+                        ...translator.commandData(`commands.admins.gw.options.list.types.${x}`),
+                        value: x
+                    }))
                 }
             ]
         },
         {
-            name: 'analyser',
-            description: 'Analyse un giveaway',
+            ...translator.commandData('commands.admins.gw.options.analyze'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'identifiant',
-                    description: 'Identifiant du message du giveaway',
+                    ...translator.commandData('commands.admins.gw.options.analyze.option'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'reroll',
-            description: 'Reroll un giveaway terminé',
+            ...translator.commandData('commands.admins.gw.options.reroll'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'identifiant',
-                    description: 'Identifiant du message du giveaway',
+                    ...translator.commandData(
+                        'commands.admins.gw.options.reroll.option'
+                    ),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'terminer',
-            description: 'Termine un giveaway',
+            ...translator.commandData('commands.admins.gw.options.end'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'identifiant',
-                    description: 'Identifiant du giveaway',
+                    ...translator.commandData('commands.admins.gw.options.end.option'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un giveaway',
+            ...translator.commandData('commands.admins.gw.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'identifiant',
+                    ...translator.commandData('commands.admins.gw.options.delete.option'),
                     required: false,
-                    type: ApplicationCommandOptionType.String,
-                    description: 'Identifiant du message du giveaway'
+                    type: ApplicationCommandOptionType.String
                 }
             ]
         }
@@ -240,11 +215,11 @@ export default new DraverCommand({
                     embeds: [
                         basicEmbed(interaction.user)
                             .setColor(evokerColor(interaction.guild))
-                            .setTitle('Erreur')
+                            .setTitle(translator.translate('commands.admins.gw.replies.start.error.title', interaction))
                             .setDescription(
-                                `Une erreur a eu lieu lors de la création du giveaway.\nÇa peut être lié au fait que je n'ai pas les permissions d'envoyer des messages dans ${pingChan(
-                                    channel
-                                )}`
+                                translator.translate('commands.admins.gw.replies.start.error.description', interaction, {
+                                    channel: pingChan(channel)
+                                })
                             )
                     ]
                 })
@@ -254,13 +229,14 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Giveaway crée')
+                        .setTitle(translator.translate('commands.admins.gw.replies.start.created.title', interaction))
                         .setDescription(
-                            `Le giveaway avec la récompense **${reward}** a été crée dans ${pingChan(
-                                channel
-                            )}.\nIl se finit ${displayDate(time + Date.now())} avec ${numerize(
-                                winnerCount
-                            )} gagnant${plurial(winnerCount)}`
+                            translator.translate('commands.admins.gw.replies.start.created.description', interaction, {
+                                reward,
+                                channel: pingChan(channel),
+                                winners: winnerCount,
+                                date: displayDate(time  + Date.now())
+                            })
                         )
                 ]
             })
@@ -268,7 +244,7 @@ export default new DraverCommand({
     }
     if (cmd === 'créer') {
         const data: giveawayInput = {
-            reward: `Un splendide T-Shirt Draver`,
+            reward: translator.translate('commands.admins.gw.replies.create.example', interaction),
             required_roles: [],
             denied_roles: [],
             bonus_roles: [],
@@ -287,19 +263,19 @@ export default new DraverCommand({
             const components = [
                 row(
                     buildButton({
-                        label: 'Récompense',
+                        label: translator.translate('commands.admins.gw.buttons.reward', interaction),
                         id: 'reward',
                         style: 'Primary',
                         disabled: currentAction
                     }),
                     buildButton({
-                        label: 'Gagnants',
+                        label: translator.translate('commands.admins.gw.buttons.winners', interaction),
                         id: 'winnerCount',
                         style: 'Secondary',
                         disabled: currentAction
                     }),
                     buildButton({
-                        label: 'Temps',
+                        label: translator.translate('commands.admins.gw.buttons.time', interaction),
                         id: 'time',
                         style: 'Secondary',
                         disabled: currentAction
@@ -307,25 +283,25 @@ export default new DraverCommand({
                 ),
                 row(
                     buildButton({
-                        label: 'Salon',
+                        label: translator.translate('commands.admins.gw.buttons.channel', interaction),
                         id: 'channel',
                         style: 'Primary',
                         disabled: currentAction
                     }),
                     buildButton({
-                        label: 'Bonus',
+                        label: translator.translate('commands.admins.gw.buttons.bonus', interaction),
                         id: 'bonus_roles',
                         style: 'Secondary',
                         disabled: currentAction
                     }),
                     buildButton({
-                        label: 'Requis',
+                        label: translator.translate('commands.admins.gw.buttons.required', interaction),
                         id: 'required_roles',
                         style: 'Secondary',
                         disabled: currentAction
                     }),
                     buildButton({
-                        label: 'Interdits',
+                        label: translator.translate('commands.admins.gw.buttons.denied', interaction),
                         id: 'denied_roles',
                         style: 'Secondary',
                         disabled: currentAction
@@ -333,19 +309,19 @@ export default new DraverCommand({
                 ),
                 row(
                     buildButton({
-                        label: 'Niveau',
+                        label: translator.translate('commands.admins.gw.buttons.level', interaction),
                         id: 'level',
                         style: 'Secondary',
                         disabled: !modulesManager.enabled(interaction.guild.id, 'level') || currentAction
                     }),
                     buildButton({
-                        label: 'Invitations',
+                        label: translator.translate('commands.admins.gw.buttons.invites', interaction),
                         id: 'invitations',
                         style: 'Secondary',
                         disabled: !modulesManager.enabled(interaction.guild.id, 'invitations') || currentAction
                     }),
                     buildButton({
-                        label: 'Valider',
+                        label: translator.translate('commands.admins.gw.buttons.validate', interaction),
                         id: 'validate',
                         style: 'Success',
                         disabled: currentAction
@@ -357,52 +333,54 @@ export default new DraverCommand({
                 embeds: [
                     basicEmbed(interaction.user)
                         .setColor('Grey')
-                        .setTitle('Création de giveaway')
-                        .setDescription(`Appuyez sur les boutons ci-dessous pour configurer votre giveaway`)
+                        .setTitle(translator.translate('commands.admins.gw.replies.create.embed.title', interaction))
+                        .setDescription(translator.translate('commands.admins.gw.replies.create.embed.description', interaction))
                         .setFields(
                             ...[
                                 {
-                                    name: 'Récompense',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.reward.name', interaction),
                                     value: data.reward,
                                     inline: true
                                 },
                                 {
-                                    name: 'Gagnants',
-                                    value: numerize(data.winnerCount),
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.winners.name', interaction),
+                                    value: translator.translate('commands.admins.gw.replies.create.embed.fields.winners.value', interaction, {
+                                        winners: data.winnerCount
+                                    }),
                                     inline: true
                                 },
                                 {
-                                    name: 'Prendra fin',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.ends.name', interaction),
                                     value: displayDate(Date.now() + data.time),
                                     inline: true
                                 },
                                 {
-                                    name: 'Salon',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.channel.name', interaction),
                                     value: pingChan(data.channel),
                                     inline: false
                                 },
                                 {
-                                    name: 'Rôles bonus',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.bonus.name', interaction),
                                     value:
                                         data.bonus_roles?.length > 0
                                             ? data.bonus_roles.map(pingRole).join(' ')
-                                            : 'Pas de rôles bonus',
+                                            : translator.translate('commands.admins.gw.replies.create.embed.fields.bonus.default', interaction),
                                     inline: true
                                 },
                                 {
-                                    name: 'Rôles requis',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.required.name', interaction),
                                     value:
                                         data.required_roles?.length > 0
                                             ? data.required_roles.map(pingRole).join(' ')
-                                            : 'Pas de rôles requis',
+                                            : translator.translate('commands.admins.gw.replies.create.embed.fields.required.default', interaction),
                                     inline: true
                                 },
                                 {
-                                    name: 'Rôles interdits',
+                                    name: translator.translate('commands.admins.gw.replies.create.embed.fields.denied.name', interaction),
                                     value:
                                         data.denied_roles?.length > 0
                                             ? data.denied_roles?.map(pingRole).join(' ')
-                                            : 'Pas de rôles intedits',
+                                            : translator.translate('commands.admins.gw.replies.create.embed.fields.denied.default', interaction),
                                     inline: true
                                 },
                                 {
@@ -412,23 +390,25 @@ export default new DraverCommand({
                                 },
                                 modulesManager.enabled(interaction.guild.id, 'invitations')
                                     ? {
-                                          name: 'Invitations',
+                                          name: translator.translate('commands.admins.gw.replies.create.embed.fields.invites.name', interaction),
                                           value:
                                               data.required_invitations === 0
-                                                  ? 'Aucune limite'
-                                                  : `**${numerize(data.required_invitations)}** invitation${plurial(
-                                                        data.required_invitations
-                                                    )}`,
+                                                  ? translator.translate('commands.admins.gw.replies.create.embed.fields.invites.none', interaction)
+                                                  : translator.translate('commands.admins.gw.replies.create.embed.fields.invites.value', interaction, {
+                                                    invites: data.required_invitations
+                                                  }),
                                           inline: true
                                       }
                                     : null,
                                 modulesManager.enabled(interaction.guild.id, 'level')
                                     ? {
-                                          name: 'Niveaux',
+                                          name: translator.translate('commands.admins.gw.replies.create.embed.fields.levels.name', interaction),
                                           value:
                                               data.required_level === 0
-                                                  ? 'Aucune limite'
-                                                  : `Niveau ${numerize(data.required_level)}`,
+                                                  ? translator.translate('commands.admins.gw.replies.create.embed.fields.levels.none', interaction)
+                                                  : translator.translate('commands.admins.gw.replies.create.embed.fields.levels.value', interaction, {
+                                                    level: data.required_level
+                                                }),
                                           inline: true
                                       }
                                     : null
@@ -479,13 +459,11 @@ export default new DraverCommand({
                         .editReply({
                             embeds: [
                                 basicEmbed(interaction.user)
-                                    .setTitle('Erreur')
+                                    .setTitle(translator.translate('commands.admins.gw.replies.create.error.title', interaction))
                                     .setDescription(
-                                        `Je n'ai pas pu créer de giveaway.\nAssurez-vous que je possède bien les permissions **${getRolePerm(
-                                            'SendMessages'
-                                        )}** et **${getRolePerm('EmbedLinks')}** dans le salon ${pingChan(
-                                            data.channel
-                                        )}`
+                                        translator.translate('commands.admins.gw.replies.create.error.description', interaction, {
+                                            channel: pingChan(data.channel)
+                                        })
                                     )
                                     .setColor(evokerColor(interaction.guild))
                             ]
@@ -496,8 +474,8 @@ export default new DraverCommand({
                     .editReply({
                         embeds: [
                             basicEmbed(interaction.user, { draverColor: true })
-                                .setTitle('Giveaway crée')
-                                .setDescription(`Un giveaway a été crée dans ${pingChan(data.channel)}`)
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.created.title', interaction))
+                                .setDescription(translator.translate('commands.admins.gw.replies.create.created.description', interaction, { channel: pingChan(data.channel) }))
                         ]
                     })
                     .catch(() => {});
@@ -518,12 +496,10 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Salon')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.channel.title', interaction))
                                 .setColor('Grey')
                                 .setDescription(
-                                    `Dans quel salon voulez-vous lancer le giveaway ?\nRépondez par un nom, un identifiant ou une mention dans le chat.\n${util(
-                                        'cancelMsg'
-                                    )}`
+                                    translator.translate('commands.admins.gw.rpelies.create.channel.description', interaction)
                                 )
                         ],
                         fetchReply: true
@@ -554,8 +530,8 @@ export default new DraverCommand({
                     ctx.editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Salon invalide')
-                                .setDescription(`Je n'ai pas trouvé de salon, ou alors ce n'est pas un salon textuel.`)
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.invalidChannel.title', ctx))
+                                .setDescription(translator.translate('commands.admins.gw.replies.create.invalidChannel.description', ctx))
                                 .setColor(evokerColor(interaction.guild))
                         ]
                     }).catch(() => {});
@@ -568,12 +544,8 @@ export default new DraverCommand({
                 reedit();
             }
             if (ctx.customId.includes('roles')) {
-                const type =
-                    ctx.customId === 'roles_required'
-                        ? 'rôles requis'
-                        : ctx.customId === 'denied_roles'
-                          ? 'rôles interdits'
-                          : 'rôles bonus';
+                const type = translator.translate(`commands.admins.gw.create.embed.fields.${ctx.customId === 'roles_required' ? 'required' : ctx.customId === 'denied_roles' ? 'denied' : 'bonus'}.name`, ctx).toLowerCase()
+
                 const rep = (await ctx
                     .reply({
                         fetchReply: true,
@@ -581,9 +553,7 @@ export default new DraverCommand({
                             basicEmbed(interaction.user)
                                 .setTitle(capitalize(type))
                                 .setDescription(
-                                    `Quels sont les rôles que vous voulez ajouter ?\nUtilisez un nom, un identifiant ou une mention.\n${util(
-                                        'cancelMsg'
-                                    )}\n> Répondez par \`vide\` pour vider les rôles`
+                                    translator.translate('commands.admins.gw.create.roles.description', ctx)
                                 )
                                 .setColor('Grey')
                         ]
@@ -629,9 +599,9 @@ export default new DraverCommand({
                     ctx.editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Aucun rôle')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.noRole.title', ctx))
                                 .setDescription(
-                                    `Je n'ai trouvé aucun rôle correspondant à votre recherche.\nIl se peut que ce ou ces rôles soient déjà dans la liste`
+                                    translator.translate('commands.admins.gw.replies.create.noRole.description', ctx)
                                 )
                                 .setColor('Grey')
                         ]
@@ -669,9 +639,9 @@ export default new DraverCommand({
                     ctx.editReply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Rôles invalide')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.invalidRole.title', ctx))
                                 .setDescription(
-                                    `Un des rôles que vous avez saisi existe déjà dans un autre champs de rôles (rôles requis, rôles bonus ou rôles interdits)`
+                                    translator.translate('commands.admins.gw.replies.create.invalidRole.description', ctx)
                                 )
                                 .setColor(evokerColor(interaction.guild))
                         ]
@@ -687,11 +657,9 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Nombre de gagnants')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.winners.title', ctx))
                                 .setDescription(
-                                    `Vous allez configurer le nombre de gagnants\nSaisissez un nombre entre 1 et 100 dans le chat.\n${util(
-                                        'cancelMsg'
-                                    )}`
+                                    translator.translate('commands.admins.gw.replies.create.winners.description', ctx)
                                 )
                                 .setColor('Grey')
                         ],
@@ -735,12 +703,14 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Durée du giveaway')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.time.title', ctx))
                                 .setDescription(
-                                    `Quel est le temps du giveaway ?\nRépondez dans le chat.${addTimeDoc(
-                                        interaction.user.id,
-                                        interaction
-                                    )}\n${util('cancelMsg')}`
+                                    translator.translate('commands.admins.gw.replies.create.time.description', ctx, {
+                                        doc: addTimeDoc(
+                                            interaction.user.id,
+                                            interaction
+                                        )
+                                    })
                                 )
                                 .setColor('Grey')
                         ],
@@ -786,11 +756,9 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Récompense')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.reward.title', ctx))
                                 .setDescription(
-                                    `Quelle est la récompense du giveaway ?\nRépondez dans le chat\n${util(
-                                        'cancelMsg'
-                                    )}`
+                                    translator.translate('commands.admins.gw.replies.create.reward.description', ctx)
                                 )
                                 .setColor('Grey')
                         ],
@@ -824,11 +792,9 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Niveau')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.level.title', ctx))
                                 .setDescription(
-                                    `Quel est le niveau minimum pour participer au giveaway ? ?\nRépondez dans le chat\n${util(
-                                        'cancelMsg'
-                                    )}`
+                                    translator.translate('commands.admins.gw.replies.create.level.description', ctx)
                                 )
                                 .setColor('Grey')
                         ],
@@ -871,11 +837,9 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user)
-                                .setTitle('Niveau')
+                                .setTitle(translator.translate('commands.admins.gw.replies.create.invites.title', ctx))
                                 .setDescription(
-                                    `Combien d'invitations sont nécessaires pour participer au giveaway ? ?\nRépondez dans le chat\n${util(
-                                        'cancelMsg'
-                                    )}`
+                                    translator.translate('commands.admins.gw.replies.create.invites.description', ctx)
                                 )
                                 .setColor('Grey')
                         ],
@@ -939,14 +903,16 @@ export default new DraverCommand({
                 return true;
             });
 
-        const typeStr = type === GWListType.All ? '' : type === GWListType.Current ? ' en cours' : ' terminé';
+        const typeStr = type === GWListType.All ? '' : ' ' + translator.translate(`commands.admins.gw.options.list.types.${type}`, interaction);
         if (gws.length === 0)
             return interaction
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de giveaways')
-                            .setDescription(`Il n'y a aucun giveaway${typeStr} sur ce serveur`)
+                            .setTitle(translator.translate('commands.admins.gw.replies.list.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.list.no.description', interaction, {
+                                type: typeStr
+                            }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -954,17 +920,31 @@ export default new DraverCommand({
 
         const basic = () => {
             return basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Giveaways')
-                .setDescription(`Il y a **${numerize(gws.length)}** giveaway${plurial(gws.length)} sur le serveur`);
+                .setTitle(translator.translate('commands.admins.gw.replies.list.title', interaction))
+                .setDescription(translator.translate('commands.admins.gw.replies.list.description', interaction, { gws: gws.length }));
         };
+        const cache = {
+            running: null,
+            ended: null
+        }
         const mapField = (embed: EmbedBuilder, gw: giveaway) => {
+            const state = (() => {
+                const str = gw.ended ? 'ended' : 'running'
+                if (cache[str]) return cache[str]
+
+                cache[str] = translator.translate(`commands.admins.gw.replies.list.list.states.${str}`, interaction)
+                return cache[str]
+            })()
+
             return embed.addFields({
                 name: gw.reward,
-                value: `Par ${pingUser(gw.hoster_id)} ( \`${gw.hoster_id}\` ) dans ${pingChan(
-                    gw.channel_id
-                )}\n> Finit ${displayDate(gw.endsAt)}\n> ${numerize(gw.winnerCount)} gagnant${plurial(
-                    gw.winnerCount
-                )} - **${gw.ended ? 'terminé' : 'en cours'}**`,
+                value: translator.translate('commands.admins.gw.replies.list.list.mapper', interaction, {
+                    user: pingUser(gw.hoster_id),
+                    id: gw.hoster_id,
+                    winners: gw.winnerCount,
+                    date: displayDate(gw.endsAt),
+                    state
+                }),
                 inline: false
             });
         };
@@ -1004,66 +984,76 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de giveaway')
-                            .setDescription(`Il n'y a pas de giveaway avec l'identifiant \`${id}\``)
+                            .setTitle(translator.translate('commands.admins.gw.replies.analyze.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.analyze.no.description', interaction, { id }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
                 .catch(() => {});
 
         const embed = basicEmbed(interaction.user, { draverColor: true })
-            .setTitle(`Giveaway`)
+            .setTitle(translator.translate('commands.admins.gw.replies.analyze.info.title', interaction))
             .setDescription(
-                `Voici les informations pour le giveaway d'identifiant \`${gw.message_id}\`\n> Giveaway ${
-                    gw.ended ? 'terminé' : 'en cours'
-                }`
+                translator.translate('commands.admins.gw.replies.analyze.info.description', interaction, {
+                    id: gw.message_id,
+                    state: translator.translate(`commands.admins.gw.list.list.states.${gw.ended ? 'ended' : 'running'}`, interaction)
+                })
             );
 
         if (!gw.ended) {
             embed.addFields({
-                name: 'Date de fin',
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.date.name', interaction),
                 value: displayDate(gw.endsAt),
                 inline: true
             });
         }
         embed.addFields(
             {
-                name: 'Offant',
-                value: pingUser(gw.hoster_id) + ` ( \`${gw.hoster_id}\` )`,
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.hoster.name', interaction),
+                value: translator.translate('commands.admins.gw.replies.analyze.info.fields.hoster.value', interaction, {
+                    user: pingUser(gw.hoster_id),
+                    id: gw.hoster_id
+                }),
                 inline: true
             },
             {
-                name: 'Salon',
-                value: pingChan(gw.channel_id) + ` ( \`${gw.channel_id}\` ) `,
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.channel.name', interaction),
+                value: translator.translate('commands.admins.gw.replies.analyze.info.fields.channel.value', interaction, {
+                    channel: pingChan(gw.channel_id),
+                    id: gw.channel_id
+                }),
                 inline: true
             },
             {
-                name: 'Récompense',
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.reward', interaction),
                 value: gw.reward,
                 inline: false
             },
             {
-                name: 'Nombre de gagnants',
-                value: numerize(gw.winnerCount),
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.winnersField.name', interaction),
+                value: translator.translate('commands.admins.gw.replies.analyze.info.fields.winnersField.value', interaction, { winners: gw.winnerCount }),
                 inline: true
             },
             {
-                name: 'Participants',
-                value: numerize(gw.participants.length),
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.participants.name', interaction),
+                value: translator.translate('commands.admins.gw.replies.analyze.info.fields.participants.value', interaction, {
+                    participants: gw.participants.length
+                }),
                 inline: true
             }
         );
         if (gw.ended) {
             embed.addFields({
-                name: 'Gagnants',
+                name: translator.translate('commands.admins.gw.replies.analyze.info.fields.winners.name', interaction),
                 value:
                     gw.winners.length > 0
-                        ? `${numerize(gw.winners.length)} gagnant${plurial(gw.winners.length)} ( sur ${numerize(
-                              gw.participants.length
-                          )} participant${plurial(gw.participants.length)}, soit ${Math.floor(
-                              (gw.winners.length * 100) / gw.participants.length
-                          )}% des participants ) : ${gw.winners.map(pingUser).join(' ')}`
-                        : 'Aucun gagnants',
+                        ? translator.translate('commands.admins.gw.replies.analyze.info.fields.winners.value', interaction, {
+                            count: gw.winners.length,
+                            participants: gw.participants.length,
+                            ratio: Math.floor((gw.winners.length * 100) / gw.participants.length),
+                            map: gw.winners.map(pingUser).join(' ')
+                        })
+                        : translator.translate('commands.admins.gw.replies.analyze.info.fields.winners.none', interaction),
                 inline: false
             });
         }
@@ -1075,7 +1065,7 @@ export default new DraverCommand({
         for (const roleList of ['bonus_roles', 'required_roles', 'denied_roles']) {
             if (gw[roleList].length > 0) {
                 embed.addFields({
-                    name: names[roleList],
+                    name: translator.translate(`commands.admins.gw.replies.analyze.info.names.${roleList}`, interaction),
                     value: gw[roleList].map(pingRole).join(' '),
                     inline: true
                 });
@@ -1097,8 +1087,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de giveaway')
-                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setTitle(translator.translate('commands.admins.gw.replies.analyze.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.analyze.no.description', interaction, { id }))
                             .setColor(evokerColor(interaction.guild))
                     ],
                     ephemeral: true
@@ -1109,8 +1099,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Giveaway non-terminé')
-                            .setDescription(`Le giveaway n'est pas terminé`)
+                            .setTitle(translator.translate('commands.admins.gw.replies.reroll.running.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.reroll.running.description', interaction))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -1123,11 +1113,13 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Reroll')
+                .setTitle(translator.translate('commands.admins.gw.replies.reroll.confirm.title', interaction))
                 .setDescription(
-                    `Vous allez reroll [le giveaway](${getMsgUrl(gw)}) d'identifiant \`${
-                        gw.message_id
-                    }\` dans ${pingChan(gw.channel_id)}.\nVoulez-vous continuer ?`
+                    translator.translate('commands.admins.gw.replies.reroll.confirm.description', interaction, {
+                        url: getMsgUrl(gw),
+                        id: gw.message_id,
+                        channel: pingChan(gw.channel_id)
+                    })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -1145,8 +1137,10 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Reroll échoué')
-                            .setDescription(`Le reroll de [ce giveaway](${getMsgUrl(gw)}) a échoué`)
+                            .setTitle(translator.translate('commands.admins.gw.replies.reroll.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.reroll.error.description', interaction, {
+                                url: getMsgUrl(gw)
+                            }))
                             .setColor(evokerColor(interaction.guild))
                     ],
                     components: []
@@ -1157,8 +1151,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Giveaway rerollé')
-                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été reroll`)
+                        .setTitle(translator.translate('commands.admins.gw.replies.reroll.rerolled.title', interaction))
+                        .setDescription(translator.translate('commands.admins.gw.replies.reroll.rerolled.description', interaction, { url: getMsgUrl(gw) }))
                 ],
                 components: []
             })
@@ -1173,8 +1167,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de giveaway')
-                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setTitle(translator.translate('commands.admins.gw.replies.analyze.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.analyze.no.description', interaction, { id }))
                             .setColor(evokerColor(interaction.guild))
                     ],
                     ephemeral: true
@@ -1185,9 +1179,9 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Giveaway terminé')
+                            .setTitle(translator.translate('commands.admins.gw.replies.end.ended.title', interaction))
                             .setDescription(
-                                `Le giveaway est déjà terminé.\nSi vous voulez changer les gagnants, utilisez plutôt \`/giveaway reroll\``
+                                translator.translate('commands.admins.gw.replies.end.ended.description', interaction)
                             )
                             .setColor(evokerColor(interaction.guild))
                     ],
@@ -1206,11 +1200,12 @@ export default new DraverCommand({
             user: interaction.user,
             embed: basicEmbed(interaction.user)
                 .setDescription(
-                    `Vous allez terminer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(
-                        gw.channel_id
-                    )}.\nVoulez-vous continuer ?`
+                    translator.translate('commands.admins.gw.replies.end.confirm.description', interaction, {
+                        url: getMsgUrl(gw),
+                        channel: pingChan(gw.channel_id)
+                    })
                 )
-                .setTitle('Confirmation')
+                .setTitle(translator.translate('commands.admins.gw.replies.end.confirm.title', interaction))
         }).catch(() => {})) as confirmReturn;
 
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
@@ -1233,8 +1228,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Terminaison échouée')
-                            .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être terminé`)
+                            .setTitle(translator.translate('commands.admins.gw.replies.end.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replieS.end.error.description', interaction, { url: getMsgUrl(gw) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -1243,8 +1238,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Giveaway terminé')
-                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été terminé`)
+                        .setTitle(translator.translate('commands.admins.gw.replies.end.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.gw.replies.end.done.description', interaction, {
+                            url: getMsgUrl(gw)
+                        }))
                 ]
             })
             .catch(() => {});
@@ -1258,8 +1255,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Pas de giveaway')
-                            .setDescription(`Il n'y a pas de giveaway d'identifiant \`${id}\``)
+                            .setTitle(translator.translate('commands.admins.gw.replies.analyze.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.analyze.no.description', interaction, { id }))
                             .setColor(evokerColor(interaction.guild))
                     ],
                     ephemeral: true
@@ -1277,11 +1274,12 @@ export default new DraverCommand({
             user: interaction.user,
             embed: basicEmbed(interaction.user)
                 .setDescription(
-                    `Vous allez supprimer [ce giveaway](${getMsgUrl(gw)}) dans ${pingChan(
-                        gw.channel_id
-                    )}.\nVoulez-vous continuer ?`
+                    translator.translate('commands.admins.gw.replies.delete.description', interaction, {
+                        url: getMsgUrl(gw),
+                        channel: pingChan(gw.channel_id)
+                    })
                 )
-                .setTitle('Confirmation')
+                .setTitle(translator.translate('commands.admins.replies.delete.confirm.title', interaction))
         }).catch(() => {})) as confirmReturn;
 
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
@@ -1304,8 +1302,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Terminaison échouée')
-                            .setDescription(`[Le giveaway](${getMsgUrl(gw)}) n'a pas pu être supprimé`)
+                            .setTitle(translator.translate('commands.admins.gw.replies.delete.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.gw.replies.delete.error.description', interaction, { url: getMsgUrl(gw) }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -1314,8 +1312,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Giveaway terminé')
-                        .setDescription(`[Le giveaway](${getMsgUrl(gw)}) a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.gw.replies.delete.deleted.title', interaction))
+                        .setDescription(translator.translate('commands.admins.gw.replies.delete.deleted.description', interaction, { url: getMsgUrl(gw) }))
                 ]
             })
             .catch(() => {});
