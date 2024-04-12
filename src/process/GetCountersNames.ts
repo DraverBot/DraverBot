@@ -77,7 +77,7 @@ export default new Process(
                     .setCustomId(ButtonIds.EditCounterNamesModal)
                     .setComponents(
                         enabled.map((x) => {
-                            const info = countersManager.data.find((y) => y.id === x.id);
+                            const info = countersManager.data(ctx).find((y) => y.id === x.id);
 
                             return row(
                                 new TextInputBuilder()

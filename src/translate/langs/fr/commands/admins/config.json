@@ -1,0 +1,118 @@
+{
+    "name": "configurer",
+    "description": "Configure un paramètre de Draver",
+    "options": {
+        "setting": {
+            "name": "paramètre",
+            "description": "Configure un paramètre du serveur",
+            "options": {
+                "setting": {
+                    "name": "paramètre",
+                    "description": "Paramètre à configurer"
+                }
+            }
+        },
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des paramètres",
+            "options": {
+                "setting": {
+                    "name": "paramètre",
+                    "description": "Paramètre que vous voulez voir"
+                }
+            }
+        },
+        "variables": {
+            "name": "variables",
+            "description": "Affiche les variables de configuration",
+            "options": {
+                "variable": {
+                    "name": "variable",
+                    "description": "La liste de variables que vous voulez voir"
+                }
+            }
+        }
+    },
+    "replies": {
+        "variables": {
+            "title": "Variables de configuration",
+            "description": "Utilisez la liste de variables ci-dessous pour configurer, dans les messages du bot, des variables qui seront remplacées\n\n{map}"
+        },
+        "groups": {
+            "title": "Liste des groupes",
+            "description": "Il y a {count} groupes de variables configurables :\n{groups}"
+        },
+        "configuring": {
+            "title": "État",
+            "description": "Vous allez configurer le paramètre **{param}**.\nVoulez-vous l'activer ou le désactiver ?"
+        },
+        "configured": {
+            "title": "Paramètre configuré",
+            "description": "Le paramètre **{name}** a été configuré sur ```{value}```",
+            "final": "Le paramètre **{name}** a été configuré sur {value}",
+            "booleans": {
+                "enabled": "activé",
+                "disabled": "désactivé"
+            },
+            "radiusAlert": "\n⚠️\n> Si le rayon que vous avez définit est trop grand, l'image ne sera pas envoyée"
+        },
+        "channel": {
+            "title": "Salon",
+            "description": "Vous êtes en train de configurer le paramètre **{name}**.\nQuel est le salon que vous souhaitez assigner à ce paramètre ?\n\n💡\n> Répondez par un nom, un identifiant ou une mention\n> Répondez par `cancel` pour annuler"
+        },
+        "channelling": {
+            "title": "Confirmation",
+            "description": "Vous allez configurer le paramètre **{name}** sur le salon {channel}"
+        },
+        "rolling": {
+            "title": "Rôle",
+            "description": "Vous êtes en train de configurer le paramètre **{name}**.\nQuel est le rôle que vous souhaitez assigner à ce paramètre ?\n\n💡\n> Répondez par un nom, un identifiant ou une mention.\n> Répondez par `cancel` pour annuler"
+        },
+        "roleConfirm": {
+            "title": "Confirmation",
+            "description": "Vous allez le paramètre **{name}** sur le rôle {role}"
+        },
+        "askImage": {
+            "title": "Image",
+            "description": "Vous configurez **{name}**.\nEnvoyez une image dans le salon, dont les dimensions sont, au maximum, **1100 par 700 pixels**, et elle ne d oit pas dépasser **1Mo**.\n\n💡\n> Vous avez deux minutes.\n> Répondez par `cancel` pour annuler"
+        },
+        "imaging": {
+            "title": "Confirmation",
+            "description": "Vous allez configurer le paramètre **{name}** sur cette image"
+        },
+        "list": {
+            "noImage": {
+                "title": "Image non configurée",
+                "description": "Ce paramètre n'est pas configuré"
+            },
+            "parameter": {
+                "title": "Paramètre {name}",
+                "field": {
+                    "name": "État",
+                    "value": "```{value}```"
+                }
+            },
+            "list": {
+                "title": "Configurations",
+                "description": "Voici les configurations effectuées"
+            }
+        }
+    },
+    "buttons": {
+        "enable": "Activer",
+        "disable": "Désactiver"
+    },
+    "modals": {
+        "config": {
+            "title": "Configuration",
+            "value": {
+                "label": "Valeur",
+                "placeholder": "Entrez ici la valeur de {param} ({type})"
+            }
+        }
+    },
+    "types": {
+        "string": "texte",
+        "number": "nombre"
+    }
+}

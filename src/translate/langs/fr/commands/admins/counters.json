@@ -1,0 +1,66 @@
+{
+    "name": "compteurs",
+    "description": "Configure les compteurs du serveur",
+    "options": {
+        "enable": {
+            "name": "activer",
+            "description": "Active les compteurs sur le serveur"
+        },
+        "edit": {
+            "name": "modifier",
+            "description": "Modifie les compteurs"
+        },
+        "disable": {
+            "name": "désactiver",
+            "description": "Désactive tous les compteurs"
+        }
+    },
+    "replies": {
+        "enable": {
+            "enabled": {
+                "title": "Compteurs activés",
+                "description": "Les compteurs sont déjà activés sur ce serveur.\nSi vous voulez modifier les compteurs, utilisez plutôt `/compteurs modifier`."
+            },
+            "edited": {
+                "title": "Compteurs activés",
+                "description": "Les compteurs ont été activés entre-temps sur le serveur.\nSi vous voulez modifier les compteurs, utilisez plutôt `/compteurs modifier`."
+            },
+            "configured": {
+                "title": "Compteurs",
+                "description": "Les compteurs ont été mis en place"
+            }
+        },
+        "edit": {
+            "question": {
+                "title": "Modification",
+                "description": "Que voulez-vous faire ?"
+            },
+            "choice": {
+                "title": "Compteurs",
+                "description": "Choisissez les compteurs que vous voulez activer. Tous les autres seront désactivés."
+            },
+            "edited": {
+                "title": "Compteurs modifiés",
+                "description": "Les compteurs ont été modifiés.\n**{count}** compteurs sont maintenant activés."
+            },
+            "renamed": {
+                "title": "Noms modifiés",
+                "description": "Les noms des compteurs ont correctement été modifiés"
+            }
+        },
+        "disable": {
+            "disabled": {
+                "title": "Compteurs désactivés",
+                "description": "Les compteurs sont déjà désactivés.\nSi vous voulez désactiver le système entier, utilisez plutôt le module (`/module configurer`)"
+            },
+            "done": {
+                "title": "Compteurs désactivés",
+                "description": "Les compteurs ont été désactivés"
+            }
+        }
+    },
+    "buttons": {
+        "edit": "Modifier les compteurs actifs",
+        "rename": "Renommer les compteurs"
+    }
+}

@@ -4,6 +4,8 @@ import { CategoryChannel, ChannelType, Client, Collection, Guild, GuildMember } 
 import query from '../utils/query';
 import { CounterId, counters, DatabaseTables } from '../typings/database';
 import { notNull } from '../utils/toolbox';
+import { langResolvable } from '../typings/core';
+import { translator } from '../translate/translate';
 
 export class CountersManager {
     private client: AmethystClient;
@@ -15,21 +17,30 @@ export class CountersManager {
         this.start();
     }
 
-    public get data() {
+    public data(lang: langResolvable, translate = true) {
+        if (!translate) {
+            return [
+                CounterId.All, CounterId.Humans, CounterId.Bots
+            ].map((x) => ({
+                name: null,
+                description: null,
+                id: x
+            }))
+        }
         return [
             {
-                name: 'Membres',
-                description: 'Tous les membres du serveur',
+                name: translator.translate('contents.global.counters.members.name', lang),
+                description: translator.translate('contents.global.counters.members.description', lang),
                 id: CounterId.All
             },
             {
-                name: 'Utilisateurs',
-                description: 'Tous les utilisateurs du serveur',
+                name: translator.translate('contents.global.counters.users.name', lang),
+                description: translator.translate('contents.global.counters.users.description', lang),
                 id: CounterId.Humans
             },
             {
-                name: 'Bots',
-                description: 'Tous les bots du serveur',
+                name: translator.translate('contents.global.counters.bots.name', lang),
+                description: translator.translate('contents.global.counters.bots.description', lang),
                 id: CounterId.Bots
             }
         ];

@@ -143,10 +143,10 @@ export default new Process(
                                         row(
                                             new StringSelectMenuBuilder()
                                                 .setCustomId(ButtonIds.SelectCounters)
-                                                .setMaxValues(countersManager.data.length)
+                                                .setMaxValues(countersManager.data(ctx, false).length)
                                                 .setMinValues(1)
                                                 .setOptions(
-                                                    countersManager.data.map((x) => ({
+                                                    countersManager.data(ctx).map((x) => ({
                                                         label: x.name,
                                                         description: x.description,
                                                         value: x.id.toString()
@@ -167,7 +167,7 @@ export default new Process(
                             .setCustomId(ButtonIds.NameCountersModal)
                             .setComponents(
                                 cache.selected.map((x) => {
-                                    const data = countersManager.data.find((y) => y.id === x);
+                                    const data = countersManager.data(ctx).find((y) => y.id === x);
                                     return row(
                                         new TextInputBuilder()
                                             .setLabel(capitalize(data.name))
@@ -253,10 +253,10 @@ export default new Process(
                                     row(
                                         new StringSelectMenuBuilder()
                                             .setCustomId(ButtonIds.SelectCounters)
-                                            .setMaxValues(countersManager.data.length)
+                                            .setMaxValues(countersManager.data(ctx, false).length)
                                             .setMinValues(1)
                                             .setOptions(
-                                                countersManager.data.map((x) => ({
+                                                countersManager.data(ctx).map((x) => ({
                                                     label: x.name,
                                                     description: x.description,
                                                     value: x.id.toString()
@@ -284,7 +284,7 @@ export default new Process(
                                         .setTimestamp(end)
                                         .setTitle('Noms')
                                         .setDescription(
-                                            `Vous avez sélectionné **${cache.selected.length}** compteur${plurial(cache.selected)} ( ${cache.selected.map((x) => countersManager.data.find((y) => y.id === x).name).join(', ')} )\nAppuyez sur le bouton pour configurer leur nom.\n\n💡\n> Pour faire apparaitre le compte du compteur, écrivez \`{cmp}\` dans le nom.\n> Exemple : \`Membres : {cmp}\` affichera ${((count: number) => `\`Membres : ${count.toLocaleString()}\` si il y a **${count.toLocaleString()}** membres`)(random({ max: 2600, min: 120 }))}`
+                                            `Vous avez sélectionné **${cache.selected.length}** compteur${plurial(cache.selected)} ( ${cache.selected.map((x) => countersManager.data(ctx).find((y) => y.id === x).name).join(', ')} )\nAppuyez sur le bouton pour configurer leur nom.\n\n💡\n> Pour faire apparaitre le compte du compteur, écrivez \`{cmp}\` dans le nom.\n> Exemple : \`Membres : {cmp}\` affichera ${((count: number) => `\`Membres : ${count.toLocaleString()}\` si il y a **${count.toLocaleString()}** membres`)(random({ max: 2600, min: 120 }))}`
                                         )
                                 ],
                                 components: [

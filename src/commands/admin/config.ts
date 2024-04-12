@@ -35,36 +35,32 @@ import {
 } from '../../utils/toolbox';
 import { variableName, variablesData, variablesGroupNames } from '../../data/vars';
 import GetImage from '../../process/GetImage';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'configurer',
+    ...translator.commandData('commands.admins.config'),
     module: 'config',
-    description: 'Configure un paramètre de Draver',
     preconditions: [preconditions.GuildOnly],
     permissions: ['Administrator'],
     options: [
         {
-            name: 'paramètre',
-            description: 'Configure un paramètre du serveur',
+            ...translator.commandData('commands.admins.config.options.setting'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'paramètre',
+                    ...translator.commandData('commands.admins.config.options.setting.options.setting'),
                     type: ApplicationCommandOptionType.String,
                     required: true,
-                    description: 'Paramètre à configurer',
                     autocomplete: true
                 }
             ]
         },
         {
-            name: 'liste',
-            description: 'Affiche la liste des paramètres',
+            ...translator.commandData('commands.admins.config.options.list'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'paramètre',
-                    description: 'Paramètre que vous voulez voir',
+                    ...translator.commandData('commands.admins.config.options.list.options.setting'),
                     required: false,
                     autocomplete: true,
                     type: ApplicationCommandOptionType.String
@@ -72,13 +68,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'variables',
-            description: 'Affiche les variables de configuration',
+            ...translator.commandData('commands.admins.config.options.variables'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'variable',
-                    description: 'Liste de variables que vous voulez voir',
+                    ...translator.commandData('commands.admins.config.options.variables.options.variable'),
                     required: false,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
@@ -95,11 +89,13 @@ export default new DraverCommand({
             const variables = variablesData[group as variableName];
 
             const embed = basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Variables de configuration')
+                .setTitle(translator.translate('commands.admins.config.replies.variables.title', interaction))
                 .setDescription(
-                    `Utilisez la liste de variables ci-dessous pour configurer, dans les messages du bot, des variables qui seront remplacées\n\n${variables
-                        .map((x) => `\`{${x.x}}\` : ${x.name}`)
-                        .join('\n')}`
+                    translator.translate('commands.admins.config.replies.variables.description', interaction, {
+                        map: variables
+                        .map((x) => `\`{${x.x}}\` : ${translator.translate(`contents.global.variables.variables.${group}.${x.id}`, interaction)}`)
+                        .join('\n')
+                    })
                 );
             interaction
                 .reply({
@@ -112,19 +108,19 @@ export default new DraverCommand({
         interaction.reply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Liste des groupes')
+                    .setTitle(translator.translate('commands.admins.config.replies.groups.title', interaction))
                     .setDescription(
-                        `IL y a ${numerize(variablesGroupNames.length)} groupe${plurial(
-                            variablesGroupNames.length
-                        )} de variables configurable${plurial(variablesGroupNames.length)} :\n${variablesGroupNames
-                            .map((x) => capitalize(x.name))
-                            .join('\n')}`
+                        translator.translate(`commands.admins.config.replies.groups.description`, interaction, {
+                            count: variablesGroupNames.length,
+                            groups: variablesGroupNames.map(x => capitalize(translator.translate(`contents.global.variables.groups.${x.id}`, interaction))).join('\n')
+                        })
                     )
             ]
         });
     }
     if (subcommand === 'paramètre') {
         const parameter = configsData[options.getString('paramètre') as keyof configKeys] as configType;
+        const paramName = translator.translate(`contents.global.configs.${parameter.value}`, interaction);
 
         let value: string | number | boolean | Buffer = '';
 
@@ -133,19 +129,21 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle('État')
+                    .setTitle(translator.translate('commands.admins.config.replies.configuring.title', interaction))
                     .setDescription(
-                        `Vous allez configurer le paramètre **${parameter.name}**.\nVoulez-vous l'activer ou le désactiver ?`
+                        translator.translate('commands.admins.config.replies.configuring.description', interaction, {
+                            param: paramName
+                        })
                     ),
                 components: [
                     row(
                         buildButton({
-                            label: 'Activer',
+                            label: translator.translate('commands.admins.config.buttons.enable', interaction),
                             style: 'Success',
                             id: 'yes'
                         }),
                         buildButton({
-                            label: 'Désactiver',
+                            label: translator.translate('commands.admins.config.buttons.disable', interaction),
                             style: 'Danger',
                             id: 'no'
                         })
@@ -164,16 +162,17 @@ export default new DraverCommand({
             value = reply.value;
         } else if (parameter.type === 'string' || parameter.type === 'number') {
             const modal = new ModalBuilder()
-                .setTitle('Configuration')
+                .setTitle(translator.translate('commands.admins.config.modals.config.title', interaction))
                 .setCustomId('config-modal')
                 .setComponents(
                     row<TextInputBuilder>(
                         new TextInputBuilder()
-                            .setLabel(`Valeur`)
+                            .setLabel(translator.translate('commands.admins.config.modals.config.value.label', interaction))
                             .setPlaceholder(
-                                `Entrez ici la valeur de ${parameter.name} ( ${
-                                    parameter.type === 'number' ? 'nombre' : 'texte'
-                                } )`
+                                translator.translate('commands.admins.config.modals.config.value.placeholder', interaction, {
+                                    param: paramName,
+                                    type: translator.translate(`commands.admins.config.types.${parameter.type}`, interaction)
+                                })
                             )
                             .setStyle(TextInputStyle.Paragraph)
                             .setRequired(true)
@@ -217,9 +216,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Paramètre configuré')
+                            .setTitle(translator.translate('commands.admins.config.replies.configured.title', interaction))
                             .setDescription(
-                                `Le paramètre **${parameter.name}** a été configuré sur \`\`\`${value}\`\`\``
+                                translator.translate('commands.admins.config.replies.configured.description', interaction, {
+                                    name: paramName,
+                                    value: value
+                                })
                             )
                     ],
                     components: []
@@ -231,9 +233,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Salon')
+                            .setTitle(translator.translate('commands.admins.config.replies.channel.title', interaction))
                             .setDescription(
-                                `Vous êtes en train de configurer le paramètre **${parameter.name}**.\nQuel est le salon que vous souhaiter assigner à ce paramètre ?\n\n> Répondez par un nom, un identifiant ou une mention\n> Répondez par \`cancel\` pour annuler`
+                                translator.translate('commands.admins.config.replies.channel.description', interaction, {
+                                    name: paramName
+                                })
                             )
                             .setColor('Grey')
                     ],
@@ -265,12 +269,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Salon invalide')
-                                .setDescription(
-                                    `Aucun salon n'a été trouvé, réessayez avec un identifiant, un nom ou une mention`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.invalidChannel(interaction.member as GuildMember, interaction)
                         ]
                     })
                     .catch(() => {});
@@ -278,14 +277,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Salon invalide')
-                                .setDescription(
-                                    `Le salon ${pingChan(channel)} n'est pas un salon textuel.\nOr, le paramètre **${
-                                        parameter.name
-                                    }** n'est configurable que sur un salon textuel`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.invalidChannelType(interaction.member as GuildMember, [ChannelType.GuildText], interaction)
                         ]
                     })
                     .catch(() => {});
@@ -294,9 +286,12 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle('Confirmation')
+                    .setTitle(translator.translate('commands.admins.config.replies.channelling.title', interaction))
                     .setDescription(
-                        `Vous allez configurer le paramètre **${parameter.name}** sur le salon ${pingChan(channel)}`
+                        translator.translate('commands.admins.config.replies.channelling.description', interaction, {
+                            name: paramName,
+                            channel: pingChan(channel)
+                        })
                     )
             }).catch(() => {})) as confirmReturn;
 
@@ -314,9 +309,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Rôle')
+                            .setTitle(translator.translate('commands.admins.config.replies.rolling.title', interaction))
                             .setDescription(
-                                `Vous êtes en train de configurer le paramètre **${parameter.name}**.\nQuel est le rôle que vous souhaiter assigner à ce paramètre ?\n\n> Répondez par un nom, un identifiant ou une mention\n> Répondez par \`cancel\` pour annuler`
+                                translator.translate('commands.admins.config.replies.rolling.description', interaction, {
+                                    name: paramName
+                                })
                             )
                             .setColor('Grey')
                     ],
@@ -348,12 +345,7 @@ export default new DraverCommand({
                 return interaction
                     .editReply({
                         embeds: [
-                            basicEmbed(interaction.user)
-                                .setTitle('Rôle invalide')
-                                .setDescription(
-                                    `Aucun rôle n'a été trouvé, réessayez avec un identifiant, un nom ou une mention`
-                                )
-                                .setColor(evokerColor(interaction.guild))
+                            replies.noRole(interaction.member as GuildMember, interaction)
                         ]
                     })
                     .catch(() => {});
@@ -372,9 +364,12 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle('Confirmation')
+                    .setTitle(translator.translate('commands.admins.config.replies.roleConfirm.title', interaction))
                     .setDescription(
-                        `Vous allez configurer le paramètre **${parameter.name}** sur le rôle ${pingRole(role)}`
+                        translator.translate('commands.admins.config.replies.roleConfirm.decsription', interaction, {
+                            name: paramName,
+                            role: pingRole(role)
+                        })
                     )
             }).catch(() => {})) as confirmReturn;
 
@@ -392,9 +387,11 @@ export default new DraverCommand({
                 user: interaction.user,
                 interaction,
                 embed: basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle(`Image`)
+                    .setTitle(translator.translate('commands.admins.config.replies.askImage.title', interaction))
                     .setDescription(
-                        `Vous configurez **${parameter.name}**.\nEnvoyez une image dans le salon, dont les dimensions sont, au maximum, **1100 par 700 pixels**, et elle ne doit pas dépasser 1Mo\n\n> Vous avez deux minutes\n> Répondez par \`cancel\` pour annuler`
+                        translator.translate('commands.admins.config.replies.askImage.description', interaction, {
+                            name: paramName
+                        })
                     )
             }).catch(log4js.trace);
 
@@ -409,8 +406,10 @@ export default new DraverCommand({
                 interaction,
                 user: interaction.user,
                 embed: basicEmbed(interaction.user)
-                    .setTitle('Confirmation')
-                    .setDescription(`Vous allez configurer le paramètre **${parameter.name}** sur cette image`)
+                    .setTitle(translator.translate('commands.admins.config.replies.imaging.title', interaction))
+                    .setDescription(translator.translate('commands.admins.config.replies.imaging.description', interaction, {
+                        name: paramName
+                    }))
                     .setImage(image.url)
             }).catch(() => {})) as confirmReturn;
 
@@ -440,25 +439,13 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Paramètre configuré')
+                        .setTitle(translator.translate('commands.admins.config.replies.configured.title', interaction))
                         .setDescription(
-                            `Le paramètre **${parameter.name}** a été configuré sur ${
-                                parameter.type === 'channel'
-                                    ? pingChan(value as string)
-                                    : parameter.type === 'role'
-                                      ? pingRole(value as string)
-                                      : parameter.type === 'image'
-                                        ? 'cette image'
-                                        : parameter.type === 'boolean'
-                                          ? value
-                                              ? 'activé'
-                                              : 'désactivé'
-                                          : '```' + value + '```'
-                            }${
-                                parameter.value.includes('radius')
-                                    ? `\n⚠️\n> Si le rayon que vous avez définit est trop grand, l'image ne sera pas envoyée`
-                                    : ''
-                            }`
+                            translator.translate('commands.admins.config.replies.configured.final', interaction, {
+                                name: paramName,
+                                value: parameter.type === 'channel' ? pingChan(value as string) : parameter.type === 'role' ? pingRole(value as string) :
+                                parameter.type === 'image' ? 'cette image' : parameter.type === 'boolean' ? translator.translate(`commands.admins.config.replies.configured.booleans.${value ? 'enabled' : 'disabled'}`, interaction) : '```' + value + '```'
+                            }) + parameter.value.includes('radius') ? translator.translate('commands.admins.config.replies.configured.radiusAlert', interaction) : ''
                         )
                 ],
                 components: [],
@@ -471,14 +458,16 @@ export default new DraverCommand({
 
         if (parameter) {
             const value = configsManager.getValue(interaction.guild.id, parameter.value);
+            const paramName = translator.translate(`contents.global.configs.${parameter.value}`, interaction);
+
             if (parameter.type === 'image') {
                 if (!value)
                     return interaction
                         .reply({
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Image non configurée')
-                                    .setDescription(`Ce paramètre n'est pas configuré`)
+                                    .setTitle(translator.translate('commands.admins.config.replies.list.noImage.title', interaction))
+                                    .setDescription(translator.translate('commands.admins.config.replies.list.noImage.description', interaction))
                             ],
                             ephemeral: true
                         })
@@ -493,16 +482,17 @@ export default new DraverCommand({
             return interaction.reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle(`Paramètre ${parameter.name}`)
-                        .setDescription(parameter.description)
+                        .setTitle(translator.translate('commands.admins.config.replies.list.parameter.title', interaction, { name: paramName }))
+                        .setDescription(translator.translate(`contents.global.configs.${parameter.value}.description`, interaction))
                         .setFields({
-                            name: 'État',
+                            name: translator.translate('commands.admins.config.replies.list.parameter.field.name', interaction),
                             value:
                                 parameter.type === 'boolean'
-                                    ? capitalize(value ? 'activé' : 'désactivé')
+                                    ? capitalize(translator.translate(`commands.admins.config.configured.booleans.${value ? 'enabled' : 'disabled'}`, interaction))
                                     : parameter.type === 'channel'
                                       ? pingChan(value as string)
-                                      : `\`\`\`${value}\`\`\``,
+                                      : parameter.type === 'role' ? pingRole(value as string)
+                                      : translator.translate('commands.admins.config.replies.list.parameter.field.value', interaction, { value: value as string }),
                             inline: false
                         })
                 ]
@@ -510,8 +500,8 @@ export default new DraverCommand({
         }
         const embed = () =>
             basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Configurations')
-                .setDescription(`Voici les configurations effectuées`);
+                .setTitle(translator.translate('commands.admins.config.replies.list.list.title', interaction))
+                .setDescription(translator.translate('commands.admins.config.replies.list.list.description', interaction));
 
         const embeds = [embed()];
         Object.keys(configsData)
@@ -538,15 +528,12 @@ export default new DraverCommand({
                         name: capitalize(parameter.name),
                         value:
                             notNull(value) && value !== ''
-                                ? parameter.type === 'number'
-                                    ? numerize(parseInt(value as string))
-                                    : parameter.type === 'boolean'
-                                      ? value
-                                          ? 'activé'
-                                          : 'désactivé'
+                                ? parameter.type === 'boolean'
+                                      ? translator.translate(`commands.admins.config.replies.configured.booleans.${value ? 'enabled' : 'disabled'}`, interaction)
                                       : parameter.type === 'channel'
                                         ? pingChan(value as string)
-                                        : `\`\`\`${value}\`\`\``
+                                        : parameter.type === 'role' ? pingRole(value as string)
+                                        : translator.translate('commands.admins.config.replies.list.parameter.field.value', interaction, { value: value as string })
                                 : 'N/A',
                         inline: parameter.type === 'string' ? false : true
                     }

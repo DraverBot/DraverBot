@@ -1,0 +1,14 @@
+{
+    "members": {
+        "name": "Membres",
+        "description": "Tous les membres du serveur"
+    },
+    "users": {
+        "name": "Utilisateur",
+        "description": "Tous les utilisateurs du serveur"
+    },
+    "bots": {
+        "name": "Bots",
+        "description": "Tous les bots du serveur"
+    }
+}

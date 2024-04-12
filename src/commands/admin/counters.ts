@@ -9,27 +9,24 @@ import replies from '../../data/replies';
 import { ButtonIds } from '../../typings/buttons';
 import { CounterId } from '../../typings/database';
 import GetCountersNames from '../../process/GetCountersNames';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'compteurs',
-    description: 'Configure les compteurs du serveur',
+    ...translator.commandData('commands.admins.counters'),
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],
     module: 'counters',
     options: [
         {
-            name: 'activer',
-            description: 'Active les compteurs sur le serveur',
+            ...translator.commandData('commands.admins.counters.options.enable'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'modifier',
-            description: 'Modifie les compteurs',
+            ...translator.commandData('commands.admins.counters.options.edit'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'désactiver',
-            description: 'Désactive tous les compteurs',
+            ...translator.commandData('commands.admins.counters.options.disable'),
             type: ApplicationCommandOptionType.Subcommand
         }
     ]
@@ -42,9 +39,9 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Compteurs activés')
+                            .setTitle(translator.translate('commands.admins.counters.replies.enable.enabled.title', interaction))
                             .setDescription(
-                                `Les compteurs sont déjà activés sur ce serveur.\nSi vous voulez modifier les compteurs, utilisez plutôt \`/compteurs modifier\``
+                                translator.translate('commands.admins.counters.replies.enable.enabled.description', interaction)
                             )
                     ]
                 })
@@ -61,9 +58,9 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Compteurs activés')
+                            .setTitle(translator.translate('commands.admins.counters.replies.enable.edited.title', interaction))
                             .setDescription(
-                                `Les compteurs ont activés entre-temps sur ce serveur.\nSi vous voulez modifier les compteurs, utilisez plutôt \`/compteurs liste\``
+                                translator.translate('commands.admins.counters.replies.enable.edited.description', interaction)
                             )
                     ]
                 })
@@ -80,8 +77,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Compteurs')
-                        .setDescription(`Les compteurs ont été mis en place`)
+                        .setTitle(translator.translate('commands.admins.counters.replies.enable.configured.title', interaction))
+                        .setDescription(translator.translate('commands.admins.counters.replies.enable.configured.description', interaction))
                 ]
             })
             .catch(log4js.trace);
@@ -98,19 +95,19 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { questionMark: true })
-                        .setTitle('Modification')
-                        .setDescription(`Que voulez-vous faire ?`)
+                        .setTitle(translator.translate('commands.admins.counters.replies.edit.question.title', interaction))
+                        .setDescription(translator.translate('commands.admins.counters.replies.edit.question.description', interaction))
                 ],
                 fetchReply: true,
                 components: [
                     row(
                         buildButton({
-                            label: 'Modifier les compteurs activés',
+                            label: translator.translate('commands.admins.counters.buttons.edit', interaction),
                             style: 'Primary',
                             buttonId: 'EditActiveCounters'
                         }),
                         buildButton({
-                            label: 'Renommer les compteurs',
+                            label: translator.translate('commands.admins.counters.buttons.rename', interaction),
                             style: 'Secondary',
                             buttonId: 'EditCounterNames'
                         })
@@ -145,10 +142,10 @@ export default new DraverCommand({
             act.deferUpdate().catch(log4js.trace);
 
             const selector = new StringSelectMenuBuilder()
-                .setMaxValues(countersManager.data.length)
+                .setMaxValues(countersManager.data(interaction, false).length)
                 .setCustomId(ButtonIds.EditActiveCountersModal)
                 .setOptions(
-                    countersManager.data.map((x) => {
+                    countersManager.data(interaction).map((x) => {
                         const info = counter.channels.find((y) => y.id === x.id);
 
                         return {
@@ -165,9 +162,9 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { questionMark: true })
-                            .setTitle('Compteurs')
+                            .setTitle(translator.translate('commands.admins.counters.replies.edit.choice.title', interaction))
                             .setDescription(
-                                `Choisissez les compteurs que vous voulez activer. Tous les autres seront désactivés.`
+                                translator.translate('commands.admins.counters.replies.edit.choice.description', interaction)
                             )
                     ],
                     components: [row(selector)]
@@ -217,9 +214,11 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Compteurs modifiés')
+                            .setTitle(translator.translate('commands.admins.counters.replies.edit.edited.title', interaction))
                             .setDescription(
-                                `Les compteurs ont été modifiés.\n**${ids.length}** compteur${plurial(ids)} sont maintenant activés`
+                                translator.translate('commands.admins.counters.replies.edit.edited.description', interaction, {
+                                    count: ids.length
+                                })
                             )
                     ]
                 })
@@ -254,8 +253,8 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Noms modifié')
-                            .setDescription(`Les noms des compteurs ont correctement été modifiés`)
+                            .setTitle(translator.translate('commands.admins.counters.replies.edit.renamed.title', interaction))
+                            .setDescription(translator.translate('commands.admins.counters.replies.edit.renamed.description', interaction))
                     ]
                 })
                 .catch(log4js.trace);
@@ -268,9 +267,9 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Compteurs désactivés')
+                            .setTitle(translator.translate('commands.admins.counters.replies.disable.disabled.title', interaction))
                             .setDescription(
-                                `Les compteurs sont déjà désactivés.\nSi vous voulez désactiver le système entier, utilisez plutôt le module (\`/module configurer\`)`
+                                translator.translate('commands.admins.counters.replies.disable.disabled.description', interaction)
                             )
                     ]
                 })
@@ -288,8 +287,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Compteurs désactivés')
-                        .setDescription(`Les compteurs ont été désactivés`)
+                        .setTitle(translator.translate('commands.admins.counters.replies.disable.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.counters.replies.disable.done.description', interaction))
                 ]
             })
             .catch(log4js.trace);

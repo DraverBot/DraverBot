@@ -1,0 +1,45 @@
+{
+    "variables": {
+        "level": {
+            "user_mention": "mention de l'utilisateur",
+            "user_name": "nom de l'utilisateur",
+            "user_tag": "tag de l'utilisateur",
+            "user_id": "identifiant de l'utilisateur",
+            "channel_name": "nom du salon",
+            "channel_id": "identifiant du salon",
+            "channel_mention": "mention du salon",
+            "guild_name": "nom du serveur",
+            "user_level": "niveau de l'utilisateur",
+            "user_required": "messages requis pour le niveau suivant"
+        },
+        "greeting": {
+            "user_mention": "mention de l'utilisateur",
+            "user_name": "nom de l'utilisateur",
+            "user_tag": "tag de l'utilisateur",
+            "user_id": "identifiant de l'utilisateur",
+            "guild_name": "nom du serveur",
+            "guild_id": "identifiant du serveur",
+            "guild_count": "nombre de membres du serveur"
+        },
+        "invitations": {
+            "user_mention": "mention de l'utilisateur",
+            "user_name": "nom de l'utilisateur",
+            "user_tag": "tag de l'utilisateur",
+            "user_id": "identifiant de l'utilisateur",
+            "guild_name": "nom du serveur",
+            "guild_id": "identifiant du serveur",
+            "guild_count": "nombre de membres du serveur",
+            "inviter_mention": "mention de l'inviteur",
+            "inviter_name": "nom de l'inviteur",
+            "inviter_tag": "tag de l'inviteur",
+            "inviter_id": "identifiant de l'inviteur",
+            "inviter_invites": "nombre d'invitations de l'inviteur"
+        }
+    },
+    "groups": {
+        "level": "niveaux",
+        "greeting_joins": "arrivées",
+        "greeting_leaves": "départs",
+        "invites": "invitations"
+    }
+}

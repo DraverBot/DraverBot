@@ -62,10 +62,16 @@ export class Translator {
         return data;
     }
     public resolveLang(resolvable: langResolvable): string {
-        if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
-        if (resolvable instanceof BaseInteraction) return resolvable?.locale;
-        if (resolvable === 'default') return this._defaultLang;
-        return resolvable;
+        return ((lang: string) => {
+            if (lang === 'en-US' || lang === 'en-GB') return 'en'
+            if (lang === 'es-ES') return 'es'
+            return lang
+        })((() => {
+            if (resolvable instanceof Message) return resolvable.guild?.preferredLocale;
+            if (resolvable instanceof BaseInteraction) return resolvable?.locale;
+            if (resolvable === 'default') return this._defaultLang;
+            return resolvable;
+        })())
     }
     public translate(key: string, lang: langResolvable, opts: Record<string, string | number> = {}): string {
         const translation = this.resolveLang(lang);
