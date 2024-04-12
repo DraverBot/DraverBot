@@ -5,11 +5,11 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { basicEmbed } from '../../utils/toolbox';
 import replies from '../../data/replies';
 import { GuildMember } from 'discord.js';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'Reroll le giveaway',
+    ...translator.commandData('commands.giveaway.reroll'),
     module: 'giveaways',
-    description: 'Reroll le giveaway',
     permissions: ['ManageGuild'],
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setMessageContextRun(async ({ interaction, message, client }) => {
@@ -18,8 +18,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Giveaway invalide')
-                        .setDescription(`Ce n'est pas un giveaway`)
+                        .setTitle(translator.translate('commands.admins.reroll.invalid.title', interaction))
+                        .setDescription(translator.translate('commands.admins.reroll.invalid.description', interaction))
                 ],
                 ephemeral: true
             })

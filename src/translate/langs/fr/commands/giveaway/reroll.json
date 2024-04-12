@@ -1,0 +1,8 @@
+{
+    "name": "Reroll le giveaway",
+    "description": "Reroll le giveaway",
+    "invalid": {
+        "title": "Giveaway invalide",
+        "description": "Ce n'est pas un giveaway"
+    }
+}
