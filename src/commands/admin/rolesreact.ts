@@ -18,66 +18,57 @@ import { RoleReact } from '../../structures/RoleReact';
 import RoleReactConfigPanel from '../../process/RoleReactConfigPanel';
 import GetMessage from '../../process/GetMessage';
 import masterminds from '../../maps/masterminds';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'autorole',
+    ...translator.commandData('commands.admins.autorole'),
     module: 'administration',
-    description: 'Gère les rôles à réaction',
     options: [
         {
-            name: 'créer',
-            description: 'Créer un paneau de rôles à réactions',
+            ...translator.commandData('commands.admins.autorole.options.create'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'construction',
-                    description: 'Construit le panneau de rôles',
+                    ...translator.commandData('commands.admins.autorole.options.create.options.construct'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'titre',
-                            description: "Titre donné à l'embed",
+                            ...translator.commandData('commands.admins.autorole.options.create.options.construct.options.title'),
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             maxLength: 256
                         },
                         {
-                            name: 'description',
-                            description: "Description de l'embed",
+                            ...translator.commandData('commands.admins.autorole.options.create.options.construct.options.description'),
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             maxLength: 4096
                         },
                         {
-                            name: 'salon',
-                            description: 'Salon dans lequel le paneau sera envoyé',
+                            ...translator.commandData('commands.admins.autorole.options.create.options.construct.options.channel'),
                             required: true,
                             type: ApplicationCommandOptionType.Channel,
                             channelTypes: [ChannelType.GuildText, ChannelType.GuildAnnouncement]
                         },
                         {
-                            name: 'image',
-                            description: "Image donnée à l'embed",
+                            ...translator.commandData('commands.admins.autorole.options.create.options.construct.options.image'),
                             required: false,
                             type: ApplicationCommandOptionType.Attachment
                         }
                     ]
                 },
                 {
-                    name: 'message',
-                    description: 'Créer un panneau de rôle sur un message qui existe déjà',
+                    ...translator.commandData('commands.admins.autorole.options.create.options.message'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'titre',
-                            description: "Titre du panneau (si il n'y a pas d'embed)",
+                            ...translator.commandData('commands.admins.autorole.options.create.options.message.options.title'),
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             maxLength: 256
                         },
                         {
-                            name: 'description',
-                            description: "Description du panneau (si il n'y a pas d'embed)",
+                            ...translator.commandData('commands.admins.autorole.options.create.options.message.options.description'),
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             maxLength: 4096
@@ -87,13 +78,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'supprimer',
-            description: "Supprime un panel d'autorole",
+            ...translator.commandData('commands.admins.autorole.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'panneau',
-                    description: 'Panneau que vous voulez supprimer',
+                    ...translator.commandData('commands.admins.autorole.options.delete.options.panel'),
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     autocomplete: true
@@ -101,16 +90,14 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'liste',
-            description: 'Affiche la liste des rôles à réaction',
+            ...translator.commandData('commands.admins.autorole.options.list'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'panneau',
+                    ...translator.commandData('commands.admins.autorole.options.list.options.panel'),
                     type: ApplicationCommandOptionType.Integer,
                     required: false,
                     autocomplete: true,
-                    description: 'Panneau que vous voulez afficher en détails'
                 }
             ]
         }
@@ -131,8 +118,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Image invalide')
-                            .setDescription(`Veuillez envoyer une image valide`)
+                            .setTitle(translator.translate('commands.admins.autorole.replies.construct.image.title', interaction))
+                            .setDescription(translator.translate('commands.admins.autorole.replies.construct.image.description', interaction))
                     ],
                     ephemeral: true
                 })
@@ -164,8 +151,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Panneau crée')
-                        .setDescription(`Le paneau a été crée dans ${pingChan(channel)}`)
+                        .setTitle(translator.translate('commands.admins.autorole.replies.construct.create.title', interaction))
+                        .setDescription(translator.translate('commands.admins.autorole.replies.construct.create.description', interaction, {
+                            channel: pingChan(channel)
+                        }))
                 ],
                 components: []
             })
@@ -184,12 +173,14 @@ export default new DraverCommand({
         const confirmation = await confirm({
             interaction,
             embed: basicEmbed(interaction.user)
-                .setTitle('Suppression')
+                .setTitle(translator.translate('commands.admins.autorole.replies.delete.confirm.title', interaction))
                 .setDescription(
-                    `Êtes-vous sûr de vouloir supprimer le panneau ${resizeString({
-                        str: panel.title,
-                        length: 50
-                    })} ?\nLe message sera supprimé.`
+                    translator.translate('commands.admins.autorole.replies.delete.confirm.description', interaction, {
+                        title: resizeString({
+                            str: panel.title,
+                            length: 50
+                        })
+                    })
                 ),
             user: interaction.user
         }).catch(log4js.trace);
@@ -206,8 +197,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Supprimé')
-                        .setDescription(`Le panneau ${resizeString({ str: panel.title, length: 50 })} a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.autorole.replies.delete.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.autorole.replies.delete.done.description', interaction, {
+                            title: resizeString({ str: panel.title, length: 50 })
+                        }))
                 ],
                 components: []
             })
@@ -227,22 +220,24 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle(`Panneau ${resizeString({ str: panel.title, length: 100 })}`)
+                            .setTitle(translator.translate('commands.admins.autorole.replies.list.info.title', interaction, {
+                                title: resizeString({ str: panel.title, length: 100 })
+                            }))
                             .setFields(
-                                { name: 'Salon', value: pingChan(panel.channel_id), inline: true },
+                                { name: translator.translate('commands.admins.autorole.replies.list.info.channel', interaction), value: pingChan(panel.channel_id), inline: true },
                                 {
-                                    name: 'Rôles (bouttons)',
+                                    name: translator.translate('commands.admins.autorole.replies.list.info.buttons.name', interaction),
                                     value:
                                         roles.button.length === 0
-                                            ? 'Aucun rôle boutton'
+                                            ? translator.translate('commands.admins.autorole.replies.list.info.buttons.none', interaction)
                                             : roles.button.map((x) => `${x.emoji} ${pingRole(x.role_id)}`).join('\n'),
                                     inline: true
                                 },
                                 {
-                                    name: 'Rôles (menu)',
+                                    name: translator.translate('commands.admins.autorole.replies.list.info.menus.name', interaction),
                                     value:
                                         roles.menus.length === 0
-                                            ? 'Aucun rôle menu'
+                                            ? translator.translate('commands.admins.autorole.replies.list.info.menus.none', interaction)
                                             : roles.menus.map((x) => `${x.emoji} ${pingRole(x.role_id)}`).join('\n'),
                                     inline: true
                                 }
@@ -255,22 +250,22 @@ export default new DraverCommand({
         const list = rolesReact.getList(interaction.guild.id);
         const embed = () =>
             basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Rôles à réaction')
+                .setTitle(translator.translate('commands.admins.autorole.replies.list.list.title', interaction))
                 .setDescription(
-                    `Il y a **${numerize(list.size)}** panneau${plurial(list.size, {
-                        plurial: 'x'
-                    })} de rôles à réaction sur ${interaction.guild.name}`
+                    translator.translate('commands.admins.autorole.replies.list.list.description', interaction, {
+                        count: list.size,
+                        name: interaction.guild.name
+                    })
                 );
         const mapper = (embed: EmbedBuilder, item: RoleReact) =>
             embed.addFields({
                 name: resizeString({ str: item.title, length: 100 }),
-                value: `${numerize(item.ids.length)} rôle${plurial(item.ids)} ( ${numerize(
-                    item.ids.filter((x) => x.type === 'buttons').length
-                )} boutton${plurial(item.ids.filter((x) => x.type === 'buttons').length)}, ${numerize(
-                    item.ids.filter((x) => x.type === 'selectmenu').length
-                )} menu${plurial(item.ids.filter((x) => x.type === 'selectmenu').length)} ) dans ${pingChan(
-                    item.channel_id
-                )}`
+                value: translator.translate('commands.admins.autorole.replies.list..list.mapper', interaction, {
+                    count: item.ids.length,
+                    buttons: item.ids.filter(x => x.type === 'buttons').length,
+                    menus: item.ids.filter(x => x.type === 'selectmenu').length,
+                    channel: pingChan(item.channel_id)
+                })
             });
         if (list.size <= 5) {
             const em = embed();
@@ -302,12 +297,7 @@ export default new DraverCommand({
                                 c.type
                             ),
                         reply: {
-                            embeds: [
-                                basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Salon invalide')
-                                    .setDescription(
-                                        `Le salon que vous avez fournit n'est pas un salon valide\nVeuillez préciser un salon textuel`
-                                    )
+                            embeds: [replies.invalidChannelType(interaction.member as GuildMember, [ChannelType.GuildText], interaction)
                             ]
                         }
                     }
@@ -318,9 +308,9 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Auteur invalide')
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.author.title', interaction))
                                     .setDescription(
-                                        `Ce n'est pas moi qui ai envoyé ce mesage\nIl faut que l'auteur du message soi moi-même, sinon je ne pourrais pas ajouter les boutons`
+                                        translator.translate('commands.admins.autorole.replies.author.description', interaction)
                                     )
                             ]
                         }
@@ -330,9 +320,9 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Ticket')
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.message.ticket.title', interaction))
                                     .setDescription(
-                                        `Ce message fait partie du système de tickets.\nVeuillez envoyer un message qui ne fait partie d'aucun système de Draver`
+                                        translator.translate('commands.admins.autorole.replies.message.ticket.description', interaction)
                                     )
                             ]
                         }
@@ -342,9 +332,9 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Giveaway')
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.message.giveaway.title', interaction))
                                     .setDescription(
-                                        `Ce message fait partie du système de giveaway\nVeuillez en choisir un autre si il vous plait`
+                                        translator.translate('commands.admins.autorole.replies.message.giveaway.description', interaction)
                                     )
                             ]
                         }
@@ -354,9 +344,9 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Tâche')
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.message.task.title', interaction))
                                     .setDescription(
-                                        `Ce message est une tâche, vous ne pouvez remplacer une tâche par un panneau de rôles à réactions`
+                                        translator.translate('commands.admins.autorole.replies.message.task.description', interaction)
                                     )
                             ]
                         }
@@ -366,9 +356,9 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Rôels à réaction')
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.message.react.title', interaction))
                                     .setDescription(
-                                        `Ce message est un panneau de rôles à réactions\nVeuillez choisir un autre message`
+                                        translator.translate('commands.admins.autorole.replies.message.react.description', interaction)
                                     )
                             ]
                         }
@@ -378,8 +368,8 @@ export default new DraverCommand({
                         reply: {
                             embeds: [
                                 basicEmbed(interaction.user, { evoker: interaction.guild })
-                                    .setTitle('Mastermind')
-                                    .setDescription(`Ce message est une partie de Mastermind`)
+                                    .setTitle(translator.translate('commands.admins.autorole.replies.message.mastermind.title', interaction))
+                                    .setDescription(translator.translate('commands.admins.autorole.replies.message.mastermind.description', interaction))
                             ]
                         }
                     }
@@ -392,9 +382,11 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Rôles à réaction')
+                .setTitle(translator.translate('commands.admins.autorole.replies.message.confirm.title', interaction))
                 .setDescription(
-                    `Êtes-vous sûr de vouloir mettre le panneau sur [ce message](${message.url}) ?\nLes boutons actuels (si il y en a) seront supprimés et remplacés par ceux du panneau`
+                    translator.translate('commands.admins.autorole.replies.message.confirm.description', interaction, {
+                        url: message.url
+                    })
                 )
         }).catch(log4js.trace);
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
@@ -426,11 +418,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Panneau crée')
+                        .setTitle(translator.translate('commands.admins.autorole.replies.message.created.title', interaction))
                         .setDescription(
-                            `Le panneau a été crée sur [ce message](${message.url}) dans ${pingChan(
-                                message.channel.id
-                            )}`
+                            translator.translate('commands.admins.autorole.replies.message.created.description', interaction, {
+                                url: message.url,
+                                channel: pingChan(message.channel.id)
+                            })
                         )
                 ],
                 components: []

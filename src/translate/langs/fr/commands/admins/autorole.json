@@ -1,0 +1,143 @@
+{
+    "name": "autorole",
+    "description": "Gère les rôles à réaction",
+    "options": {
+        "create": {
+            "name": "créer",
+            "description": "Créer un panneau de rôles à réactions",
+            "options": {
+                "construct": {
+                    "name": "construction",
+                    "description": "Construit le panneau de rôles",
+                    "options": {
+                        "title": {
+                            "name": "titre",
+                            "description": "Titre donné à l'embed"
+                        },
+                        "description": {
+                            "name": "description",
+                            "description": "Description de l'embed"
+                        },
+                        "channel": {
+                            "name": "salon",
+                            "description": "Salon dans lequel le panneay sera envoyé"
+                        },
+                        "image": {
+                            "name": "image",
+                            "description": "Image donnée à l'embed"
+                        }
+                    }
+                },
+                "message": {
+                    "name": "message",
+                    "description": "Créer un panneau de rôles sur un message qui existe déjà",
+                    "options": {
+                        "title": {
+                            "name": "titre",
+                            "description": "Titre du panneau (si il n'y a pas d'embed)"
+                        },
+                        "description": {
+                            "name": "description",
+                            "description": "Description de l'embed (si il n'y a pas d'embed)"
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un panel d'autorole",
+            "options": {
+                "panel": {
+                    "name": "panneau",
+                    "description": "Panneau que vous voulez supprimer"
+                }
+            }
+        },
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des rôles à réaction",
+            "options": {
+                "panel": {
+                    "name": "panneau",
+                    "description": "Panneau que vous voulez afficher en détails"
+                }
+            }
+        }
+    },
+    "replies": {
+        "construct": {
+            "image": {
+                "title": "Image invalide",
+                "description": "Veuillez envoyer une image valide"
+            },
+            "created": {
+                "title": "Panneau crée",
+                "description": "Le panneau a été crée dans {channel}"
+            }
+        },
+        "delete": {
+            "confirm": {
+                "title": "Suppression",
+                "description": "Êtes-vous sûr de vouloir supprimer le panneau {title} ?\nLe message sera supprimé"
+            },
+            "done": {
+                "title": "Supprimé",
+                "description": "Le panneau {title} a été supprimé"
+            }
+        },
+        "list": {
+            "info": {
+                "title": "Panneau {title}",
+                "channel": "Salon",
+                "buttons": {
+                    "name": "Rôles (boutons)",
+                    "none": "Aucun rôle bouton"
+                },
+                "menus": {
+                    "name": "Rôles (menus)",
+                    "none": "Aucun rôle menu"
+                }
+            },
+            "list": {
+                "title": "Rôles à réaction",
+                "description": "Il y a **{count}** panneaux de rôles à réaction sur {name}",
+                "mapper": "{count} rôles ({buttons} boutons, {menus} menus\n> Dans {channel}"
+            }
+        },
+        "message": {
+            "author": {
+                "title": "Auteur invalide",
+                "description": "Ce n'est pas moi qui ai envoyé ce message.\nIl faut que l'auteur du message soit moi-même, sinon je ne pourrais pas ajouter les boutons."
+            },
+            "ticket": {
+                "title": "Ticket",
+                "description": "Ce message fait partie du système de tickets.\nVeuillez envoyer un message qui ne fait partie d'aucun système de Draver"
+            },
+            "giveaway": {
+                "title": "Giveaway",
+                "description": "Ce message fait partie du système de giveaways.\nVeuillez en choisir un autre s'il vous plait."
+            },
+            "task": {
+                "title": "Tâche",
+                "description": "Ce message est une tâche, vous ne pouvez pas remplacer une tâche par un panneau de rôles à réactions."
+            },
+            "react": {
+                "title": "Rôles à réactions",
+                "description": "Ce message est un panneau de rôles à réactions.\nVeuillez choisir un autre message."
+            },
+            "mastermind": {
+                "title": "Mastermind",
+                "description": "Ce message est une partie de Mastermind"
+            },
+            "confirm": {
+                "title": "Rôles à réactions",
+                "description": "Êtes-vous sûr de vouloir mettre le panneau sur [ce message]({url}) ?\nLes boutons actuels (si il y en a) seront supprimés et remplacés par ceux du panneau."
+            },
+            "created": {
+                "title": "Panneau crée",
+                "description": "Le panneau a été crée sur [ce message]({url}) dans {channel}."
+            }
+        }
+    }
+}
