@@ -1,0 +1,118 @@
+{
+    "name": "récompenses",
+    "description": "Gère les récompenses du serveur",
+    "options": {
+        "levels": {
+            "name": "niveaux",
+            "description": "Gère les récompenses de niveau",
+            "options": {
+                "list": {
+                    "name": "liste",
+                    "description": "Affiche la liste des récompenses de niveau",
+                    "options": {
+                        "filter": {
+                            "name": "filtre",
+                            "description": "Filtre les récompenses",
+                            "choices": {
+                                "all": "Toutes",
+                                "coins": "{coins}",
+                                "roles": "Rôles"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "add": {
+            "name": "ajouter",
+            "description": "Ajoute une récompense de niveau",
+            "options": {
+                "level": {
+                    "name": "niveau",
+                    "description": "Niveau auquel la récompense est attribuée"
+                },
+                "type": {
+                    "name": "type",
+                    "description": "Type de la récompense",
+                    "choices": {
+                        "coins": "{coins}",
+                        "role": "Rôle"
+                    }
+                },
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle que vous voulez donner"
+                },
+                "coins": {
+                    "name": "{coins}",
+                    "description": "Nombre de {coins} que vous voulez donner"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime une récompense de niveau",
+            "options": {
+                "reward": {
+                    "name": "récompense",
+                    "description": "Récompense que vous voulez supprimer"
+                }
+            }
+        }
+    },
+    "replies": {
+        "delete": {
+            "no": {
+                "title": "Aucune récompense",
+                "description": "Aucune récompense n'a été trouvée"
+            },
+            "deleted": {
+                "title": "Récompense supprimée",
+                "role": "La récompense de niveau **{level}** de type **role** a été supprimée.",
+                "coins": "La récompense de niveau **{level}** de type **{coins}** a été supprimée."
+            }
+        },
+        "list": {
+            "no": {
+                "title": "Pas de récompense",
+                "description": "Aucune récompense de niveaux n'est définie.",
+                "coins": "Aucune récompense de niveaux de {coins} n'est définie.",
+                "roles": "Aucune récompense de niveaux de rôle n'est définie."
+            },
+            "list": {
+                "title": "Récompenses de niveaux",
+                "description": "**{count}** récompenses de niveaux sont configurées",
+                "mapper": {
+                    "names": {
+                        "coins": "{coins}",
+                        "role": "Rôle"
+                    },
+                    "values": {
+                        "coins": "Au niveau **{level}**\n> **{count}** {coins}",
+                        "role": "Au niveau **{level}**\n> {role}"
+                    }
+                }
+            }
+        },
+        "add": {
+            "exists": {
+                "title": "Récompense déjà définie",
+                "description_role": "Une récompense de rôle a déjà été configurée au niveau **{level}**.",
+                "description_coins": "Une récompense de rôle a déjà été configurée au niveau **{level}**."
+            },
+            "noRole": {
+                "title": "Pas de rôle",
+                "description": "Vous n'avez pas précisé de rôle"
+            },
+            "noCoins": {
+                "title": "Pas de {coins}",
+                "description": "Vous n'avez pas précisé de {coins}"
+            },
+            "added": {
+                "title": "Récompense ajoutée",
+                "description_role": "Une récompense de rôle au niveau **{level}** a été créée.",
+                "description_coins": "Une récompense de {coins} au niveau **{level}** a été créée."
+            }
+        }
+    }
+}

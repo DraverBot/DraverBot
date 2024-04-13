@@ -17,40 +17,37 @@ import {
 import { configKeys } from '../../data/configData';
 import replies from '../../data/replies';
 import { levelRewardType } from '../../typings/database';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'récompenses',
+    ...translator.commandData('commands.admins.rewards'),
     module: 'config',
-    description: 'Gère les récompenses du serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     permissions: ['Administrator'],
     options: [
         {
-            name: 'niveaux',
-            description: 'Gère les récompenses de niveau',
+            ...translator.commandData('commands.admins.rewards.options.levels'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'liste',
-                    description: 'Affiche la liste des récompenses de niveau',
+                    ...translator.commandData('commands.admins.rewards.options.levels.options.list'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'filtre',
-                            description: 'Filtre les récompenses',
+                            ...translator.commandData('commands.admins.rewards.options.levels.options.list.options.filter'),
                             type: ApplicationCommandOptionType.String,
                             required: false,
                             choices: [
                                 {
-                                    name: 'Toutes',
+                                    ...translator.commandData('commands.admins.rewards.options.levels.options.list.options.filter.choices.all'),
                                     value: RewardsFilter.All
                                 },
                                 {
-                                    name: util('coins'),
+                                    ...translator.commandData('commands.admins.rewards.options.levels.options.list.options.filter.choices.coins'),
                                     value: RewardsFilter.Coins
                                 },
                                 {
-                                    name: 'Rôles',
+                                    ...translator.commandData('commands.admins.rewards.options.levels.options.list.options.filter.choices.roles'),
                                     value: RewardsFilter.Role
                                 }
                             ]
@@ -58,42 +55,37 @@ export default new DraverCommand({
                     ]
                 },
                 {
-                    name: 'ajouter',
-                    description: 'Ajoute une récompense de niveau',
+                    ...translator.commandData('commands.admins.rewards.options.add'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'niveau',
-                            description: 'Niveau auquel la récompense est attribuée',
+                            ...translator.commandData('commands.admins.rewards.options.add.options.level'),
                             required: true,
                             type: ApplicationCommandOptionType.Integer,
                             minValue: 1
                         },
                         {
-                            name: 'type',
-                            description: 'Type de la récompense',
+                            ...translator.commandData('commands.admins.rewards.options.add.options.type'),
                             required: true,
                             type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
-                                    name: util('coins'),
+                                    ...translator.commandData('commands.admins.rewards.options.add.options.type.choices.coins'),
                                     value: 'coins'
                                 },
                                 {
-                                    name: 'Rôle',
+                                    ...translator.commandData('commands.admins.rewards.options.add.options.type.choices.role'),
                                     value: 'role'
                                 }
                             ]
                         },
                         {
-                            name: 'rôle',
-                            description: 'Rôle que vous voulez donner',
+                            ...translator.commandData('commands.admins.rewards.options.add.options.role'),
                             required: false,
                             type: ApplicationCommandOptionType.Role
                         },
                         {
-                            name: util<string>('coins').toLowerCase(),
-                            description: `Nombre ${util('coinsPrefix')} que vous voulez donner`,
+                            ...translator.commandData('commands.admins.rewards.options.add.options.coins'),
                             required: false,
                             type: ApplicationCommandOptionType.Integer,
                             minValue: 1
@@ -101,13 +93,11 @@ export default new DraverCommand({
                     ]
                 },
                 {
-                    name: 'supprimer',
-                    description: 'Supprime une récompense de niveau',
+                    ...translator.commandData('commands.admins.rewards.options.delete'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'récompense',
-                            description: 'Récompense que vous voulez supprimer',
+                            ...translator.commandData('commands.admins.rewards.options.delete.options.reward'),
                             required: true,
                             autocomplete: true,
                             type: ApplicationCommandOptionType.String
@@ -154,8 +144,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Aucune récompense')
-                            .setDescription(`Aucune récompense n'a été trouvée`)
+                            .setTitle(translator.translate('commands.admins.rewards.replies.delete.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.rewards.replies.delete.no.description', interaction))
                     ],
                     ephemeral: true
                 })
@@ -179,11 +169,11 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Récompense supprimée')
+                        .setTitle(translator.translate('commands.admins.rewards.replies.delete.deleted.title', interaction))
                         .setDescription(
-                            `La récompense de niveau **${numerize(reward.level)}** de type **${
-                                reward.type === 'coins' ? util('coins') : 'rôle'
-                            }** a été supprimée`
+                            translator.translate('commands.admins.rewards.replies.delete.deleted.description', interaction, {
+                                level: reward.level
+                            })
                         )
                 ]
             })
@@ -216,13 +206,9 @@ export default new DraverCommand({
             return interaction.reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Pas de récompenses')
+                        .setTitle(translator.translate('commands.admins.rewards.replies.list.no.title', interaction))
                         .setDescription(
-                            `Aucune récompense de niveau${
-                                filter === RewardsFilter.All
-                                    ? ''
-                                    : ` de ${filter === RewardsFilter.Coins ? util('coins') : 'rôle'}`
-                            } n'est définie`
+                            translator.translate(`commands.admins.rewards.replies.list.no.${filter === RewardsFilter.All ? 'description' : filter === RewardsFilter.Coins ? 'coins' : 'roles'}`, interaction)
                         )
                 ],
                 ephemeral: true
@@ -232,23 +218,22 @@ export default new DraverCommand({
             array: rewards,
             embedFunction: () =>
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Récompenses de niveaux')
+                    .setTitle(translator.translate('commands.admins.rewards.list.list.title', interaction))
                     .setDescription(
-                        `**${numerize(rewards.length)}** récompense${plurial(rewards)} de niveaux ${plurial(rewards, {
-                            singular: 'est configurée',
-                            plurial: 'sont configurées'
-                        })}`
+                        translator.translate('commands.admins.rewards.list.list.description', interaction, {
+                            count: rewards.length
+                        })
                     ),
             interaction,
             user: interaction.user,
             mapper: (embed, item) =>
                 embed.addFields({
-                    name: item.type === 'coins' ? util('coins') : 'Rôle',
-                    value: `Au niveau **${numerize(item.level)}**\n> ${
-                        item.type === 'coins'
-                            ? `**${numerize(item.value as number)}** ${util('coins')}`
-                            : `${pingRole(item.value as string)}`
-                    }`
+                    name: translator.translate(`commands.admins.rewards.list.list.mapper.names.${item.type}`, interaction),
+                    value: translator.translate(`commands.admins.rewards.list.list.mapper.values.${item.type}`, interaction, {
+                        level: item.level,
+                        count: item.value,
+                        role: pingRole(item?.value as string)
+                    })
                 })
         });
     }
@@ -281,9 +266,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Récompense déjà définie')
+                            .setTitle(translator.translate('commands.admins.rewards.replies.add.exists.title', interaction))
                             .setDescription(
-                                `Une récompense ${typeText} a déjà été configurée au niveau ${numerize(level)}`
+                                translator.translate(`commands.admins.rewards.replies.add.exists.description_${type}`, interaction, {
+                                    level
+                                })
                             )
                     ],
                     ephemeral: true
@@ -296,8 +283,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { evoker: interaction.guild })
-                                .setTitle('Pas de rôle')
-                                .setDescription(`Vous n'avez pas précisé de rôle`)
+                                .setTitle(translator.translate('commands.admins.rewards.replies.add.noRole.title', interaction))
+                                .setDescription(translator.translate('commands.admins.rewards.replies.add.noRole.description', interaction))
                         ],
                         ephemeral: true
                     })
@@ -331,8 +318,8 @@ export default new DraverCommand({
                     .reply({
                         embeds: [
                             basicEmbed(interaction.user, { evoker: interaction.guild })
-                                .setTitle(`Pas ${util('coinsPrefix')}`)
-                                .setDescription(`Vous n'avez pas précisé ${util('coinsPrefix')}`)
+                                .setTitle(translator.translate('commands.admins.rewards.replies.add.noCoins.title', interaction))
+                                .setDescription(translator.translate('commands.admins.rewards.replies.add.noCoins.description', interaction))
                         ],
                         ephemeral: true
                     })
@@ -363,8 +350,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Récompense ajoutée')
-                        .setDescription(`Une récompense ${typeText} au niveau ${numerize(level)} a été créée`)
+                        .setTitle(translator.translate('commands.admins.rewards.replies.add.added.title', interaction))
+                        .setDescription(translator.translate(`commands.admins.rewards.replies.add.added.description_${type}`, interaction, {
+                            level
+                        }))
                 ]
             })
             .catch(log4js.trace);
