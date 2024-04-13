@@ -1,0 +1,82 @@
+{
+    "name": "salons-temporaires",
+    "description": "Gère les salons temporaires",
+    "options": {
+        "list": {
+            "name": "liste",
+            "description": "Affiche la liste des salons temporaires"
+        },
+        "create": {
+            "name": "créer",
+            "description": "Créer un salon temporaire",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom des salons temporaires. Utilisez {user} pour afficher le nom de d'utilisateur"
+                },
+                "parent": {
+                    "name": "catégorie",
+                    "description": "Catégorie dans laquelle les salons seront crées"
+                },
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon auquel les membres doivent se connecter pour créer un salon"
+                }
+            }
+        },
+        "delete": {
+            "name": "supprimer",
+            "description": "Supprime un salon temporaire",
+            "options": {
+                "channel": {
+                    "name": "salon",
+                    "description": "Salon temporaire"
+                }
+            }
+        }
+    },
+    "replies": {
+        "list": {
+            "no": {
+                "title": "Pas de salons",
+                "description": "Aucun salon temporaire n'est configuré."
+            },
+            "info": {
+                "title": "Salons temporaires",
+                "description": "{count} salons temporaires sont configurés sur **{name}**\n\n{list}"
+            }
+        },
+        "delete": {
+            "no": {
+                "title": "Pas de salon",
+                "description": "Aucun salon temporaire n'est configuré sur {channel}"
+            },
+            "confirm": {
+                "title": "Suppression",
+                "description": "Êtes-vous sûr de supprimer le salon temporaire {channel} ?"
+            },
+            "done": {
+                "title": "Salon supprimé",
+                "description": "Le salon temporaire de **{name}** a été supprimé."
+            }
+        },
+        "create": {
+            "limit": {
+                "title": "Limite atteinte",
+                "description": "Vous ne pouvez configurer que 3 salons temporaires sur **{name}**"
+            },
+            "exists": {
+                "title": "Salon déjà configuré",
+                "description": "Un salon temporaire existe déjà sur {channel}"
+            },
+            "error": {
+                "title": "Création impossible",
+                "description": "Vous ne pouvez pas créer de salon temporaire sur ce salon"
+            },
+            "done": {
+                "title": "Salon crée",
+                "description": "Un salon temporaire a été crée dans {channel}"
+            }
+        }
+    }
+}

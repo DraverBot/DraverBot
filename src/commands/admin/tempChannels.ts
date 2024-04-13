@@ -5,39 +5,34 @@ import moduleEnabled from '../../preconditions/moduleEnabled';
 import { ApplicationCommandOptionType, CategoryChannel, ChannelType, GuildMember, VoiceChannel } from 'discord.js';
 import replies from '../../data/replies';
 import { basicEmbed, confirm, pingChan, plurial } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'salons-temporaires',
+    ...translator.commandData('commands.admins.temps'),
     module: 'config',
-    description: 'Gère les salons temporaires',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'liste',
-            description: 'Affiche la liste des salons temporaires',
+            ...translator.commandData('commands.admins.temps.options.list'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'créer',
-            description: 'Créer un salon temporaire',
+            ...translator.commandData('commands.admins.temps.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: "Nom des salons temporaires. Utilisez {user} pour afficher le nom d'utilisateur",
+                    ...translator.commandData('commands.admins.temps.options.create.options.name'),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
-                    name: 'catégorie',
-                    description: 'Catégorie dans laquelle les salons seront crées',
+                    ...translator.commandData('commands.admins.temps.options.create.options.parent'),
                     required: true,
                     type: ApplicationCommandOptionType.Channel,
                     channelTypes: [ChannelType.GuildCategory]
                 },
                 {
-                    name: 'salon',
-                    description: 'Salon auquel les membres doivent se connecter pour créer un salon',
+                    ...translator.commandData('commands.admins.temps.options.create.options.channel'),
                     type: ApplicationCommandOptionType.Channel,
                     required: true,
                     channelTypes: [ChannelType.GuildVoice]
@@ -45,13 +40,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un salon temporaire',
+            ...translator.commandData('commands.admins.temps.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'salon',
-                    description: 'Salon temporaire',
+                    ...translator.commandData('commands.admins.temps.options.delete.options.channel'),
                     type: ApplicationCommandOptionType.Channel,
                     required: true,
                     channelTypes: [ChannelType.GuildVoice]
@@ -78,8 +71,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Pas de salons')
-                            .setDescription(`Aucun salon temporaire n'est configuré`)
+                            .setTitle(translator.translate('commands.admins.temps.replies.list.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.temps.replies.list.no.description', interaction))
                     ],
                     ephemeral: true
                 })
@@ -89,14 +82,13 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salons temporaires')
+                        .setTitle(translator.translate('commands.admins.temps.replies.list.info.title', interaction))
                         .setDescription(
-                            `${list.length} salon${plurial(list)} temporaire${plurial(list)} ${plurial(list, {
-                                singular: 'est',
-                                plurial: 'sont'
-                            })} configuré${plurial(list)} sur **${interaction.guild.name}**\n\n${list
-                                .map((x) => pingChan(x.channel_id))
-                                .join(', ')}`
+                            translator.translate('commands.admins.temps.replies.list.info.description', interaction, {
+                                count: list.length,
+                                name: interaction.guild.name,
+                                list: list.map(x => pingChan(x.channel_id)).join(', ')
+                            })
                         )
                 ]
             })
@@ -111,8 +103,10 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Pas de salon')
-                            .setDescription(`Aucun salon temporaire n'est configuré sur ${pingChan(channel.id)}`)
+                            .setTitle(translator.translate('commands.admins.temps.replies.delete.no.title', interaction))
+                            .setDescription(translator.translate('commands.admins.temps.replies.delete.no.description', interaction, {
+                                channel: pingChan(channel.id)
+                            }))
                     ],
                     ephemeral: true
                 })
@@ -122,8 +116,10 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Suppression')
-                .setDescription(`Êtes-vous sûr de supprimer le salon temporaire ${pingChan(channel.id)} ?`)
+                .setTitle(translator.translate('commands.admins.temps.replies.delete.confirm.title', interaction))
+                .setDescription(translator.translate('commands.admins.temps.replies.delete.confirm.description', interaction, {
+                    channel: pingChan(channel.id)
+                }))
         }).catch(log4js.trace);
 
         if (!confirmation || confirmation === 'cancel' || !confirmation?.value)
@@ -140,8 +136,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salon supprimé')
-                        .setDescription(`Le salon temporaire de **${channel.name}** a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.temps.replies.delete.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.temps.replies.delete.done.description', interaction, {
+                            name: channel.name
+                        }))
                 ],
                 components: []
             })
@@ -155,9 +153,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Limite atteinte')
+                            .setTitle(translator.translate('commands.admins.temps.replies.create.limit.title', interaction))
                             .setDescription(
-                                `Vous ne pouvez configurer que 3 salons temporaires sur **${interaction.guild.name}**`
+                                translator.translate('commands.admins.temps.replies.create.limit.description', interaction, {
+                                    name: interaction.guild.name
+                                })
                             )
                     ],
                     ephemeral: true
@@ -173,8 +173,10 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Salon déjà configuré')
-                            .setDescription(`Un salon temporaire existe déjà sur ${pingChan(channel)}`)
+                            .setTitle(translator.translate('commands.admins.temps.replies.create.exists.title', interaction))
+                            .setDescription(translator.translate('commands.admins.temps.replies.create.exists.description', interaction, {
+                                channel: pingChan(channel)
+                            }))
                     ],
                     ephemeral: true
                 })
@@ -184,8 +186,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Création impossible')
-                            .setDescription(`Vous ne pouvez pas créer de salon temporaire sur ce salon`)
+                            .setTitle(translator.translate('commands.admins.temps.replies.create.error.title', interaction))
+                            .setDescription(translator.translate('commands.admins.temps.replies.create.error.description', interaction))
                     ],
                     ephemeral: true
                 })
@@ -211,8 +213,10 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Salon crée')
-                        .setDescription(`Un salon temporaire a été crée dans ${pingChan(channel)}`)
+                        .setTitle(translator.translate('commands.admins.temps.replies.create.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.temps.replies.crate.done.description', interaction, {
+                            channel: pingChan(channel)
+                        }))
                 ]
             })
             .catch(log4js.trace);
