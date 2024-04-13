@@ -1,0 +1,44 @@
+{
+    "name": "banque",
+    "description": "Gère votre banque",
+    "options": {
+        "display": {
+            "name": "voir",
+            "description": "Consulte votre banque"
+        },
+        "deposit": {
+            "name": "déposer",
+            "description": "Dépose de l'argent sur votre compte en banque",
+            "options": {
+                "amount": {
+                    "name": "montant",
+                    "description": "Montant que vous voulez déposer"
+                }
+            }
+        },
+        "withdraw": {
+            "name": "retirer",
+            "description": "Retire de l'argent de votre compte en banque",
+            "options": {
+                "amount": {
+                    "name": "montant",
+                    "description": "Montant à retirer de votre compte en banque"
+                }
+            }
+        }
+    },
+    "replies": {
+        "display": {
+            "title": "Votre compte en banque",
+            "description": "Vous possédez **{bank} {coins}** sur votre compte en banque, soit **{ratio}%** de votre argent total"
+        },
+        "deposit": {
+            "title": "Transaction effectuée",
+            "description": "**{count} {coins}** ont été déposés sur votre compte en banque"
+        },
+        "withdraw": {
+            "title": "Transaction effectuée",
+            "description": "**{count} {coins}** ont été retirés de votre compte en banque"
+        }
+    }
+}

@@ -6,26 +6,23 @@ import replies from '../../data/replies';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { util } from '../../utils/functions';
 import { basicEmbed, numerize, plurial, subcmd } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'banque',
+    ...translator.commandData('commands.economy.bank'),
     module: 'economy',
-    description: 'Gère votre banque',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'voir',
-            description: 'Consulte votre banque',
+            ...translator.commandData('commands.economy.bank.options.display'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'déposer',
-            description: "Dépose de l'argent sur votre compte en banque",
+            ...translator.commandData('commands.economy.bank.options.deposit'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'montant',
-                    description: 'Montant que vous voulez déposer',
+                    ...translator.commandData('commands.economy.bank.options.deposit.options.amount'),
                     required: true,
                     type: ApplicationCommandOptionType.Integer,
                     minValue: 1
@@ -33,13 +30,11 @@ export default new DraverCommand({
             ]
         },
         {
-            name: 'retirer',
-            description: "Retire de l'argent de votre compte en banque",
+            ...translator.commandData('commands.economy.bank.options.withdraw'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'montant',
-                    description: 'Montant à retirer de votre compte en banque',
+                    ...translator.commandData('commands.economy.bank.options.withdraw.options.amount'),
                     required: true,
                     type: ApplicationCommandOptionType.Integer
                 }
@@ -60,13 +55,12 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Votre compte en banque')
+                        .setTitle(translator.translate('commands.economy.bank.replies.display.title', interaction))
                         .setDescription(
-                            `Vous possédez **${numerize(data.bank)} ${util(
-                                'coins'
-                            )}** sur votre compte, soit **${Math.floor(
-                                (data.bank * 100) / (data.bank + data.coins)
-                            )}%** de votre argent total`
+                            translator.translate('commands.economy.bank.replies.display.description', interaction, {
+                                bank: data.bank,
+                                ratio: Math.floor((data.bank * 100) / (data.bank + data.coins))
+                            })
                         )
                 ]
             })
@@ -96,12 +90,11 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Transaction effectuée')
+                        .setTitle(translator.translate('commands.economy.bank.replies.deposit.title', interaction))
                         .setDescription(
-                            `${numerize(amount)} ${util('coins')} ${plurial(amount, {
-                                singular: 'a été déposé',
-                                plurial: 'ont été déposés'
-                            })} sur votre compte en banque`
+                            translator.translate('commands.economy.bank.replies.deposit.title', interaction, {
+                                count: amount
+                            })
                         )
                 ]
             })
@@ -132,12 +125,11 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Transaction effectuée')
+                        .setTitle(translator.translate('commands.economy.bank.replies.withdraw.title', interaction))
                         .setDescription(
-                            `${numerize(amount)} ${util('coins')} ${plurial(amount, {
-                                singular: 'a été retiré',
-                                plurial: 'ont été retirés'
-                            })} de votre compte en banque`
+                            translator.translate('commands.economy.bank.replies.withdraw.description', interaction, {
+                                count: amount
+                            })
                         )
                 ]
             })
