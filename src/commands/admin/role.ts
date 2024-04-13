@@ -16,166 +16,141 @@ import replies from '../../data/replies';
 import { getRolePerm, reportToBender, util } from '../../utils/functions';
 import { permType } from '../../typings/functions';
 import moduleEnabled from '../../preconditions/moduleEnabled';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'role',
+    ...translator.commandData('commands.admins.role'),
     module: 'administration',
-    description: 'Gère les rôles du serveur',
     permissions: ['ManageRoles'],
     clientPermissions: ['ManageRoles'],
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'créer',
-            description: 'Créer un rôle',
+            ...translator.commandData('commands.admins.role.options.create'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'nom',
-                    description: 'Nom du rôle',
+                    ...translator.commandData('commands.admins.role.options.create.options.name'),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
-                    name: 'couleur',
-                    description: 'Couleur du rôle',
+                    ...translator.commandData('commands.admins.role.options.create.options.color'),
                     type: ApplicationCommandOptionType.String,
                     required: false
                 },
                 {
-                    name: 'raison',
-                    description: 'Raison de la création du rôle',
+                    ...translator.commandData('commands.admins.role.options.create.options.reason'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'supprimer',
-            description: 'Supprime un rôle',
+            ...translator.commandData('commands.admins.role.options.delete'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à supprimer',
+                    ...translator.commandData('commands.admins.role.options.delete.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 },
                 {
-                    name: 'raison',
-                    description: 'Raison de la suppression',
+                    ...translator.commandData('commands.admins.role.options.delete.options.reason'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'colorer',
-            description: 'Donne une couleur à un rôle',
+            ...translator.commandData('commands.admins.role.options.color'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à colorer',
+                    ...translator.commandData('commands.admins.role.options.color.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 },
                 {
-                    name: 'couleur',
-                    description: 'Couleur du rôle',
+                    ...translator.commandData('commands.admins.role.options.color.options.color'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'raison',
-                    description: 'Raison de la coloration',
+                    ...translator.commandData('commands.admins.role.options.color.options.reason'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'renommer',
-            description: 'Renomme un rôle',
+            ...translator.commandData('commands.admins.role.options.rename'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à renommer',
+                    ...translator.commandData('commands.admins.role.options.rename.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 },
                 {
-                    name: 'nom',
-                    description: 'Nouveau nom du rôle',
+                    ...translator.commandData('commands.admins.role.options.rename.options.name'),
                     required: true,
                     type: ApplicationCommandOptionType.String
                 },
                 {
-                    name: 'raison',
-                    description: 'Raison du renommage',
+                    ...translator.commandData('commands.admins.role.options.rename.options.reason'),
                     required: false,
                     type: ApplicationCommandOptionType.String
                 }
             ]
         },
         {
-            name: 'ajouter',
-            description: 'Ajoute un rôle à un utilisateur',
+            ...translator.commandData('commands.admins.role.options.add'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à ajouter',
+                    ...translator.commandData('commands.admins.role.options.add.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 },
                 {
-                    name: 'utilisateur',
-                    description: 'Utilisateur qui recevra le rôle',
+                    ...translator.commandData('commands.admins.role.options.add.options.user'),
                     required: true,
                     type: ApplicationCommandOptionType.User
                 }
             ]
         },
         {
-            name: 'retirer',
-            description: 'Retirer un rôle à un utilisateur',
+            ...translator.commandData('commands.admins.role.options.remove'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à retirer',
+                    ...translator.commandData('commands.admins.role.options.remove.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.Role
                 },
                 {
-                    name: 'utilisateur',
-                    description: "Utilisateur qui n'aura plus le rôle",
+                    ...translator.commandData('commands.admins.role.options.remove.options.user'),
                     required: true,
                     type: ApplicationCommandOptionType.User
                 }
             ]
         },
         {
-            name: 'permission',
-            description: "Gère les permissions d'un rôle",
+            ...translator.commandData('commands.admins.role.options.perm'),
             type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
-                    name: 'accorder',
-                    description: 'Accorde une permission à un rôle',
+                    ...translator.commandData('commands.admins.role.options.perm.options.grant'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'rôle',
-                            description: 'Rôle auquel vous voulez ajouter une permission',
+                            ...translator.commandData('commands.admins.role.options.perm.options.grant.options.role'),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         },
                         {
-                            name: 'permission',
-                            description: 'Permission que vous voulez ajouter',
+                            ...translator.commandData('commands.admins.role.options.perm.options.grant.options.perm'),
                             type: ApplicationCommandOptionType.String,
                             required: true,
                             autocomplete: true
@@ -183,19 +158,16 @@ export default new DraverCommand({
                     ]
                 },
                 {
-                    name: 'refuser',
-                    description: 'Refuse une permission à un rôle',
+                    ...translator.commandData('commands.admins.role.options.perm.options.remove'),
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'rôle',
-                            description: 'Rôle auquel vous voulez refuser une permission',
+                            ...translator.commandData('commands.admins.role.options.perm.options.remove.options.role'),
                             type: ApplicationCommandOptionType.Role,
                             required: true
                         },
                         {
-                            name: 'permission',
-                            description: 'Permission que vous voulez retirer',
+                            ...translator.commandData('commands.admins.role.options.perm.options.remove.options.perm'),
                             type: ApplicationCommandOptionType.String,
                             required: true,
                             autocomplete: true
@@ -206,26 +178,22 @@ export default new DraverCommand({
         }
     ]
 }).setChatInputRun(async ({ interaction, options }) => {
-    const checkRolePosition = (position: number) => {
-        if ((interaction.member as GuildMember).roles.highest.position <= position) {
+    const checkRolePosition = (role: Role) => {
+        if ((interaction.member as GuildMember).roles.highest.position <= role.position) {
             systemReply(interaction, {
                 content: '',
                 embeds: [
-                    basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Rôle trop haut')
-                        .setDescription(`Ce rôle est supérieur ou égal à vous dans la hiérarchie des rôles`)
+                    replies.roleTooHigh(interaction.member as GuildMember, role, interaction)
                 ],
                 components: []
             });
             return false;
         }
-        if (interaction.guild.members.me.roles.highest.position <= position) {
+        if (interaction.guild.members.me.roles.highest.position <= role.position) {
             systemReply(interaction, {
                 content: '',
                 embeds: [
-                    basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Rôle trop haut')
-                        .setDescription(`Ce rôle est supérieur ou égal à moi dans la hiérarchie des rôles`)
+                    replies.roleTooHighClient(interaction.member as GuildMember, role, interaction)
                 ],
                 components: []
             });
@@ -237,14 +205,14 @@ export default new DraverCommand({
 
     if (cmd == 'supprimer') {
         const role = options.getRole('rôle', true) as Role;
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
 
         const confirmation = await confirm({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user, { questionMark: true })
-                .setTitle('Supression de rôle')
-                .setDescription(`Êtes-vous sûr de vouloir supprimer le rôle ${pingRole(role)} ?`)
+                .setTitle(translator.translate('commands.admins.role.replies.delete.confirm.title', interaction))
+                .setDescription(translator.translate('commands.admins.role.replies.delete.confirm.description', interaction, { role: pingRole(role) }))
         }).catch(log4js.trace);
         if (!confirmation || confirmation == 'cancel' || confirmation.value == false) {
             interaction
@@ -278,8 +246,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle supprimé')
-                        .setDescription(`Le rôle ${role.name} a été supprimé`)
+                        .setTitle(translator.translate('commands.admins.role.replies.delete.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.role.replies.delete.done.description', interaction, { name: role.name }))
                 ],
                 components: []
             })
@@ -313,11 +281,9 @@ export default new DraverCommand({
             return interaction.editReply({
                 embeds: [
                     basicEmbed(interaction.user, { evoker: interaction.guild })
-                        .setTitle('Échec de la création de rôle')
+                        .setTitle(translator.translate('commands.admins.role.replies.create.error.title', interaction))
                         .setDescription(
-                            `Le rôle n'a pas pu être crée.\nCela peut être du aux permissions que j'ai sur ce serveur.\nVeuillez vérifier mes permissions et réessayer.\nSi l'erreur persiste, contactez mon [serveur de support](${util(
-                                'support'
-                            )})`
+                            translator.translate('commands.admins.role.replies.create.error.description', interaction)
                         )
                 ]
             });
@@ -340,8 +306,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setDescription(`Le rôle ${pingRole(role)} a été crée`)
-                        .setTitle('Rôle crée')
+                        .setDescription(translator.translate('commands.admins.role.replies.create.done.description', interaction, { role: pingRole(role) }))
+                        .setTitle(translator.translate('commands.admins.role.replies.create.done.title', interaction))
                 ]
             })
             .catch(log4js.trace);
@@ -352,7 +318,7 @@ export default new DraverCommand({
         const reason =
             options.getString('raison') ?? `Couleur changée de \`${role.hexColor}\` à \`${getHexColor(color)}\``;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
 
         if (!isValidHexColor(color))
             return interaction
@@ -383,8 +349,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle modifié')
-                        .setDescription(`La couleur du rôle ${pingRole(role)} a été modifiée`)
+                        .setTitle(translator.translate('commands.admins.role.replies.color.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.role.replies.color.done.description', interaction, { role: pingRole(role) }))
                 ]
             })
             .catch(log4js.trace);
@@ -394,7 +360,7 @@ export default new DraverCommand({
         const name = options.getString('nom', true);
         const reason = options.getString('raison') ?? `Nom changé de \`${role.name}\` à \`${name}\``;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
 
         const before = JSON.parse(JSON.stringify(role.toJSON()));
         role.setName(name, reason);
@@ -417,8 +383,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle renommé')
-                        .setDescription(`Le rôle ${pingRole(role)} a été renommé`)
+                        .setTitle(translator.translate('commands.admins.role.replies.rename.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.role.replies.rename.done.description', interaction, { role: pingRole(role) }))
                 ]
             })
             .catch(log4js.trace);
@@ -427,7 +393,7 @@ export default new DraverCommand({
         const role = options.getRole('rôle', true) as Role;
         const user = options.getMember('utilisateur') as GuildMember;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
         if (
             !checkPerms({
                 member: user,
@@ -447,8 +413,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Rôle déjà attribué')
-                            .setDescription(`${pingUser(user)} a déjà le rôle ${pingRole(role)}`)
+                            .setTitle(translator.translate('commands.admins.role.replies.add.has.title', interaction))
+                            .setDescription(translator.translate('commands.admins.role.replies.add.has.description', interaction, {
+                                user: pingUser(user),
+                                role: pingRole(role)
+                            }))
                     ],
                     ephemeral: true
                 })
@@ -460,15 +429,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle("Échec de l'ajout de rôle")
+                            .setTitle(translator.translate('commands.admins.role.replies.add.error.title', interaction))
                             .setDescription(
-                                `Le rôle ${pingRole(role)} n'a pas pu être ajouté à ${pingUser(
-                                    user
-                                )}.\nIl se peut que le problème vienne de ma position par rapport à ce membre. Vérifiez que mon rôle est situé au-dessus de celui de ${pingUser(
-                                    user
-                                )} dans la hiérarchie des rôles\nSi l'erreur persiste, contactez mon [serveur de support](${util(
-                                    'support'
-                                )})`
+                                translator.translate('commands.admins.role.replies.add.error.description', interaction, {
+                                    role: pingRole(role),
+                                    user: pingUser(user)
+                                })
                             )
                     ]
                 })
@@ -485,8 +451,11 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle ajouté')
-                        .setDescription(`Le rôle ${pingRole(role)} a été ajouté à ${pingUser(user)}`)
+                        .setTitle(translator.translate('commands.admins.role.replies.add.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.role.replies.add.done.description', interaction, {
+                            role: pingRole(role),
+                            user: pingUser(user)
+                        }))
                 ]
             })
             .catch(log4js.trace);
@@ -495,7 +464,7 @@ export default new DraverCommand({
         const role = options.getRole('rôle', true) as Role;
         const user = options.getMember('utilisateur') as GuildMember;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
         if (
             !checkPerms({
                 member: user,
@@ -515,8 +484,11 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Rôle non possédé')
-                            .setDescription(`${pingUser(user)} n'a pas le rôle ${pingRole(role)}`)
+                            .setTitle(translator.translate('commands.admins.role.replies.remove.hasnt.title', interaction))
+                            .setDescription(translator.translate('commands.admins.role.replies.remove.hasnt.description', interaction, {
+                                user: pingUser(user),
+                                role: pingRole(role)
+                            }))
                     ],
                     ephemeral: true
                 })
@@ -528,15 +500,12 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Échec du retrait de rôle')
+                            .setTitle(translator.translate('commands.admins.role.replies.replies.remove.error.title', interaction))
                             .setDescription(
-                                `Le rôle ${pingRole(role)} n'a pas pu être retiré à ${pingUser(
-                                    user
-                                )}.\nIl se peut que le problème vienne de ma position par rapport à ce membre. Vérifiez que mon rôle est situé au-dessus de celui de ${pingUser(
-                                    user
-                                )} dans la hiérarchie des rôles\nSi l'erreur persiste, contactez mon [serveur de support](${util(
-                                    'support'
-                                )})`
+                                translator.translate('commands.admins.role.replies.remove.error.description', interaction, {
+                                    user: pingUser(user),
+                                    role: pingRole(role)
+                                })
                             )
                     ]
                 })
@@ -553,8 +522,11 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Rôle retiré')
-                        .setDescription(`Le rôle ${pingRole(role)} a été retiré à ${pingUser(user)}`)
+                        .setTitle(translator.translate('commands.admins.role.replies.remove.done.title', interaction))
+                        .setDescription(translator.translate('commands.admins.role.replies.remove.done.description', interaction, {
+                            role: pingRole(role),
+                            user: pingUser(user)
+                        }))
                 ]
             })
             .catch(log4js.trace);
@@ -563,7 +535,7 @@ export default new DraverCommand({
         const role = options.getRole('rôle', true) as Role;
         const permission = options.getString('permission') as permType<'role'>;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
 
         if (!(interaction.member as GuildMember).permissions.has(permission))
             return interaction
@@ -602,17 +574,12 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Erreur de permission')
+                            .setTitle(translator.translate('commands.admins.role.replies.grant.error.title', interaction))
                             .setDescription(
-                                `La permission ${getRolePerm(permission)} n'a pas pu être accordée au rôle ${pingRole(
-                                    role
-                                )}.\nCette erreur peut être causée parce que mon rôle est en-dessous de ${pingRole(
-                                    role
-                                )}, ou que je ne possède pas la permission ${getRolePerm(
-                                    permission
-                                )}. Veuillez vous assurez que ces conditions soient bien remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support](${util(
-                                    'support'
-                                )})`
+                                translator.translate('commands.admins.role.replies.grant.error.description', interaction, {
+                                    permission: translator.translate(`contents.global.perms.role.${permission}`, interaction),
+                                    role: pingRole(role)
+                                })
                             )
                     ]
                 })
@@ -631,9 +598,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Permission accordée')
+                        .setTitle(translator.translate('commands.admins.role.replies.grant.granted.title', interaction))
                         .setDescription(
-                            `La permission ${getRolePerm(permission)} a été accordée au rôle ${pingRole(role)}`
+                            translator.translate('commands.admins.role.replies.grant.granted.description', interaction, {
+                                permission: translator.translate(`contents.global.perms.role.${permission}`, interaction),
+                                role: pingRole(role)
+                            })
                         )
                 ]
             })
@@ -643,7 +613,7 @@ export default new DraverCommand({
         const role = options.getRole('rôle', true) as Role;
         const permission = options.getString('permission') as permType<'role'>;
 
-        if (!checkRolePosition(role.position)) return;
+        if (!checkRolePosition(role)) return;
 
         if (!(interaction.member as GuildMember).permissions.has(permission))
             return interaction
@@ -681,17 +651,12 @@ export default new DraverCommand({
                 .editReply({
                     embeds: [
                         basicEmbed(interaction.user, { evoker: interaction.guild })
-                            .setTitle('Erreur de permission')
+                            .setTitle(translator.translate('commands.admins.role.replies.deny.error.title', interaction))
                             .setDescription(
-                                `La permission ${getRolePerm(permission)} n'a pas pu être refusée au rôle ${pingRole(
-                                    role
-                                )}.\nCette erreur peut être causée parce que mon rôle est en-dessous de ${pingRole(
-                                    role
-                                )}, ou que je ne possède pas la permission ${getRolePerm(
-                                    permission
-                                )}. Veuillez vous assurez que ces conditions soient bien remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support](${util(
-                                    'support'
-                                )})`
+                                translator.translate('commands.admins.role.replies.deny.error.description', interaction, {
+                                    permission: translator.translate(`contents.global.perms.role.${permission}`, interaction),
+                                    role: pingRole(role)
+                                })
                             )
                     ]
                 })
@@ -709,9 +674,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Permission refusée')
+                        .setTitle(translator.translate('commands.admins.role.replies.deny.denied.title', interaction))
                         .setDescription(
-                            `La permission ${getRolePerm(permission)} a été refusée au rôle ${pingRole(role)}`
+                            translator.translate('commands.admins.role.replies.deny.denied.description', interaction, {
+                                permission: translator.translate(`contents.global.perms.role.${permission}`, interaction),
+                                role: pingRole(role)
+                            })
                         )
                 ]
             })

@@ -1,0 +1,218 @@
+{
+    "name": "role",
+    "description": "Gère les rôles du serveur",
+    "options": {
+        "create": {
+            "name": "créer",
+            "description": "Créer un rôle",
+            "options": {
+                "name": {
+                    "name": "nom",
+                    "description": "Nom du rôle"
+                },
+                "color": {
+                    "name": "couleur",
+                    "description": "Couleur du rôle"
+                },
+                "reason": {
+                    "name": "raison",
+                    "description": "Raison de la création du rôle"
+                }
+            }
+        },
+        "delete":{
+            "name": "supprimer",
+            "description": "Supprime un rôle",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à supprimer"
+                },
+                "reason": {
+                    "name": "raison",
+                    "description": "Raison de la suppression"
+                }
+            }
+        },
+        "color": {
+            "name": "colorer",
+            "description": "Donne une couleur à un rôle",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Role à colorer"
+                },
+                "color": {
+                    "name": "couleur",
+                    "description": "Couleur du rôle"
+                },
+                "reason": {
+                    "name": "raison",
+                    "description": "Raison de la coloration"
+                }
+            }
+        },
+        "rename": {
+            "name": "renommer",
+            "description": "Renomme un rôle",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à renommer"
+                },
+                "name": {
+                    "name": "nom",
+                    "description": "Nouveau nom du rôle"
+                },
+                "reason": {
+                    "name": "raison",
+                    "description": "Raison du renommage"
+                }
+            }
+        },
+        "add": {
+            "name": "ajouter",
+            "description": "Ajoute un rôle à un utilisateur",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à ajouter"
+                },
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur qui recevra le rôle"
+                }
+            }
+        },
+        "remove": {
+            "name": "retirer",
+            "description": "Retire un rôle à un utilisateur",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à retirer"
+                },
+                "user": {
+                    "name": "utilisateur",
+                    "description": "Utilisateur qui n'aura plus le rôle"
+                }
+            }
+        },
+        "perm": {
+            "name": "permission",
+            "description": "Gère les permissions d'un rôle",
+            "options": {
+                "grant": {
+                    "name": "accorder",
+                    "description": "Accorde une permission à un rôle",
+                    "options": {
+                        "role": {
+                            "name": "rôle",
+                            "description": "Rôle auquel vous voulez ajouter une permission"
+                        },
+                        "perm": {
+                            "name": "permission",
+                            "description": "Permission que vous voulez ajouter"
+                        }
+                    }
+                },
+                "remove": {
+                    "name": "refuser",
+                    "description": "Refuse une permission à un rôle",
+                    "options": {
+                        "role": {
+                            "name": "rôle",
+                            "description": "Rôle auquel vous voulez retirer une permission"
+                        },
+                        "perm": {
+                            "name": "permission",
+                            "description": "Permission que vous voulez retirer"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "replies": {
+        "delete": {
+            "confirm": {
+                "title": "Suppression de rôle",
+                "description": "Êtes-vous sûr de vouloir supprimer le rôle {role} ?"
+            },
+            "done": {
+                "title": "Rôle supprimé",
+                "description": "Le rôle {name} a été supprimé"
+            }
+        },
+        "create": {
+            "error": {
+                "title": "Échec de la création de rôle",
+                "description": "Le rôle n'a pas pu être crée.\nCela peut être dû aux permissions que j'ai sur ce serveur.\nVeuillez vérifier mes permissions et réessayer.\nSi l'erreur persiste, contactez mon [serveur de support]({support})."
+            },
+            "done": {
+                "title": "Rôle crée",
+                "description": "Le rôle {role} a été crée"
+            }
+        },
+        "color": {
+            "done": {
+                "name": "Rôle modifié",
+                "description": "La couleur du rôle {role} a été modifiée"
+            }
+        },
+        "rename": {
+            "done": {
+                "title": "Rôle renommé",
+                "description": "Le rôle {role} a été renommé"
+            }
+        },
+        "add": {
+            "has": {
+                "title": "Rôle déjà attribué",
+                "description": "{user} a déjà le rôle {role}"
+            },
+            "error": {
+                "title": "Échec de l'ajout de rôle",
+                "description": "Le rôle {role} n'a pas pu être ajouté à {user}.\nIl se peut que le problème vienne de ma position par rapport à ce membre. Vérifiez que mon rôle est situé au-dessus de celui de {user} dans la hiérarchie des rôles.\nSi l'erreur persiste, contactez mon [serveur de support]({support})"
+            },
+            "done": {
+                "title": "Rôle ajouté",
+                "description": "Le rôle {role} a été ajouté à {user}"
+            }
+        },
+        "remove": {
+            "hasnt": {
+                "title": "Rôle non possédé",
+                "description": "{user} n'a pas le rôle {role}"
+            },
+            "error": {
+                "title": "Échec du retrait de rôle",
+                "description": "Le rôle {role} n'a pas pu être retiré à {user}.\nIl se peut que le problème vienne de ma position par rapport à ce membre. Vérifiez que mon rôle est situé au-dessus de celui de {user} dans la hiérarchie des rôles.\nSi l'erreur persiste, contactez mon [serveur de support]({support})."
+            },
+            "done": {
+                "title": "Rôle retiré",
+                "description": "Le rôle {role} a été retiré à {user}"
+            }
+        },
+        "grant": {
+            "error": {
+                "title": "Erreur de permission",
+                "description": "La permission {permission} n'a pas pu être accordée au role {role}.\nCette erreur peut être causée parce que mon rôle est en-dessous de {role}, ou que ne je possède pas la permission {permission}. Veuillez vous assurer que ces conditions soient remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support]({support})"
+            },
+            "granted": {
+                "title": "Permission accordée",
+                "description": "la permission {permission} a été accordée au rôle {role}"
+            }
+        },
+        "deny": {
+            "error": {
+                "title": "Erreur de permission",
+                "description": "La permission {permission} n'a pas pu être refusée au role {role}.\nCette erreur peut être causée parce que mon rôle est en-dessous de {role}, ou que ne je possède pas la permission {permission}. Veuillez vous assurer que ces conditions soient remplies et réessayez.\nSi l'erreur persiste, contactez mon [serveur de support]({support})"
+            },
+            "denied": {
+                "title": "Permission refusée",
+                "description": "la permission {permission} a été refusée au rôle {role}"
+            }
+        }
+    }
+}
