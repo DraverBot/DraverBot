@@ -1,6 +1,6 @@
 {
 	"name": "draver",
-	"version": "1.5.4",
+	"version": "1.5.5",
 	"main": "index.js",
 	"repository": "https://github.com/Greensky-gs/Draver.git",
 	"author": "Greensky <david.hesliere@gmail.com>",
