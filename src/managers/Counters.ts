@@ -75,7 +75,7 @@ export class CountersManager {
     private async checkDatabase() {
         await query(`CREATE TABLE IF NOT EXISTS ${DatabaseTables.Counters} (
             guild_id VARCHAR(255) NOT NULL,
-            channels LONGTEXT NOT NULL DEFAULT '{}',
+            channels LONGTEXT,
             category VARCHAR(255) NOT NULL,
             id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
             channelType VARCHAR(255) NOT NULL
