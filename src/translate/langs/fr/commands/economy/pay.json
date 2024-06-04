@@ -1,0 +1,32 @@
+{
+    "name": "pay",
+    "description": "Envoie de l'argent à quelqu'un sur le serveur",
+    "options": {
+        "user": {
+            "name": "utilisateur",
+            "description": "Utilisateur à qui envoyer l'argent"
+        },
+        "amount": {
+            "name": "montant",
+            "description": "Montant à envoyer"
+        }
+    },
+    "replies": {
+        "auto": {
+            "title": "Auto-transaction",
+            "description": "Vous ne pouvez pas vous envoyer de l'argent tout seul"
+        },
+        "robot": {
+            "title": "Transaction à un robot",
+            "description": "Vous ne pouvez pas envoyer de l'argent à un robot"
+        },
+        "confirm": {
+            "title": "Transaction",
+            "description": "Vous êtes sur le point de donner **{amount} {coins}** à {user}.\nVoulez-vous continuer ?"
+        },
+        "done": {
+            "title": "Transaction effectuée",
+            "description": "Vous avez donné **{amount} {coins}** à {user}"
+        }
+    }
+}

@@ -5,23 +5,21 @@ import { ApplicationCommandOptionType, GuildMember } from 'discord.js';
 import replies from '../../data/replies';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { util } from '../../utils/functions';
-import { basicEmbed, confirm, evokerColor, numerize, random } from '../../utils/toolbox';
+import { basicEmbed, confirm, evokerColor, numerize, pingUser, random } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'pay',
+    ...translator.commandData('commands.economy.pay'),
     module: 'economy',
-    description: "Envoie de l'argent à quelqu'un sur le serveur",
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'utilisateur',
-            description: "Utilisateur à qui vous voulez envoyer de l'argent",
+            ...translator.commandData('commands.economy.pay.options.user'),
             required: true,
             type: ApplicationCommandOptionType.User
         },
         {
-            name: 'montant',
-            description: 'Montant de la transaction que vous voulez effectuer',
+            ...translator.commandData('commands.economy.pay.options.amount'),
             required: true,
             type: ApplicationCommandOptionType.Integer,
             minValue: 1
@@ -36,8 +34,8 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle('Auto-transaction')
-                        .setDescription(`Vous ne pouvez pas vous envoyer de l'argent tout seul`)
+                        .setTitle(translator.translate('commands.economy.pay.replies.auto.title', interaction))
+                        .setDescription(translator.translate('commands.economy.pay.replies.auto.description', interaction))
                         .setColor(evokerColor(interaction.guild))
                 ]
             })
@@ -47,11 +45,9 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle('Transaction à un robot')
+                        .setTitle(translator.translate('commands.economy.pay.replies.robot.title', interaction))
                         .setDescription(
-                            `Vous ne pouvez pas envoyer de l'argent à un robot${
-                                random({ max: 100 }) === 14 ? ' (il ne saurait pas quoi en faire)' : ''
-                            }`
+                            translator.translate('commands.economy.pay.replies.robot.description', interaction)
                         )
                         .setColor(evokerColor(interaction.guild))
                 ]
@@ -74,11 +70,12 @@ export default new DraverCommand({
         interaction,
         user: interaction.user,
         embed: basicEmbed(interaction.user)
-            .setTitle('Transaction')
+            .setTitle(translator.translate('commands.economy.pay.replies.confirm.title', interaction))
             .setDescription(
-                `Vous êtes sur le point de donner **${numerize(amount)} ${util(
-                    'coins'
-                )}** à ${user}.\nVoulez-vous continuer ?`
+                translator.translate('commands.economy.pay.replies.confirm.description', interaction, {
+                    amount,
+                    user: pingUser(user)
+                })
             )
     });
 
@@ -102,8 +99,8 @@ export default new DraverCommand({
         .editReply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Transaction effectuée')
-                    .setDescription(`Vous avez donné **${numerize(amount)} ${util('coins')}** à ${user}`)
+                    .setTitle(translator.translate('commands.economy.pay.replies.done.title', interaction))
+                    .setDescription(translator.translate('commands.economy.pay.replies.done.description', interaction, { amount, user: pingUser(user) }))
             ],
             components: []
         })
