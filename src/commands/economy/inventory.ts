@@ -17,26 +17,23 @@ import { InventoryItem } from '../../typings/database';
 import { util } from '../../utils/functions';
 import { confirmReturn } from '../../typings/functions';
 import replies from '../../data/replies';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'inventaire',
+    ...translator.commandData('commands.economy.inventory'),
     module: 'economy',
-    description: 'Gère votre inventaire',
     preconditions: [preconditions.GuildOnly, moduleEnabled],
     options: [
         {
-            name: 'voir',
-            description: 'Affiche votre inventaire',
+            ...translator.commandData('commands.economy.inventory.options.see'),
             type: ApplicationCommandOptionType.Subcommand
         },
         {
-            name: 'utiliser',
-            description: 'Utilise un rôle dans votre inventaire',
+            ...translator.commandData('commands.economy.inventory.options.use'),
             type: ApplicationCommandOptionType.Subcommand,
             options: [
                 {
-                    name: 'rôle',
-                    description: 'Rôle à utiliser',
+                    ...translator.commandData('commands.economy.inventory.options.use.options.role'),
                     required: true,
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true
@@ -58,8 +55,8 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user, { draverColor: true })
-                            .setTitle('Inventaire vide')
-                            .setDescription(`Vous n'avez rien dans votre inventaire`)
+                            .setTitle(translator.translate('commands.economy.inventory.replies.see.empty.title', interaction))
+                            .setDescription(translator.translate('commands.economy.inventory.replies.see.empty.description', interaction))
                     ]
                 })
                 .catch(() => {});
@@ -68,17 +65,27 @@ export default new DraverCommand({
             const itemCount = inventory.map((x) => x.quantity).reduce((a, b) => a + b);
 
             return basicEmbed(interaction.user, { draverColor: true })
-                .setTitle('Inventaire')
+                .setTitle(translator.translate('commands.economy.inventory.replies.see.base.title', interaction))
                 .setDescription(
-                    `Vous avez **${numerize(itemCount)} item${plurial(itemCount)}** sur ${interaction.guild.name}`
+                    translator.translate('commands.economy.inventory.replies.see.base.description', interaction, {
+                        items: itemCount,
+                        server: interaction.guild.name
+                    })
                 );
         };
         const map = (embed: EmbedBuilder, item: InventoryItem) => {
             return embed.addFields({
-                name: `${item.name} (x${numerize(item.quantity)})`,
-                value: `${item.type === 'role' ? `Rôle ${pingRole(item.roleId)}\n` : ''}Valeur totale : **${numerize(
-                    item.quantity * item.value
-                )} ${util('coins')}**${item.quantity > 1 ? ` ( ${numerize(item.value)} ${util('coins')} pièce )` : ''}`
+                name: translator.translate('commands.economy.inventory.replies.see.mapper.name', interaction, {
+                    name: item.name,
+                    quantity: item.quantity
+                }),
+                value: item.type === 'role' ? translator.translate('commands.economy.inventory.replies.see.mapper.role', interaction, {
+                    role: pingRole(item.roleId)
+                }) : '' + translator.translate('commands.economy.inventory.replies.see.mapper.value', interaction, {
+                    amount: item.quantity * item.value,
+                }) + (item.quantity > 1 ? translator.translate('commands.economy.inventory.replies.see.mapper.each', interaction, {
+                    each: item.value
+                }) : '')
             });
         };
 
@@ -116,8 +123,10 @@ export default new DraverCommand({
                 .reply({
                     embeds: [
                         basicEmbed(interaction.user)
-                            .setTitle('Rôle déjà possédé')
-                            .setDescription(`Vous avez déjà le rôle ${pingRole(item.roleId)}`)
+                            .setTitle(translator.translate('commands.economy.inventory.replies.use.got.title', interaction))
+                            .setDescription(translator.translate('commands.economy.inventory.replies.use.got.description', interaction, {
+                                role: pingRole(item.roleId)
+                            }))
                             .setColor(evokerColor(interaction.guild))
                     ]
                 })
@@ -127,13 +136,13 @@ export default new DraverCommand({
             interaction,
             user: interaction.user,
             embed: basicEmbed(interaction.user)
-                .setTitle('Utilisation de rôle')
+                .setTitle(translator.translate('commands.economy.inventory.replies.use.confirm.title', interaction))
                 .setDescription(
-                    `Vous allez utiliser **1 ${item.name}** pour obtenir le rôle ${pingRole(item.roleId)}\n${
-                        item.quantity === 1
-                            ? `Vous n'aurez plus cet item après l'utilisation`
-                            : `Il vous restera **${numerize(item.quantity - 1)} ${item.name}** après l'utilisation`
-                    }\nVoulez-vous continuer ?`
+                    translator.translate(`commands.economy.inventory.replies.use.confirm.description${item.quantity === 1 ? 'None' : ''}`, interaction, {
+                        name: item.name,
+                        role: pingRole(item.roleId),
+                        quantity: item.quantity - 1
+                    })
                 )
         }).catch(() => {})) as confirmReturn;
 
@@ -163,8 +172,12 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user, { draverColor: true })
-                        .setTitle('Item utilisé')
-                        .setDescription(`Vous avez utilisé **${item.name}** et obtenu le rôle ${pingRole(item.roleId)}`)
+                        .setTitle(translator.translate('commands.economy.inventory.replies.use.used.title', interaction))
+                        .setDescription(translator.translate('commands.economy.inventory.replies.use.used.description', interaction, {
+                            role: pingRole(item.roleId),
+                            name: item.name
+                        })
+                    )
                 ]
             })
             .catch(() => {});

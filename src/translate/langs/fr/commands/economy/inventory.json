@@ -1,0 +1,53 @@
+{
+    "name": "inventaire",
+    "description": "Gère votre inventaire",
+    "options": {
+        "see": {
+            "name": "voir",
+            "description": "Affiche votre inventaire"
+        },
+        "use": {
+            "name": "utiliser",
+            "description": "Utilise un rôle dans votre inventaire",
+            "options": {
+                "role": {
+                    "name": "rôle",
+                    "description": "Rôle à utiliser"
+                }
+            }
+        }
+    },
+    "replies": {
+        "see": {
+            "empty": {
+                "title": "Inventaire vide",
+                "description": "Vous n'avez rien dans votre inventaire"
+            },
+            "base": {
+                "title": "Inventaire",
+                "description": "Vous avez **{items} items** sur {server}**"
+            },
+            "mapper": {
+                "name": "{item} (x{quantity})",
+                "role": "Rôle {role}\n",
+                "value": "Valeur totale : **{amount}** {coins}",
+                "each": " ( {each} {coins} pièce )"
+            }
+        },
+        "use": {
+            "got": {
+                "title": "Rôle déjà possédé",
+                "description": "Vous possédez déjà le rôle {role}"
+            },
+            "confirmation": {
+                "title": "Utilisation de rôle",
+                "descriptionNone": "Vous allez utiliser **1 ${name}** pour obtenir le rôle {role}.\nVous n'aurez plus cet item après l'utilisation.\nVoulez-vous continuer ?",
+                "description": "Vous allez utiliser **1 ${name}** pour obtenir le rôle {role}.\nIl vous restera **{quantity} {name}** après l'utilisation.\nVoulez-vous continuer ?"
+            },
+            "used": {
+                "title": "Item utilisé",
+                "description": "Vous avez utilisé **{name}** et obtenu le rôle {role} !"
+            }
+        }
+    }
+}
