@@ -1,0 +1,28 @@
+{
+    "name": "portefeuille",
+    "description": "Affiche votre portefeuille sur le serveur",
+    "replies": {
+        "noMoney": {
+            "title": "❌ | Pas de monnaie",
+            "description": "Vous n'avez pas d'argent sur votre compte.\nRécupérez des {coins} et ré-effectuez la cette commande"
+        },
+        "embed": {
+            "title": "💰 | Portefeuille",
+            "description": "Voici votre portefeuille sur **{server}**",
+            "fields": {
+                "money": {
+                    "name": "Argent",
+                    "value": "Vous avez actuellement **{money}** {coins}"
+                },
+                "bank": {
+                    "name": "Banque",
+                    "value": "Vous avez actuellement **{bank}** {coins}"
+                },
+                "total": {
+                    "name": "Total",
+                    "value": "Vous avez actuellement **{total}** {coins}"
+                }
+            }
+        }
+    }
+}

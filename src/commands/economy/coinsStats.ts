@@ -4,11 +4,11 @@ import { preconditions } from 'amethystjs';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { util } from '../../utils/functions';
 import { basicEmbed, evokerColor, numerize, random } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'portefeuille',
+    ...translator.commandData('commands.economy.coins'),
     module: 'economy',
-    description: 'Affiche votre portefeuille sur le serveur',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
     const { coins, bank } = coinsManager.getData({
@@ -21,11 +21,9 @@ export default new DraverCommand({
             .reply({
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle(':x: Pas de monnaie')
+                        .setTitle(translator.translate('comamnds.economy.coins.replies.noMoney.title', interaction))
                         .setDescription(
-                            random({ max: 100 }) === 95
-                                ? `Vous n'avez pas d'argent sur votre compte.\nRécupérez des pièces et ré-effectuez cette commande, parce que pour l'instant vous êtes à la rue`
-                                : `Vous n'avez pas d'argent sur votre compte.\nRécupérez des pièces et ré-effectuez cette commande.`
+                            translator.translate('commands.economy.coins.replies.noMoney.description', interaction)
                         )
                         .setColor(evokerColor(interaction.guild))
                 ]
@@ -36,22 +34,22 @@ export default new DraverCommand({
         .reply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Votre portefeuille')
-                    .setDescription(`Voici votre portefeuille sur ${interaction.guild.name}`)
+                    .setTitle(translator.translate('commands.economy.coins.replies.embed.title', interaction))
+                    .setDescription(translator.translate('commands.economy.coins.replies.embed.description', interaction, { server: interaction.guild.name }))
                     .setFields(
                         {
-                            name: 'Sur vous',
-                            value: `${numerize(coins)} ${util('coins')}`,
+                            name: translator.translate('commands.economy.coins.replies.embed.fields.money.name', interaction),
+                            value: translator.translate('commands.economy.coins.replies.embed.fields.money.value', interaction, { money: coins }),
                             inline: true
                         },
                         {
-                            name: 'En banque',
-                            value: `${numerize(bank)} ${util('coins')}`,
+                            name: translator.translate("commands.economy.coins.replies.embed.fields.bank.name", interaction),
+                            value: translator.translate("commands.economy.coins.replies.embed.fields.bank.value", interaction, { bank }),
                             inline: true
                         },
                         {
-                            name: 'Total',
-                            value: `${numerize(bank + coins)} ${util('coins')}`,
+                            name: translator.translate('commands.economy.coins.replies.embed.fields.total.name', interaction),
+                            value: translator.translate('commands.economy.coins.replies.embed.fields.total.value', interaction, { total: coins + bank }),
                             inline: false
                         }
                     )
