@@ -1,0 +1,25 @@
+{
+    "name": "coupon",
+    "description": "Réclame un coupon",
+    "modal": {
+        "title": "Réclamation de coupon",
+        "field": {
+            "label": "Code du coupon",
+            "placeholder": "code du coupon"
+        }
+    },
+    "replies": {
+        "unexisting": {
+            "title": "Coupon inexistant",
+            "description": "Le coupon que vous avez renseigné n'existe pas."
+        },
+        "claiming": {
+            "title": "Réclamation",
+            "description": "Voulez-vous réclamer ce coupon d'une valeur de **{amount} {coins}** ?"
+        },
+        "claimed": {
+            "title": "{coins} ajoutés",
+            "description": "**{amount}* {coins}** ont été ajoutés à votre compte."
+        }
+    }
+}

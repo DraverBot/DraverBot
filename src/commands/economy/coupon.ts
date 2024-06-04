@@ -16,22 +16,22 @@ import query from '../../utils/query';
 import { DatabaseTables, coupons } from '../../typings/database';
 import { util } from '../../utils/functions';
 import { yesNoRow } from '../../data/buttons';
+import { translator } from '../../translate/translate';
 
 export default new DraverCommand({
-    name: 'coupon',
+    ...translator.commandData('commands.economy.coupon'),
     module: 'economy',
-    description: 'Réclame un coupon',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
     const modal = new ModalBuilder({
-        title: 'Réclamation de coupon',
+        title: translator.translate('commands.economy.coupon.modal.title', interaction),
         customId: 'couponClaimModal',
         components: [
             row<TextInputBuilder>(
                 new TextInputBuilder()
                     .setCustomId('coupon.code')
-                    .setLabel('Code du coupon')
-                    .setPlaceholder('code du coupon')
+                    .setLabel(translator.translate('commands.economy.coupon.modal.fields.label', interaction))
+                    .setPlaceholder(translator.translate('commands.economy.coupon.modal.fields.placeholder', interaction))
                     .setRequired(true)
                     .setStyle(TextInputStyle.Short)
             )
@@ -64,8 +64,8 @@ export default new DraverCommand({
             .editReply({
                 embeds: [
                     basicEmbed(interaction.user)
-                        .setTitle('Coupon inexistant')
-                        .setDescription(`Ce coupon n'existe pas`)
+                        .setTitle(translator.translate('commands.economy.coupon.replies.unexisting.title', interaction))
+                        .setDescription(translator.translate('commands.economy.coupon.replies.unexisting.description', interaction))
                         .setColor(evokerColor(interaction.guild))
                 ]
             })
@@ -74,11 +74,11 @@ export default new DraverCommand({
         .editReply({
             embeds: [
                 basicEmbed(interaction.user, { questionMark: true })
-                    .setTitle(`Réclamation`)
+                    .setTitle(translator.translate('commands.economy.coupon.replies.claiming.title', interaction))
                     .setDescription(
-                        `Voulez-vous réclamer ce coupon d'une valeur de **${numerize(coupon[0].amount)} ${util(
-                            'coins'
-                        )}** ?`
+                        translator.translate('commands.economy.coupon.replies.claiming.description', interaction, {
+                            amount: coupon[0].amount
+                        })
                     )
             ],
             components: [yesNoRow(interaction)]
@@ -109,11 +109,11 @@ export default new DraverCommand({
     res.editReply({
         embeds: [
             basicEmbed(interaction.user, { draverColor: true })
-                .setTitle(`${util('coins')} ajouté${plurial(coupon[0].amount)}`)
+                .setTitle(translator.translate('commands.economy.coupon.replies.claimed.title', interaction))
                 .setDescription(
-                    `**${numerize(coupon[0].amount)} ${util('coins')}** ${
-                        coupon[0].amount === 1 ? 'a été ajouté' : 'ont été ajoutés'
-                    } à votre compte`
+                    translator.translate('commands.economy.coupon.replies.claimed.description', interaction, {
+                        amount: coupon[0].amount
+                    })
                 )
         ],
         components: []
