@@ -4,11 +4,12 @@ import { preconditions } from 'amethystjs';
 import { util } from '../../utils/functions';
 import moduleEnabled from '../../preconditions/moduleEnabled';
 import { basicEmbed, evokerColor, numerize, random, secondsToWeeks } from '../../utils/toolbox';
+import { translator } from '../../translate/translate';
+import time from '../../maps/time';
 
 export default new DraverCommand({
-    name: 'quotidien',
+    ...translator.commandData('commands.economy.daily'),
     module: 'economy',
-    description: 'Récupère votre récompense de ' + util('coins') + ' quotidienne',
     preconditions: [preconditions.GuildOnly, moduleEnabled]
 }).setChatInputRun(async ({ interaction }) => {
     if (
@@ -21,17 +22,19 @@ export default new DraverCommand({
         return interaction.reply({
             embeds: [
                 basicEmbed(interaction.user)
-                    .setTitle('Cooldown')
+                    .setTitle(translator.translate('commands.economy.daily.replies.cooldown.title', interaction))
                     .setDescription(
-                        `Vous avez déjà utilisé cette commande pendant les 24 dernières heures.\nMerci de patienter encore **${secondsToWeeks(
-                            Math.floor(
-                                cooldownsManager.getRemainingTime({
-                                    guild_id: interaction.guild.id,
-                                    user_id: interaction.user.id,
-                                    commandName: 'quotidien'
-                                }) / 1000
+                        translator.translate('commands.economy.daily.replies.cooldown.description', interaction, {
+                            time: secondsToWeeks(
+                                Math.floor(
+                                    cooldownsManager.getRemainingTime({
+                                        guild_id: interaction.guild.id,
+                                        user_id: interaction.user.id,
+                                        commandName: 'quotidien'
+                                    }) / 1000
+                                )
                             )
-                        )}**`
+                        })
                     )
                     .setColor(evokerColor(interaction.guild))
             ],
@@ -48,8 +51,8 @@ export default new DraverCommand({
         .reply({
             embeds: [
                 basicEmbed(interaction.user, { draverColor: true })
-                    .setTitle('Récompense quotidienne')
-                    .setDescription(`Vous avez récupéré **${numerize(coins)} ${util('coins')}** aujourd'hui`)
+                    .setTitle(translator.translate('commands.economy.daily.replies.claimed.title', interaction))
+                    .setDescription(translator.translate('commands.economy.daily.replies.claimed.description', interaction, { amount: coins }))
             ]
         })
         .catch(() => {});

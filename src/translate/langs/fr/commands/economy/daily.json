@@ -1,0 +1,14 @@
+{
+    "name": "quotidien",
+    "description": "Récupère votre récompense de {coins} quotidienne",
+    "rpelies": {
+        "cooldown": {
+            "title": "Cooldown",
+            "description": "Vous avze déjà utilisé cette commande pendant les dernières 24 heures.\nMerci de patienter encore {time}"
+        },
+        "claimed": {
+            "title": "Récompense quotidienne",
+            "description": "Vous avez récupéré **{amount} {coins}** ajourd'hui !"
+        }
+    }
+}
