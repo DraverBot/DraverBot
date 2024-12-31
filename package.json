@@ -11,7 +11,7 @@
 		"amethystjs": "^1.7.4",
 		"axios": "^1.4.0",
 		"blagues-api": "^2.1.0",
-		"canvas": "^2.11.2",
+		"canvas": "^3.0.0",
 		"coins-manager": "^1.0.7",
 		"discord.js": "^14.11.0",
 		"dotenv": "^16.0.3",
